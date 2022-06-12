@@ -1,23 +1,42 @@
 @charset "UTF-8";
 
+@import "common-editor";
+
 //Font Awesomeのアイコン
 @import "fontawesome-before";
 .components-button.is-button{
   padding: 0 4px;
 }
 /* copy from editor-style.css */
-
-.wp-block {
-  padding: 0;
-  margin: 0 auto;
-  max-width: none;
+div.editor-styles-wrapper{
+  margin: 20px;
+  background-color: #fff;
+  padding-top: 20px;
 }
 
-.edit-post-text-editor {
-  padding: 0;
-  margin: 0 auto;
-  max-width: 800px;
+.editor-post-title .editor-post-title__input{
+  font-size: 1.625rem;
 }
+
+// .editor-styles-wrapper div.block-editor-cocoon-wrap {
+//   max-width: 860px;
+//   width: auto;
+//   padding-left: 14px;
+//   padding-right: 14px;
+//   margin: 20px auto;
+// }
+
+// .wp-block {
+//   padding: 0;
+//   margin: 0 auto;
+//   max-width: none;
+// }
+
+// .edit-post-text-editor {
+//   padding: 0;
+//   margin: 0 auto;
+//   max-width: 800px;
+// }
 
 
 //ブロックボックス内のインナーブロックのマージン変更
@@ -40,17 +59,23 @@
   }
 }
 
+//ブロックエディタークラシックブロック本文の.mce-content-bodyをテーマデフォルトと同じにする
 div.mce-content-body {
-  line-height: inherit;
+  line-height: 1.8;
+  padding-top: 1em;
 }
 
-.editor-block-list__layout .editor-block-list__block {
+.editor-block-list__layout .editor-block-list__block,//Wordpress 5.4未満
+.block-editor-block-list__layout .block-editor-block-list__block //WordPress 5.4以降
+ {
   &[data-type^="cocoon-blocks/button"], &[data-type^="cocoon-blocks/button-wrap"] {
     height: auto;
     padding: 0 0 1px;
   }
   &[data-type^="cocoon-blocks/micro-text"]{
     padding: 0.5em;
+    margin-top: 1.2em;//これがないと「＋」ボタンが表示されない
+    margin-bottom: 0.2em;//これがないと「＋」ボタンが表示されない
   }
   &[data-type^="cocoon-blocks/button"][data-align="left"],
   &[data-type^="cocoon-blocks/button-wrap"][data-align="left"],
@@ -93,10 +118,25 @@ div.mce-content-body {
   &[data-type="core/freeform"] {
     clear: both;
   }
+  &[data-type="core/image"][data-align="left"] .block-editor-block-list__block-edit {
+    float: left;
+    margin-right: 1em;
+  }
+  &[data-type="core/image"][data-align="right"] .block-editor-block-list__block-edit {
+    float: right;
+    margin-left: 1em;
+  }
+  // &[data-type="core/table"]{
+  //   &::before,
+  //   &::after{
+  //     display: none;
+  //   }
+  // }
 
 
   .column-2,
   .column-3{
+    margin: auto;
     .editor-inner-blocks{
       .column-left,
       .column-center,
@@ -107,10 +147,14 @@ div.mce-content-body {
   }
 
   .column-wrap{
-    >.editor-inner-blocks{
+    >.editor-inner-blocks ,//Wordpress 5.4未満
+    >.block-editor-inner-blocks //WordPress5.4以降
+    {
       width: 100% !important;
     }
-     > .editor-inner-blocks > .editor-block-list__layout{
+     > .editor-inner-blocks > .editor-block-list__layout,//Wordpress 5.4未満
+     > .block-editor-inner-blocks > .block-editor-block-list__layout //WordPress5.4以降
+     {
       display: flex;
       position: relative;
       margin: 1em 0;
@@ -189,6 +233,16 @@ div.mce-content-body {
 
 //タイムライン
 .timeline-box{
+  overflow: auto;
+  .timeline,
+  .block-editor-inner-blocks,
+  .block-editor-block-list__layout,
+  li{
+    overflow: auto;
+  }
+  .timeline .block-editor-inner-blocks .block-editor-block-list__layout li{
+    margin: 0;
+  }
   .editor-block-list__layout .editor-block-list__block-edit{
     margin-top: 0;
     margin-bottom: 0;
@@ -204,23 +258,44 @@ div.mce-content-body {
 }
 
 /* main */
-
-.editor-writing-flow {
-  max-width: 860px;
-  margin: auto;
-  padding-left: 14px;
-  padding-right: 14px;
-  background-color: white;
+.wp-block.editor-block-list__block[data-align="left"],
+.wp-block.editor-block-list__block[data-align="right"] {
+  display: block;
+  > .block-editor-block-list__block-edit{
+    float: none;
+  }
+}
+.block-editor-block-list__block[data-type="core/table"][data-align="left"] table{
+  margin-left: 0;
+  margin-right: auto;
+}
+.block-editor-block-list__block[data-type="core/table"][data-align="right"] table{
+  margin-left: auto;
+  margin-right: 0;
+}
+.wp-block.editor-block-list__block[data-align="wide"],
+.wp-block.editor-block-list__block[data-align="full"]{
+  table{
+    width: 100%;
+  }
 }
 
-.editor-styles-wrapper .editor-writing-flow.main {
-  width: auto;
-  padding-left: 14px;
-  padding-right: 14px;
-  // margin-left: 20px;
-  // margin-right: 20px;
-  margin: 20px auto;
-}
+// .block-editor-writing-flow {
+//   max-width: 860px;
+//   margin: auto;
+//   padding-left: 14px;
+//   padding-right: 14px;
+//   background-color: white;
+// }
+
+// .editor-styles-wrapper .block-editor-writing-flow.main {
+//   width: auto;
+//   padding-left: 14px;
+//   padding-right: 14px;
+//   // margin-left: 20px;
+//   // margin-right: 20px;
+//   margin: 20px auto;
+// }
 
 /* wp-includes/css/dist/edit-post/style.css
  * wp-includes/css/dist/editor/style.css
@@ -240,7 +315,7 @@ div.mce-content-body {
     margin-left: auto;
     margin-right: auto;
   }
-  .editor-writing-flow textarea {
+  .block-editor-writing-flow textarea {
     min-height: auto;
   }
 }
@@ -291,6 +366,24 @@ ul{
     margin: 1em 0;
   }
 }
+
+.wp-block-table{
+  table{
+    font-size: 16px;
+  }
+}
+.wp-block .wp-block-table__cell-content{
+  min-width: 50px;
+  padding: 8px;
+}
+
+// .block-editor-block-list__layout *{
+//   box-sizing: border-box;
+// }
+
+// table{
+//   width: 90% !important;
+// }
 
 /* wp-includes/css/dist/block-library/theme.css
 .wp-block-separator:not(.is-style-wide):not(.is-style-dots){
@@ -607,7 +700,7 @@ ol, ul {
     display: flex;
     flex-direction: column;
 }
-- clear [height: 100%] of .editor-writing-flow
+- clear [height: 100%] of .block-editor-writing-flow
 */
 
 .edit-post-layout__content .edit-post-visual-editor {
@@ -617,7 +710,7 @@ ol, ul {
 }
 
 .editor-styles-wrapper {
-  .editor-writing-flow {
+  .block-editor-writing-flow {
     height: auto;
     flex-shrink: 0;
     > div {
@@ -638,41 +731,9 @@ ol, ul {
 .editor-styles-wrapper .red{
   margin-left: 0;
 }
-// [aria-label="赤字"],
-// [aria-label="赤太字"]{
-//   color: #E50202;
-// }
-// [aria-label="青字"],
-// [aria-label="青太字"]{
-//   color: blue;
-// }
-// [aria-label="緑字"],
-// [aria-label="緑太字"]{
-//   color: green;
-// }
 
-// [aria-label="黄色マーカー"]{
-//   background-color: #ff6;
-// }
-// [aria-label="黄色アンダーラインマーカー"]{
-//   color: #fcc800;
-// }
 
-// [aria-label="青色マーカー"]{
-//   background-color: #a5d7f9;
-// }
-// [aria-label="青色アンダーラインマーカー"]{
-//   color: #a5d7f9;
-// }
-
-// [aria-label="赤色マーカー"]{
-//   background-color: #ffb6b9;
-// }
-// [aria-label="赤色アンダーラインマーカー"]{
-//   color: #ffb6b9;
-// }
-
-//トグルボックス
+//アコーディオンボックス
 .toggle-wrap{
   .toggle-button{
     div{
@@ -710,9 +771,9 @@ ol, ul {
   }
 }
 
-.wp-block .widget.open{
-  margin-left: 0;
-}
+// .wp-block .widget.open{
+//   margin-left: 0;
+// }
 
 .micro-content{
   display: inline-flex;
@@ -720,6 +781,27 @@ ol, ul {
 
 .btn-wrap{
   background-color: #f8e58c !important;
+}
+
+.wp-block{
+  // &[data-align] > *{
+  //   // float: none;
+  //   margin: 0;
+  // }
+
+  &[data-align="center"]{
+    .btn-wrap,
+    .wp-block-cocoon-blocks-button-1{
+      text-align: center;
+    }
+  }
+
+  &[data-align="right"]{
+    .btn-wrap,
+    .wp-block-cocoon-blocks-button-1{
+      text-align: right;
+    }
+  }
 }
 
 .tab-caption-box-label.box-label,
@@ -735,26 +817,39 @@ ol, ul {
   padding: 0 10px;
 }
 
-// .wp-block-cocoon-blocks-code-box{
-//   background-color: #f3f4f5;
-//   border: 1px solid #ccc;
-//   padding: 10px !important;
-//   margin: 1em 0;
-// }
-// .wp-block-cocoon-blocks-code-box.code-box{
-//   border-width: 1px;
-//   border-style: solid;
+// .editor-post-title__block {
+//   padding-left: 58px;
+//   padding-right: 58px;
 // }
 
-// .block-editor-block-toolbar__slot{
-//   display: inline-flex;
-//   // .editor-format-toolbar:first-child{
-//   //   margin-left: 30px;
-//   // }
-//   // .block-editor-format-toolbar{
-//   //   float: left;
-//   // }
-// }
+//WordPress 5.4からの吹き出しの不具合対応
+.speech-wrap .components-button{
+  height: auto;
+}
+
+.body,
+.body p{
+  font-size: 18px;
+}
+
+//ブロックエディタータイトル余白の修正
+.block-editor-editor-skeleton__body {
+  .editor-post-title{
+    margin: 0 6px;
+  }
+}
+//ブロックエディターパーマリンク余白の修正
+@media screen and (min-width: 600px){
+  .edit-post-visual-editor .editor-post-title__block .editor-post-permalink{
+    margin: 0 -18px;
+  }
+}
+
+//ブロックエディターの吹き出しスタイルの調整
+.speech-balloon{
+  min-width: 160px;
+}
+
 
 //マイクロソフトブラウザーでツールボタンの表示が崩れる不具合修正
 @mixin ms_block_fix{
@@ -774,4 +869,284 @@ ol, ul {
   @include ms_block_fix;
 }
 
+//ブロックエディター入力カラムの下（SEO等の設定項目の上）にある余白を削除
+.block-editor-writing-flow__click-redirect{
+  display: none;
+}
 
+//ブロックエディターですおが隠れてしまう
+// .wp-block-table {
+// 	overflow: auto;
+// }
+
+//Gutenbergオプションのセレクトボックスの調整
+.meta-box-sortables select {
+  box-sizing: border-box;
+}
+
+// プレイビュースタイルの調整
+.has-drop-cap:not(:focus)::first-letter {
+  float: none;
+  font-size: 1em;
+}
+
+// プレイビュースタイルの背景色を白にする
+.wp-block-paragraph.has-drop-cap{
+  background-color: #fff;
+}
+
+//Gutenbergエディター.block-editor-block-list__layoutの最後に
+//.block-list-appenderが来るので:last-child余白調整が入らないのを修正
+.block-editor-inner-blocks{
+  .block-editor-block-list__layout{
+    :last-of-type{
+      margin-bottom: 0;
+    }
+  }
+}
+
+p {
+  margin-top: 0;
+}
+
+.page-type-wide{
+  max-width: 96% !important;
+}
+
+//ブロックエディターの背景画像問題の修正
+.block-editor-block-styles__item-preview .editor-styles-wrapper::before{
+  // background-image: none !important;
+  // width: 0;
+  // height: 0;
+  display: none;
+}
+body,
+body::before,
+.editor-styles-wrapper::before {
+  background: none !important;
+}
+
+
+.faq .faq-answer {
+  .wp-block,
+  textarea.block-editor-default-block-appender__content{
+    margin-top: 0;
+  }
+}
+
+// .editor-block-list-item-cocoon-blocks-faq,
+// [id*="block-cocoon-blocks/faq"],
+// .cocoon-donation-privilege{
+//   opacity: 0.4 !important;
+//   pointer-events: none !important;
+//   position: relative !important;
+
+//   &::before,
+//   &::after {
+//     background-color: #c9171e !important;
+//     border-radius: 2px !important;
+//     color: #fff !important;
+//     display: inline-block !important;
+//     font-size: 8px !important;
+//     line-height: 1 !important;
+//     padding: 3px 4px !important;
+//     position: absolute !important;
+//     right: 0 !important;
+//   }
+//   &::before{
+//     content: "寄付特典" !important;
+//     top: 0 !important;
+//   }
+// }
+
+.components-dropdown-menu__menu > .cocoon-donation-privilege{
+  pointer-events: auto !important;
+}
+
+[id*="block-cocoon-blocks/faq"]{
+  display: none !important;
+}
+
+.block-editor-writing-flow .block-editor-block-list__layout .column-wrap{
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  >.column-2,
+  >.column-3{
+    display: flex;
+  }
+  >.block-editor-inner-blocks{
+    width: 100%;
+    >.block-editor-block-list__layout{
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      >.wp-block{
+        width: 49.5%;
+        margin: 0;
+        >div{
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+
+  &.column-2-3-1-2 .block-editor-inner-blocks .block-editor-block-list__layout{
+    [data-type="cocoon-blocks/column-left"]{
+      width: 34%;
+    }
+    [data-type="cocoon-blocks/column-right"]{
+      width: 65%;
+    }
+  }
+
+  &.column-2-3-2-1 .block-editor-inner-blocks .block-editor-block-list__layout{
+    [data-type="cocoon-blocks/column-left"]{
+      width: 65%;
+    }
+    [data-type="cocoon-blocks/column-right"]{
+      width: 34%;
+    }
+  }
+
+  &.column-2-4-1-3 .block-editor-inner-blocks .block-editor-block-list__layout{
+    [data-type="cocoon-blocks/column-left"]{
+      width: 25%;
+    }
+    [data-type="cocoon-blocks/column-right"]{
+      width: 74%;
+    }
+  }
+
+  &.column-2-4-3-1 .block-editor-inner-blocks .block-editor-block-list__layout{
+    [data-type="cocoon-blocks/column-left"]{
+      width: 74%;
+    }
+    [data-type="cocoon-blocks/column-right"]{
+      width: 25%;
+    }
+  }
+
+  &.column-3 .block-editor-inner-blocks .block-editor-block-list__layout{
+    [data-type="cocoon-blocks/column-left"]{
+      width: 32.5%;
+    }
+    [data-type="cocoon-blocks/column-center"]{
+      width: 32.5%;
+    }
+    [data-type="cocoon-blocks/column-right"]{
+      width: 32.5%;
+    }
+  }
+
+}
+
+.block-editor-block-types-list__item-icon{
+  .block-editor-block-icon{
+    svg{
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+// .wp-block[data-align=left],
+// .wp-block[data-align=right]{
+//   height: auto;
+// }
+
+.wp-block[data-align=left] > .micro-copy,
+.wp-block[data-align=right] > .micro-copy,
+.wp-block[data-align=left] > .admin-micro-balloon-wrap,
+.wp-block[data-align=right] > .admin-micro-balloon-wrap{
+  float: none;
+}
+
+// .wp-block[data-align=left] > .micro-balloon{
+//   text-align: left;
+// }
+// .wp-block[data-align=center] > .micro-balloon{
+//   text-align: center;
+// }
+// .wp-block[data-align=right] > .micro-balloon{
+//   text-align: right;
+// }
+
+.wp-block[data-align=left] > .micro-text{
+  text-align: left;
+}
+.wp-block[data-align=center] > .micro-text{
+  text-align: center;
+}
+.wp-block[data-align=right] > .micro-text{
+  text-align: right;
+}
+
+.wp-block[data-align=left] > .wp-block-cocoon-blocks-button-1{
+  float: none;
+}
+.wp-block[data-align=center] > .wp-block-cocoon-blocks-button-1{
+  float: none;
+}
+.wp-block[data-align=right] > .wp-block-cocoon-blocks-button-1{
+  float: none;
+}
+
+.micro-copy{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// .admin-micro-balloon-wrap .micro-balloon{
+//   display: inline-block !important;
+// }
+
+// .admin-micro-balloon-wrap{
+//   margin-bottom: 0 !important;
+//   // margin-left: auto !important;
+//   // margin-right: auto !important;
+// }
+
+.micro-copy .micro-balloon{
+  margin-left: 0;
+}
+.wp-block[data-align=center] .micro-balloon{
+  margin-right: auto;
+  margin-left: auto;
+}
+.wp-block[data-align=right] .micro-balloon{
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.wp-block{
+  &[data-align="wide"],
+  &[data-align="full"]{
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 840px !important;
+    .wp-block-table table{
+      width: 100%;
+    }
+  }
+}
+
+.wp-block-table {
+  .has-fixed-layout{
+  width: 100% !important;
+  }
+  figcaption{
+    text-align: left;
+  }
+}
+
+.wp-block[data-align="center"]{
+  figcaption{
+    text-align: center;
+  }
+}
+
+.is-root-container .wp-block{
+  height: auto;
+}

@@ -188,7 +188,7 @@ body.public-page,.content .cf .main, .navi {
 /*ウィジェット*/
 
 .sidebar .widget h3 {
-    margin: 0 30px;
+    margin: 16px 30px;
 }
 .sidebar .widget li a {
     border-bottom: 1px solid #ddd;
@@ -199,6 +199,7 @@ body.public-page,.content .cf .main, .navi {
   margin: 0 18px;
 }
 
+.sidebar h2,
 .sidebar h3 {
 	position: relative;
    background-color: #FFF;
@@ -208,6 +209,7 @@ body.public-page,.content .cf .main, .navi {
    text-align: center;
 }
 
+.sidebar h2::before,
 .sidebar h3:before {
 	content: '';
 	position: absolute;

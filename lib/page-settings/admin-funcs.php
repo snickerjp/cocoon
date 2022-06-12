@@ -15,6 +15,14 @@ function is_admin_tool_menu_visible(){
 }
 endif;
 
+// ダッシュボードメッセージを表示
+// define('OP_DASHBOARD_MESSAGE_VISIBLE', 'dashboard_message_visible');
+// if ( !function_exists( 'is_dashboard_message_visible' ) ):
+// function is_dashboard_message_visible(){
+//   return get_theme_option(OP_DASHBOARD_MESSAGE_VISIBLE, 1);
+// }
+// endif;
+
 //インデックスのエントリーカードにPV数を表示
 define('OP_ADMIN_INDEX_PV_VISIBLE', 'admin_index_pv_visible');
 if ( !function_exists( 'is_admin_index_pv_visible' ) ):
@@ -87,6 +95,14 @@ function is_admin_list_word_count_visible(){
 }
 endif;
 
+//投稿一覧にPVを表示する
+define('OP_ADMIN_LIST_PV_VISIBLE', 'admin_list_pv_visible');
+if ( !function_exists( 'is_admin_list_pv_visible' ) ):
+function is_admin_list_pv_visible(){
+  return get_theme_option(OP_ADMIN_LIST_PV_VISIBLE, 1);
+}
+endif;
+
 //投稿一覧にメモを表示する
 define('OP_ADMIN_LIST_MEMO_VISIBLE', 'admin_list_memo_visible');
 if ( !function_exists( 'is_admin_list_memo_visible' ) ):
@@ -152,6 +168,14 @@ function is_admin_panel_edit_area_visible(){
 }
 endif;
 
+//管理者パネルWordPressダッシュボードの表示
+define('OP_ADMIN_PANEL_WP_DASHBOARD_VISIBLE', 'admin_panel_wp_dashboard_visible');
+if ( !function_exists( 'is_admin_panel_wp_dashboard_visible' ) ):
+function is_admin_panel_wp_dashboard_visible(){
+  return get_theme_option(OP_ADMIN_PANEL_WP_DASHBOARD_VISIBLE);
+}
+endif;
+
 //管理者パネルWordPress編集の表示
 define('OP_ADMIN_PANEL_WP_EDIT_VISIBLE', 'admin_panel_wp_edit_visible');
 if ( !function_exists( 'is_admin_panel_wp_edit_visible' ) ):
@@ -196,7 +220,7 @@ endif;
 define('OP_ADMIN_AMPBENCH_VISIBLE', 'admin_ampbench_visible');
 if ( !function_exists( 'is_admin_ampbench_visible' ) ):
 function is_admin_ampbench_visible(){
-  return get_theme_option(OP_ADMIN_AMPBENCH_VISIBLE, 1);
+  return false;//get_theme_option(OP_ADMIN_AMPBENCH_VISIBLE, 1);
 }
 endif;
 

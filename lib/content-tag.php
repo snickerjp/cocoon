@@ -22,7 +22,7 @@ if ( !function_exists( 'get_the_tag_meta' ) ):
 function get_the_tag_meta($tag_id = null){
   if (empty($tag_id) && is_tag()) {
     //タグがないときはタグIDを取得
-    $tag_id = get_query_var('tag_id');
+    $tag_id = get_queried_object_id();
   }
   //タグIDが正常な場合
   if ($tag_id) {
@@ -42,7 +42,7 @@ endif;
 if ( !function_exists( 'get_the_tag_title' ) ):
 function get_the_tag_title($tag_id = null, $is_tag_name = true){
   if (!$tag_id) {
-    $tag_id = get_query_var('tag_id');
+    $tag_id = get_queried_object_id();
   }
   $res = null;
   if (term_metadata_exists($tag_id, 'the_tag_title')) {
@@ -55,7 +55,10 @@ function get_the_tag_title($tag_id = null, $is_tag_name = true){
   }
   //タイトルが存在しない場合はタグ名を利用する
   if (!$res && $is_tag_name) {
-    $res = get_tag($tag_id)->name;
+    $tag = get_tag($tag_id);
+    if (isset($tag->name)) {
+      $res = $tag->name;
+    }    
   }
   return $res;
 }
@@ -65,7 +68,7 @@ endif;
 if ( !function_exists( 'get_the_tag_content' ) ):
 function get_the_tag_content($tag_id = null, $for_editor = false){
   if (!$tag_id) {
-    $tag_id = get_query_var('tag_id');
+    $tag_id = get_queried_object_id();
   }
   if (term_metadata_exists($tag_id, 'the_tag_content')) {
     //取得できた場合はそのまま返す（本文編集などでも使われる）
@@ -90,7 +93,7 @@ endif;
 if ( !function_exists( 'get_the_tag_eye_catch_url' ) ):
 function get_the_tag_eye_catch_url($tag_id = null){
   if (!$tag_id) {
-    $tag_id = get_query_var('tag_id');
+    $tag_id = get_queried_object_id();
   }
   if (term_metadata_exists($tag_id, 'the_tag_eye_catch_url')) {
     $eye_catch_url = get_term_meta( $tag_id, 'the_tag_eye_catch_url', true );
@@ -116,7 +119,7 @@ endif;
 if ( !function_exists( 'get_the_tag_meta_description' ) ):
 function get_the_tag_meta_description($tag_id = null){
   if (!$tag_id) {
-    $tag_id = get_query_var('tag_id');
+    $tag_id = get_queried_object_id();
   }
   if (term_metadata_exists($tag_id, 'the_tag_meta_description')) {
     return get_term_meta( $tag_id, 'the_tag_meta_description', true );
@@ -155,7 +158,7 @@ endif;
 if ( !function_exists( 'get_the_tag_meta_keywords' ) ):
 function get_the_tag_meta_keywords($tag_id = null){
   if (!$tag_id) {
-    $tag_id = get_query_var('tag_id');
+    $tag_id = get_queried_object_id();
   }
   if (term_metadata_exists($tag_id, 'the_tag_meta_keywords')) {
     return get_term_meta( $tag_id, 'the_tag_meta_keywords', true );
@@ -167,8 +170,18 @@ function get_the_tag_meta_keywords($tag_id = null){
 }
 endif;
 
+//noindexの取得
+if ( !function_exists( 'get_the_tag_noindex' ) ):
+function get_the_tag_noindex($tag_id = null){
+  if (!$tag_id) {
+    $tag_id = get_queried_object_id();
+  }
+  return get_term_meta( $tag_id, 'the_tag_noindex', true );
+}
+endif;
+
 //拡張タグ編集フォーム
-add_action ( 'edit_tag_form_fields', 'extra_tag_fields');
+add_action ( 'post_tag_edit_form_fields', 'extra_tag_fields');
 if ( !function_exists( 'extra_tag_fields' ) ):
 function extra_tag_fields( $tag ) {
     $tag_id = $tag->term_id;
@@ -222,6 +235,19 @@ function extra_tag_fields( $tag ) {
     <p class="description"><?php _e( 'タグページのメタキーワードをカンマ区切りで入力してください。※現在はあまり意味のない設定となっています。', THEME_NAME ) ?></p>
   </td>
 </tr>
+<tr class="form-field term-noindex-wrap">
+  <th><label for="noindex"><?php _e( 'noindex', THEME_NAME ) ?></label></th>
+  <td>
+    <?php
+    $the_tag_noindex = get_the_tag_noindex($tag_id);
+    // _v($tag_id);
+
+    //noindex
+    generate_checkbox_tag('the_tag_noindex' , $the_tag_noindex, __( 'インデックスしない（noindex）', THEME_NAME ));
+    generate_howto_tag(__( 'このページが検索エンジンにインデックスされないようにメタタグを設定します。', THEME_NAME ).__( 'Cocoon設定の「SEO」タブにあるカテゴリーのnoindex設定が優先されます。', THEME_NAME ), 'the_tag_noindex');
+    ?>
+  </td>
+</tr>
 <?php
 }
 endif;
@@ -230,37 +256,42 @@ endif;
 add_action ( 'edited_term', 'save_extra_tag_fileds');
 if ( !function_exists( 'save_extra_tag_fileds' ) ):
 function save_extra_tag_fileds( $term_id ) {
-  $tag_id = $term_id;
+  if (isset($_POST['taxonomy'])) {
+    $tag_id = $term_id;
 
-  if ( isset( $_POST['the_tag_title'] ) ) {
-    $the_tag_title = $_POST['the_tag_title'];
-    update_term_meta( $tag_id, 'the_tag_title', $the_tag_title );
-  }
+    if ( isset( $_POST['the_tag_title'] ) ) {
+      $the_tag_title = $_POST['the_tag_title'];
+      update_term_meta( $tag_id, 'the_tag_title', $the_tag_title );
+    }
 
-  if ( isset( $_POST['the_tag_content'] ) ) {
-    $the_tag_content = $_POST['the_tag_content'];
-    update_term_meta( $tag_id, 'the_tag_content', $the_tag_content );
-  }
+    if ( isset( $_POST['the_tag_content'] ) ) {
+      $the_tag_content = $_POST['the_tag_content'];
+      update_term_meta( $tag_id, 'the_tag_content', $the_tag_content );
+    }
 
-  if ( isset( $_POST['the_tag_eye_catch_url'] ) ) {
-    $the_tag_eye_catch_url = $_POST['the_tag_eye_catch_url'];
-    update_term_meta( $tag_id, 'the_tag_eye_catch_url', $the_tag_eye_catch_url );
-  }
+    if ( isset( $_POST['the_tag_eye_catch_url'] ) ) {
+      $the_tag_eye_catch_url = $_POST['the_tag_eye_catch_url'];
+      update_term_meta( $tag_id, 'the_tag_eye_catch_url', $the_tag_eye_catch_url );
+    }
 
-  if ( isset( $_POST['the_tag_meta_description'] ) ) {
-    $the_tag_meta_description = $_POST['the_tag_meta_description'];
-    update_term_meta( $tag_id, 'the_tag_meta_description', $the_tag_meta_description );
-  }
+    if ( isset( $_POST['the_tag_meta_description'] ) ) {
+      $the_tag_meta_description = $_POST['the_tag_meta_description'];
+      update_term_meta( $tag_id, 'the_tag_meta_description', $the_tag_meta_description );
+    }
 
-  if ( isset( $_POST['the_tag_meta_keywords'] ) ) {
-    $the_tag_meta_keywords = $_POST['the_tag_meta_keywords'];
-    update_term_meta( $tag_id, 'the_tag_meta_keywords', $the_tag_meta_keywords );
-  }
+    if ( isset( $_POST['the_tag_meta_keywords'] ) ) {
+      $the_tag_meta_keywords = $_POST['the_tag_meta_keywords'];
+      update_term_meta( $tag_id, 'the_tag_meta_keywords', $the_tag_meta_keywords );
+    }
 
-  //旧バージョンの値を削除
-  $key = get_the_tag_meta_key($tag_id);
-  if (term_metadata_exists($tag_id, $key)) {
-    delete_term_meta($tag_id, $key);
+    $the_tag_noindex = !empty($_POST['the_tag_noindex']) ? 1 : 0;
+    update_term_meta( $tag_id, 'the_tag_noindex', $the_tag_noindex );
+
+    //旧バージョンの値を削除
+    $key = get_the_tag_meta_key($tag_id);
+    if (term_metadata_exists($tag_id, $key)) {
+      delete_term_meta($tag_id, $key);
+    }
   }
 }
 endif;

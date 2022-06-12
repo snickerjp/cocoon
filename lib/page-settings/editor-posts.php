@@ -19,8 +19,14 @@ update_theme_option(OP_EDITOR_BACKGROUND_COLOR);
 //エディター文字色
 update_theme_option(OP_EDITOR_TEXT_COLOR);
 
+//タグをチェックリストにするか
+update_theme_option(OP_EDITOR_TAG_CHECK_LIST_ENABLE);
+
 //ルビボタン有効
 update_theme_option(OP_BLOCK_EDITOR_RUBY_BUTTON_VISIBLE);
+
+//書式のクリアボタン有効
+update_theme_option(OP_BLOCK_EDITOR_CLEAR_FORMAT_BUTTON_VISIBLE);
 
 //ブロックエディターインラインスタイルドロップダウン有効
 update_theme_option(OP_BLOCK_EDITOR_LETTER_STYLE_DROPDOWN_VISIBLE);
@@ -45,6 +51,9 @@ update_theme_option(OP_BLOCK_EDITOR_AFFILIATE_SHORTCODE_DROPDOWN_VISIBLE);
 
 //ブロックエディターランキングショートコードドロップダウン有効
 update_theme_option(OP_BLOCK_EDITOR_RANKING_SHORTCODE_DROPDOWN_VISIBLE);
+
+//ブロックエディタースタイルブロックオプション有効
+update_theme_option(OP_BLOCK_EDITOR_STYLE_BLOCK_OPTION_VISIBLE);
 
 //拡張カラーパレット色A
 update_theme_option(OP_BLOCK_EDITOR_EXTENDED_PALETTE_COLOR_A);

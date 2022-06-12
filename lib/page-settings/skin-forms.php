@@ -47,18 +47,22 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
               $version = $info['version'];
               $visibility = $info['visibility'];
               //表示を無効にしている場合は設定画面に表示しない
-              if ((!DEBUG_MODE && !$visibility) || is_exclude_skin($file_url)) {
+              if (!DEBUG_MODE && (!$visibility || is_exclude_skin($file_url))) {
                 continue;
               }
 
               $skin_text = $skin_name.' ';
               if ($skin_page_uri) {
                 $skin_text = '<a href="'.$skin_page_uri.'" target="_blank" rel="noopener">'.$skin_name.'</a> ';
+              } else {
+                $skin_text = $skin_name;
               }
 
               $author_text = $author.' ';
               if ($author_uri) {
                 $author_text = '&nbsp;&nbsp;<span style="font-style: italic;font-size: 0.9em;">['.__( '作者', THEME_NAME ).': <a href="'.$author_uri.'" target="_blank" rel="noopener">'.$author.'</a>]</span>';
+              } else {
+                $author_text = '&nbsp;&nbsp;<span style="font-style: italic;font-size: 0.9em;">['.__( '作者', THEME_NAME ).': '.$author.']</span>';
               }
 
               $screenshot_text = null;
@@ -76,6 +80,7 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
 
               $caption = $screenshot_text.$skin_text.$author_text;//.$description;
               //var_dump($caption);
+              $file_url = apply_filters('cocoon_skin_file_url', $file_url);
               $options += array($file_url => $caption);
             }
             //var_dump($options);

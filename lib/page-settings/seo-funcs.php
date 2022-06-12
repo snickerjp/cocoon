@@ -43,7 +43,7 @@ endif;
 define('OP_TAG_PAGE_NOINDEX', 'tag_page_noindex');
 if ( !function_exists( 'is_tag_page_noindex' ) ):
 function is_tag_page_noindex(){
-  return get_theme_option(OP_TAG_PAGE_NOINDEX, 1);
+  return get_theme_option(OP_TAG_PAGE_NOINDEX);
 }
 endif;
 
@@ -102,9 +102,6 @@ endif;
 if ( !function_exists( 'get_the_date_tags' ) ):
 function get_the_date_tags(){
   $is_reservation_post = (get_the_time('U') >= get_update_time('U'));
-  // _v(get_the_time('U'));
-  // _v(get_update_time('U'));
-  // _v($is_reservation_post);
 
   $update_time = get_update_time();
   $published = is_seo_date_type_update_date_only() ? ' published' : null;
@@ -114,8 +111,22 @@ function get_the_date_tags(){
   $updated = $is_update_output ? ' updated' : null;
   $date_modified = $is_update_output ? ' dateModified' : null;
   $display_none = is_seo_date_type_none() ? ' display-none' : null;
+  $post_date_icon_tag = '<span class="fa fa-clock-o" aria-hidden="true"></span>';
+  if (!is_post_date_visible() && is_post_update_visible()) {
+    $post_date_icon_tag = '<span class="fa fa-history" aria-hidden="true"></span>';
+  }
+  $post_date_tag_wrap_before = '<span class="post-date'.$display_none.'">'.$post_date_icon_tag.' ';
+  $post_date_tag_wrap_after = '</span>';
+  //spanタグの投稿日
+  $span_post_date_tag =
+    $post_date_tag_wrap_before.
+      '<span class="entry-date date published'.$updated.'"><meta itemprop="datePublished'.$date_modified.'" content="'.get_the_time('c').'">'.get_the_time(get_site_date_format()).'</span>'.
+    $post_date_tag_wrap_after;
   //timeタグがある投稿日
-  $time_post_date_tag = '<span class="post-date'.$display_none.'"><span class="fa fa-clock-o" aria-hidden="true"></span> <time class="entry-date date published'.$updated.'" datetime="'.get_the_time('c').'" itemprop="datePublished'.$date_modified.'">'.get_the_time(get_site_date_format()).'</time></span>';
+  $time_post_date_tag =
+    $post_date_tag_wrap_before.
+      '<time class="entry-date date published'.$updated.'" datetime="'.get_the_time('c').'" itemprop="datePublished'.$date_modified.'">'.get_the_time(get_site_date_format()).'</time>'.
+    $post_date_tag_wrap_after;
   //timeタグがある更新日
   $time_update_date_tag = '<span class="post-update'.$display_none.'"><span class="fa fa-history" aria-hidden="true"></span> <time class="entry-date date'.$published.' updated" datetime="'.get_update_time('c').'" itemprop="'.$date_published.'dateModified">'.get_update_time(get_site_date_format()).'</time></span>';
   switch (get_seo_date_type()) {
@@ -134,15 +145,17 @@ function get_the_date_tags(){
       break;
     //更新日・投稿日を伝える
     default:
-      // _v(get_the_time('U'));
-      // _v(get_update_time('U'));
       $date_tags = null;
       //更新日があるとき
       if ($update_time && !$is_reservation_post) {
         $date_tags .= $time_update_date_tag;
+        //投稿日（time）
+        $date_tags .= $span_post_date_tag;
+      } else {
+        //投稿日（time）
+        $date_tags .= $time_post_date_tag;
       }
-      //投稿日
-      $date_tags .= $time_post_date_tag;
+
       break;
   }
   return $date_tags;

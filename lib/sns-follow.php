@@ -139,12 +139,14 @@ function user_contactmethods_custom($prof_items){
   $prof_items['instagram_url'] = __( 'Instagram URL', THEME_NAME );
   $prof_items['pinterest_url'] = __( 'Pinterest URL', THEME_NAME );
   $prof_items['youtube_url'] = __( 'YouTube URL', THEME_NAME );
+  $prof_items['tiktok_url'] = __( 'TikTok URL', THEME_NAME );
   $prof_items['linkedin_url'] = __( 'LinkedIn URL', THEME_NAME );
   $prof_items['note_url'] = __( 'note URL', THEME_NAME );
   $prof_items['soundcloud_url'] = __( 'SoundCloud URL', THEME_NAME );
   $prof_items['flickr_url'] = __( 'Flickr URL', THEME_NAME );
   $prof_items['line_at_url'] = __( 'LINE@ URL', THEME_NAME );
   $prof_items['amazon_url'] = __( 'Amazon URL', THEME_NAME );
+  $prof_items['twitch_url'] = __( 'Twitch URL', THEME_NAME );
   $prof_items['rakuten_room_url'] = __( '楽天 ROOM URL', THEME_NAME );
   $prof_items['slack_url'] = __( 'Slack URL', THEME_NAME );
   $prof_items['github_url'] = __( 'GitHub URL', THEME_NAME );
@@ -290,6 +292,14 @@ function get_the_author_youtube_url($id = null){
 }
 endif;
 
+//プロフィール画面で設定したTikTok URLの取得
+if ( !function_exists( 'get_the_author_tiktok_url' ) ):
+function get_the_author_tiktok_url($id = null){
+  $user_id = $id ? $id : get_the_posts_author_id();
+  return esc_html(get_the_author_meta('tiktok_url', $user_id));
+}
+endif;
+
 //プロフィール画面で設定したLinkedIn URLの取得
 if ( !function_exists( 'get_the_author_linkedin_url' ) ):
 function get_the_author_linkedin_url($id = null){
@@ -354,6 +364,14 @@ function get_the_author_amazon_url($id = null){
 }
 endif;
 
+//プロフィール画面で設定したTwitch URLの取得
+if ( !function_exists( 'get_the_author_twitch_url' ) ):
+function get_the_author_twitch_url($id = null){
+  $user_id = $id ? $id : get_the_posts_author_id();
+  return esc_html(get_the_author_meta('twitch_url', $user_id));
+}
+endif;
+
 //プロフィール画面で設定した楽天ROOM URLの取得
 if ( !function_exists( 'get_the_author_rakuten_room_url' ) ):
 function get_the_author_rakuten_room_url($id = null){
@@ -403,6 +421,7 @@ function is_author_follow_buttons_exits(){
          || get_the_author_flickr_url()
          || get_the_author_line_at_url()
          || get_the_author_amazon_url()
+         || get_the_author_twitch_url()
          || get_the_author_rakuten_room_url()
          || get_the_author_slack_url()
          || get_the_author_github_url()

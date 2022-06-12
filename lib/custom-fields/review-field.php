@@ -47,7 +47,7 @@ function review_custom_box_view(){
     'CreativeWorkSeries' => __( 'メディア出版物（書籍や定期刊行物、テレビ、ラジオ、ゲームなど）
     ', THEME_NAME ),
     'Episode' => __( 'シリーズもののエピソード（テレビ、ラジオ、ビデオゲームなど）', THEME_NAME ),
-    'MediaObjectWeb' => __( 'ダウンロードデータ（画像、ビデオ、オーディオなど）', THEME_NAME ),
+    'MediaObject' => __( 'ダウンロードデータ（画像、ビデオ、オーディオなど）', THEME_NAME ),
     'Organization' => __( '学校、NGO、企業、クラブなどの組織', THEME_NAME ),
   );
   generate_selectbox_tag('the_review_type', $options, $the_review_type, '');
@@ -61,7 +61,7 @@ function review_custom_box_view(){
 
   //レート
   $the_review_rate = get_the_review_rate();
-  if (!$the_review_rate) {
+  if ($the_review_rate === null) {
     $the_review_rate = 5;
   }
   generate_label_tag('the_review_rate', __('レビュー評価', THEME_NAME) );

@@ -45,7 +45,7 @@ select {
 ** 投稿・固定ページで使うHTML要素
 ************************************/
 p {
-	margin: 2em 0;
+	margin-bottom: 2em;
 }
 
 /************************************
@@ -253,7 +253,7 @@ table th {
 	width: 80%;
 	padding-top: 0.5em;
 	padding-bottom: 0.5em;
-	border: 1px solid #d7a69c;
+	border: 1px solid #bfbab2;
 }
 
 .toc-content {
@@ -521,6 +521,7 @@ a.page-numbers:hover {
 /************************************
 ** サイドバー
 ************************************/
+.sidebar h2,
 .sidebar h3 {
 	position: relative;
 	margin-bottom: 1.5em;
@@ -530,6 +531,7 @@ a.page-numbers:hover {
 	color: #686157;
 	font-size: 18px;
 }
+.sidebar h2::before,
 .sidebar h3::after {
 	display: block;
 	position: absolute;

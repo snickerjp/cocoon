@@ -11,7 +11,7 @@ h3{
 .entry-card,
 .related-entry-card,
 .e-card-title{
-  line-height: 1.1;
+  line-height: 1.3;
 }
 
 .e-card-title{
@@ -59,7 +59,7 @@ h3{
 .article h5,
 .article h6{
 	padding: 0.6em;
-	margin: 1.2em 0 0.8em;
+	// margin: 1.2em 0 0.8em;
 }
 .entry-title,
 .article h2{
@@ -149,6 +149,7 @@ body{
   //font-size: 0.9em;
   .speech-balloon{
     padding: 7px;
+    max-width: calc(100% - 16%);
 
     &::before,
     &::after{
@@ -296,10 +297,6 @@ a.facebook-follow-button{
   font-size: 0.74em;
 }
 
-// .slick-dots{
-//   display: none !important;
-// }
-
 
 .ect-vertical-card .entry-card-wrap{
   margin-bottom: 8px;
@@ -316,6 +313,13 @@ a.facebook-follow-button{
 
 #bbpress-forums .form-allowed-tags code{
   width: 100% !important;
+}
+
+.entry-card-snippet{
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .no-sp-snippet{

@@ -7,6 +7,7 @@
 /////////////////////////////////
 // JavaScriptコード
 /////////////////////////////////
+
 (function($){
   /////////////////////////////////
   //TOPへ戻るボタン
@@ -33,6 +34,7 @@
 
     prevScrollTop = scrollTop;
   });
+
   //ボタン(.go-to-top-common)のクリックイベント
   $('.go-to-top-common').click(function(){
   //ページトップへ移動する
@@ -99,13 +101,23 @@
     var footerStartPos = 0;
     $(window).scroll(function(){
       var footerCurrentPos = $(this).scrollTop();
+
+      // if (footerCurrentPos - footerStartPos > 20) {
+      //   if(footerCurrentPos >= 100) {
+      //     footerMenu.css("bottom","calc( -1 * (env(safe-area-inset-bottom) + " + footerHeight + "px) )");
+      //   }
+      // } else if (footerCurrentPos - footerStartPos < -8) {
+      //   footerMenu.css("bottom", 0);
+      // }
+
       if (footerCurrentPos > footerStartPos) {
         if(footerCurrentPos >= 100) {
-          footerMenu.css("bottom", "-" + footerHeight + "px");
+          footerMenu.css("bottom","calc( -1 * (env(safe-area-inset-bottom) + " + footerHeight + "px) )");
         }
-      } else {
+      } else if (footerCurrentPos - footerStartPos < -8) {
         footerMenu.css("bottom", 0);
       }
+
       footerStartPos = footerCurrentPos;
     });
 
@@ -122,16 +134,11 @@
     })
   }
 
-
-
   //コメントボタンがクリックされたとき
   $('#comment-reply-btn, .comment-reply-link').click(function() {
     $('#comment-reply-btn').slideUp();
     $('#respond').slideDown();
   });
-
-  //カレーセルの表示
-  $('.carousel').fadeIn(1000);
 
   //Google検索ボタン
   $('.sbtn').click(function(){
@@ -176,6 +183,9 @@
     }
   });
 
+  $(window).on('load', function(){
+    $('#carousel').addClass('loaded');
+  });
 /*
   $(function(){
     // #で始まるアンカーをクリックした場合に処理

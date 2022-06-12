@@ -2,7 +2,7 @@
 /*
   Skin Name: Bizarre-food（ホワイトラーメン）
   Description: Simple & Flat skin
-  Skin URI: https://takasaki.work/cocoon_skin/
+  Skin URI: https://31navi.com/cocoon-skin
   Author: takasaki
   Author URI: https://takasaki.work/
   Screenshot URI: https://im-cocoon.net/wp-content/uploads/bizarre-foods-whiteramen.png
@@ -129,15 +129,25 @@ div#header-container {
     background:transparent;
 }
 
+.sidebar h2,
 .sidebar h3{
     font-size:18px;
     background:#fff;
     padding:0;
-    margin:0 0 1em;
+    margin-bottom: 1em;
     text-align:center;
     font-family: sans-serif;
     font-weight: 100;
     color:#545454;
+}
+
+.nwa .toc-list.open{
+    padding: 0;
+}
+
+.nwa .toc{
+    padding: 0;
+    width: 100%;
 }
 
 #sidebar > .widget {
@@ -636,11 +646,11 @@ a.tag-link {
 
 /*share-button*/
 
-.sns-share.ss-col-6.ss-high-and-low-lc.bc-brand-color.sbc-hide.ss-top {
+/*.sns-share.ss-col-6.ss-high-and-low-lc.bc-brand-color.sbc-hide.ss-top {
     position: absolute;
     bottom: 0;
     width: 100%;
-}
+}*/
 
 .share-button a{
     color:#545454;
@@ -834,7 +844,8 @@ a.comment-reply-link {
 .article h3, .article h4{
     font-weight:600;
     padding: .2em 1em;
-   margin: 1.6em 0 .8em;
+    margin-top: 1.6em;
+    margin-bottom: 0.8em;
 }
 
 .article h2:before, .article h3:before, .article h4:before {
@@ -878,7 +889,7 @@ a.comment-reply-link {
 /*Table of Contents*********************************************************/
 
 .toc{
-    padding:0;
+    padding:0 0 1em 0;
     border: 2px solid whitesmoke;
     border-top-left-radius:7px;
     border-top-right-radius:7px;
@@ -1213,8 +1224,8 @@ h1#archive-title {
 .article-header h1#archive-title{
     color: #545454;
 }
-span.fa.fa-search:before {
-    content: "\f002";
+.archive-title .fa-search:before,
+.search-submit .fa-search:before {
     color: whitesmoke;
 }
 
@@ -1236,6 +1247,10 @@ span.fa.fa-search:before {
     background: whitesmoke;
     color: #545454;
     z-index:1;
+}
+
+.main .blogcard-type .blogcard::before{
+    color: white;
 }
 
 /*author-info*/
@@ -1282,5 +1297,11 @@ h3.wpforo-forum-title::before {
 }
 #container .blogcard-label{
     display: none;
+}
+
+/* インフィード広告がエントリーカードとくっつく不具合修正 */
+.list aside {
+    background-color: transparent;
+    padding: 0;
 }
 

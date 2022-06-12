@@ -209,6 +209,7 @@ body {
 
 // Sidebar サイドバー
 #sidebar-menu-content {
+  h2,
   h3 {
     background-color: $main-color-midium;
     color: $white-color;
@@ -378,6 +379,9 @@ body {
       }
       .amazon-button {
         background-color: #FF9900;
+      }
+      .twitch-button {
+        background-color: #6441A4;
       }
       .rakuten-room-button {
         background-color: #C61E79;
@@ -574,7 +578,7 @@ body {
   }
   // Calendar カレンダー
   .widget_calendar {
-    #wp-calendar {
+    .wp-calendar-table {
       caption {
         color: $white-color;
         border-color: $key-color;;
@@ -594,7 +598,7 @@ body {
           background-color: $main-color-light;
           color: $white-color;
         }
-        &#today, &#today a {
+        &  [id$="today"], &  [id$="today"] a {
           background-color: $main-color-midium;
           color: $white-color;
         }
@@ -892,33 +896,41 @@ body {
   }
   .entry-content {
     h2, h3, h4, h5, h6 {
-      @include linear-gradient();
-      position: relative;
-      color: transparent;
-      -webkit-background-clip: text;
-      -moz-background-clip: text;
-      -ms-background-clip: text;
+      // @include linear-gradient();
+      // position: relative;
+      // color: transparent;
+      // -webkit-background-clip: text;
+      // -moz-background-clip: text;
+      // -ms-background-clip: text;
+      // background-clip: text;
+      color: $main-color-dark;
+      background-color: transparent;
       border: 0;
-      &::after {
-        @include linear-gradient();
-        @include pseudo();
-        @include position(auto, 0px, 0px, auto);
-      }
+      border-bottom: 5px solid $main-color-dark;
+      // &::after {
+      //   @include linear-gradient();
+      //   @include pseudo();
+      //   @include position(auto, 0px, 0px, auto);
+      // }
     }
     h2, h3 {
       padding: 0.5em;
     }
-    h2::after {
-      @include size(100%, 5px);
-    }
-    h3::after {
-      @include size(100%, 3px);
+    // h2::after {
+    //   @include size(100%, 5px);
+    // }
+    h3{
+      border-width: 3px;
+      &::after {
+        @include size(100%, 3px);
+      }
     }
     h4, h5, h6 {
       padding: 0.25em;
-      &::after {
-        @include size(100%, 1px);
-      }
+      border-width: 1px;
+      // &::after {
+      //   @include size(100%, 1px);
+      // }
     }
   }
   // Garally ギャラリー
@@ -987,7 +999,7 @@ body {
 #main {
   // Calendar カレンダー
   .wp-block-calendar {
-    #wp-calendar {
+    .wp-calendar-table {
       caption {
         color: $white-color;
         border-color: $key-color;;
@@ -1007,7 +1019,7 @@ body {
           background-color: $main-color-light;
           color: $white-color;
         }
-        &#today, &#today a {
+        &  [id$="today"], &  [id$="today"] a {
           background-color: $main-color-midium;
           color: $white-color;
         }

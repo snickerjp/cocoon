@@ -2,7 +2,6 @@
 
 body {
   background-color: $bg_color;
-  font-family: 'Hiragino Kaku Gothic ProN', Meiryo, Helvetica, Arial, sans-serif;
 }
 
 a:hover{
@@ -140,4 +139,8 @@ div.mobile-menu-buttons .menu-button:hover,
     left: -10px;
     border: 2px solid #eee;
   }
+}
+
+.appeal-button{
+  background-color: $key_color;
 }

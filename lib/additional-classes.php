@@ -41,6 +41,9 @@ if ( !function_exists( 'body_class_additional' ) ):
 function body_class_additional($classes) {
   global $post;
 
+  //全体的なCSS優先度対策用
+  $classes[] = 'body';
+
   //フロントページかどうか
   if (is_front_top_page()) {
     $classes[] = 'front-top-page';
@@ -139,16 +142,10 @@ function body_class_additional($classes) {
   // }
 
   //ヘッダーが「センターロゴ」か「トップメニュー」か
-  switch (get_header_layout_type()) {
-    case 'top_menu':
-    case 'top_menu_right':
-    case 'top_menu_small':
-    case 'top_menu_small_right':
-      $classes[] = 'hlt-top-menu-wrap';
-      break;
-    default:
-      $classes[] = 'hlt-center-logo-wrap';
-      break;
+  if (get_header_layout_type_top()) {
+    $classes[] = 'hlt-top-menu-wrap';
+  } else {
+    $classes[] = 'hlt-center-logo-wrap';
   }
 
   //エントリーカードタイプ
@@ -312,7 +309,7 @@ function body_class_additional($classes) {
   }
 
   //投稿・固定ページの投稿日を表示するか
-  if (is_singular() && !is_post_date_visible() && get_update_time()) {
+  if (is_singular() && !is_post_date_visible() && (get_update_time() || !is_post_update_visible())) {
     $classes[] = 'no-post-date';
   }
 
@@ -342,12 +339,17 @@ function body_class_additional($classes) {
   }
 
   //ヘッダーモバイルボタン表示時にサイトロゴを表示しない場合
-  if (!is_mobile_header_logo_visible() && !is_amp()) {
+  if (!is_mobile_header_logo_visible() && is_mobile_button_layout_type_mobile_buttons() && !is_amp()) {
     $classes[] = 'no-mobile-header-logo';
   }
 
   //利用アイコンフォントクラス
   $classes[] = get_site_icon_font_class();
+
+  //ヘッダーを固定する場合
+  if (is_header_fixed()) {
+    $classes[] = 'is-header-fixed';
+  }
 
   return apply_filters('body_class_additional', $classes);
 }//body_class_additional
@@ -417,24 +419,6 @@ function get_additional_widget_entry_cards_classes($atts){
     'class' => null,
   ), $atts));
   $classes = null;
-  // if (is_numeric($type)) {
-  //   $classes .= ' card-type-'.$type;
-  // } else {
-  //   if (includes_string($type, ET_LARGE_THUMB) && $type) {
-  //     $classes .= ' card-large-image';
-  //     if ($type == ET_LARGE_THUMB) {
-  //       $classes .= ' large-thumb';
-  //     } else if ($type == ET_LARGE_THUMB_ON) {
-  //       $classes .= ' large-thumb-on';
-  //     }
-  //   } else {
-  //     if ($type == ET_BORDER_PARTITION) {
-  //       $classes .= ' border-partition';
-  //     } else if ($type == ET_BORDER_SQUARE) {
-  //       $classes .= ' border-square';
-  //     }
-  //   }
-  // }
 
   if (includes_string($type, ET_LARGE_THUMB) && $type) {
     $classes .= ' card-large-image';
@@ -450,10 +434,6 @@ function get_additional_widget_entry_cards_classes($atts){
       $classes .= ' border-square';
     }
   }
-
-  // if ($type) {
-  //   $classes .= ' card-type-'.$type;
-  // }
 
   if ($bold) {
     $classes .= ' card-title-bold';
@@ -787,9 +767,9 @@ if ( !function_exists( 'get_additional_related_entries_classes' ) ):
 function get_additional_related_entries_classes($option = null){
   $classes = null;
   switch (get_related_entry_type()) {
-    case 'vartical_card_3':
-    case 'vartical_card_4':
-      $classes .= ' rect-vartical-card';
+    case 'vertical_card_3':
+    case 'vertical_card_4':
+      $classes .= ' rect-vertical-card';
       break;
   }
   $classes .= ' rect-'.replace_value_to_class(get_related_entry_type());
@@ -810,9 +790,9 @@ if ( !function_exists( 'get_additional_post_navi_classes' ) ):
 function get_additional_post_navi_classes($option = null){
   $classes = null;
   // switch (get_post_navi_type()) {
-  //   case 'vartical_card_3':
-  //   case 'vartical_card_4':
-  //     $classes .= ' related-vartical-card';
+  //   case 'vertical_card_3':
+  //   case 'vertical_card_4':
+  //     $classes .= ' related-vertical-card';
   //     break;
   // }
   $classes .= ' post-navi-'.replace_value_to_class(get_post_navi_type());
@@ -924,6 +904,8 @@ function get_additional_entry_card_classes($option = null){
     $classes .= ' ecb-entry-border';
   }
 
+  //フロントページタイプ
+  $classes .= ' front-page-type-'.str_replace('_', '-', get_front_page_type());
 
   //スマートフォンでエントリーカードを1カラムに
   if (!is_entry_card_type_entry_card() && is_smartphone_entry_card_1_column()) {
@@ -948,6 +930,9 @@ function get_additional_toc_classes($option = null){
   if (is_toc_position_center()) {
     $classes .= ' toc-center';
   }
+
+  $classes .= ' tnt-'.get_toc_number_type();
+
   if ($option) {
     $classes .= ' '.trim($option);
   }

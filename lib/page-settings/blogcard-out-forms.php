@@ -50,6 +50,12 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
             <?php
             generate_checkbox_tag(OP_EXTERNAL_BLOGCARD_ENABLE, is_external_blogcard_enable(), __( 'ブログカード表示を有効にする', THEME_NAME ));
             generate_tips_tag(__( '本文中にある外部サイトのURLやURLリンクをブログカード表示します。', THEME_NAME ));
+
+            echo '<div class="indent'.get_not_allowed_form_class(is_external_blogcard_enable(), true).'">';
+              generate_checkbox_tag(OP_COMMENT_EXTERNAL_BLOGCARD_ENABLE
+              , is_comment_external_blogcard_enable(), __( 'コメント欄のブログカード表示を有効にする', THEME_NAME ));
+              generate_tips_tag(__( 'コメント内に書き込まれた独立したURLをブログカード化します。', THEME_NAME ).__( 'コメント内の外部リンクブログカードの場合rel="nofollow"が入ります。', THEME_NAME ).get_help_page_tag('https://wp-cocoon.com/comment-blogcard/'));
+            echo '</div>';
             ?>
           </td>
         </tr>
@@ -95,8 +101,8 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
           </th>
           <td>
             <?php
-            generate_number_tag(OP_EXTERNAL_BLOGCARD_CACHE_RETENTION_PERIOD, get_external_blogcard_cache_retention_period(), 30, 1, 365);
-            generate_tips_tag(__( 'ブログカードキャッシュのリフレッシュ間隔を設定します。1～365日の間隔を選べます。', THEME_NAME ));
+            generate_number_tag(OP_EXTERNAL_BLOGCARD_CACHE_RETENTION_PERIOD, get_external_blogcard_cache_retention_period(), 30, 1, 3650);
+            generate_tips_tag(__( 'ブログカードキャッシュのリフレッシュ間隔を設定します。1～3650日の間隔を選べます。', THEME_NAME ));
             ?>
           </td>
         </tr>

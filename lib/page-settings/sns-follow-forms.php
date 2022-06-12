@@ -80,12 +80,13 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
               <li><?php _e( 'note', THEME_NAME ) ?></li>
               <li><?php _e( 'Flickr', THEME_NAME ) ?></li>
               <li><?php _e( 'Amazon欲しい物リスト', THEME_NAME ) ?></li>
+              <li><?php _e( 'Twitch', THEME_NAME ) ?></li>
               <li><?php _e( '楽天ROOM', THEME_NAME ) ?></li>
               <li><?php _e( 'Slack', THEME_NAME ) ?></li>
               <li><?php _e( 'GitHub', THEME_NAME ) ?></li>
               <li><?php _e( 'CodePen', THEME_NAME ) ?></li>
             </ul>
-            <p><a href="profile.php"><?php _e( 'あなたのプロフィール', THEME_NAME ) ?></a>から設定</p>
+            <p><a href="profile.php"><?php _e( 'あなたのプロフィール', THEME_NAME ) ?></a><?php _e( 'から設定', THEME_NAME ) ?></p>
             <p class="tips"><?php _e( '現ログインユーザーのSNSフォローページを設定します。', THEME_NAME ) ?></p>
           </td>
         </tr>
@@ -217,10 +218,10 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
     <table class="form-table">
       <tbody>
 
-        <!-- キャシュの有効化 -->
+        <!-- キャッシュの有効化 -->
         <tr>
           <th scope="row">
-            <?php generate_label_tag(OP_SNS_FOLLOW_COUNT_CACHE_ENABLE, __( 'キャシュの有効化', THEME_NAME )); ?>
+            <?php generate_label_tag(OP_SNS_FOLLOW_COUNT_CACHE_ENABLE, __( 'キャッシュの有効化', THEME_NAME )); ?>
           </th>
           <td>
             <?php

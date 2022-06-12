@@ -25,7 +25,6 @@ $example_update_checker = new ThemeUpdateChecker(
 if ( !function_exists( 'get_content_excerpt' ) ):
 function get_content_excerpt($content, $length = 70){
   $content = apply_filters( 'content_excerpt_before', $content);
-  //_v($content);
   $content = cancel_blog_card_deactivation($content, false);
   $content = preg_replace('/<!--more-->.+/is', '', $content); //moreタグ以降削除
   $content = strip_tags($content);//タグの除去
@@ -79,13 +78,13 @@ function get_post_navi_thumbnail_tag($id, $width = THUMB120WIDTH, $height = THUM
     if ($width == THUMB120WIDTH) {
       $w = THUMB120WIDTH;
       $h = THUMB120HEIGHT;
-      $image = get_no_image_160x90_url();
-      $wh_attr = ' srcset="'.$image.' '.$w.'w" width="'.$w.'" height="'.$h.'" sizes="(max-width: '.$w.'px) '.$w.'vw, '.$h.'px"';
+      $image = get_no_image_160x90_url($id);
     } else {//表示タイプ＝スクエア
-      $image = get_no_image_150x150_url();
-      $wh_attr = ' srcset="'.$image.' '.W120.'w" width="'.W120.'" height="'.W120.'" sizes="(max-width: '.W120.'px) '.W120.'vw, '.W120.'px"';
+      $image = get_no_image_150x150_url($id);
+      $w = THUMB150WIDTH;
+      $h = THUMB150HEIGHT;
     }
-    $thumb = '<img src="'.$image.'" alt="" class="no-image post-navi-no-image"'.$wh_attr.' />';
+    $thumb = get_original_image_tag($image, $w, $h, 'no-image post-navi-no-image');
   }
   return $thumb;
 }
@@ -104,7 +103,7 @@ function get_archive_chapter_title(){
       $chapter_title .= single_cat_title( $icon_font, false );
     }
   } elseif( is_tag() ) {//タグページの場合
-    $tag_id = get_query_var('tag_id');
+    $tag_id = get_queried_object_id();
     $icon_font = '<span class="fa fa-tags" aria-hidden="true"></span>';
     if ($tag_id && get_the_tag_title($tag_id)) {
       $chapter_title .= $icon_font.get_the_tag_title($tag_id);
@@ -129,7 +128,7 @@ function get_archive_chapter_title(){
     //年のフォーマットを取得
     $chapter_title .= '<span class="fa fa-calendar" aria-hidden="true"></span>'.get_the_time('Y');
   } elseif (is_author()) {//著書ページの場合
-    $chapter_title .= '<span class="fa fa-user" aria-hidden="true"></span>'.esc_html(get_queried_object()->display_name);
+    $chapter_title .= '<span class="fa fa-user" aria-hidden="true"></span>'.esc_html(get_the_author());
   } elseif (isset($_GET['paged']) && !empty($_GET['paged'])) {
     $chapter_title .= 'Archives';
   } else {
@@ -197,13 +196,40 @@ function wp_link_pages_link_custom($link){
 }
 endif;
 
-//メインクエリの出力順変更
-add_action( 'pre_get_posts', 'change_main_loop_sort_order' );
-if ( !function_exists( 'change_main_loop_sort_order' ) ):
-function change_main_loop_sort_order( $query ) {
-  if (is_get_index_sort_orderby_modified()) {
-    if ($query->is_main_query()) {
-      $query->set( 'orderby', 'modified' );
+//メインクエリの出力変更
+add_action( 'pre_get_posts', 'custom_main_query_pre_get_posts' );
+if ( !function_exists( 'custom_main_query_pre_get_posts' ) ):
+function custom_main_query_pre_get_posts( $query ) {
+  if (is_admin()) return;
+
+  //メインループ内
+  if ($query->is_main_query()) {
+
+    //順番変更
+  if (!is_index_sort_orderby_date() && !is_search()) {
+    //投稿日順じゃないときは設定値を挿入する
+    $query->set( 'orderby', get_index_sort_orderby() );
+  }
+
+    //カテゴリーの除外
+    $exclude_category_ids = get_archive_exclude_category_ids();
+    if (!is_singular() && $exclude_category_ids && is_array($exclude_category_ids)) {
+      $query->set( 'category__not_in', $exclude_category_ids );
+    }
+
+    //除外投稿
+    $exclude_post_ids = get_archive_exclude_post_ids();
+    if (!is_singular() && $exclude_post_ids && is_array($exclude_post_ids)) {
+      $query->set( 'post__not_in', $exclude_post_ids );
+    }
+
+  }
+
+  //フィード
+  if ($query->is_feed) {
+    $exclude_post_ids = get_rss_exclude_post_ids();
+    if ($exclude_post_ids && is_array($exclude_post_ids)) {
+      $query->set( 'post__not_in', $exclude_post_ids );
     }
   }
 }
@@ -213,11 +239,6 @@ endif;
 add_filter( 'wp_targeted_link_rel', 'wp_targeted_link_rel_custom', 10, 2 );
 if ( !function_exists( 'wp_targeted_link_rel_custom' ) ):
 function wp_targeted_link_rel_custom( $rel_value, $link_html ){
-  // _v($link_html);
-  // _v($rel_value);
-  // if( !includes_string( $link_html, home_url() ) ){
-  //   $rel_value = 'noopener';
-  // }
   $rel_value = str_replace('noopener noreferrer', '', $rel_value);
   return $rel_value;
 }
@@ -227,14 +248,14 @@ endif;
 add_action('init', 'smartnews_feed_init');
 if ( !function_exists( 'smartnews_feed_init' ) ):
 function smartnews_feed_init(){
-	add_feed('smartnews', 'smartnews_feed');
+  add_feed('smartnews', 'smartnews_feed');
 }
 endif;
 
 //domain.com/?feed=smartnewsで表示
 if ( !function_exists( 'smartnews_feed' ) ):
 function smartnews_feed() {
-	get_template_part('/tmp/smartnews');
+  get_template_part('/tmp/smartnews');
 }
 endif;
 
@@ -242,9 +263,169 @@ endif;
 add_filter( 'feed_content_type', 'smartnews_feed_content_type', 10, 2 );
 if ( !function_exists( 'smartnews_feed_content_type' ) ):
 function smartnews_feed_content_type( $content_type, $type ) {
-	if ( 'smartnews' === $type ) {
-		return feed_content_type( 'rss2' );
-	}
-	return $content_type;
+  if ( 'smartnews' === $type ) {
+    return feed_content_type( 'rss2' );
+  }
+  return $content_type;
 }
 endif;
+
+//サイトマップにnoindex設定を反映させる
+add_filter('wp_sitemaps_posts_query_args', 'wp_sitemaps_posts_query_args_noindex_custom');
+if ( !function_exists( 'wp_sitemaps_posts_query_args_noindex_custom' ) ):
+function wp_sitemaps_posts_query_args_noindex_custom($args){
+  $args['post__not_in'] = get_noindex_post_ids();
+  return $args;
+}
+endif;
+
+//サイトマップにカテゴリー・タグのnoindex設定を反映させる
+add_filter('wp_sitemaps_taxonomies_query_args', 'wp_sitemaps_taxonomies_query_args_noindex_custom');
+if ( !function_exists( 'wp_sitemaps_taxonomies_query_args_noindex_custom' ) ):
+function wp_sitemaps_taxonomies_query_args_noindex_custom($args){
+  //カテゴリーの除外
+  $category_ids = get_noindex_category_ids();
+  if (($args['taxonomy'] == 'category') && $category_ids) {
+    $args['exclude'] = $category_ids;
+  }
+
+  //タグの除外
+  $tag_ids = get_noindex_tag_ids();
+  if (($args['taxonomy'] == 'post_tag') && $tag_ids) {
+    $args['exclude'] = $tag_ids;
+  }
+  return $args;
+}
+endif;
+
+//サイトマップにカテゴリー・タグのnoindex設定を反映させる
+add_filter('wp_sitemaps_taxonomies', 'wp_sitemaps_taxonomies_custum');
+if ( !function_exists( 'wp_sitemaps_taxonomies_custum' ) ):
+function wp_sitemaps_taxonomies_custum( $taxonomies ) {
+  //サイトマップにカテゴリーを出力しない
+  if (is_category_page_noindex()) {
+    unset( $taxonomies['category'] );
+  }
+
+  //サイトマップにタグを出力しない
+  if (is_tag_page_noindex()) {
+    unset( $taxonomies['post_tag'] );
+  }
+
+  return $taxonomies;
+}
+endif;
+
+//サイトマップにその他のアーカイブのnoindex設定を反映する
+add_filter('wp_sitemaps_add_provider', 'wp_sitemaps_add_provider_custom', 10, 2);
+if ( !function_exists( 'wp_sitemaps_add_provider_custom' ) ):
+function wp_sitemaps_add_provider_custom( $provider, $name ) {
+  if ( is_other_archive_page_noindex() && 'users' === $name ) {
+      return false;
+  }
+
+  return $provider;
+}
+endif;
+
+//ウィジェットの「最近の投稿」から「アーカイブ除外ページ」を削除
+add_filter('widget_posts_args', 'remove_no_archive_pages_from_widget_recent_entries');
+if ( !function_exists( 'remove_no_archive_pages_from_widget_recent_entries' ) ):
+function remove_no_archive_pages_from_widget_recent_entries($args){
+  $archive_exclude_post_ids = get_archive_exclude_post_ids();
+  if ($archive_exclude_post_ids) {
+    $args['post__not_in'] = $archive_exclude_post_ids;
+  }
+  return $args;
+}
+endif;
+
+
+
+add_action('init', function () {
+  //FAQ
+  register_block_style('cocoon-blocks/faq', array(
+    'name' => 'square',
+    'label' => __('角型ラベル', THEME_NAME),
+  ));
+
+});
+
+
+//wpForoで添付画像をイメージリンクにする
+add_filter('wpforo_body_text_filter', function ($text){
+  $text = preg_replace('#(<div id="wpfa-\d+?" class="wpforo-attached-file"><a class="wpforo-default-attachment" .*?href="(.+?(\.jpe?g|\.png|\.gif))".*?>).+?(</a></div>)#i', '$1<i class="fas fa-paperclip paperclip"></i><img alt="" src="$2" />$4', $text);
+  return $text;
+});
+
+//ウィジェットブロックエディターの停止
+add_action( 'after_setup_theme', 'remove_widgets_block_editor' );
+if ( !function_exists( 'remove_widgets_block_editor' ) ):
+function remove_widgets_block_editor() {
+  remove_theme_support( 'widgets-block-editor' );
+}
+endif;
+
+//FAQブロック
+//参考：SILKスキンのコード（ろこさん作成）
+//URL：https://dateqa.com/cocoon/
+//参考にしたコード：https://github.com/yhira/cocoon/blob/20cdc9efc15c9074a8ce445af926fe70d6dec3f7/skins/silk/functions.php#L1034
+add_filter('render_block_cocoon-blocks/faq', 'cocoon_blocks_faq', 10, 2);
+
+function cocoon_blocks_faq($content, $block) {
+  add_filter('cocoon_faq_entity', function ($faq) use ($content, $block) {
+    return cocoon_add_faq($content, $block, $faq, 'question');
+  });
+
+  return $content;
+}
+
+function cocoon_add_faq($content, $block, $faq, $question) {
+  $name = array_key_exists($question, $block['attrs']) ? strip_tags($block['attrs'][$question]) : '';
+  $answer = preg_replace('{^'.$block['innerContent'][0].'(.+?)'.$block['innerContent'][count($block['innerContent']) - 1].'$}s', '$1', $content);
+  $text = strip_tags(str_replace(["\n", "\r"], '', $answer), '<h1><h2><h3><h4><h5><h6><br><ol><ul><li><a><p><div><b><strong><i><em>');
+
+  $faq[count($faq)] = [
+    '@type'          => 'Question',
+    'name'           => $name,
+    'acceptedAnswer' => [
+      '@type' => 'Answer',
+      'text'  => $text
+    ]
+  ];
+
+  return $faq;
+}
+
+if (apply_filters('cocoon_json_ld_faq_visible', true)) {
+  add_action('wp_footer', 'cocoon_footer_faq_script');
+}
+
+function cocoon_footer_faq_script() {
+  $faq = apply_filters('cocoon_faq_entity', []);
+
+  if (!empty($faq)) {
+    $entity = [];
+
+    foreach ($faq as $key => $value) {
+      $entity[] = $value;
+    }
+
+    echo '<!-- '.THEME_NAME_CAMEL.' FAQ JSON-LD -->'.PHP_EOL;
+    echo '<script type="application/ld+json">'.json_encode([
+      '@context'   => 'https://schema.org',
+      '@type'      => 'FAQPage',
+      'mainEntity' => $entity
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT).'</script>';
+  }
+}
+
+//oembedプロバイダーからread.amazonを削除
+add_filter('oembed_providers', function ($providers){
+  foreach ($providers as $key => $value) {
+    if (includes_string($value[0], 'read.amazon.')) {
+      unset($providers[$key]);
+    }
+  }
+  return $providers;
+});

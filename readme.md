@@ -60,7 +60,7 @@ Cocoonテーマの再配布もしくは、Cocoonを基盤として作成した�
 
 [Masonry](http://masonry.desandro.com/)
 
-[slicknav](http://slicknav.io/)
+[slicknav](https://computerwolf.github.io/SlickNav/)
 
 [slick](http://kenwheeler.github.io/slick/)
 
@@ -92,15 +92,21 @@ Cocoonテーマの再配布もしくは、Cocoonを基盤として作成した�
 
 [カウントダウンタイマを設置するショートコード（fullnote）](https://fullnoteblog.com/count-down-timer/)
 
+[Gutenbergでサイドバーに選択式のCSSクラス設定を追加する（ものぐさWEBノート）](https://web.monogusa-note.com/gutenberg-add-select-classname)
+
 CSS参考
 ------
 [ボックス参考（naenote.net）](https://www.naenote.net/entry/cocoon-box-customize)
 
 [リボン参考（nxworld）](https://www.nxworld.net/tips/pure-css-corner-ribbon.html) [(CodePen)](https://codepen.io/nxworld/pen/oLdoWb)
 
-ブックマークレット参考
+[ボックスメニュー参考（ぽんひろ.com）](https://ponhiro.com/box-nav/)
+
+ブックマークレット参考・利用
 ------
 [Amazon商品リンクブックマークレット（naenote.net）](https://www.naenote.net/entry/cocoon-amazon-shortcode-javascript)
+
+[【電子書籍対応】Cocoon楽天商品リンクブックマークレット（ものぐさWEBノート）](https://web.monogusa-note.com/cocoon-rakuten-bookmarklet)
 
 プルリクエストでのご協力
 ------
@@ -110,3 +116,25 @@ CSS参考
 [31o3](https://github.com/31o3)
 
 [Daisuke Sato](https://github.com/Tiryoh)
+
+[Yukihiko Shinoda](https://github.com/yukihiko-shinoda)
+
+[stedplay](https://github.com/stedplay)
+
+[1008k](https://github.com/1008k)
+
+[Wren Hainsworth](https://github.com/WrenHainsworth)
+
+[semicolon3253](https://github.com/semicolon3253)
+
+[tsukumi](https://github.com/tsukumijima)
+
+[taako](https://github.com/taako-502)
+
+[takumiando](https://github.com/takumiando)
+
+[Takeyuki Miyagi](https://github.com/v97ug)
+
+[hausercarl](https://github.com/hausercarl)
+
+[mirumi](https://github.com/mirumirumi)

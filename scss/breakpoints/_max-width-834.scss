@@ -98,7 +98,7 @@ table{
 /************************************
 ** 関連記事
 ************************************/
-.rect-vartical-card{
+.rect-vertical-card{
   .related-entry-card-wrap{
     width: 49%;
   }
@@ -125,6 +125,17 @@ table{
 .header-container-in.hlt-top-menu{
   flex-direction: column;
 }
+
+// .mblt-header-and-footer-mobile-buttons.is-header-fixed{
+//   // .js-clingify-placeholder{
+//   //   display: none;
+//   // }
+//   .js-clingify-locked{
+//     .header-container-in{
+//       height: 0;
+//     }
+//   }
+// }
 
 // .date-tags{
 //   margin: 0;
@@ -230,7 +241,7 @@ table{
 
 .header-container-in.hlt-top-menu {
   display: block;
-  #header{
+  .header{
     .header-in,
     .logo-text{
       display: block;

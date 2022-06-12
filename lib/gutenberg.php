@@ -213,6 +213,138 @@ function get_cocoon_editor_color_palette_colors(){
 }
 endif;
 
+//Gutenbergコードブロック用の言語CSS
+if ( !function_exists( 'get_block_editor_code_languages' ) ):
+function get_block_editor_code_languages(){
+  $languages = array(
+    array(
+      'value' => 'nohighlight',
+      'label' => __( 'ハイライト表示しない', THEME_NAME ),
+    ),
+    array(
+      'value' => 'plaintext',
+      'label' => __( 'プレーンテキスト', THEME_NAME ),
+    ),
+    array(
+      'value' => 'bash',
+      'label' => __( 'Bash', THEME_NAME ),
+    ),
+    array(
+      'value' => 'basic',
+      'label' => __( 'Basic', THEME_NAME ),
+    ),
+    array(
+      'value' => 'cs',
+      'label' => __( 'C#', THEME_NAME ),
+    ),
+    array(
+      'value' => 'cpp',
+      'label' => __( 'C++', THEME_NAME ),
+    ),
+    array(
+      'value' => 'css',
+      'label' => __( 'CSS', THEME_NAME ),
+    ),
+    array(
+      'value' => 'd',
+      'label' => __( 'D', THEME_NAME ),
+    ),
+    array(
+      'value' => 'dos',
+      'label' => __( 'DOS', THEME_NAME ),
+    ),
+    array(
+      'value' => 'delphi',
+      'label' => __( 'Delphi', THEME_NAME ),
+    ),
+    array(
+      'value' => 'go',
+      'label' => __( 'Go', THEME_NAME ),
+    ),
+    array(
+      'value' => 'html',
+      'label' => __( 'HTML', THEME_NAME ),
+    ),
+    array(
+      'value' => 'haml',
+      'label' => __( 'Haml', THEME_NAME ),
+    ),
+    array(
+      'value' => 'json',
+      'label' => __( 'JSON', THEME_NAME ),
+    ),
+    array(
+      'value' => 'java',
+      'label' => __( 'Java', THEME_NAME ),
+    ),
+    array(
+      'value' => 'javascript',
+      'label' => __( 'JavaScript', THEME_NAME ),
+    ),
+    array(
+      'value' => 'less',
+      'label' => __( 'Less', THEME_NAME ),
+    ),
+    array(
+      'value' => 'markdown',
+      'label' => __( 'Markdown', THEME_NAME ),
+    ),
+    array(
+      'value' => 'objectivec',
+      'label' => __( 'Objective C', THEME_NAME ),
+    ),
+    array(
+      'value' => 'php',
+      'label' => __( 'PHP', THEME_NAME ),
+    ),
+    array(
+      'value' => 'perl',
+      'label' => __( 'Perl', THEME_NAME ),
+    ),
+    array(
+      'value' => 'python',
+      'label' => __( 'Python', THEME_NAME ),
+    ),
+    array(
+      'value' => 'r',
+      'label' => __( 'R', THEME_NAME ),
+    ),
+    array(
+      'value' => 'ruby',
+      'label' => __( 'Ruby', THEME_NAME ),
+    ),
+    array(
+      'value' => 'rust',
+      'label' => __( 'Rust', THEME_NAME ),
+    ),
+    array(
+      'value' => 'scss',
+      'label' => __( 'SCSS', THEME_NAME ),
+    ),
+    array(
+      'value' => 'sql',
+      'label' => __( 'SQL', THEME_NAME ),
+    ),
+    array(
+      'value' => 'swift',
+      'label' => __( 'Swift', THEME_NAME ),
+    ),
+    array(
+      'value' => 'vbscript',
+      'label' => __( 'VBScript', THEME_NAME ),
+    ),
+    array(
+      'value' => 'xml',
+      'label' => __( 'XML', THEME_NAME ),
+    ),
+  );
+
+  //カラーパレットフック
+  $languages = apply_filters('get_block_editor_code_languages', $languages);
+  return $languages;
+}
+endif;
+
 //ブロックエディターカラーパレット用のCSS
 if ( !function_exists( 'get_block_editor_color_palette_css' ) ):
 function get_block_editor_color_palette_css(){
@@ -224,122 +356,160 @@ function get_block_editor_color_palette_css(){
 
 
 <?php //WordPressデフォルト ?>
-.main .has-<?php echo $slug; ?>-background-color {
+html .body .has-<?php echo $slug; ?>-background-color {
     background-color: <?php echo $color; ?>;
 }
-.main .has-<?php echo $slug; ?>-color {
+html .body .has-<?php echo $slug; ?>-color {
     color: <?php echo $color; ?>;
 }
-.main .has-<?php echo $slug; ?>-border-color {
+html .body .has-<?php echo $slug; ?>-color .toggle-button::before {
+    color: <?php echo $color; ?>;
+}
+html .body .has-<?php echo $slug; ?>-border-color {
     border-color: <?php echo $color; ?>;
 }
 <?php //囲みボタン ?>
-.btn-wrap.has-<?php echo $slug; ?>-background-color > a{
+html .body .btn-wrap.has-<?php echo $slug; ?>-background-color > a{
     background-color: <?php echo $color; ?>;
 }
-.btn-wrap.has-<?php echo $slug; ?>-color > a{
+html .body .btn-wrap.has-<?php echo $slug; ?>-color > a{
     color: <?php echo $color; ?>;
 }
-.btn-wrap.has-<?php echo $slug; ?>-border-color > a{
+html .body .btn-wrap.has-<?php echo $slug; ?>-border-color > a{
     border-color: <?php echo $color; ?>;
 }
 <?php //タブボックス ?>
 <?php if(is_admin()): ?>
-.bb-tab.has-<?php echo $slug; ?>-border-color::before{
+html .body .bb-tab.has-<?php echo $slug; ?>-border-color::before{
     background-color: <?php echo $color; ?>;
 }
 <?php endif; ?>
-.bb-tab.has-<?php echo $slug; ?>-border-color .bb-label{
+html .body .bb-tab.has-<?php echo $slug; ?>-border-color .bb-label{
     background-color: <?php echo $color; ?>;
 }
-<?php //トグルボックス ?>
-.toggle-wrap.has-<?php echo $slug; ?>-border-color .toggle-button{
+<?php //アコーディオンボックス ?>
+html .body .toggle-wrap.has-<?php echo $slug; ?>-color .toggle-button,
+html .body .toggle-wrap.has-<?php echo $slug; ?>-color .toggle-button:before{
+  color: <?php echo $color; ?>;
+}
+
+html .body .toggle-wrap.has-<?php echo $slug; ?>-border-color .toggle-button{
     background-color: <?php echo $color; ?>;
 }
-.toggle-wrap.has-<?php echo $slug; ?>-border-color .toggle-button,
+html .body .toggle-wrap.has-<?php echo $slug; ?>-border-color .toggle-button,
 .toggle-wrap.has-<?php echo $slug; ?>-border-color .toggle-content{
     border-color: <?php echo $color; ?>;
 }
 <?php //アイコンリストボックス ?>
-.iconlist-box.has-<?php echo $slug; ?>-icon-color li::before{
+html .body .iconlist-box.has-<?php echo $slug; ?>-icon-color li::before{
     color: <?php echo $color; ?>;
 }
-<?php //マイクロバルーン（背景色） ?>
-.micro-balloon.has-<?php echo $slug; ?>-background-color {
+<?php //マイクロバルーン ?>
+html .body .micro-balloon.has-<?php echo $slug; ?>-color {
+    color: <?php echo $color; ?>;
+}
+html .body .micro-balloon.has-<?php echo $slug; ?>-background-color {
   background-color: <?php echo $color; ?>;
   border-color: transparent;
 }
-.micro-balloon.has-<?php echo $slug; ?>-background-color.micro-bottom::after {
+html .body .micro-balloon.has-<?php echo $slug; ?>-background-color.micro-bottom::after {
   border-bottom-color: <?php echo $color; ?>;
   border-top-color: transparent;
 }
-.micro-balloon.has-<?php echo $slug; ?>-background-color::before {
+html .body .micro-balloon.has-<?php echo $slug; ?>-background-color::before {
   border-top-color: transparent;
   border-bottom-color: transparent;
 }
-.micro-balloon.has-<?php echo $slug; ?>-background-color::after {
+html .body .micro-balloon.has-<?php echo $slug; ?>-background-color::after {
   border-top-color: <?php echo $color; ?>;
 }
 <?php //マイクロバルーン（ボーダー色） ?>
-.micro-balloon.has-border-color.has-<?php echo $slug; ?>-border-color {
+html .body .micro-balloon.has-border-color.has-<?php echo $slug; ?>-border-color {
   border-color: <?php echo $color; ?>;
 }
-.micro-balloon.micro-top.has-<?php echo $slug; ?>-border-color::before {
+html .body .micro-balloon.micro-top.has-<?php echo $slug; ?>-border-color::before {
   border-top-color: <?php echo $color; ?>;
 }
-.micro-balloon.micro-bottom.has-<?php echo $slug; ?>-border-color::before {
+html .body .micro-balloon.micro-bottom.has-<?php echo $slug; ?>-border-color::before {
   border-bottom-color: <?php echo $color; ?>;
 }
 <?php //見出しボックス ?>
-.caption-box.has-<?php echo $slug; ?>-border-color .box-label{
+html .body .caption-box.has-<?php echo $slug; ?>-border-color .box-label{
   background-color: <?php echo $color; ?>;
 }
 <?php //タブ見出しボックス ?>
-.tab-caption-box.has-<?php echo $slug; ?>-border-color .box-label{
+html .body .tab-caption-box.has-<?php echo $slug; ?>-border-color .box-label{
   background-color: <?php echo $color; ?>;
 }
-.tab-caption-box.has-<?php echo $slug; ?>-border-color .box-content{
+html .body .tab-caption-box.has-<?php echo $slug; ?>-border-color .box-content{
   border-color: <?php echo $color; ?>;
 }
-.tab-caption-box.has-<?php echo $slug; ?>-background-color .box-content{
+html .body .tab-caption-box.has-<?php echo $slug; ?>-background-color .box-content{
   background-color: <?php echo $color; ?>;
 }
 <?php //ラベルボックス ?>
-.label-box.has-<?php echo $slug; ?>-border-color .box-content{
+html .body .label-box.has-<?php echo $slug; ?>-border-color .box-content{
   border-color: <?php echo $color; ?>;
 }
-.label-box.has-<?php echo $slug; ?>-background-color .box-content{
+html .body .label-box.has-<?php echo $slug; ?>-background-color .box-content{
   background-color: <?php echo $color; ?>;
 }
 <?php //吹き出しボックス ?>
-.sbp-l .speech-balloon.has-<?php echo $slug; ?>-border-color::before{
+html .body .speech-balloon.has-<?php echo $slug; ?>-background-color {
+    background-color: <?php echo $color; ?>;
+}
+html .body .speech-balloon.has-text-color.has-<?php echo $slug; ?>-color {
+    color: <?php echo $color; ?>;
+}
+html .body .speech-balloon.has-<?php echo $slug; ?>-border-color {
+    border-color: <?php echo $color; ?>;
+}
+html .body .sbp-l .speech-balloon.has-<?php echo $slug; ?>-border-color::before{
   border-right-color: <?php echo $color; ?>;
 }
-.sbp-r .speech-balloon.has-<?php echo $slug; ?>-border-color::before{
+html .body .sbp-r .speech-balloon.has-<?php echo $slug; ?>-border-color::before{
   border-left-color: <?php echo $color; ?>;
 }
-.sbp-l .speech-balloon.has-<?php echo $slug; ?>-background-color::after{
+html .body .sbp-l .speech-balloon.has-<?php echo $slug; ?>-background-color::after{
   border-right-color: <?php echo $color; ?>;
 }
-.sbp-r .speech-balloon.has-<?php echo $slug; ?>-background-color::after{
+html .body .sbp-r .speech-balloon.has-<?php echo $slug; ?>-background-color::after{
   border-left-color: <?php echo $color; ?>;
 }
-.sbs-line.sbp-r .speech-balloon.has-<?php echo $slug; ?>-background-color{
+html .body .sbs-line.sbp-r .speech-balloon.has-<?php echo $slug; ?>-background-color{
   background-color: <?php echo $color; ?>;
 }
-.sbs-line.sbp-r .speech-balloon.has-<?php echo $slug; ?>-border-color{
+html .body .sbs-line.sbp-r .speech-balloon.has-<?php echo $slug; ?>-border-color{
   border-color: <?php echo $color; ?>;
 }
-.speech-wrap.sbs-think .speech-balloon.has-<?php echo $slug; ?>-border-color::before,
-.speech-wrap.sbs-think .speech-balloon.has-<?php echo $slug; ?>-border-color::after{
+html .body .speech-wraphtml .body .sbs-think .speech-balloon.has-<?php echo $slug; ?>-border-color::before,
+html .body .speech-wrap.sbs-think .speech-balloon.has-<?php echo $slug; ?>-border-color::after{
   border-color: <?php echo $color; ?>;
 }
-.sbs-think .speech-balloon.has-<?php echo $slug; ?>-background-color::before,
-.sbs-think .speech-balloon.has-<?php echo $slug; ?>-background-color::after{
+html .body .sbs-think .speech-balloon.has-<?php echo $slug; ?>-background-color::before,
+html .body .sbs-think .speech-balloon.has-<?php echo $slug; ?>-background-color::after{
   background-color: <?php echo $color; ?>;
+}
+html .body .sbs-think .speech-balloon.has-<?php echo $slug; ?>-border-color::before{
+  border-color: <?php echo $color; ?>;
 }
 <?php //タイムライン ?>
-.timeline-box.has-<?php echo $slug; ?>-point-color .timeline-item::before{
+html .body .timeline-box.has-<?php echo $slug; ?>-point-color .timeline-item::before{
+  background-color: <?php echo $color; ?>;
+}
+<?php //FAQ ?>
+html .body .has-<?php echo $slug; ?>-question-color .faq-question-label{
+  color: <?php echo $color; ?>;
+}
+html .body .has-<?php echo $slug; ?>-answer-color .faq-answer-label{
+  color: <?php echo $color; ?>;
+}
+html .body .is-style-square.has-<?php echo $slug; ?>-question-color .faq-question-label{
+  color: #fff;
+  background-color: <?php echo $color; ?>;
+}
+html .body .is-style-square.has-<?php echo $slug; ?>-answer-color .faq-answer-label{
+  color: #fff;
   background-color: <?php echo $color; ?>;
 }
 
@@ -351,7 +521,7 @@ function get_block_editor_color_palette_css(){
         $btn_wrap_bk_color = '#f8e58c';
     }
     //1回だけ呼び出す ?>
-.main .btn-wrap{
+html .body .btn-wrap{
     background-color: <?php echo $btn_wrap_bk_color; ?>;
     color: #333;
     border-color: transparent;
@@ -359,21 +529,26 @@ function get_block_editor_color_palette_css(){
 }
 
 
-.toggle-wrap.has-border-color .toggle-button{
+html .body .has-border-color .toggle-button{
+    color: #fff;
+}
+
+html .body .has-border-color .toggle-button::before{
     color: #fff;
 }
 
     <?php // フォントサイズ ?>
-.btn-wrap.has-small-font-size > a {
+html .body .btn-wrap.has-small-font-size > a {
   font-size: 13px;
 }
-.btn-wrap.has-medium-font-size > a {
+html .body .btn-wrap.has-medium-font-size > a {
   font-size: 20px;
 }
-.btn-wrap.has-large-font-size > a {
+html .body .btn-wrap.has-large-font-size > a {
   font-size: 36px;
 }
-.btn-wrap.has-huge-font-size > a, .btn-wrap.has-larger-font-size > a {
+html .body .btn-wrap.has-huge-font-size > a,
+html .body .btn-wrap.has-larger-font-size > a {
   font-size: 42px;
 }
     <?php

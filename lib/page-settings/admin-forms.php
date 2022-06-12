@@ -40,6 +40,37 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
   </div>
 </div>
 
+<?php if (false): ?>
+<!-- ダッシュボードメッセージ -->
+<div id="admin" class="postbox">
+  <h2 class="hndle"><?php _e( 'ダッシュボードメッセージ', THEME_NAME ) ?></h2>
+  <div class="inside">
+
+    <p><?php _e( 'WordPress管理画面上部に表示されるメッセージに関する設定です。', THEME_NAME ) ?></p>
+
+    <table class="form-table">
+      <tbody>
+        <!-- メッセージ表示 -->
+        <tr>
+          <th scope="row">
+            <?php generate_label_tag('', __( 'メッセージ表示', THEME_NAME ) ); ?>
+          </th>
+          <td>
+            <?php
+
+            //ダッシュボードメッセージの表示
+            generate_checkbox_tag(OP_DASHBOARD_MESSAGE_VISIBLE, is_dashboard_message_visible(), __( 'ダッシュボードメッセージの表示', THEME_NAME ));
+            generate_tips_tag(__( '管理画面上部のメッセージを表示するかどうか。', THEME_NAME ).__( '新型コロナウイルスに関する情報は、WHOの終息宣言が出るか、それに近い状態になるまで表示します（今回のウイルスの性質的に完全に終息できるものかもわからないので）。', THEME_NAME ));
+            ?>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+
+  </div>
+</div>
+<?php endif; ?>
 
 <!-- 投稿一覧設定 -->
 <div id="admin" class="postbox">
@@ -85,6 +116,9 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
             echo '<br>';
 
             generate_checkbox_tag(OP_ADMIN_LIST_WORD_COUNT_VISIBLE , is_admin_list_word_count_visible(), __( '文字数を表示する', THEME_NAME ));
+            echo '<br>';
+
+            generate_checkbox_tag(OP_ADMIN_LIST_PV_VISIBLE , is_admin_list_pv_visible(), __( 'PVを表示する', THEME_NAME ));
             echo '<br>';
 
             generate_checkbox_tag(OP_ADMIN_LIST_EYECATCH_VISIBLE , is_admin_list_eyecatch_visible(), __( 'アイキャッチを表示する', THEME_NAME ));
@@ -190,6 +224,9 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
             ?>
             <div class="indent">
               <?php
+              generate_checkbox_tag(OP_ADMIN_PANEL_WP_DASHBOARD_VISIBLE , is_admin_panel_wp_dashboard_visible(), __( 'ダッシュボードリンクの表示', THEME_NAME ));
+              generate_tips_tag(__( 'Wordpressのダッシュボードに移動するためのリンクです。', THEME_NAME ));
+
               generate_checkbox_tag(OP_ADMIN_PANEL_WP_EDIT_VISIBLE , is_admin_panel_wp_edit_visible(), __( '投稿編集リンクの表示', THEME_NAME ));
               generate_tips_tag(__( 'WordPress管理画面で投稿内容を編集するためのリンクです。', THEME_NAME ));
 
@@ -218,8 +255,8 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
               generate_checkbox_tag(OP_ADMIN_THE_AMP_VALIDATOR_VISIBLE, is_admin_the_amp_validator_visible(), __( 'The AMP Validatorを表示', THEME_NAME ));
               generate_tips_tag(__( '<a href="https://validator.ampproject.org/#" target="_blank" rel="noopener">The AMP Validator</a>でチェックするためのリンクの表示。', THEME_NAME ));
 
-              generate_checkbox_tag(OP_ADMIN_AMPBENCH_VISIBLE, is_admin_ampbench_visible(), __( 'AMPBenchを表示', THEME_NAME ));
-              generate_tips_tag(__( '<a href="https://ampbench.appspot.com/" target="_blank" rel="noopener">AMPBench</a>でチェックするためのリンクの表示。', THEME_NAME ));
+              // generate_checkbox_tag(OP_ADMIN_AMPBENCH_VISIBLE, is_admin_ampbench_visible(), __( 'AMPBenchを表示', THEME_NAME ));
+              // generate_tips_tag(__( '<a href="https://ampbench.appspot.com/" target="_blank" rel="noopener">AMPBench</a>でチェックするためのリンクの表示。', THEME_NAME ));
               ?>
             </div>
           </td>

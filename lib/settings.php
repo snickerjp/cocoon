@@ -12,6 +12,11 @@ if (is_admin_php_page()) {
   header('X-XSS-Protection: 0');
 }
 
+// //フィード用のヘッダー出力
+// if (is_feed()) {
+//   header('Content-type: application/rss+xml');
+// }
+
 // アイキャッチ画像を有効化
 add_theme_support('post-thumbnails');
 
@@ -59,6 +64,9 @@ define('THUMB320HEIGHT', get_thumbnail_height(THUMB320WIDTH));
 add_image_size(THUMB320, THUMB320WIDTH, THUMB320HEIGHT, true);
 define('THUMB320WIDTH_DEF', W320);
 define('THUMB320HEIGHT_DEF', get_thumbnail_height(THUMB320WIDTH_DEF));
+//大きなNO IMAGEサムネイルサイズ
+define('THUMB_LARGE_NO_IMAGE_WIDTH', 800);
+define('THUMB_LARGE_NO_IMAGE_HEIGHT', 451);
 
 //縦型カード2列用の可変サムネイル
 if (is_entry_card_type_vertical_card_2()) {
@@ -100,22 +108,32 @@ function visual_editor_stylesheets_custom($stylesheets) {
     $file = get_visual_color_palette_css_cache_file();
     $color_file_url = get_visual_color_palette_css_cache_url();
     wp_filesystem_put_contents($file, $css);
-
     array_push($stylesheets,
-      add_file_ver_to_css_js(get_site_icon_font_url()),
+      // add_file_ver_to_css_js(get_site_icon_font_url()),
       add_file_ver_to_css_js($style_url),
       add_file_ver_to_css_js($keyframes_url),
       add_file_ver_to_css_js($editor_style_url),
       add_file_ver_to_css_js($color_file_url)
     );
+
+    //ブロックエディターを利用しているとき
+    if (!use_gutenberg_editor()) {
+      array_push($stylesheets,
+        add_file_ver_to_css_js(get_site_icon_font_url())
+      );
+    }
+
     //Font Awesome5が有効な場合
     if (is_site_icon_font_font_awesome_5()) {
       array_push($stylesheets,
         add_file_ver_to_css_js(FONT_AWESOME_5_UPDATE_URL)
       );
     }
+
     //スキンが設定されている場合
-    if (get_skin_url()) {
+    if (get_skin_url() &&
+        //エディター除外スキンの場合
+        !is_exclude_skin(get_skin_url(), get_editor_exclude_skins())) {
       array_push($stylesheets,
         add_file_ver_to_css_js(get_skin_url())
       );
@@ -147,14 +165,50 @@ add_action( 'enqueue_block_editor_assets', 'gutenberg_stylesheets_custom' );
 if ( !function_exists( 'gutenberg_stylesheets_custom' ) ):
 function gutenberg_stylesheets_custom() {
   if ( is_visual_editor_style_enable() ) {
+
     // Gutenberg用のCSSとJSのみ読み込み
     wp_enqueue_script( THEME_NAME . '-gutenberg-js', get_template_directory_uri() . '/js/gutenberg.js', array( 'jquery' ), false, true );
     wp_enqueue_style( THEME_NAME . '-gutenberg', get_template_directory_uri() . '/css/gutenberg-editor.css' );
 
-    // $css = get_block_editor_color_palette_css();
-    // $file = get_block_color_palette_css_cache_file();
-    // wp_filesystem_put_contents($file, $css, 0);
-    // wp_enqueue_style( THEME_NAME . '-color-palette', get_block_color_palette_css_cache_url() );
+    //WordPressバージョンが5.8以上の時
+    if (is_wp_5_8_or_over()) {
+      // $style_url = PARENT_THEME_STYLE_CSS_URL;
+      // $keyframes_url = PARENT_THEME_KEYFRAMES_CSS_URL;
+      // $editor_style_url = get_template_directory_uri().'/editor-style.css';
+      // wp_enqueue_style( THEME_NAME . '-style', $style_url );
+      // wp_enqueue_style( THEME_NAME . '-keyframes-style', $keyframes_url );
+      // wp_enqueue_style( THEME_NAME . '-editor-style', $editor_style_url );
+
+      wp_enqueue_style( THEME_NAME . '-gutenberg-content', get_template_directory_uri() . '/css/gutenberg-content.css' );
+
+      //カラーパレットスタイル
+      $css = get_block_editor_color_palette_css();
+      $file = get_block_color_palette_css_cache_file();
+      wp_filesystem_put_contents($file, $css, 0);
+      wp_enqueue_style( THEME_NAME . '-color-palette-style', get_block_color_palette_css_cache_url() );
+      // var_dump(get_block_color_palette_css_cache_url());
+
+      //Font Awesome5が有効な場合
+      if (is_site_icon_font_font_awesome_5()) {
+        wp_enqueue_style( THEME_NAME . '-font-awesome-5-style', FONT_AWESOME_5_UPDATE_URL );
+      }
+
+      //スキンが設定されている場合
+      if (get_skin_url() &&
+          //エディター除外スキンの場合
+          !is_exclude_skin(get_skin_url(), get_editor_exclude_skins())) {
+        wp_enqueue_style( THEME_NAME . '-skin-style', get_skin_url() );
+      }
+
+      //カスタムスタイル
+      $cache_file_url = get_theme_css_cache_file_url();
+      wp_enqueue_style( THEME_NAME . '-css-cache-style', $cache_file_url );
+
+      //子テーマがある場合
+      if (is_child_theme()) {
+        wp_enqueue_style( THEME_NAME . '-child-style', CHILD_THEME_STYLE_CSS_URL );
+      }
+    }
 
     /**
      * Filters the script parameter name.
@@ -179,7 +233,11 @@ function gutenberg_stylesheets_custom() {
 endif;
 
 // Classic Editor用のCSS読み込みを利用してGutenberg用のCSSを設定
-add_filter ( 'block_editor_settings', 'gutenberg_editor_settings', 10, 2 );
+if (is_wp_5_8_or_over()) {
+  add_filter ( 'block_editor_settings_all', 'gutenberg_editor_settings', 10, 2 );
+} else {
+  add_filter ( 'block_editor_settings', 'gutenberg_editor_settings', 10, 2 );
+}
 if ( ! function_exists( 'gutenberg_editor_settings' ) ):
 function gutenberg_editor_settings( $editor_settings, $post ) {
   /** @var array $editor_settings */
@@ -216,7 +274,7 @@ function gutenberg_editor_settings( $editor_settings, $post ) {
         if ( file_exists( $path ) ) {
           $styles[] = array(
             'css'     => wp_filesystem_get_contents( $path ),
-            'baseURL' => $item,
+            // 'baseURL' => $item,
           );
         }
       }
@@ -290,14 +348,16 @@ add_filter('ranking_item_name', 'do_shortcode');
 add_filter('ranking_item_image_tag', 'do_shortcode');
 add_filter('ranking_item_description', 'do_shortcode');
 add_filter('ranking_item_link_tag', 'do_shortcode');
-//アピールリアadd_filter('appeal_area_message', 'wptexturize');
+//キャンペーンショートコードでもショートコードを利用する
+add_filter('campaign_shortcode_content', 'do_shortcode');
+//アピールエリアadd_filter('appeal_area_message', 'wptexturize');
 add_filter('appeal_area_message', 'convert_smilies');
 add_filter('appeal_area_message', 'convert_chars');
 add_filter('appeal_area_message', 'wpautop');
 add_filter('appeal_area_message', 'shortcode_unautop');
 add_filter('appeal_area_message', 'do_shortcode');
 add_filter('appeal_area_message', 'prepend_attachment');
-add_filter('appeal_area_message', 'wp_make_content_images_responsive');
+add_filter('appeal_area_message', 'wp_filter_content_tags');
 //カテゴリ・タグページ（※フックの順番が大事）
 add_filter('the_category_tag_content', 'wptexturize');
 add_filter('the_category_tag_content', 'convert_smilies');
@@ -307,7 +367,12 @@ add_filter('the_category_tag_content', 'replace_ad_shortcode_to_advertisement');
 add_filter('the_category_tag_content', 'shortcode_unautop');
 add_filter('the_category_tag_content', 'do_shortcode');
 add_filter('the_category_tag_content', 'prepend_attachment');
-add_filter('the_category_tag_content', 'wp_make_content_images_responsive');
+add_filter('the_category_tag_content', 'wp_filter_content_tags');//WordPress5.5未満
+//カテゴリー・タグページの本文で埋め込みを処理する
+if ($wp_embed) {
+  add_filter('the_category_tag_content', array($wp_embed, 'autoembed'), 8);
+}
+
 
 //generator を削除
 remove_action('wp_head', 'wp_generator');

@@ -67,8 +67,10 @@ function tag_code_to_minify_js($buffer) {
               //プレイリストのJSは除外
               || includes_string($url, '/mediaelement-and-player.min.js')
               || includes_string($url, '/wp-includes/js/underscore.min.js')
-              // //Lityの除外
-              // || includes_string($url, '/plugins/lity/dist/lity.min.js')
+              //WordPress6.7からのエラー対応
+              || includes_string($url, '/wp-includes/js/dist/')
+              //Stripe Paymentsの除外
+              || includes_string($url, 'stripe-payments/')
               // || includes_string($url, '/wp-playlist.min.js')
               // || includes_string($url, '/wp-mediaelement.min.js')
               // || includes_string($url, '/mediaelement-migrate.min.js')
@@ -77,6 +79,7 @@ function tag_code_to_minify_js($buffer) {
               //コードハイライト
               //|| (strpos($url, '/plugins/highlight-js/highlight.min.js') !== false)
               || includes_string($url, '/plugins/highlight-js/highlight')
+              || includes_string($url, '/plugins/spotlight-master/dist/spotlight')
               || includes_string($url, '/plugins/ip-geo-block/')
               //|| (strpos($url, '/plugins/wpforo/') !== false)
               //|| (strpos($url, '/buddypress/bp-core/js/') !== false)
@@ -204,30 +207,36 @@ function remove_code_comments($code){
 }
 endif;
 
-/*async defer*/
-//add_filter( 'script_loader_tag', 'add_defer_async_scripts', 10, 3 );
-if ( !function_exists( 'add_defer_async_scripts' ) ):
-function add_defer_async_scripts( $tag, $handle, $src ) {
-  $async_defer = array(
-    'jquery',
-    'jquery-migrate',
-    'jquery-core',
+/*スクリプトの特性を変更する（async defer ）*/
+add_filter( 'script_loader_tag', 'change_script_tag_attrs', 10, 3 );
+if ( !function_exists( 'change_script_tag_attrs' ) ):
+function change_script_tag_attrs( $tag, $handle, $src ) {
+  $async_defers = array(
+    // 'jquery',
+    // 'jquery-migrate',
+    // 'jquery-core',
   );
-  $async_scripts = array(
+  $asyncs = array(
     //'crayon_js',
   );
-  $defer_scripts = array(
+  $defers = array(
     //'code-highlight-js',
   );
+  $crossorigin_anonymouses = array(
+    'barba-js-polyfill',
+  );
 
-  if ( in_array( $handle, $async_defer ) ) {
-      return '<script type="text/javascript" src="' . $src . '" async defer></script>' . PHP_EOL;
+  if ( in_array( $handle, $async_defers ) ) {
+      return '<script async defer src="' . esc_url($src) . '"></script>' . PHP_EOL;
   }
-  if ( in_array( $handle, $async_scripts ) ) {
-      return '<script type="text/javascript" src="' . $src . '" async></script>' . PHP_EOL;
+  if ( in_array( $handle, $asyncs ) ) {
+      return '<script async src="' . esc_url($src) . '"></script>' . PHP_EOL;
   }
-  if ( in_array( $handle, $defer_scripts ) ) {
-      return '<script type="text/javascript" src="' . $src . '" defer></script>' . PHP_EOL;
+  if ( in_array( $handle, $defers ) ) {
+      return '<script defer src="' . esc_url($src) . '"></script>' . PHP_EOL;
+  }
+  if ( in_array( $handle, $crossorigin_anonymouses ) ) {
+      return '<script crossorigin="anonymous" src="' . esc_url($src) . '"></script>' . PHP_EOL;
   }
 
   return $tag;

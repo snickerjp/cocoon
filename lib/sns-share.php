@@ -428,7 +428,7 @@ function get_share_page_url(){
     //カテゴリートップページ
     $cat_id = get_query_var('cat');
     $url = get_category_link($cat_id);
-  } elseif (is_tag() && !is_paged()) {
+  } elseif (is_tag() && !is_paged() && isset($tag->term_id)) {
     //タグトップページ
     $name = single_tag_title('', false);
     $tag = get_term_by('name', $name, 'post_tag');
@@ -497,7 +497,7 @@ function get_hatebu_share_url(){
   } else {
     $u = preg_replace('/http:\/\//', '', $url);
   }
-  return '//b.hatena.ne.jp/entry/'.$u;
+  return '//b.hatena.ne.jp/entry/'.htmlspecialchars($u, ENT_QUOTES, 'UTF-8');;
 }
 endif;
 
@@ -644,6 +644,16 @@ function is_copy_share_button_visible($option){
          (is_top_copy_share_button_visible() && $option == SS_TOP) ||
          ($option == SS_MOBILE);
   return apply_filters('is_copy_share_button_visible', $res, $option);
+}
+endif;
+
+//コメントボタンを表示するか
+if ( !function_exists( 'is_comment_share_button_visible' ) ):
+function is_comment_share_button_visible($option){
+  $res = (is_bottom_comment_share_button_visible() && $option == SS_BOTTOM) ||
+         (is_top_comment_share_button_visible() && $option == SS_TOP) ||
+         ($option == SS_MOBILE);
+  return apply_filters('is_comment_share_button_visible', $res, $option);
 }
 endif;
 

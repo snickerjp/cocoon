@@ -96,18 +96,8 @@ if( $is_post_ok ):
   require_once abspath(__FILE__).'apis-posts.php';
   //その他
   require_once abspath(__FILE__).'others-posts.php';
-
-  ///////////////////////////////////////
-  // ビジュアルエディター用のカスタマイズCSS出力
-  ///////////////////////////////////////
-  ob_start();
-  get_template_part('tmp/css-custom');
-  $custum_css = ob_get_clean();
-  if ($custum_css) {
-    $custum_css_file = get_theme_css_cache_file();
-    //ビジュアルエディター用CSSファイルの書き出し
-    wp_filesystem_put_contents($custum_css_file, $custum_css);
-  }
+  //寄付
+  require_once abspath(__FILE__).'donation-posts.php';
 
   ///////////////////////////////////////////
   // テーマ設定ページではスキン設定の読み込みを保存後にするために遅らせる
@@ -115,6 +105,11 @@ if( $is_post_ok ):
   if (get_skin_url() && is_admin_php_page()) {
     require_once get_template_directory().'/lib/skin.php';   //スキン
   }
+
+  ///////////////////////////////////////
+  // エディター用のカスタマイズCSS出力
+  ///////////////////////////////////////
+  put_theme_css_cache_file();
 
   do_action('cocoon_settings_after_save');
 
@@ -200,6 +195,7 @@ endif;
     <li class="others"><?php _e( 'その他', THEME_NAME ) ?></li>
     <li class="reset"><?php _e( 'リセット', THEME_NAME ) ?></li>
     <li class="about"><?php _e( 'テーマ情報', THEME_NAME ) ?></li>
+    <li class="donation"><?php _e( '寄付', THEME_NAME ) ?></li>
   </ul>
 
   <?php submit_button(__( '変更をまとめて保存', THEME_NAME )); ?>
@@ -396,6 +392,11 @@ endif;
   <!-- テーマ情報 -->
   <div class="theme-about metabox-holder">
     <?php require_once abspath(__FILE__).'about-forms.php'; ?>
+  </div><!-- /.metabox-holder -->
+
+  <!-- 寄付 -->
+  <div class="theme-donation metabox-holder">
+    <?php require_once abspath(__FILE__).'donation-forms.php'; ?>
   </div><!-- /.metabox-holder -->
 
   <?php //スキン制御変数の復元

@@ -27,7 +27,7 @@ body{
 /************************************
 ** p
 ************************************/
-.entry-content > p, .sidebar p {
+.sidebar p {
 	margin:2em 0;
 	line-height:2;
 }
@@ -42,14 +42,24 @@ a {
 }
 /************************************
 ** セレクトボックス
+**
+** セレクトボックスが移動しなくなっていたのでCSSセレクタ修正
+** 詳細：https://wp-cocoon.com/community/postid/34615/
 ************************************/
-.select-box {
+.widget_categories,
+.widget_archive{
+	position: relative;
+}
+
+.widget_categories form,
+.widget_archive form {
 	overflow: hidden;
 	width: 90%;
 	margin: 2em auto;
 	text-align: center;
 }
-.select-box select {
+.widget_categories form select,
+.widget_archive form select {
 	width: 100%;
 	padding-right: 1em;
 	cursor: pointer;
@@ -63,16 +73,19 @@ a {
 	-webkit-appearance: none;
 	appearance: none;
 }
-.select-box select::-ms-expand {
+.widget_categories form select::-ms-expand,
+.widget_archive form select::-ms-expand {
     display: none;
 }
-.select-box {
+.widget_categories form,
+.widget_archive form {
 	position: relative;
 	border: 1px solid #bbbbbb;
 	border-radius: 2px;
 	background: #ffffff;
 }
-.select-box::before {
+.widget_categories form::before,
+.widget_archive form::before {
 	position: absolute;
 	top: 1.6em;
 	right: 0.9em;
@@ -85,7 +98,8 @@ a {
 	border-top: 6px solid #666666;
 	pointer-events: none;
 }
-.select-box select {
+.widget_categories form select,
+.widget_archive form select {
 	padding: 1em;
 	color: #666666;
 }
@@ -126,6 +140,9 @@ a {
 }
 #header-container .navi{
 	background:#89c997;
+}
+#header-container.fixed-header{
+	background-color: #89c997;
 }
 #header-container .navi a{
 	color:#fff;
@@ -187,8 +204,9 @@ a {
 	color:#999;
 }
 .entry-card-content {
-    margin: 0;
-	 flex: 3;
+  margin: 0;
+	flex: 3;
+	margin-left:0 !important;
 }
 /************************************
 ** 関連記事
@@ -380,6 +398,7 @@ article .tag-link:hover{
 .sidebar {
 	font-size: 0.9em;
 }
+.sidebar h2,
 .sidebar h3{
 	background: #89c997;
    color: #fff;
@@ -941,6 +960,9 @@ input[type='submit']:hover{
 .mobile-menu-buttons .menu-button:last-child {
     border-right: none;
 }
+.mobile-menu-buttons .menu-content{
+	color: #555;
+}
 .author-box .sns-follow-buttons a.follow-button{
 	color:#fff;
 	border-radius:50%;
@@ -962,15 +984,9 @@ input[type='submit']:hover{
 .menu-content .sidebar .author-description{
 	margin:3em 0;
 }
-/*1240px以下*/
-@media screen and (max-width: 1240px){
-	.entry-card-content{
-		margin-left:0 !important;
-	}
-}
 
-/*1030px以下*/
-@media screen and (max-width: 1030px){
+/*1023px以下*/
+@media screen and (max-width: 1023px){
 	#header-container .menu-mobile{
 		display:none;
 	}
@@ -997,13 +1013,8 @@ input[type='submit']:hover{
 	#header-container .navi a{
 		font-size:0.8em;
 	}
-   .navi-footer-in > .menu-footer li.menu-item {
+  #footer #navi-footer .navi-footer-in > .menu-footer li.menu-item {
 	  border: none;
-	  border-left: 1px solid #fff;
-	  margin-bottom:5px;
-  }
-  .navi-footer-in > .menu-footer li.menu-item:nth-child(odd) {
-	  border: none !important;
   }
 	#sidebar{
 		padding:0 2em;

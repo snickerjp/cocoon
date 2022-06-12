@@ -73,13 +73,10 @@ function get_toc_tag($expanded_content, &$harray, $is_widget = false, $depth_opt
 
   preg_match_all('/<([hH][1-6]).*?>(.*?)<\/[hH][1-6].*?>/us', $content, $headers);
   $header_count = count($headers[0]);
-  if($header_count > 0){
-    $level = strtolower($headers[1][0]);
-    if($top_level < $level){$top_level = $level;}
-  }
+
   if($top_level < 1){$top_level = 1;}
   if($top_level > 6){$top_level = 6;}
-  $top_level = $top_level;
+
   $current_depth          = $top_level - 1;
   $prev_depth             = $top_level - 1;
   $max_depth              = (($depth == 0) ? 6 : intval($depth)) - $top_level + 1;
@@ -98,15 +95,12 @@ function get_toc_tag($expanded_content, &$harray, $is_widget = false, $depth_opt
       case 'h5': $depth = 5 - $top_level + 1; break;
       case 'h6': $depth = 6 - $top_level + 1; break;
     }
-    //var_dump($depth);
     if($depth >= 1 && $depth <= $max_depth){
       if($current_depth == $depth && $i != 0){
         $toc_list .= '</li>';
         $counters[$current_depth - 1] ++;
       }
       while($current_depth > $depth){
-        //_v($current_depth);
-        //_v($depth);
         $toc_list .= '</li></'.$list_tag.'>';
 
         $current_depth--;
@@ -120,22 +114,20 @@ function get_toc_tag($expanded_content, &$harray, $is_widget = false, $depth_opt
       }
       while($current_depth < $depth){
         $toc_list .= '<'.$list_tag.'>';
-        //$diff = $depth - $current_depth;
-        // //見出しに不具合がある場合は出力しない
-        // if ($diff >= 2) {
-        //   return $the_content;
-        // }
 
         $current_depth++;
         $counters[$current_depth - 1] ++;
       }
-      //$counters[$current_depth - 1] ++;
       $hide_class = null;
-      if ($depth == $depth_option) {
+      if ( $depth_option != 0 && $depth >= $depth_option ) {
         $hide_class = ' class="display-none"';
       }
       $counter++;
-      $toc_list .= '<li'.$hide_class.'><a href="#toc' . $counter . '" tabindex="0">' . strip_tags($headers[2][$i]) . '</a>';
+      $text = strip_tags($headers[2][$i]);
+      if (is_toc_heading_inner_html_tag_enable()) {
+        $text = $headers[2][$i];
+      }
+      $toc_list .= '<li'.$hide_class.'><a href="#toc' . $counter . '" tabindex="0">' . $text . '</a>';
       $prev_depth = $depth;
     }
   }
@@ -160,7 +152,6 @@ function get_toc_tag($expanded_content, &$harray, $is_widget = false, $depth_opt
       $label_for = null;
     } else {
       global $_TOC_INDEX;
-      //_v($_TOC_INDEX);
       $toc_id = 'toc-checkbox-'.$_TOC_INDEX;
       $toc_check = '<input type="checkbox" class="toc-checkbox" id="'.$toc_id.'"'.$checked.'>';
       $label_for = ' for="'.$toc_id.'"';
@@ -181,15 +172,11 @@ function get_toc_tag($expanded_content, &$harray, $is_widget = false, $depth_opt
 
   global $_TOC_AVAILABLE_H_COUNT;
   $_TOC_AVAILABLE_H_COUNT = $counter;
-  //_v($counter);
-  // $display_count = intval(get_toc_display_count());
-  // if (is_int($display_count) && ($counter < $display_count)) {
   if (!is_toc_display_count_available($counter)){
     return ;
   }
 
   return apply_filters('get_toc_tag',$html, $harray, $is_widget );
-  //}
 }
 endif;
 
@@ -322,28 +309,45 @@ endif;
 if ( !function_exists( 'is_the_page_toc_use' ) ):
 function is_the_page_toc_use(){
   global $_TOC_AVAILABLE_H_COUNT;
-  $content = get_the_content();
-  return is_singular() && !is_plugin_fourm_page() &&
+  if (is_category()) {
+    $cat_id = get_query_var('cat');
+    $content = get_the_category_content($cat_id, true);
+  } elseif (is_tag()) {
+    $tag_id = get_queried_object_id();
+    $content = get_the_tag_content($tag_id, true);
+  } else {
+    $content = get_the_content();
+  }
+  return (is_singular() || is_category() || is_tag()) && !is_plugin_fourm_page() &&
     //最初のH2手前に表示する場合
     (
       is_toc_visible() &&
       is_the_page_toc_visible() &&
       (
         (is_single() && is_single_toc_visible()) ||
-        (is_page() && is_page_toc_visible())
+        (is_page() && is_page_toc_visible()) ||
+        (is_category() && is_category_toc_visible()) ||
+        (is_tag() && is_tag_toc_visible())
       ) &&
       is_toc_display_count_available($_TOC_AVAILABLE_H_COUNT)
     )
     //ショートコードで表示する場合
-    || (is_singular() && preg_match('/\[toc.*?\]/', $content));
+    || ((is_singular() || is_category() || is_tag()) && preg_match('/\[toc.*?\]/', $content));
 }
 endif;
 
 //目次生成用の展開した本文の取得
 if ( !function_exists( 'get_toc_expanded_content' ) ):
 function get_toc_expanded_content(){
-  if (is_singular()) {
-    $the_content = get_shortcode_removed_content(get_the_content());
+  if (is_singular() || is_category() || is_tag()) {
+    if (is_category()) {
+      $the_content = get_the_category_content(null, true);
+    } elseif (is_tag()) {
+      $the_content = get_the_tag_content(null, true);
+    } else {
+      $the_content = get_the_content();
+    }
+    $the_content = get_shortcode_removed_content($the_content);
     $the_content = do_blocks($the_content);
     $the_content = do_shortcode($the_content);
     return apply_filters('get_toc_expanded_content', $the_content);
@@ -355,6 +359,6 @@ endif;
 if ( !function_exists( 'is_toc_display_count_available' ) ):
 function is_toc_display_count_available($h_count){
   $display_count = intval(get_toc_display_count());
-  return ($h_count >= $display_count);
+  return (intval($h_count) >= $display_count);
 }
 endif;

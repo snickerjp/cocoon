@@ -6,7 +6,7 @@
   Author URI: https://zvalinf.info
   Screenshot URI: https://im-cocoon.net/wp-content/uploads/SAMURAI-Blue-Skin.png
   Version: 0.0.1
-  Priority: 9920000000
+  Priority: 9830003000
 */
 
 /* ---------------------------------------------------------
@@ -150,9 +150,9 @@ body{
 }
 
 /* ----- 目次 ----- */
-.toc-content{
+.article .toc .toc-content{
   margin:2px 0px;
-  padding: .2em 1em;
+  padding: .2em 1em 1em;
   border:1px solid #d3d6db;
   border-radius: 4px;
   background-image: linear-gradient(45deg, #d3d6db 5%, transparent 0),
@@ -298,6 +298,7 @@ body{
 /
 /   ・サムライブルー
 --------------------------------------------------------- */
+.sidebar h2,
 .sidebar h3 {
   color: #282d48;
   background:none;
@@ -305,11 +306,13 @@ body{
   padding: 10px 0 2px 28px;
   border-bottom: 6px double #282d48;
 }
+.sidebar h2:before, .sidebar h2:after,
 .sidebar h3:before, .sidebar h3:after {
   content: "";
   position: absolute;
   margin: auto;
 }
+.sidebar h2::before,
 .sidebar h3:before {
   width: 12px;
   height: 12px;
@@ -318,6 +321,7 @@ body{
   background: #282d48;
   transform: rotate(50deg);
 }
+.sidebar h2::after,
 .sidebar h3:after {
   width: 8px;
   height: 8px;

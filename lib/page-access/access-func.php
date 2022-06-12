@@ -41,7 +41,7 @@ function get_access_count_cache_interval(){
 }
 endif;
 
-//トテーブルのバージョン取得
+//テーブルのバージョン取得
 define('OP_ACCESSES_TABLE_VERSION', 'accesses_table_version');
 if ( !function_exists( 'get_accesses_table_version' ) ):
 function get_accesses_table_version(){
@@ -52,7 +52,9 @@ endif;
 //ページタイプの取得
 if ( !function_exists( 'get_accesses_post_type' ) ):
 function get_accesses_post_type(){
-  if (is_page()) {
+  global $post;
+  global $post_type;
+  if (is_page() || (isset($post->post_type) && ($post->post_type === 'page')) || ($post_type === 'page')) {
     $res = 'page'; //page
   } else {
     $res = 'post'; //single
@@ -179,8 +181,7 @@ function logging_page_access($post_id = null, $post_type = 'post'){
       //ボットでないとき
       && !is_useragent_robot()
     ) {
-    // _v($post_id);
-    // _v($post_type);
+
     if (!$post_id || !$post_type ) {
       global $post;
       $post_id = $post->ID;
@@ -260,11 +261,13 @@ if ( !function_exists( 'get_todays_access_count' ) ):
 function get_todays_access_count($post_id = null){
   $res = 0;
   global $post;
-  if (!$post_id) {
-    $post_id = $post->ID;
-  }
+  if (isset($post->ID)) {
+    if (!$post_id) {
+      $post_id = $post->ID;
+    }
 
-  $res = get_several_access_count($post_id, 1);
+    $res = get_several_access_count($post_id, 1);
+  }
   return $res;
 }
 endif;
@@ -273,10 +276,9 @@ endif;
 if ( !function_exists( 'get_several_access_count' ) ):
 function get_several_access_count($post_id = null, $days = 'all'){
   $res = 0;
-  if (is_access_count_enable()) {
-    global $post;
-    global $wpdb;
-
+  global $post;
+  global $wpdb;
+  if (is_access_count_enable() && isset($post->ID)) {;
     if (!$post_id) {
       $post_id = $post->ID;
     }
@@ -333,12 +335,16 @@ function get_all_access_count($post_id = null){
 }
 endif;
 
-if ( !function_exists( 'wrap_joined_wp_posts_sql' ) ):
-function wrap_joined_wp_posts_query($query, $limit){
+if ( !function_exists( 'wrap_joined_wp_posts_query' ) ):
+function wrap_joined_wp_posts_query($query, $limit, $author){
   global $wpdb;
   $wp_posts = $wpdb->posts;
   $ranks_posts = 'ranks_posts';
   //$post_type = is_page() ? 'page' : 'post';
+  $author_query = null;
+  if ($author) {
+    $author_query = ' AND post_author = '.esc_sql($author);
+  }
   $post_type = 'post';
   $query = "
     SELECT ID, sum_count, post_title, post_author, post_date, post_modified, post_status, post_type, comment_count FROM (
@@ -346,7 +352,8 @@ function wrap_joined_wp_posts_query($query, $limit){
     ) AS {$ranks_posts}
     INNER JOIN {$wp_posts} ON {$ranks_posts}.post_id = {$wp_posts}.id
     WHERE post_status = 'publish' AND
-          post_type = '{$post_type}'
+          post_type = '{$post_type}'".
+          $author_query."
     ORDER BY sum_count DESC
     LIMIT $limit
   ";
@@ -358,7 +365,7 @@ endif;
 
 //アクセスランキングを取得
 if ( !function_exists( 'get_access_ranking_records' ) ):
-function get_access_ranking_records($days = 'all', $limit = 5, $type = 'post', $cat_ids = array(), $exclude_post_ids = array(), $exclude_cat_ids = array()){
+function get_access_ranking_records($days = 'all', $limit = 5, $type = 'post', $cat_ids = array(), $exclude_post_ids = array(), $exclude_cat_ids = array(), $children = 0, $author = null){
   // //ページの判別ができない場合はDBにアクセスしない
   // if (!is_singular()) {
   //   return null;
@@ -367,24 +374,43 @@ function get_access_ranking_records($days = 'all', $limit = 5, $type = 'post', $
 
   //アクセスキャッシュを有効にしている場合
   if (is_access_count_cache_enable()) {
+    $cat_ids = is_array($cat_ids) ? $cat_ids : array();
     $cats = implode(',', $cat_ids);
+    if ($cat_ids) {
+      //子孫カテゴリも含める場合
+      if ($children) {
+        $categories = $cat_ids;
+        $res = $categories;
+        foreach ($categories as $category) {
+          $res = array_merge($res, get_term_children( $category, 'category' ));
+        }
+        $cat_ids = $res;
+        $cats = implode(',', $res);
+      }
+    }
+
+    //除外投稿
+    $archive_exclude_post_ids = get_archive_exclude_post_ids();
+    if ($archive_exclude_post_ids && is_array($archive_exclude_post_ids)) {
+      $exclude_post_ids = array_unique(array_merge($exclude_post_ids, $archive_exclude_post_ids));
+    }
+
     $expids = implode(',', $exclude_post_ids);
     $excats = implode(',', $exclude_cat_ids);
     $type = get_accesses_post_type();
-    $transient_id = TRANSIENT_POPULAR_PREFIX.'?days='.$days.'&limit='.$limit.'&type='.$type.'&cats='.$cats.'&expids='.$expids.'&excats='.$excats;
+    $transient_id = TRANSIENT_POPULAR_PREFIX.'?days='.$days.'&limit='.$limit.'&type='.$type.'&cats='.$cats.'&children='.$children.'&expids='.$expids.'&excats='.$excats;
     //_v($transient_id);
     $cache = get_transient( $transient_id );
     if ($cache) {
-      if (DEBUG_MODE) {
-        echo('<pre>');
-        echo $transient_id;
-        echo('</pre>');
+      if (DEBUG_MODE && is_user_administrator()) {
+        // echo('<pre>');
+        // echo $transient_id;
+        // echo('</pre>');
       } elseif (is_user_administrator()){
 
       } else {
         return $cache;
       }
-
     }
   }
 
@@ -401,9 +427,9 @@ function get_access_ranking_records($days = 'all', $limit = 5, $type = 'post', $
     $date_before = get_current_db_date_before($days);
     $where .= " AND {$access_table}.date BETWEEN '$date_before' AND '$date' ".PHP_EOL;
   }
-  if ($days == 1) {
-    $where .= " AND {$access_table}.date = '$date' ".PHP_EOL;
-  }
+  // if ($days == 1) {
+  //   $where .= " AND {$access_table}.date = '$date' ".PHP_EOL;
+  // }
   //_v($exclude_post_ids);
   // _v($exclude_post_ids[0]);
   if (is_ids_exist($exclude_post_ids)) {
@@ -456,8 +482,8 @@ function get_access_ranking_records($days = 'all', $limit = 5, $type = 'post', $
         ORDER BY sum_count DESC
     ";
     //_v($query);
-    //1回のクエリで投稿データを取り出せるようにケーブル結合クエリを追加
-    $query = wrap_joined_wp_posts_query($query, $limit);
+    //1回のクエリで投稿データを取り出せるようにテーブル結合クエリを追加
+    $query = wrap_joined_wp_posts_query($query, $limit, $author);
   } else {
     $query = "
       SELECT {$access_table}.post_id, SUM({$access_table}.count) AS sum_count
@@ -465,23 +491,18 @@ function get_access_ranking_records($days = 'all', $limit = 5, $type = 'post', $
         GROUP BY {$access_table}.post_id
         ORDER BY sum_count DESC
     ";
-    //1回のクエリで投稿データを取り出せるようにケーブル結合クエリを追加
-    $query = wrap_joined_wp_posts_query($query, $limit);
+    //1回のクエリで投稿データを取り出せるようにテーブル結合クエリを追加
+    $query = wrap_joined_wp_posts_query($query, $limit, $author);
   }
 
-  //_v($query);
   $records = $wpdb->get_results( $query );
   //_v($query);
   if (is_access_count_cache_enable() && $records) {
     set_transient( $transient_id, $records, 60 * get_access_count_cache_interval() );
   }
-  // _v($records);
   return $records;
 }
 endif;
-//get_access_ranking_records();
-// global $wpdb;
-// var_dump($wpdb->term_relationships);
 
 
 //Jetpackがインストールされているかどうか
@@ -496,9 +517,9 @@ endif;
 if ( !function_exists( 'get_several_jetpack_access_count' ) ):
 function get_several_jetpack_access_count($post_id = null, $days = -1){
   $views = 0;
-  if (is_jetpack_stats_module_active()) {
+  global $post;
+  if (is_jetpack_stats_module_active() && isset($post->ID)) {
     if (!$post_id) {
-      global $post;
       $post_id = $post->ID;
     }
     $jetpack_views = stats_get_csv('postviews', array('days' => $days, 'limit' => 1, 'post_id' => $post_id ));

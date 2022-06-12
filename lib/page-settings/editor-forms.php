@@ -61,6 +61,20 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
           </td>
         </tr>
 
+        <!-- タグ -->
+        <tr>
+          <th scope="row">
+            <?php generate_label_tag(OP_EDITOR_TAG_CHECK_LIST_ENABLE, __('タグ', THEME_NAME) ); ?>
+          </th>
+          <td>
+            <?php
+            generate_checkbox_tag(OP_EDITOR_TAG_CHECK_LIST_ENABLE , is_editor_tag_check_list_enable(), __( 'タグ選択をチェックリスト形式にする', THEME_NAME ));
+            generate_image_preview_tag('https://im-cocoon.net/wp-content/uploads/tag-check-box.png');
+            generate_tips_tag(__( 'エディターでチェックリストを選択する形でタグを選択する用に変更します。', THEME_NAME ));
+            ?>
+          </td>
+        </tr>
+
         </tbody>
     </table>
 
@@ -83,9 +97,14 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
             <?php generate_label_tag('', __('ボタン', THEME_NAME) ); ?>
           </th>
           <td>
-            <?php
-            generate_checkbox_tag(OP_BLOCK_EDITOR_RUBY_BUTTON_VISIBLE , is_block_editor_ruby_button_visible(), __( 'ふりがな（ルビ）ボタン表示', THEME_NAME ));
-            generate_tips_tag(__( 'Cocoonのルビボタン表示を切り替えます。プラグインのルビ機能を利用していてエラーが出る場合は無効にしてください。', THEME_NAME ));
+            <?php //ルビ
+            generate_checkbox_tag(OP_BLOCK_EDITOR_RUBY_BUTTON_VISIBLE , is_block_editor_ruby_button_visible(), __( '「ふりがな（ルビ）」ボタン表示', THEME_NAME ));
+            generate_tips_tag(__( 'Cocoonの「ルビ」ボタン表示を切り替えます。プラグインのルビ機能を利用していてエラーが出る場合は無効にしてください。', THEME_NAME ));
+            ?>
+
+            <?php //組織のクリア
+            generate_checkbox_tag(OP_BLOCK_EDITOR_CLEAR_FORMAT_BUTTON_VISIBLE , is_block_editor_clear_format_button_visible(), __( '「書式のクリア」ボタン表示', THEME_NAME ));
+            generate_tips_tag(__( 'Cocoonの「書式のクリア」表示を切り替えます。プラグインのルビ機能を利用していてエラーが出る場合は無効にしてください。', THEME_NAME ));
             ?>
           </td>
         </tr>
@@ -130,6 +149,20 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
 
             generate_checkbox_tag(OP_BLOCK_EDITOR_RANKING_SHORTCODE_DROPDOWN_VISIBLE , is_block_editor_ranking_shortcode_dropdown_visible(), __( 'ランキング表示', THEME_NAME ));
             generate_tips_tag(__( 'ツールバーのランキングショートコードドロップダウンを表示するか。', THEME_NAME ));
+            ?>
+          </td>
+        </tr>
+
+
+        <!-- ブロックオプション -->
+        <tr>
+          <th scope="row">
+            <?php generate_label_tag('', __('ブロックオプション', THEME_NAME) ); ?>
+          </th>
+          <td>
+            <?php
+            generate_checkbox_tag(OP_BLOCK_EDITOR_STYLE_BLOCK_OPTION_VISIBLE , is_block_editor_style_block_option_visible(), __( 'スタイル表示', THEME_NAME ));
+            generate_tips_tag(__( 'ブロックエディターのスタイルオプションの表示を表示するか。', THEME_NAME ));
             ?>
           </td>
         </tr>

@@ -49,18 +49,16 @@ article .blogcard-wrap,article .blogcard-wrap:first-of-type{
 .carousel{
 	padding:0 0 30px;
 }
-#recommended-in .a-wrap,.carousel .a-wrap,.rect-vartical-card .a-wrap{
+#recommended-in .a-wrap,.carousel .a-wrap,.rect-vertical-card .a-wrap{
 	border:none;
 }
 .rect-mini-card .a-wrap:first-of-type{
 	border-top:none;
 }
-.rect-vartical-card .related-entry-card-wrap {
+.rect-vertical-card .related-entry-card-wrap {
     padding: 15px 7.5px;
 }
 .entry-card-snippet{
-	height: 3.6em;
-	max-height: 3.6em;
 	line-height: 1.8;
 }
 .related-entry-card-snippet{
@@ -68,6 +66,9 @@ article .blogcard-wrap,article .blogcard-wrap:first-of-type{
 	max-height: 4.8em;
 	line-height: 1.6;
 	margin-top:10px;
+}
+.entry-card-snippet, .related-entry-card-snippet {
+	max-height: 7.2em;
 }
 .entry-card-thumb, .author-thumb, .blogcard-thumbnail, .related-entry-card-thumb, .popular-entry-card-thumb,.new-entry-card-thumb,.widget-entry-card-thumb{
 	margin-right: 3.5%;
@@ -256,9 +257,6 @@ h3.footer-title{
 	.related-entry-card-snippet{
 		display:none;
 	}
-	.entry-card-content{
-		padding:0;
-	}
 	.pagination-next{
 		display:block;
 		margin:30px 0 0;
@@ -302,6 +300,7 @@ h3.footer-title{
 #header-container .navi,
 #navi .navi-in > .menu-header .sub-menu,
 .article h2,
+.sidebar h2,
 .sidebar h3,
 .cat-link,
 .cat-label,
@@ -331,7 +330,8 @@ blockquote,
 }
 
 .font-awesome-5 .widget ul li a::before,
-.font-awesome-5 h2.related-entry-heading::before{
+.font-awesome-5 h2.related-entry-heading::before,
+.font-awesome-5 .navi-footer-in>.menu-footer li.menu-item a::after{
   font-family: "Font Awesome 5 Free";
 	font-weight: 900;
 }

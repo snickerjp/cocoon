@@ -47,6 +47,9 @@ function new_entries_shortcode($atts) {
     'bold' => 0,
     'arrow' => 0,
     'class' => null,
+    'snippet' => 0,
+    'author' => null,
+    'offset' => 0,
   ), $atts, 'new_list'));
 
   //カテゴリを配列化
@@ -76,10 +79,12 @@ function new_entries_shortcode($atts) {
     'bold' => $bold,
     'arrow' => $arrow,
     'class' => $class,
+    'snippet' => $snippet,
+    'author' => $author,
+    'offset' => $offset,
   );
   ob_start();
   generate_widget_entries_tag($atts);
-  // generate_widget_entries_tag($count, $type, $categories, $children, $post_type, $taxonomy, $random, $action);
   $res = ob_get_clean();
   return $res;
 }
@@ -98,9 +103,11 @@ function popular_entries_shortcode($atts) {
     'rank' => 0,
     'pv' => 0,
     'cats' => 'all',
+    'children' => 0,
     'bold' => 0,
     'arrow' => 0,
     'class' => null,
+    'author' => null,
   ), $atts, 'popular_list'));
   $cat_ids = array();
   if ($cats && $cats != 'all') {
@@ -113,9 +120,11 @@ function popular_entries_shortcode($atts) {
     'ranking_visible' => $rank,
     'pv_visible' => $pv,
     'cat_ids' => $cat_ids,
+    'children' => $children,
     'bold' => $bold,
     'arrow' => $arrow,
     'class' => $class,
+    'author' => $author,
   );
   ob_start();
   generate_popular_entries_tag($atts);
@@ -244,6 +253,7 @@ function login_user_only_shortcode( $atts, $content = null ) {
   }
 }
 endif;
+
 //タイムラインの作成（timelineショートコード）
 if (!shortcode_exists('timeline')) {
   add_shortcode('timeline', 'timeline_shortcode');
@@ -383,8 +393,9 @@ function rating_star_shortcode( $atts, $content = null ) {
       'rate' => 5,
       'max' => 5,
       'number' => 1,
+      'color' => null,
   ), $atts, 'star' ) );
-  return get_rating_star_tag($rate, $max, $number);
+  return get_rating_star_tag($rate, $max, $number, $color);
 }
 endif;
 
@@ -396,8 +407,8 @@ if ( !function_exists( 'toc_shortcode' ) ):
 function toc_shortcode( $atts, $content = null ) {
   extract(shortcode_atts(array(
     'depth' => 0,
-  ), $atts, 'author_box'));
-  if (is_singular()) {
+  ), $atts, 'toc_box'));
+  if (is_singular() || is_category() || is_tag()) {
     global $_TOC_WIDGET_OR_SHORTCODE_USE;
     $_TOC_WIDGET_OR_SHORTCODE_USE = true;
     $harray = array();
@@ -421,25 +432,25 @@ function sitemap_shortcode( $atts, $content = null ) {
   ob_start();?>
   <div class="sitemap">
     <?php if ($page): ?>
-    <h2><?php _e( '固定ページ', THEME_NAME ) ?></h2>
+    <h2><?php echo apply_filters('sitemap_page_caption', __( '固定ページ', THEME_NAME )); ?></h2>
     <ul>
       <?php wp_list_pages('title_li='); ?>
     </ul>
     <?php endif; ?>
     <?php if ($single): ?>
-    <h2><?php _e( '記事一覧', THEME_NAME ) ?></h2>
+    <h2><?php echo apply_filters('sitemap_single_caption', __( '投稿一覧', THEME_NAME )); ?></h2>
     <ul>
       <?php wp_get_archives( 'type=alpha' ); ?>
     </ul>
     <?php endif; ?>
     <?php if ($category): ?>
-    <h2><?php _e( 'カテゴリー', THEME_NAME ) ?></h2>
+    <h2><?php echo apply_filters('sitemap_category_caption', __( 'カテゴリー', THEME_NAME )); ?></h2>
     <ul>
       <?php wp_list_categories('title_li='); ?>
     </ul>
     <?php endif; ?>
     <?php if ($archive): ?>
-    <h2><?php _e( '月別アーカイブ', THEME_NAME ) ?></h2>
+    <h2><?php  echo apply_filters('sitemap_archive_caption', __( '月別アーカイブ', THEME_NAME )); ?></h2>
     <ul>
       <?php wp_get_archives('type=monthly'); ?>
     </ul>
@@ -548,6 +559,7 @@ function get_navi_card_list_tag($atts){
   if (!$menu_items) {
     return;
   }
+  // _v($menu_items);
 
   foreach ($menu_items as $menu):
     //画像情報の取得
@@ -557,6 +569,8 @@ function get_navi_card_list_tag($atts){
     $title = $menu->title;
     $snippet = $menu->description;
     $classes = $menu->classes;
+    $object = $menu->object;
+    $object_id = $menu->object_id;
     $ribbon_no = isset($menu->classes[0]) ? $menu->classes[0] : null;
 
     //アイテムタグの取得
@@ -569,6 +583,8 @@ function get_navi_card_list_tag($atts){
       'ribbon_no' => $ribbon_no,
       'type' => $type,
       'classes' => $classes,
+      'object' => $object,
+      'object_id' => $object_id,
     );
     $tag .= get_widget_entry_card_link_tag($atts);
 
@@ -624,3 +640,301 @@ function get_recommend_cards_tag($atts){
 }
 endif;
 
+//ナビメニューショートコード
+//参考：https://www.orank.net/1972
+add_shortcode('navi', 'get_ord_navi_card_list_tag');
+if ( !function_exists( 'get_ord_navi_card_list_tag' ) ):
+function get_ord_navi_card_list_tag($atts){
+  extract(shortcode_atts(array(
+    'name' => '', // メニュー名
+    'type' => '',
+    'bold' => 1,
+    'arrow' => 1,
+    'class' => null,
+  ), $atts, 'navi'));
+  $atts = array(
+    'name' => $name,
+    'type' => $type,
+    'bold' => $bold,
+    'arrow' => $arrow,
+    'class' => $class,
+  );
+  $tag = get_navi_card_list_tag($atts);
+
+  return apply_filters('get_ord_navi_card_list_tag', $tag);
+}
+endif;
+
+//ボックスメニューショートコード
+add_shortcode('box_menu', 'get_box_menu_tag');
+if ( !function_exists( 'get_box_menu_tag' ) ):
+function get_box_menu_tag($atts){
+  extract(shortcode_atts(array(
+    'name' => '', // メニュー名
+    'target' => '_self',
+    'class' => null,
+  ), $atts, 'box_menu'));
+
+  if (is_admin() && !is_admin_php_page()) {
+    return;
+  }
+
+  $tag = null;
+  $menu_items = wp_get_nav_menu_items($name); // name: カスタムメニューの名前
+  if (!$menu_items) {
+    return;
+  }
+
+  //_v($menu_items);
+  foreach ($menu_items as $menu):
+
+    $url = $menu->url;
+    $title = $menu->title;
+    $title_tag = '<div class="box-menu-label">'.$title.'</div>';
+    $description_tag = '<div class="box-menu-description">'.$menu->description.'</div>';
+    $attr_title = $menu->attr_title;
+    $classes = implode(' ', $menu->classes);
+    $icon_tag = '<div class="fa fa-star" aria-hidden="true"></div>';
+    //画像URLの場合
+    if (preg_match('/(https?)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)\.(jpg|jpeg|gif|png)/', $attr_title)) {
+      $img_url = $attr_title;
+      $icon_tag = '<img src="'.esc_url($img_url).'" alt="'.esc_attr($title).'" />';
+    } //アイコンフォントの場合
+    elseif (preg_match('/fa.? fa-[a-z\-]+/', $classes)) {
+      $icon_tag = '<div class="'.esc_attr($classes).'" aria-hidden="true"></div>';
+    }
+    $icon_tag = '<div class="box-menu-icon">'.$icon_tag.'</div>';
+
+    $target_value = apply_filters('box_menu_link_target', $target, $url);
+    $tag .= '<a class="box-menu" href="'.esc_url($url).'" target="'.$target_value.'"'.get_rel_by_target($target_value).'>'.
+      $icon_tag.
+      $title_tag.
+      $description_tag.
+    '</a>';
+  endforeach;
+  $add_class = null;
+  if ($class) {
+    $add_class = ' '.$class;
+  }
+  //ラッパーで囲む
+  $tag = '<div class="box-menus'.$add_class.' no-icon">'.$tag.'</div>';
+
+  return apply_filters('get_box_menu_tag', $tag);
+}
+endif;
+
+/* RSSフィードショートコード */
+add_shortcode( 'rss', 'get_rss_feed_tag' );
+if ( !function_exists( 'get_rss_feed_tag' ) ):
+function get_rss_feed_tag( $atts ) {
+  include_once(ABSPATH . WPINC . '/feed.php');
+  extract(shortcode_atts(
+    array(
+      'url' => 'https://ja.wordpress.org/feed/', //取得するRSSフィードURL
+      'count' => '5', //取得する数
+      'img' => NO_IMAGE_RSS, //画像が取得できなかった場合のイメージ
+      'target' => '_blank', //ブラウザの開き方（target属性）
+      'cache_minute' => '60', //キャッシュ時間（分）
+      'desc' => '1', //説明文表示 1 or 0
+      'date' => '1', //日付表示 1 or 0
+      'type' => '', //表示タイプ
+      'bold' => 0, //タイトルを太字にするか
+      'arrow' => 0, //矢印を出すか
+      'class' => null, //拡張クラス
+    ),
+    $atts,
+    'rss'
+  ));
+
+  $feed_url = $url;
+  $feed_count = $count;
+  $img_url = $img;
+  $feed_content = '';
+  $feed_contents = '';
+
+  //Cache処理（かなり簡易的なもの）
+  $transient_id = 'ree_feed_'.md5($feed_url.'_'.$count.'_'.$img_url.'_'.$target.'_'.$desc.'_'.$date.'_'.$type.'_'.$bold.'_'.$arrow.'_'.$class);
+  $feed_contents = get_transient( $transient_id );
+  if ($feed_contents) {
+    return $feed_contents;
+  } else {
+    $rss = fetch_feed( $feed_url );
+  }
+  if ( !is_wp_error( $rss ) ) {
+    $maxitems = $rss->get_item_quantity( $feed_count );
+    $rss_items = $rss->get_items( 0, $maxitems );
+    foreach ( $rss_items as $item ) :
+      $first_img = '';
+      if ( preg_match( '/<img.+?src=[\'"]([^\'"]+?)[\'"].*?>/msi', $item->get_content(), $matches )) $first_img = $matches[1];
+      if ( !empty( $first_img ) ) :
+        $feed_img = esc_attr( $first_img );
+      else:
+        $feed_img = $img_url;
+      endif;
+      $feed_url = $item->get_permalink();
+      $feed_title = str_replace(["\r\n", "\r", "\n"], '', $item->get_title());
+      $feed_date = $item->get_date('Y.m.d');
+      $feed_text = mb_substr(strip_tags($item->get_content()), 0, 110);
+
+      $feed_content .= '<a href="' . esc_url($feed_url) . '" title="' . esc_attr($feed_title) . '" class="rss-entry-card-link widget-entry-card-link a-wrap" target="'.esc_attr($target).'"'.get_rel_by_target($target).'>';
+      $feed_content .= '<div class="rss-entry-card widget-entry-card e-card cf">';
+      $feed_content .= '<figure class="rss-entry-card-thumb widget-entry-card-thumb card-thumb">';
+      $feed_content .= '<img src="' . esc_url($feed_img) . '" class="rss-entry-card-thumb-image widget-entry-card-thumb-image card-thumb-image" alt="">';
+      $feed_content .= '</figure>';
+      $feed_content .= '<div class="rss-entry-card-content widget-entry-card-content card-content">';
+      $feed_content .= '<div class="rss-entry-card-title widget-entry-card-title card-title">' . esc_html($feed_title) . '</div>';
+      if ($desc) {
+        $feed_content .= '<div class="rss-entry-card-snippet widget-entry-card-snippet card-snippet">' . esc_html($feed_text) . '…</div>';
+      }
+      if ($date) {
+        $feed_content .= '<div class="rss-entry-card-date widget-entry-card-date">
+        <span class="rss-entry-card-post-date widget-entry-card-post-date post-date">' . esc_html($feed_date) . '</span>
+      </div>';
+      }
+      $feed_content .= '</div>';//card-content
+      $feed_content .= '</div>';
+      $feed_content .= '</a>';
+    endforeach;
+  } else {
+    $feed_content = '<p>RSSフィードを取得できません</p>';
+  }
+  // $add_class = null;
+  // if ($class) {
+  //   $add_class = ' '.$class;
+  // }
+
+// _v($arrow);
+// _v($type);
+  $atts = array(
+    'type' => $type,
+    'bold' => $bold,
+    'arrow' => $arrow,
+    'class' => $class,
+  );
+  $card_class = get_additional_widget_entry_cards_classes($atts);
+  $feed_contents = '<div class="rss-entry-cards widget-entry-cards'.$card_class.' no-icon">' . $feed_content . '</div>';
+  set_transient($transient_id, $feed_contents, 60 * intval($cache_minute));
+
+  return apply_filters( 'get_rss_feed_tag',  $feed_contents);
+
+}
+endif;
+
+
+// //数式
+// add_shortcode('formula', 'formula_shortcode');
+// if ( !function_exists( 'formula_shortcode' ) ):
+// function formula_shortcode( $atts, $content = null ) {
+//   extract( shortcode_atts( array(
+//     'class' => null, //拡張クラス
+//   ), $atts, 'formula' ) );
+//   if ($class) {
+//     $class = ' '.$class;
+//   }
+//   return '<figure class="tex2jax_process'.$class.'">'.$content.'</figure>';
+// }
+// endif;
+
+
+//キャンペーン（指定期間中のみ表示）
+add_shortcode('campaign', 'campaign_shortcode');
+if ( !function_exists( 'campaign_shortcode' ) ):
+function campaign_shortcode( $atts, $content = null ) {
+  extract( shortcode_atts( array(
+    'from' => null, //いつから（開始日時）
+    'to' => null, //いつまで（終了日時）
+    'class' => null, //拡張クラス
+  ), $atts, 'campaign' ) );
+
+  //内容がない場合は何も表示しない
+  if (!$content) return null;
+  //現在の日時を取得
+  $now = date_i18n('U');
+
+  //いつから（開始日時）
+  $from_time = strtotime($from);
+  if (!$from_time) {
+    $from_time = strtotime('-1 day');
+  };
+
+  //いつまで（終了日時）
+  $to_time = strtotime($to);
+  if (!$to_time) {
+    $to_time = strtotime('+1 day');
+  };
+
+  //拡張クラス
+  if ($class) {
+    $class = ' '.$class;
+  }
+
+  $tag = null;
+  $content = apply_filters('campaign_shortcode_content', $content);
+  if (($from_time < $now) && ($to_time > $now)) {
+    $tag = '<div class="campaign'.esc_attr($class).'">'.
+      // date_i18n('開始日時：Y年m月d日 H時i分s秒', $from_time).'<br>'.
+      // date_i18n('終了日時：Y年m月d日 H時i分s秒', $to_time).'<br>'.
+      $content.
+    '</div>';
+  }
+
+  return $tag;
+}
+endif;
+
+//HTMLタグをそのまま表示
+if (!shortcode_exists('html')) {
+  add_shortcode('html', 'html_shortcode');
+}
+if ( !function_exists( 'html_shortcode' ) ):
+function html_shortcode( $atts, $content = null ) {
+  return html_entity_decode($content, ENT_NOQUOTES);
+}
+endif;
+
+//wptexturizeを除外するショートコードを指定する
+add_filter( 'no_texturize_shortcodes', 'shortcodes_to_exempt_from_wptexturize' );
+if ( !function_exists( 'shortcodes_to_exempt_from_wptexturize' ) ):
+function shortcodes_to_exempt_from_wptexturize( $shortcodes ) {
+    $shortcodes[] = 'html';
+    return $shortcodes;
+};
+endif;
+
+//日付ショートコード
+add_shortcode('date', 'date_shortcode');
+if ( !function_exists( 'date_shortcode' ) ):
+function date_shortcode( $atts ) {
+  extract( shortcode_atts( array(
+    'format' => 'Y/m/d',
+  ), $atts, 'date' ) );
+
+  return date_i18n($format);
+}
+endif;
+
+//更新日ショートコード
+if (is_privilege_activation_code_available()) {
+  add_shortcode('updated', 'updated_shortcode');
+}
+if ( !function_exists( 'updated_shortcode' ) ):
+function updated_shortcode( $atts ) {
+  extract( shortcode_atts( array(
+    'format' => 'Y/m/d',
+  ), $atts, 'updated' ) );
+
+  if (is_singular()) {
+    $up = get_update_time($format);
+    if ($up) {
+      $res = $up;
+    } else {
+      $res = get_the_time($format);
+    }
+  } else {
+    $res = __( 'updatedショートコードは投稿・固定ページ以外では利用できません。', THEME_NAME );
+  }
+
+
+  return $res;
+}
+endif;

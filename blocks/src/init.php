@@ -38,7 +38,10 @@ function cocoon_blocks_cgb_block_assets() { // phpcs:ignore
 		'cocoon_blocks-cgb-style-css', // Handle.
 		get_template_directory_uri().'/blocks/dist/blocks.style.build.css',
 		//plugins_url( 'dist/blocks.style.build.css', dirname( __FILE__ ) ), // Block style CSS.
-		array( 'wp-editor' ) // Dependency to include the CSS after it.
+		array(
+      'wp-block-editor',
+      'wp-editor',
+    ) // Dependency to include the CSS after it.
 		// filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.style.build.css' ) // Version: File modification time.
 	);
 
@@ -66,7 +69,7 @@ function cocoon_blocks_cgb_block_assets() { // phpcs:ignore
  */
 // Hook: Editor assets.
 if (is_admin()) {
-	add_action( 'enqueue_block_editor_assets', 'cocoon_blocks_cgb_editor_assets' );
+	add_action( 'enqueue_block_editor_assets', 'cocoon_blocks_cgb_editor_assets', 9 );
 }
 function cocoon_blocks_cgb_editor_assets() { // phpcs:ignore
 	// Scripts.
@@ -74,20 +77,34 @@ function cocoon_blocks_cgb_editor_assets() { // phpcs:ignore
 		'cocoon-blocks-js', // Handle.
 		get_template_directory_uri().'/blocks/dist/blocks.build.js',
 		//plugins_url( '/dist/blocks.build.js', dirname( __FILE__ ) ), // Block.build.js: We register the block here. Built with Webpack.
-		array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor' ) // Dependencies, defined above.
+		array(
+      'lodash',
+      'react',
+      'wp-block-editor',
+      'wp-components',
+      'wp-blocks',
+      'wp-compose',
+      'wp-element',
+      'wp-editor',
+      'wp-polyfill',
+      'wp-rich-text',
+    ) // Dependencies, defined above.
 		// filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: File modification time.
 		// true // Enqueue the script in the footer.
   );
   //ショートコードオブジェクトの取得
   $balloons = get_speech_balloons(null, 'title');
+  $colors = array('keyColor' => get_editor_key_color());
   $templates = get_function_texts(null, 'title');
   $affiliates = get_affiliate_tags(null, 'title');
   $rankings = get_item_rankings(null, 'title');
   $is_templates_visible = (has_valid_shortcode_item($templates) && is_block_editor_template_shortcode_dropdown_visible()) ? 1 : 0;
   $is_affiliates_visible = (has_valid_shortcode_item($affiliates) && is_block_editor_affiliate_shortcode_dropdown_visible()) ? 1 : 0;
   $is_rankings_visible = (has_valid_shortcode_item($rankings) && is_block_editor_ranking_shortcode_dropdown_visible()) ? 1 : 0;
+  global $wp_version;
   $gutenberg_settings = array(
     'isRubyVisible' => is_block_editor_ruby_button_visible() ? 1 : 0,
+    'isClearFormatVisible' => is_block_editor_clear_format_button_visible() ? 1 : 0,
     'isLetterVisible' => is_block_editor_letter_style_dropdown_visible() ? 1 : 0,
     'isMarkerVisible' => is_block_editor_marker_style_dropdown_visible() ? 1 : 0,
     'isBadgeVisible'  => is_block_editor_badge_style_dropdown_visible() ? 1 : 0,
@@ -98,8 +115,11 @@ function cocoon_blocks_cgb_editor_assets() { // phpcs:ignore
     'isRankingVisible' => $is_rankings_visible,
     'isSpeechBalloonEnable' => $balloons ? 1 : 0,
     'speechBalloonDefaultIconUrl' => get_template_directory_uri().'/images/anony.png',
-    'siteIconFont' => get_site_icon_font_class(),
+    'siteIconFont' => ' '.get_site_icon_font_class(),
+    'pageTypeClass' => get_editor_page_type_class(),
     'isDebugMode' => DEBUG_MODE,
+    'isPrivilegeActivationCodeAvailable' => is_privilege_activation_code_available(),
+    'wpVersion' => $wp_version,
   );
 
 
@@ -118,7 +138,6 @@ function cocoon_blocks_cgb_editor_assets() { // phpcs:ignore
   // オブジェクト渡し
   ///////////////////////////////////////////
   //吹き出し情報を渡す
-  //_v($balloons);
   wp_localize_script(
     'cocoon-blocks-js', //値を渡すjsファイルのハンドル名
     'gbSpeechBalloons', //任意のオブジェクト名
@@ -127,11 +146,10 @@ function cocoon_blocks_cgb_editor_assets() { // phpcs:ignore
   //テーマのキーカラーを渡す
   wp_localize_script(
     'cocoon-blocks-js', //値を渡すjsファイルのハンドル名
-    'keyColor', //任意のオブジェクト名
-     get_editor_key_color()//プロバティ
+    'gbColors', //任意のオブジェクト名
+    $colors//プロバティ
   );
   //テンプレート情報を渡す
-  //_v($templates);
   if ($is_templates_visible) {
     wp_localize_script(
       'cocoon-blocks-js', //値を渡すjsファイルのハンドル名
@@ -141,7 +159,6 @@ function cocoon_blocks_cgb_editor_assets() { // phpcs:ignore
   }
 
   //アフィリエイト情報を渡す
-  //_v($affiliates);
   if ($is_affiliates_visible) {
     wp_localize_script(
       'cocoon-blocks-js', //値を渡すjsファイルのハンドル名
@@ -151,7 +168,6 @@ function cocoon_blocks_cgb_editor_assets() { // phpcs:ignore
   }
 
   //ランキング情報を渡す
-  //_v($rankings);
   if ($is_rankings_visible) {
     wp_localize_script(
       'cocoon-blocks-js', //値を渡すjsファイルのハンドル名
@@ -160,11 +176,18 @@ function cocoon_blocks_cgb_editor_assets() { // phpcs:ignore
     );
   }
 
-  //カラーパレット情報私
+  //カラーパレット情報渡し
   wp_localize_script(
     'cocoon-blocks-js', //値を渡すjsファイルのハンドル名
     'cocoonPaletteColors', //任意のオブジェクト名
     get_cocoon_editor_color_palette_colors() //カラーパレット
+  );
+
+  //言語情報渡し
+  wp_localize_script(
+    'cocoon-blocks-js', //値を渡すjsファイルのハンドル名
+    'gbCodeLanguages', //任意のオブジェクト名
+    get_block_editor_code_languages() //カラーパレット
   );
 
 
@@ -180,7 +203,11 @@ function cocoon_blocks_cgb_editor_assets() { // phpcs:ignore
 
 //Cocoonカテゴリーを追加
 if (is_admin()) {
-	add_filter( 'block_categories', 'add_cocoon_theme_block_categories', 10, 2 );
+  if (is_wp_5_8_or_over()) {
+    add_filter( 'block_categories_all', 'add_cocoon_theme_block_categories', 10, 2 );
+  } else {
+    add_filter( 'block_categories', 'add_cocoon_theme_block_categories', 10, 2 );
+  }
 }
 if ( !function_exists( 'add_cocoon_theme_block_categories' ) ):
 function add_cocoon_theme_block_categories( $categories, $post ){
@@ -226,7 +253,11 @@ function add_cocoon_theme_block_categories( $categories, $post ){
 endif;
 
 //許可するブロックを配列で返す（ホワイトリスト形式で実用性がない…）
-add_filter( 'allowed_block_types', 'cocoon_allowed_block_types_custom' );
+if (is_wp_5_8_or_over()) {
+  add_filter( 'allowed_block_types_all', 'cocoon_allowed_block_types_custom' );
+} else {
+  add_filter( 'allowed_block_types', 'cocoon_allowed_block_types_custom' );
+}
 if ( !function_exists( 'cocoon_allowed_block_types_custom' ) ):
 function cocoon_allowed_block_types_custom( $allowed_block_types ) {
   return $allowed_block_types;
@@ -247,3 +278,26 @@ function cocoon_editor_color_palette_setup() {
     return $colors;
 }
 endif;
+
+//ブロックの読み込み
+require_once abspath(__FILE__).'block/balloon/index.php';
+require_once abspath(__FILE__).'block/blank-box/index.php';
+require_once abspath(__FILE__).'block/blogcard/index.php';
+require_once abspath(__FILE__).'block/button/index.php';
+require_once abspath(__FILE__).'block/button-wrap/index.php';
+require_once abspath(__FILE__).'block/icon-box/index.php';
+require_once abspath(__FILE__).'block/icon-list/index.php';
+require_once abspath(__FILE__).'block/info-box/index.php';
+require_once abspath(__FILE__).'block/search-box/index.php';
+require_once abspath(__FILE__).'block/sticky-box/index.php';
+require_once abspath(__FILE__).'block/tab-box/index.php';
+require_once abspath(__FILE__).'block/timeline/index.php';
+require_once abspath(__FILE__).'block/timeline-item/index.php';
+require_once abspath(__FILE__).'block/toggle-box/index.php';
+
+require_once abspath(__FILE__).'block-universal/caption-box/index.php';
+require_once abspath(__FILE__).'block-universal/tab-caption-box/index.php';
+require_once abspath(__FILE__).'block-universal/label-box/index.php';
+
+require_once abspath(__FILE__).'micro/micro-balloon/index.php';
+require_once abspath(__FILE__).'micro/micro-text/index.php';

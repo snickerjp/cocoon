@@ -18,9 +18,11 @@ $pages = $wp_query->max_num_pages;
 if(!$pages){
   $pages = 1;
 }
+//1ページかどうか
+$is_1_page = ($pages != 1);
 
 //ページが1ページしかない場合は出力しない
-if($pages != 1) {
+if($is_1_page) {
   //次のページ番号
   if ( $pages == $paged ) {
     $next_page_num = $paged;
@@ -32,13 +34,15 @@ if($pages != 1) {
   if ( $paged < $pages ) {
     $url = get_pagenum_link($next_page_num);
     //$url = get_query_removed_url($url);
+    // var_dump($url);
     echo '<div class="pagination-next"><a href="'.esc_url($url).'" class="pagination-next-link key-btn">'.__( '次のページ', THEME_NAME ).'</a></div>';
   }
 
 }
+
+//ページが1ページしかない場合は出力しない
+if($is_1_page):
 ?>
-
-
 <div class="pagination">
   <?php global $wp_rewrite;
   $paginate_base = get_pagenum_link(1);
@@ -47,8 +51,12 @@ if($pages != 1) {
     $paginate_base = add_query_arg('paged','%#%');
   }
   else{
+    $pagenum_link = html_entity_decode( get_pagenum_link() );
+    $url = get_pagenum_link(2);
+    $string = str_replace(trailingslashit($pagenum_link), '', $url);
+    $string = str_replace(user_trailingslashit('/2'), '/%#%/', $string);
     $paginate_format = (substr($paginate_base,-1,1) == '/' ? '' : '/') .
-    user_trailingslashit('page/%#%/','paged');;
+    user_trailingslashit($string, 'paged');
     $paginate_base .= '%_%';
   }
 
@@ -62,3 +70,5 @@ if($pages != 1) {
     'next_text' => '<span class="fa fa-angle-right" aria-hidden="true"></span>',
   )); ?>
 </div><!-- /.pagination -->
+<?php
+endif;

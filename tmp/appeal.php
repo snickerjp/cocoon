@@ -8,9 +8,12 @@
 if ( !defined( 'ABSPATH' ) ) exit; ?>
 
 <?php //アピールエリアを表示するか
-if (is_appeal_area_visible() && !is_amp()): ?>
+if (is_appeal_area_visible() && !is_amp() && apply_filters('appeal_area_visible', true)): ?>
 <div id="appeal" class="appeal<?php echo get_additional_appeal_area_classes(); ?>">
   <div id="appeal-in" class="appeal-in wrap">
+
+    <?php //テキストメッセージエリアを表示するか
+    if (is_appeal_area_content_visible()): ?>
     <div class="appeal-content">
       <?php //タイトルが存在するか
       if (get_appeal_area_title()): ?>
@@ -32,6 +35,8 @@ if (is_appeal_area_visible() && !is_amp()): ?>
       </a>
       <?php endif ?>
     </div>
+    <?php endif; ?>
+
   </div>
 </div>
 <?php endif ?>

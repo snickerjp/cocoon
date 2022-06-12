@@ -29,7 +29,7 @@ define('PWA_SERVICE_WORKER_VERSION', '20190523');
 
 //開発関係の場合デバッグ値を有効にする
 $http_host = isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : '';
-define('DEBAG_VALUE', $http_host == THEME_NAME.'.local' ? 1 : 0);
+define('DEBAG_VALUE', ($http_host == THEME_NAME.'.local') /*|| ($http_host == 'wp-cocoon.com')*/ ? 1 : 0);
 
 //デバッグモード
 define('DEBUG_MODE', DEBAG_VALUE);
@@ -149,8 +149,6 @@ $_MAIN_DATA_AD_FORMATS = array(
 );
 // define('MAIN_DATA_AD_FORMATS', $_MAIN_DATA_AD_FORMATS);
 
-//アドセンス共通スクリプトコード
-define('ADSENSE_SCRIPT_CODE', '<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>');
 //AdSenseの存在フラグ
 global $_IS_ADSENSE_EXIST;
 $_IS_ADSENSE_EXIST = false; //最初はAdSenseの存在がない
@@ -236,6 +234,7 @@ define('NO_IMAGE_160', get_template_directory_uri().'/images/no-image-160.png');
 define('NO_IMAGE_120', get_template_directory_uri().'/images/no-image-120.png');
 define('NO_IMAGE_150', get_template_directory_uri().'/images/no-image-150.png');
 define('NO_IMAGE_LARGE', get_template_directory_uri().'/images/no-image-large.png');
+define('NO_IMAGE_RSS', get_template_directory_uri().'/images/no-image-rss.png');
 
 ///////////////////////////////////////
 // キャッシュ
@@ -265,7 +264,8 @@ define('BEFORE_1ST_H2_AD_PRIORITY_STANDARD', 10001);
 define('BEFORE_1ST_H2_TOC_PRIORITY_STANDARD', 10003);
 define('BEFORE_1ST_H2_TOC_PRIORITY_HIGH', 10000);
 
-
+//ショートコード
+define('MATH_SHORTCODE', '[math]');
 
 //URLの正規表現
 define('URL_REG_STR', '(https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)');
@@ -274,16 +274,22 @@ define('URL_REG', '/'.URL_REG_STR.'/');
 //Font Awesome4.7のCDN
 define('FONT_AWESOME_4_CDN_URL', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 //Font Awesome5のCDN
-define('FONT_AWESOME_5_CDN_URL', 'https://use.fontawesome.com/releases/v5.11.1/css/all.css');
+define('FONT_AWESOME_5_CDN_URL', 'https://use.fontawesome.com/releases/v5.15.4/css/all.css');
 
 //Font Awesome4
 define('FONT_AWESOME_4_URL', get_template_directory_uri().'/webfonts/fontawesome/css/font-awesome.min.css');
+define('FONT_AWESOME_4_WOFF2_URL', get_template_directory_uri().'/webfonts/fontawesome/fonts/fontawesome-webfont.woff2?v=4.7.0');
 //Font Awesome5
 define('FONT_AWESOME_5_URL', get_template_directory_uri().'/webfonts/fontawesome5/css/all.min.css');
+define('FONT_AWESOME_5_BRANDS_WOFF2_URL', get_template_directory_uri().'/webfonts/fontawesome5/webfonts/fa-brands-400.woff2');
+define('FONT_AWESOME_5_REGULAR_WOFF2_URL', get_template_directory_uri().'/webfonts/fontawesome5/webfonts/fa-regular-400.woff2');
+define('FONT_AWESOME_5_SOLID_WOFF2_URL', get_template_directory_uri().'/webfonts/fontawesome5/webfonts/fa-solid-900.woff2');
 //Font Awesome5アップデート
 define('FONT_AWESOME_5_UPDATE_URL', get_template_directory_uri().'/css/fontawesome5.css');
 //IcoMoonフォント
 define('FONT_ICOMOON_URL', get_template_directory_uri() . '/webfonts/icomoon/style.css');
+define('FONT_ICOMOON_WOFF_URL', get_template_directory_uri() . '/webfonts/icomoon/fonts/icomoon.woff');
+define('FONT_ICOMOON_TTF_URL', get_template_directory_uri() . '/webfonts/icomoon/fonts/icomoon.ttf');
 
 //親テーマのJavaScript
 define('THEME_JS_URL', get_template_directory_uri() . '/javascript.js');
@@ -326,13 +332,19 @@ define('AMAZON_ASIN_ERROR_MESSAGE', __( '商品を取得できませんでした
 //Amazonメール広告
 define('THEME_MAIL_AMAZON_PR', "
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[PR]━┓
-　ここに広告を入れるかも。
+　▼▼ クラウド型レンタルサーバー ColorfulBox（カラフルボックス） ▼▼
+　https://px.a8.net/svt/ejp?a8mat=2ZNCKS+45FZ0Q+42SG+5YZ77
+　528円から始められるコスパ無双レンタルサーバー
+　https://nelog.jp/colorfulbox
+　サイト作成方法はこちら
+　https://nelog.jp/making-colorfulbox-wordpress-site
+　【50％OFF】クーポンはこちら
+　https://nelog.jp/colorfulbox-coupon-code
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
 
 //楽天メール広告
 define('THEME_MAIL_RAKUTEN_PR', "
-楽天で代替え商品を調べる。
-https://a.r10.to/hllTWS");
+楽天で代替え商品を検索する。");
 
 //メール関連
 define('THEME_MAIL_CREDIT', "

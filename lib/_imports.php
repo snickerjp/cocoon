@@ -76,6 +76,7 @@ require_once abspath(__FILE__).'page-settings/apis-funcs.php';       //API設定
 require_once abspath(__FILE__).'page-settings/others-funcs.php';     //その他設定関数
 require_once abspath(__FILE__).'page-settings/reset-funcs.php';      //リセット設定関数
 require_once abspath(__FILE__).'page-settings/about-funcs.php';      //テーマ情報設定関数
+require_once abspath(__FILE__).'page-settings/donation-funcs.php';      //寄付設定関数
 require_once abspath(__FILE__).'db.php';  //データベース操作関数
 require_once abspath(__FILE__).'page-func-text/func-text-func.php';  //使いまわしテキスト関数
 require_once abspath(__FILE__).'page-backup/backup-func.php';  //バックアップ関数
@@ -95,6 +96,7 @@ require_once abspath(__FILE__).'custom-fields/custom-css-field.php'; //カスタ
 require_once abspath(__FILE__).'custom-fields/custom-js-field.php';  //カスタJS設定
 require_once abspath(__FILE__).'custom-fields/memo-field.php';  //メモ
 require_once abspath(__FILE__).'custom-fields/sns-image-field.php';  //SNS画像
+require_once abspath(__FILE__).'custom-fields/other-field.php';  //その他
 require_once abspath(__FILE__).'seo.php';      //SEO関数
 require_once abspath(__FILE__).'ogp.php';      //OGP関数
 require_once abspath(__FILE__).'blogcard-in.php';  //内部ブログカード関数
@@ -116,9 +118,15 @@ require_once abspath(__FILE__).'shortcodes-rakuten.php'; //楽天商品リンク
 require_once abspath(__FILE__).'html5.php'; //HTML5チェック関係
 //フルパスを指定しないとうまくいかないファイル
 require_once abspath(__FILE__).'profile.php'; //プロフィール関係の処理
-require_once abspath(__FILE__).'youtube.php'; //YouTube関係の処理
+if (apply_filters('cocoon_youtube_speed_up_enable', false)) {
+  require_once abspath(__FILE__).'youtube.php'; //YouTube関係の処理
+}
 require_once abspath(__FILE__).'font-awesome.php'; //Font Awesome
 require_once abspath(__FILE__).'admin.php'; //管理者機能
+if ( function_exists( 'register_block_style' ) && is_block_editor_style_block_option_visible() ){
+  require_once abspath(__FILE__).'block-editor-styles-group.php'; //ブロックエディタースタイル（グループ）
+  require_once abspath(__FILE__).'block-editor-styles-list.php'; //ブロックエディタースタイル（リスト）
+}
 
 //Cocoon Blocks
 if ( !function_exists( 'cocoon_blocks_cgb_block_assets' ) && is_gutenberg_editor_enable() ):
@@ -138,6 +146,9 @@ if (is_admin()) {;
   require_once abspath(__FILE__).'tinymce/shortcodes.php'; //ショートコード追加
   require_once abspath(__FILE__).'admin-tools.php'; //外部ツールを利用したもの
   require_once abspath(__FILE__).'admin-forms.php'; //管理画面で使用するフォームパーツ
+  // if (is_dashboard_message_visible()) {
+  //   require_once abspath(__FILE__).'dashboard-message.php'; //ダッシュボードに表示するメッセージ
+  // }
 }
 
 require_once abspath(__FILE__).'settings.php';   //WordPressの設定
@@ -149,10 +160,6 @@ require_once abspath(__FILE__).'widgets/new-entries.php';
 require_once abspath(__FILE__).'widgets/related-entries.php';
 //人気記事ウィジェット
 require_once abspath(__FILE__).'widgets/popular-entries.php';
-//ナビカードウィジェット
-require_once abspath(__FILE__).'widgets/navi-entries.php';
-//おすすめカードウィジェット
-require_once abspath(__FILE__).'widgets/recommended-cards.php';
 //最近のコメントウィジェット
 require_once abspath(__FILE__).'widgets/recent-comments.php';
 //フォローボタンウィジェット
@@ -183,3 +190,13 @@ require_once abspath(__FILE__).'widgets/ad.php';
 require_once abspath(__FILE__).'widgets/toc.php';
 //ウィジェットの表示制御
 require_once abspath(__FILE__).'widgets/display-widgets.php';
+//メニューを取得
+$nav_menus = wp_get_nav_menus();
+if (!empty($nav_menus)) {
+  //ナビカードウィジェット
+  require_once abspath(__FILE__).'widgets/navi-entries.php';
+  //おすすめカードウィジェット
+  require_once abspath(__FILE__).'widgets/recommended-cards.php';
+  //ボックスメニューウィジェット
+  require_once abspath(__FILE__).'widgets/box-menus.php';
+}

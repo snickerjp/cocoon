@@ -152,19 +152,29 @@ endif;
 //PA-APIの返り値のJSONにアイテムが存在するか
 if ( !function_exists( 'is_paapi_json_item_exist' ) ):
 function is_paapi_json_item_exist($json){
-  return property_exists($json->{'ItemsResult'}, 'Items');
+  if (isset($json->{'ItemsResult'})) {
+    $ItemsResult = $json->{'ItemsResult'};
+    return property_exists($ItemsResult, 'Items');
+  }  
 }
 endif;
 
 
 //Amazon APIから情報の取得
 if ( !function_exists( 'get_amazon_itemlookup_json' ) ):
-function get_amazon_itemlookup_json($asin){
+function get_amazon_itemlookup_json($asin, $tracking_id = null){
   $asin = trim($asin);
 
+  //トラッキングIDが存在する場合
+  $tracking_id = trim($tracking_id);
+  $tid = null;
+  if ($tracking_id) {
+    $tid = '+'.$tracking_id;
+  }
+
   //キャッシュの存在
-  $transient_id = get_amazon_api_transient_id($asin);
-  $transient_bk_id = get_amazon_api_transient_bk_id($asin);
+  $transient_id = get_amazon_api_transient_id($asin.$tid);
+  $transient_bk_id = get_amazon_api_transient_bk_id($asin.$tid);
   $json_cache = get_transient( $transient_id );
   // $json = json_decode( $json_cache );
   // $json_error_code    = isset($json->{'Errors'}[0]->{'Code'}) ? $json->{'Errors'}[0]->{'Code'} : null;
@@ -183,7 +193,7 @@ function get_amazon_itemlookup_json($asin){
   //シークレットキー
   $secretKey = trim(get_amazon_api_secret_key());
   //アソシエイトタグ
-  $partnerTag = trim(get_amazon_associate_tracking_id());
+  $partnerTag = trim(get_amazon_associate_tracking_id($tracking_id));
   //キャッシュ更新間隔（日）
   $days = intval(get_api_cache_retention_period());
   //_v($access_key_id);
@@ -363,12 +373,14 @@ function amazon_product_link_shortcode($atts){
     'kw' => null,
     'title' => null,
     'desc' => null,
+    'tracking_id' => null,
     'price' => null,
     'review' => null,
     'size' => 'm',
     'amazon' => 1,
     'rakuten' => 1,
     'yahoo' => 1,
+    'dmm' => 1,
     'border' => 1,
     'logo' => null,
     'image_only' => 0,
@@ -409,13 +421,15 @@ function amazon_product_link_shortcode($atts){
   //シークレットキー
   $secret_access_key = trim(get_amazon_api_secret_key());
   //トラッキングID
-  $associate_tracking_id = trim(get_amazon_associate_tracking_id());
+  $associate_tracking_id = trim(get_amazon_associate_tracking_id($tracking_id));
   //楽天アフィリエイトID
   $rakuten_affiliate_id = trim(get_rakuten_affiliate_id());
   //Yahoo!バリューコマースSID
   $sid = trim(get_yahoo_valuecommerce_sid());
   //Yahoo!バリューコマースPID
   $pid = trim(get_yahoo_valuecommerce_pid());
+  //DMMアフィリエイトID
+  $dmm_affiliate_id = trim(get_dmm_affiliate_id());
 
   //もしもID
   $moshimo_amazon_id  = trim(get_moshimo_amazon_id());
@@ -438,7 +452,7 @@ function amazon_product_link_shortcode($atts){
   $associate_url = get_amazon_associate_url($asin, $associate_tracking_id);
 
   //商品情報の取得
-  $res = get_amazon_itemlookup_json($asin);
+  $res = get_amazon_itemlookup_json($asin, $associate_tracking_id);
 
   if ($res === false) {//503エラーの場合
     return get_amazon_admin_error_message_tag($associate_url, __( '503エラー。このエラーは、PA-APIのアクセス制限を超えた場合や、メンテナンス中などにより、リクエストに応答できない場合に出力されるエラーコードです。サーバーの「php.ini設定」の「allow_url_fopen」項目が「ON」になっているかを確認してください。このエラーが頻出する場合は「API」設定項目にある「キャッシュの保存期間」を長めに設定することをおすすめします。', THEME_NAME ));
@@ -654,15 +668,23 @@ function amazon_product_link_shortcode($atts){
       }
       //_v($maker);
 
-      $Offers = $item->{'Offers'};
-      $HighestPrice = isset($Offers->{'Summaries'}[0]->{'HighestPrice'}->{'DisplayAmount'}) ? $Offers->{'Summaries'}[0]->{'HighestPrice'}->{'DisplayAmount'} : null;
-      $LowestPrice = isset($Offers->{'Summaries'}[0]->{'LowestPrice'}->{'DisplayAmount'}) ? $Offers->{'Summaries'}[0]->{'LowestPrice'}->{'DisplayAmount'} : null;
+      $HighestPrice = null;
+      $LowestPrice = null;
+      $SavingBasisPrice = null;
+      $Price = null;
 
-      $SavingBasisPrice = isset($Offers->{'Listings'}[0]->{'SavingBasis'}->{'DisplayAmount'}) ? $Offers->{'Listings'}[0]->{'SavingBasis'}->{'DisplayAmount'} : null;
-      $Price = isset($Offers->{'Listings'}[0]->{'Price'}->{'DisplayAmount'}) ? $Offers->{'Listings'}[0]->{'Price'}->{'DisplayAmount'} : null;
+      if (isset($item->{'Offers'})) {
+        $Offers = $item->{'Offers'};
+        $HighestPrice = isset($Offers->{'Summaries'}[0]->{'HighestPrice'}->{'DisplayAmount'}) ? $Offers->{'Summaries'}[0]->{'HighestPrice'}->{'DisplayAmount'} : null;
+        $LowestPrice = isset($Offers->{'Summaries'}[0]->{'LowestPrice'}->{'DisplayAmount'}) ? $Offers->{'Summaries'}[0]->{'LowestPrice'}->{'DisplayAmount'} : null;
 
-      //$ListPrice = $item->ItemAttributes->ListPrice;
-      //_v($FormattedPrice);
+        $SavingBasisPrice = isset($Offers->{'Listings'}[0]->{'SavingBasis'}->{'DisplayAmount'}) ? $Offers->{'Listings'}[0]->{'SavingBasis'}->{'DisplayAmount'} : null;
+        $Price = isset($Offers->{'Listings'}[0]->{'Price'}->{'DisplayAmount'}) ? $Offers->{'Listings'}[0]->{'Price'}->{'DisplayAmount'} : null;
+
+        //$ListPrice = $item->ItemAttributes->ListPrice;
+        //_v($FormattedPrice);
+      }
+
 
       ///////////////////////////////////////////
       // デフォルト価格取得
@@ -747,12 +769,14 @@ function amazon_product_link_shortcode($atts){
         'rakuten_affiliate_id' => $rakuten_affiliate_id,
         'sid' => $sid,
         'pid' => $pid,
+        'dmm_affiliate_id' => $dmm_affiliate_id,
         'moshimo_amazon_id' => $moshimo_amazon_id,
         'moshimo_rakuten_id' => $moshimo_rakuten_id,
         'moshimo_yahoo_id' => $moshimo_yahoo_id,
         'amazon' => $amazon,
         'rakuten' => $rakuten,
         'yahoo' => $yahoo,
+        'dmm' => $dmm,
         'amazon_page_url' => $associate_url,
         'rakuten_page_url' => null,
         'btn1_url' => $btn1_url,
@@ -861,13 +885,17 @@ function amazon_product_link_shortcode($atts){
       ///////////////////////////////////////////
       // Amazonテキストリンク
       ///////////////////////////////////////////
+      $text_only_class = null;
+      if ($text_only) {
+        $text_only_class = ' amazon-item-text-only product-item-text-only';
+      }
       $text_link_tag =
-        '<a href="'.esc_url($associate_url).'" class="amazon-item-title-link product-item-title-link" target="_blank" title="'.esc_attr($TitleAttr).'" rel="nofollow noopener">'.
+        '<a href="'.esc_url($associate_url).'" class="amazon-item-title-link product-item-title-link'.esc_attr($text_only_class).'" target="_blank" title="'.esc_attr($TitleAttr).'" rel="nofollow noopener">'.
         $TitleHtml.
         $moshimo_amazon_impression_tag.
         '</a>';
       if ($text_only) {
-        return $text_link_tag;
+        return apply_filters('amazon_product_text_link_tag', $text_link_tag);
       }
 
       ///////////////////////////////////////////

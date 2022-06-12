@@ -2,9 +2,8 @@
 /*!
   Skin Name: Veilnui Simplog (light green)
   Description: シンプルなブログスキン（明るい緑色）
-  Skin URI: https://simplog.veilnui.org
+  Skin URI: https://wp-cocoon.com/veilnui-simplog
   Author: veilnui
-  Author URI: https://veilnui.net/
   Priority: 9840001000
   Screenshot URI: https://wp-cocoon.com/wp-content/themes/cocoon-master/skins/veilnui-simplog-light-green/images/image.png
   Version: 1.1.7
@@ -120,7 +119,9 @@ body {
   color: #9CCC65;
 }
 
-#sidebar-menu-content h3, #sidebar h3 {
+#sidebar-menu-content h2, #sidebar h2,
+#sidebar-menu-content h3,
+#sidebar h3 {
   background-color: #9CCC65;
   color: white;
   padding: 5px 5px 5px 42px;
@@ -128,7 +129,9 @@ body {
   position: relative;
   z-index: 0;
 }
-#sidebar-menu-content h3::after, #sidebar h3::after {
+#sidebar-menu-content h2::after, #sidebar h2::after,
+#sidebar-menu-content h3::after,
+#sidebar h3::after {
   position: absolute;
   content: "";
   top: -2px;
@@ -260,6 +263,9 @@ body {
 }
 #sidebar .widget_author_box .author-box .amazon-button, #slide-in-sidebar .widget_author_box .author-box .amazon-button {
   background-color: #FF9900;
+}
+#sidebar .widget_author_box .author-box .twitch-button, #slide-in-sidebar .widget_author_box .author-box .twitch-button {
+  background-color: #6441A4;
 }
 #sidebar .widget_author_box .author-box .rakuten-room-button, #slide-in-sidebar .widget_author_box .author-box .rakuten-room-button {
   background-color: #C61E79;
@@ -405,31 +411,31 @@ body {
   transition: all 0.3s ease;
   background-color: #F1F8E9;
 }
-#sidebar .widget_calendar #wp-calendar caption, #slide-in-sidebar .widget_calendar #wp-calendar caption {
+#sidebar .widget_calendar .wp-calendar-table caption, #slide-in-sidebar .widget_calendar .wp-calendar-table caption {
   color: white;
   border-color: #558B2F;
   background-color: #7CB342;
 }
-#sidebar .widget_calendar #wp-calendar thead tr th, #slide-in-sidebar .widget_calendar #wp-calendar thead tr th {
+#sidebar .widget_calendar .wp-calendar-table thead tr th, #slide-in-sidebar .widget_calendar .wp-calendar-table thead tr th {
   color: white;
   border-color: #558B2F;
   background-color: #9CCC65;
 }
-#sidebar .widget_calendar #wp-calendar tbody tr td, #slide-in-sidebar .widget_calendar #wp-calendar tbody tr td {
+#sidebar .widget_calendar .wp-calendar-table tbody tr td, #slide-in-sidebar .widget_calendar .wp-calendar-table tbody tr td {
   color: white;
   border-color: #558B2F;
   background-color: #C5E1A5;
 }
-#sidebar .widget_calendar #wp-calendar tbody tr td a, #slide-in-sidebar .widget_calendar #wp-calendar tbody tr td a {
+#sidebar .widget_calendar .wp-calendar-table tbody tr td a, #slide-in-sidebar .widget_calendar .wp-calendar-table tbody tr td a {
   border-radius: 0;
   background-color: #C5E1A5;
   color: white;
 }
-#sidebar .widget_calendar #wp-calendar tbody tr td#today, #sidebar .widget_calendar #wp-calendar tbody tr td#today a, #slide-in-sidebar .widget_calendar #wp-calendar tbody tr td#today, #slide-in-sidebar .widget_calendar #wp-calendar tbody tr td#today a {
+#sidebar .widget_calendar .wp-calendar-table tbody tr td [id$="today"], #sidebar .widget_calendar .wp-calendar-table tbody tr td [id$="today"] a, #slide-in-sidebar .widget_calendar .wp-calendar-table tbody tr td [id$="today"], #slide-in-sidebar .widget_calendar .wp-calendar-table tbody tr td [id$="today"] a {
   background-color: #9CCC65;
   color: white;
 }
-#sidebar .widget_calendar #wp-calendar tfoot, #slide-in-sidebar .widget_calendar #wp-calendar tfoot {
+#sidebar .widget_calendar .wp-calendar-table tfoot, #slide-in-sidebar .widget_calendar .wp-calendar-table tfoot {
   display: none;
 }
 #sidebar .widget_media_gallery img, #slide-in-sidebar .widget_media_gallery img {
@@ -647,29 +653,16 @@ body {
   padding: 1em;
 }
 #main .entry-content h2, #main .entry-content h3, #main .entry-content h4, #main .entry-content h5, #main .entry-content h6 {
-  background: linear-gradient(to right, #7CB342, #9CCC65);
-  position: relative;
-  color: transparent;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -ms-background-clip: text;
+  color: #7CB342;
+  background-color: transparent;
   border: 0;
-}
-#main .entry-content h2::after, #main .entry-content h3::after, #main .entry-content h4::after, #main .entry-content h5::after, #main .entry-content h6::after {
-  background: linear-gradient(to right, #7CB342, #9CCC65);
-  position: absolute;
-  content: "";
-  top: auto;
-  left: 0px;
-  bottom: 0px;
-  right: auto;
+  border-bottom: 5px solid #7CB342;
 }
 #main .entry-content h2, #main .entry-content h3 {
   padding: 0.5em;
 }
-#main .entry-content h2::after {
-  width: 100%;
-  height: 5px;
+#main .entry-content h3 {
+  border-width: 3px;
 }
 #main .entry-content h3::after {
   width: 100%;
@@ -677,10 +670,7 @@ body {
 }
 #main .entry-content h4, #main .entry-content h5, #main .entry-content h6 {
   padding: 0.25em;
-}
-#main .entry-content h4::after, #main .entry-content h5::after, #main .entry-content h6::after {
-  width: 100%;
-  height: 1px;
+  border-width: 1px;
 }
 #main .wp-block-quote {
   border: solid #7CB342 1px;
@@ -725,31 +715,31 @@ blockquote cite {
   border: none;
 }
 
-#main .wp-block-calendar #wp-calendar caption {
+#main .wp-block-calendar .wp-calendar-table caption {
   color: white;
   border-color: #558B2F;
   background-color: #7CB342;
 }
-#main .wp-block-calendar #wp-calendar thead tr th {
+#main .wp-block-calendar .wp-calendar-table thead tr th {
   color: white;
   border-color: #558B2F;
   background-color: #9CCC65;
 }
-#main .wp-block-calendar #wp-calendar tbody tr td {
+#main .wp-block-calendar .wp-calendar-table tbody tr td {
   color: white;
   border-color: #558B2F;
   background-color: #C5E1A5;
 }
-#main .wp-block-calendar #wp-calendar tbody tr td a {
+#main .wp-block-calendar .wp-calendar-table tbody tr td a {
   border-radius: 0;
   background-color: #C5E1A5;
   color: white;
 }
-#main .wp-block-calendar #wp-calendar tbody tr td#today, #main .wp-block-calendar #wp-calendar tbody tr td#today a {
+#main .wp-block-calendar .wp-calendar-table tbody tr td [id$="today"], #main .wp-block-calendar .wp-calendar-table tbody tr td [id$="today"] a {
   background-color: #9CCC65;
   color: white;
 }
-#main .wp-block-calendar #wp-calendar tfoot {
+#main .wp-block-calendar .wp-calendar-table tfoot {
   display: none;
 }
 #main .wp-block-archives select {

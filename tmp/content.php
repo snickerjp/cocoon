@@ -29,7 +29,7 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
       <?php endif; ?>
 
       <?php //タイトル上のカテゴリー・タグ
-      if (is_category_tag_display_position_title_top()) {
+      if (is_category_tag_display_position_title_top() && is_single()) {
         get_template_part('tmp/categories-tags');
       } ?>
 
@@ -90,7 +90,7 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
         get_template_part('tmp/date-tags'); ?>
 
         <?php //本文上のカテゴリー・タグ
-        if (is_category_tag_display_position_content_top()) {
+        if (is_category_tag_display_position_content_top() && is_single()) {
           get_template_part('tmp/categories-tags');
         } ?>
 
@@ -116,10 +116,16 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
 
       </header>
 
+      <?php //投稿・固定ページ本文前のアクションフック
+      do_action('singular_entry_content_before'); ?>
+
       <div class="entry-content cf<?php echo get_additional_entry_content_classes(); ?>" itemprop="mainEntityOfPage">
       <?php //記事本文の表示
         the_content(); ?>
       </div>
+
+      <?php ////投稿・固定ページ本文後のアクションフック
+      do_action('singular_entry_content_after'); ?>
 
       <?php //マルチページ用のページャーリンク
       get_template_part('tmp/pager-page-links'); ?>
@@ -137,12 +143,12 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
         <?php endif; ?>
 
         <?php //本文下ページ送りナビ
-        if (is_post_navi_position_under_content()) {
+        if (is_post_navi_position_under_content() && is_single()) {
           get_template_part('tmp/pager-post-navi');
         } ?>
 
         <?php //本文下のカテゴリー・タグ
-        if (is_category_tag_display_position_content_bottom()) {
+        if (is_category_tag_display_position_content_bottom() && is_single()) {
           get_template_part('tmp/categories-tags');
         } ?>
 

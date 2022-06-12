@@ -110,7 +110,6 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
           </td>
         </tr>
 
-        <?php if (false): ?>
         <!-- 自動AdSense -->
         <tr>
           <th scope="row">
@@ -118,17 +117,20 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
           </th>
           <td>
             <?php
-            $options = array(
-              'by_auto' => __( 'アドセンス自動広告のみ利用', THEME_NAME ),
-              'by_auto_and_myself' => __( '自動広告とマニュアル広告を併用', THEME_NAME ),
-              'by_myself' => __( 'マニュアル広告設定（自前で位置を設定）', THEME_NAME ),
-            );
-            generate_radiobox_tag(OP_ADSENSE_DISPLAY_METHOD, $options, get_adsense_display_method());
-            generate_tips_tag(__( '「自動広告」を選択した場合は、AdSenseが勝手に広告コードを挿入するので制御はできません。「自動広告のみ」が有効の場合、「広告の表示位置」や「[ad]ショートコード」で設定した広告の表示は無効になります。', THEME_NAME ));
+            // $options = array(
+            //   'by_auto' => __( 'アドセンス自動広告のみ利用', THEME_NAME ),
+            //   //'by_auto_and_myself' => __( '自動広告とマニュアル広告を併用', THEME_NAME ),
+            //   'by_myself' => __( 'マニュアル広告設定（自前で位置を設定）', THEME_NAME ).__( '※要AdSense管理画面で自動広告無効', THEME_NAME ).get_image_preview_tag('https://im-cocoon.net/wp-content/uploads/auto-adsense-off.png', __( 'AdSenseの「広告」設定からドメインの「編集」ボタンを押して「自動広告」の「無効」にしてください。', THEME_NAME ), 500),
+            // );
+            // generate_radiobox_tag(OP_ADSENSE_DISPLAY_METHOD, $options, get_adsense_display_method());
+            // generate_tips_tag(__( '「自動広告」を選択した場合は、AdSenseが勝手に広告コードを挿入するので制御はできません。「自動広告のみ」が有効の場合、「広告の表示位置」や「[ad]ショートコード」で設定した広告の表示は無効になります。', THEME_NAME ));
+
+
+            generate_checkbox_tag(OP_MOBILE_ADSENSE_WIDTH_WIDE, is_mobile_adsense_width_wide(), __("モバイル広告の幅を広くする",THEME_NAME ));
+            generate_tips_tag(__( 'モバイルでAdSenseの幅を画面いっぱいにします。', THEME_NAME ).__( 'AdSenseタグの「data-full-width-responsive」を「true」にします。', THEME_NAME ).__( 'この機能が有効な場合、AdSenseの仕様で"horizontal","vertical"広告をモバイルで表示した際は"rectangle"として表示されます。', THEME_NAME ).__( '意図通りのサイズで表示する場合は機能を無効にしてください。', THEME_NAME ));
             ?>
           </td>
         </tr>
-        <?php endif; ?>
 
 
         <!-- 広告の表示位置 -->
@@ -146,21 +148,22 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
                 <p><strong><?php _e( 'インデックスページの表示位置', THEME_NAME ) ?></strong></p>
                 <ul>
                   <li>
-                    <input type="checkbox" name="<?php echo OP_AD_POS_INDEX_TOP_VISIBLE; ?>" value="1"<?php the_checkbox_checked(is_ad_pos_index_top_visible()); ?>><?php _e('トップ' ,THEME_NAME );
-                          generate_main_column_top_ad_tip_tag(); ?>
                     <?php
+                    generate_checkbox_tag(OP_AD_POS_INDEX_TOP_VISIBLE, is_ad_pos_index_top_visible(), __('トップ' ,THEME_NAME ));
                     //詳細設定
                     generate_main_column_ad_detail_setting_forms(OP_AD_POS_INDEX_TOP_FORMAT, get_ad_pos_index_top_format(), OP_AD_POS_INDEX_TOP_LABEL_VISIBLE, is_ad_pos_index_top_label_visible());
 
                     ?>
                   </li>
                   <li>
-                    <input type="checkbox" name="<?php echo OP_AD_POS_INDEX_MIDDLE_VISIBLE; ?>" value="1"<?php the_checkbox_checked(is_ad_pos_index_middle_visible()); ?>><?php _e('ミドル' ,THEME_NAME ); ?>
-                    <?php //詳細設定
+                    <?php
+                    generate_checkbox_tag(OP_AD_POS_INDEX_MIDDLE_VISIBLE, is_ad_pos_index_middle_visible(), __('ミドル' ,THEME_NAME ));
+                    //詳細設定
                     generate_main_column_ad_detail_setting_forms(OP_AD_POS_INDEX_MIDDLE_FORMAT, get_ad_pos_index_middle_format(), OP_AD_POS_INDEX_MIDDLE_LABEL_VISIBLE, is_ad_pos_index_middle_label_visible()); ?>              </li>
                   <li>
-                    <input type="checkbox" name="<?php echo OP_AD_POS_INDEX_BOTTOM_VISIBLE; ?>" value="1"<?php the_checkbox_checked(is_ad_pos_index_bottom_visible()); ?>><?php _e('ボトム' ,THEME_NAME ); ?>
-                    <?php //詳細設定
+                    <?php
+                    generate_checkbox_tag(OP_AD_POS_INDEX_BOTTOM_VISIBLE, is_ad_pos_index_bottom_visible(), __('ボトム' ,THEME_NAME ));
+                    //詳細設定
                     generate_main_column_ad_detail_setting_forms(OP_AD_POS_INDEX_BOTTOM_FORMAT, get_ad_pos_index_bottom_format(), OP_AD_POS_INDEX_BOTTOM_LABEL_VISIBLE, is_ad_pos_index_bottom_label_visible()); ?>
 
                   </li>
@@ -170,16 +173,16 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
                 <p><strong><?php _e( 'サイドバーの表示位置', THEME_NAME ) ?></strong></p>
                 <ul>
                   <li>
-                    <input type="checkbox" name="<?php echo OP_AD_POS_SIDEBAR_TOP_VISIBLE; ?>" value="1"<?php the_checkbox_checked(is_ad_pos_sidebar_top_visible()); ?>><?php
-                    _e('サイドバートップ' ,THEME_NAME );
+                    <?php
+                    generate_checkbox_tag(OP_AD_POS_SIDEBAR_TOP_VISIBLE, is_ad_pos_sidebar_top_visible(), __('サイドバートップ' ,THEME_NAME ));
                     generate_sidebar_top_ad_tip_tag();
-                     ?>
-                    <?php //詳細設定
+                    //詳細設定
                     generate_sidebar_ad_detail_setting_forms(OP_AD_POS_SIDEBAR_TOP_FORMAT, get_ad_pos_sidebar_top_format(), OP_AD_POS_SIDEBAR_TOP_LABEL_VISIBLE, is_ad_pos_sidebar_top_label_visible()); ?>
                   </li>
                   <li>
-                    <input type="checkbox" name="<?php echo OP_AD_POS_SIDEBAR_BOTTOM_VISIBLE; ?>" value="1"<?php the_checkbox_checked(is_ad_pos_sidebar_bottom_visible()); ?>><?php _e('サイドバーボトム' ,THEME_NAME ); ?>
-                    <?php //詳細設定
+                    <?php
+                    generate_checkbox_tag(OP_AD_POS_SIDEBAR_BOTTOM_VISIBLE, is_ad_pos_sidebar_bottom_visible(), __('サイドバーボトム' ,THEME_NAME ));
+                    //詳細設定
                     generate_sidebar_ad_detail_setting_forms(OP_AD_POS_SIDEBAR_BOTTOM_FORMAT, get_ad_pos_sidebar_bottom_format(), OP_AD_POS_SIDEBAR_BOTTOM_LABEL_VISIBLE, is_ad_pos_sidebar_bottom_label_visible()); ?>
                   </li>
                 </ul>
@@ -191,49 +194,53 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
                 <p><strong><?php _e( '投稿・固定ページの表示位置', THEME_NAME ) ?></strong></p>
                 <ul>
                   <li>
-                    <input type="checkbox" name="<?php echo OP_AD_POS_ABOVE_TITLE_VISIBLE; ?>" value="1"<?php the_checkbox_checked(is_ad_pos_above_title_visible()); ?>><?php
-                    _e('タイトル上' ,THEME_NAME );
+                    <?php
+                    generate_checkbox_tag(OP_AD_POS_ABOVE_TITLE_VISIBLE, is_ad_pos_above_title_visible(), __('タイトル上' ,THEME_NAME ));
                     generate_main_column_top_ad_tip_tag();
-                     ?>
-                    <?php //詳細設定
+                    //詳細設定
                     generate_main_column_ad_detail_setting_forms(OP_AD_POS_ABOVE_TITLE_FORMAT, get_ad_pos_above_title_format(), OP_AD_POS_ABOVE_TITLE_LABEL_VISIBLE, is_ad_pos_above_title_label_visible()); ?>
                   </li>
                   <li>
-                    <input type="checkbox" name="<?php echo OP_AD_POS_BELOW_TITLE_VISIBLE; ?>" value="1"<?php the_checkbox_checked(is_ad_pos_below_title_visible()); ?>><?php
-                    _e('タイトル下' ,THEME_NAME );
+                    <?php
+                    generate_checkbox_tag(OP_AD_POS_BELOW_TITLE_VISIBLE, is_ad_pos_below_title_visible(), __('タイトル下' ,THEME_NAME ));
                     generate_main_column_top_ad_tip_tag();
-                     ?>
-                    <?php //詳細設定
+                    //詳細設定
                     generate_main_column_ad_detail_setting_forms(OP_AD_POS_BELOW_TITLE_FORMAT, get_ad_pos_below_title_format(), OP_AD_POS_BELOW_TITLE_LABEL_VISIBLE, is_ad_pos_below_title_label_visible()); ?>
                   </li>
                   <li>
-                    <input type="checkbox" name="<?php echo OP_AD_POS_CONTENT_TOP_VISIBLE; ?>" value="1"<?php the_checkbox_checked(is_ad_pos_content_top_visible()); ?>><?php _e('本文上' ,THEME_NAME ); ?>
-                    <?php //詳細設定
+                    <?php
+                    generate_checkbox_tag(OP_AD_POS_CONTENT_TOP_VISIBLE, is_ad_pos_content_top_visible(), __('本文上' ,THEME_NAME ));
+                    //詳細設定
                     generate_main_column_ad_detail_setting_forms(OP_AD_POS_CONTENT_TOP_FORMAT, get_ad_pos_content_top_format(), OP_AD_POS_CONTENT_TOP_LABEL_VISIBLE, is_ad_pos_content_top_label_visible()); ?>
                   </li>
                   <li>
-                    <input type="checkbox" name="<?php echo OP_AD_POS_CONTENT_MIDDLE_VISIBLE; ?>" value="1"<?php the_checkbox_checked(is_ad_pos_content_middle_visible()); ?>><?php _e('本文中' ,THEME_NAME ); ?>
-                    <?php //詳細設定
+                    <?php
+                    generate_checkbox_tag(OP_AD_POS_CONTENT_MIDDLE_VISIBLE, is_ad_pos_content_middle_visible(), __('本文中' ,THEME_NAME ));
+                    //詳細設定
                     generate_main_column_ad_detail_setting_forms(OP_AD_POS_CONTENT_MIDDLE_FORMAT, get_ad_pos_content_middle_format(), OP_AD_POS_CONTENT_MIDDLE_LABEL_VISIBLE, is_ad_pos_content_middle_label_visible(), OP_AD_POS_ALL_CONTENT_MIDDLE_VISIBLE, is_ad_pos_all_content_middle_visible()); ?>
                   </li>
                   <li>
-                    <input type="checkbox" name="<?php echo OP_AD_POS_CONTENT_BOTTOM_VISIBLE; ?>" value="1"<?php the_checkbox_checked(is_ad_pos_content_bottom_visible()); ?>><?php _e('本文下' ,THEME_NAME ); ?>
-                    <?php //詳細設定
+                    <?php
+                    generate_checkbox_tag(OP_AD_POS_CONTENT_BOTTOM_VISIBLE, is_ad_pos_content_bottom_visible(), __('本文下' ,THEME_NAME ));
+                    //詳細設定
                     generate_main_column_ad_detail_setting_forms(OP_AD_POS_CONTENT_BOTTOM_FORMAT, get_ad_pos_content_bottom_format(), OP_AD_POS_CONTENT_BOTTOM_LABEL_VISIBLE, is_ad_pos_content_bottom_label_visible()); ?>
                   </li>
                   <li>
-                    <input type="checkbox" name="<?php echo OP_AD_POS_ABOVE_SNS_BUTTONS_VISIBLE; ?>" value="1"<?php the_checkbox_checked(is_ad_pos_above_sns_buttons_visible()); ?>><?php _e('SNSボタン上（本文下部分）' ,THEME_NAME ); ?>
-                    <?php //詳細設定
+                    <?php
+                    generate_checkbox_tag(OP_AD_POS_ABOVE_SNS_BUTTONS_VISIBLE, is_ad_pos_above_sns_buttons_visible(), __('SNSボタン上（本文下部分）' ,THEME_NAME ));
+                    //詳細設定
                     generate_main_column_ad_detail_setting_forms(OP_AD_POS_ABOVE_SNS_BUTTONS_FORMAT, get_ad_pos_above_sns_buttons_format(), OP_AD_POS_ABOVE_SNS_BUTTONS_LABEL_VISIBLE, is_ad_pos_above_sns_buttons_label_visible()); ?>
                   </li>
                   <li>
-                    <input type="checkbox" name="<?php echo OP_AD_POS_BELOW_SNS_BUTTONS_VISIBLE; ?>" value="1"<?php the_checkbox_checked(is_ad_pos_below_sns_buttons_visible()); ?>><?php _e('SNSボタン下（本文下部分）' ,THEME_NAME ); ?>
-                    <?php //詳細設定
+                    <?php
+                    generate_checkbox_tag(OP_AD_POS_BELOW_SNS_BUTTONS_VISIBLE, is_ad_pos_below_sns_buttons_visible(), __('SNSボタン下（本文下部分）' ,THEME_NAME ));
+                    //詳細設定
                     generate_main_column_ad_detail_setting_forms(OP_AD_POS_BELOW_SNS_BUTTONS_FORMAT, get_ad_pos_below_sns_buttons_format(), OP_AD_POS_BELOW_SNS_BUTTONS_LABEL_VISIBLE, is_ad_pos_below_sns_buttons_label_visible()); ?>
                   </li>
                   <li>
-                    <input type="checkbox" name="<?php echo OP_AD_POS_BELOW_RELATED_POSTS_VISIBLE; ?>" value="1"<?php the_checkbox_checked(is_ad_pos_below_related_posts_visible()); ?>><?php _e('関連記事下（投稿ページのみ）' ,THEME_NAME ); ?>
-                    <?php //詳細設定
+                    <?php
+                    generate_checkbox_tag(OP_AD_POS_BELOW_RELATED_POSTS_VISIBLE, is_ad_pos_below_related_posts_visible(), __('関連記事下（投稿ページのみ）' ,THEME_NAME ));
+                    //詳細設定
                     generate_main_column_ad_detail_setting_forms(OP_AD_POS_BELOW_RELATED_POSTS_FORMAT, get_ad_pos_below_related_posts_format(), OP_AD_POS_BELOW_RELATED_POSTS_LABEL_VISIBLE, is_ad_pos_below_related_posts_label_visible()); ?>
                   </li>
                 </ul>

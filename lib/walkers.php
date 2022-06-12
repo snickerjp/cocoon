@@ -13,7 +13,6 @@ if ( !defined( 'ABSPATH' ) ) exit;
 if ( !class_exists( 'menu_description_walker' ) ):
 class menu_description_walker extends Walker_Nav_Menu {
   function start_el(&$output, $item, $depth = 0, $args = array(), $id = 0) {
-    //_v($item);
 
     $indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
     $url = trim($item->url);
@@ -21,7 +20,7 @@ class menu_description_walker extends Walker_Nav_Menu {
     $class_names = $value = '';
 
     $classes = empty( $item->classes ) ? array() : (array) $item->classes;
-    //$classes[] = 'fa';
+
     if ($item->description) {
       $classes[] = 'menu-item-has-description';
     } else {
@@ -89,7 +88,7 @@ if ( !class_exists( 'mobile_menu_walker' ) ):
       $fa_classes = array_filter($classes, function($v, $k) { return preg_match('/^fa/', $v); }, ARRAY_FILTER_USE_BOTH);
       $_MENU_ICON = !empty($fa_classes) ? implode(' ', $fa_classes) : null;
 
-      //定形へメニューボタンの処理
+      //定形メニューボタンの処理
       $url = trim($item->url);
       $lower_url = strtolower($url);
       if ($lower_url === '#menu') {
@@ -126,8 +125,7 @@ if ( !class_exists( 'mobile_menu_walker' ) ):
           $fa_classes[] = 'fa';
           $fa_classes[] = 'fa-star';
         }
-        //$fa_classes[] = 'menu-icon';
-        //_v($fa_classes);
+
         $classes = array_filter($classes, function($v, $k) { return !preg_match('/^fa/', $v); }, ARRAY_FILTER_USE_BOTH);
 
         $classes[] = 'menu-button';
@@ -139,7 +137,6 @@ if ( !class_exists( 'mobile_menu_walker' ) ):
 
         $class_names = join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item ) );
         $class_names = ' class="'. esc_attr( $class_names ) . '"';
-        $output .= $indent . '<li id="menu-item-'. $item->ID . '"' . $value . $class_names .'>';
 
         $attributes  = ! empty( $item->attr_title ) ? ' title="'  . esc_attr( $item->attr_title ) .'"' : '';
         $attributes .= ! empty( $item->target )     ? ' target="' . esc_attr( $item->target     ) .'"' : '';
@@ -151,20 +148,17 @@ if ( !class_exists( 'mobile_menu_walker' ) ):
 
         $caption_before = '<span class="custom-menu-caption menu-caption">';
         $caption_after = '</span>';
-        //$description  = ! empty( $item->description ) ? '<div class="item-description sub-caption">'.esc_html( $item->description ).'</div>' : '';
 
-        $item_output = $args->before;
+        $item_output = '<li class="navi-menu-button menu-button">';
+        $item_output .= $args->before;
         $item_output .= '<a'. $attributes .' class="menu-button-in">';
-        //$item_output .= '<div class="caption-wrap">';
-        //$item_output .= $args->link_before;
+
         $item_output .= $icon_before.$icon_after;
         $item_output .= $caption_before.apply_filters( 'the_title', $item->title, $item->ID ).$caption_after;
-        //$item_output .= $args->link_after;
-        //$item_output .= '</div>';
+
         $item_output .= '</a>';
         $item_output .= $args->after.'</li>';
       }
-
       $output .= apply_filters( 'mobile_menu_walker', $item_output, $item, $depth, $args );
 
       $_MENU_CAPTION = null;
@@ -173,15 +167,6 @@ if ( !class_exists( 'mobile_menu_walker' ) ):
 
     function end_el( &$output, $item, $depth = 0, $args = array() ) {
       $output .= "\n";
-      // if (in_array('menu-item-has-children', $item->classes)) {
-      //   // 親の場合
-      //   $output .= "\n".'</ul></li>';
-      // }
-      // else {
-      //   // 子の場合
-
-      //   $output .= "\n";
-      // }
     }
   }
   endif;

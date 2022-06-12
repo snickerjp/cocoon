@@ -15,7 +15,7 @@ function get_blogcard_thumbnail_image_tag($url, $in = true){
   } else {
     $class = ' external-blogcard-thumb-image';
   }
-  return '<img src="'.$url.'" alt="" class="blogcard-thumb-image'.$class.'" width="'.THUMB160WIDTH_DEF.'" height="'.THUMB160HEIGHT_DEF.'" />';
+  return get_original_image_tag($url, THUMB160WIDTH_DEF, THUMB160HEIGHT_DEF, $class);
 }
 endif;
 
@@ -63,7 +63,7 @@ function url_to_internal_blogcard_tag($url){
     //global $post;
     $post_data = get_post($id);
     setup_postdata($post_data);
-    $exce = $post_data->post_excerpt;
+    wp_reset_query();
 
     $title = $post_data->post_title;//タイトルの取得
 
@@ -136,6 +136,9 @@ function url_to_internal_blogcard_tag($url){
       $thumbnail = get_blogcard_thumbnail_image_tag($image);
     }
   }
+  //タイトルのフック
+  $title = apply_filters('cocoon_blogcard_title',$title);
+  $title = apply_filters('cocoon_internal_blogcard_title',$title);
   //スニペットのフック
   $snippet = apply_filters( 'cocoon_blogcard_snippet', $snippet );
   $snippet = apply_filters( 'cocoon_internal_blogcard_snippet', $snippet );
@@ -154,7 +157,7 @@ function url_to_internal_blogcard_tag($url){
   //ファビコン
   $favicon_tag =
   '<div class="blogcard-favicon internal-blogcard-favicon">'.
-    '<img src="//www.google.com/s2/favicons?domain='.get_the_site_domain().'" class="blogcard-favicon-image internal-blogcard-favicon-image" alt="" width="16" height="16" />'.
+    get_original_image_tag('https://www.google.com/s2/favicons?domain='.get_home_url(), 16, 16, 'blogcard-favicon-image internal-blogcard-favicon-image').
   '</div>';
 
   //サイトロゴ
@@ -228,6 +231,10 @@ if ( is_internal_blogcard_enable() ) {
   //add_filter('widget_classic_text', 'url_to_internal_blogcard', 11);
   add_filter('widget_text_mobile_text', 'url_to_internal_blogcard', 11);
   add_filter('the_category_tag_content', 'url_to_internal_blogcard', 11);
+  //コメント内ブログカード
+  if (is_comment_internal_blogcard_enable()) {
+    add_filter('comment_text', 'url_to_internal_blogcard' ,11);
+  }
 }
 
 //本文中のURLショートコードをブログカードタグに変更する

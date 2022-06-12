@@ -58,7 +58,7 @@ require_once abspath(__FILE__).'sns-share-forms-bottom.php';
           </th>
           <td>
             <?php
-            generate_textbox_tag(OP_TWITTER_HASH_TAG, get_twitter_hash_tag(), '#'.get_bloginfo('name').' '.__( '#ハッシュタグ', THEME_NAME ));
+            generate_textbox_tag(OP_TWITTER_HASH_TAG, get_twitter_hash_tag(), '#wpcocoon '.__( '#ハッシュタグ', THEME_NAME ));
             generate_tips_tag(__( 'ツイート時に含めるハッシュタグを入力してください。半角スペースで区切って複数入力も可能です。URLやタイトルを含めて140文字を超える場合は正常動作しない可能性もあります。', THEME_NAME ));
 
             ?>
@@ -146,10 +146,10 @@ require_once abspath(__FILE__).'sns-share-forms-bottom.php';
     <table class="form-table">
       <tbody>
 
-        <!-- キャシュの有効化 -->
+        <!-- キャッシュの有効化 -->
         <tr>
           <th scope="row">
-            <?php generate_label_tag(OP_SNS_SHARE_COUNT_CACHE_ENABLE, __( 'キャシュの有効化', THEME_NAME )); ?>
+            <?php generate_label_tag(OP_SNS_SHARE_COUNT_CACHE_ENABLE, __( 'キャッシュの有効化', THEME_NAME )); ?>
           </th>
           <td>
             <?php

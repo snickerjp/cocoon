@@ -45,7 +45,7 @@ function get_the_category_links(){
   $categories = null;
   foreach((get_the_category()) as $category){
     $style = null;
-    $categories .= '<a class="cat-link cat-link-'.$category->cat_ID.'" href="'.get_category_link( $category->cat_ID ).'"'.$style.'><span class="fa fa-folder" aria-hidden="true"></span> '.$category->cat_name.'</a>';
+    $categories .= '<a class="cat-link cat-link-'.$category->cat_ID.'" href="'.get_category_link( $category->cat_ID ).'"'.$style.'><span class="fa fa-folder cat-icon tax-icon" aria-hidden="true"></span>'.$category->cat_name.'</a>';
   }
   return $categories;
 }
@@ -72,9 +72,24 @@ function get_the_nolink_category($id = null, $is_visible = true){
     return;
   }
 
-  if ( isset($categories[0]) ) {
-    $category = $categories[0];
-    $category = apply_filters('get_the_nolink_category', $category, $categories);
+  //メインカテゴリが指定してある場合は該当カテゴリーを適用
+  $category = isset($categories[0]) ? $categories[0] : null;
+  $main_cat_id = get_the_page_main_category($id);
+  if ($main_cat_id && in_category($main_cat_id, $id)) {
+    $category = get_category($main_cat_id);
+  }
+  // var_dump($id);
+  // var_dump($main_cat_id);
+  // var_dump($category->cat_ID);
+
+  // //メインカテゴリがない場合は先頭のカテゴリを適用
+  // if ( !$category ) {
+  //   $category = $categories[0];
+  // }
+
+  //カテゴリーラベル制御用のフック
+  $category = apply_filters('get_the_nolink_category', $category, $categories);
+  if (isset($category->cat_ID) && isset($category->cat_name)) {
     return '<span class="cat-label cat-label-'.$category->cat_ID.$display_class.'">'.$category->cat_name.'</span>';
   }
 }
@@ -97,7 +112,7 @@ function get_the_tag_links(){
   $posttags = get_the_tags();
   if ( $posttags ) {
     foreach(get_the_tags() as $tag){
-      $tags .= '<a class="tag-link tag-link-'.$tag->term_id.' border-element" href="'.get_tag_link( $tag->term_id ).'"><span class="fa fa-tag" aria-hidden="true"></span> '.$tag->name.'</a>';
+      $tags .= '<a class="tag-link tag-link-'.$tag->term_id.' border-element" href="'.get_tag_link( $tag->term_id ).'"><span class="fa fa-tag tag-icon tax-icon" aria-hidden="true"></span>'.$tag->name.'</a>';
     }
   }
   return $tags;
@@ -280,7 +295,7 @@ endif;
 //子テーマkeyframes.cssの読み込み
 if ( !function_exists( 'wp_enqueue_style_theme_child_keyframes' ) ):
 function wp_enqueue_style_theme_child_keyframes(){
-  if (file_exists(CHILD_THEME_KEYFRAMES_CSS_FILE)) {
+  if (is_child_theme() && file_exists(CHILD_THEME_KEYFRAMES_CSS_FILE)) {
     wp_enqueue_style( THEME_NAME.'-child-keyframes', CHILD_THEME_KEYFRAMES_CSS_URL );
   }
 }
@@ -352,7 +367,7 @@ function get_jquery_core_url($ver){
   $url = null;
   switch ($ver) {
     case '3':
-      $url = 'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js';
+      $url = 'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js';
       break;
     case '2':
       $url = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js';
@@ -390,7 +405,7 @@ function get_jquery_migrate_url($ver){
   $url = null;
   switch ($ver) {
     case '3':
-      $url = 'https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.0.1/jquery-migrate.min.js';
+      $url = 'https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.3.2/jquery-migrate.min.js';
       break;
     case '1':
       $url = 'https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.4.1/jquery-migrate.min.js';
@@ -453,8 +468,8 @@ function wp_enqueue_script_theme_js(){
   ) );
   wp_localize_script( THEME_JS, $name, $value );
 
-  // TODO: ファイル読みこみ位置 もしくは HTML側に直接出力など よい方法を考慮
-  wp_enqueue_script( 'set-event-passive', SET_EVENT_PASSIVE_JS_URL, array( ), false, true );
+  // // TODO: ファイル読みこみ位置 もしくは HTML側に直接出力など よい方法を考慮
+  // wp_enqueue_script( 'set-event-passive', SET_EVENT_PASSIVE_JS_URL, array( ), false, true );
 }
 endif;
 
@@ -499,6 +514,16 @@ if ( !function_exists( 'wp_enqueue_script_hatebu_share_button_js' ) ):
 function wp_enqueue_script_hatebu_share_button_js(){
   if ( is_bottom_hatebu_share_button_visible() && is_singular() ){
     wp_enqueue_script( 'st-hatena-js', '//b.st-hatena.com/js/bookmark_button.js', array(), false, true );
+  }
+}
+endif;
+
+//barba.jsスクリプトの読み込み
+if ( !function_exists( 'wp_enqueue_script_barba_js' ) ):
+function wp_enqueue_script_barba_js(){
+  if ( is_highspeed_mode_enable() ){
+    wp_enqueue_script( 'barba-js', 'https://unpkg.com/@barba/core', array(), false, true );
+    //wp_enqueue_script( 'barba-js-polyfill', 'https://polyfill.io/v3/polyfill.min.js?features=default%2CArray.prototype.find%2CIntersectionObserver%2CNodeList.prototype.forEach', array('barba-js'), false, true );
   }
 }
 endif;
@@ -638,51 +663,44 @@ endif;
 //clingifyの読み込み
 if ( !function_exists( 'wp_enqueue_clingify' ) ):
 function wp_enqueue_clingify(){
-  $browser_info = get_browser_info();
-  $is_ie = $browser_info['browser_name'] == 'IE';
-  $is_edge_version_under_16 = ($browser_info['browser_name'] == 'IE') && (intval($browser_info['browser_version']) < 16);
   //グローバルナビ追従が有効な時
-  if ( is_global_navi_fixed() || is_scrollable_sidebar_enable() ) {
+  if ( is_header_fixed() ) {
     //clingifyスタイルの呼び出し
-    //wp_enqueue_style( 'clingify-style', get_template_directory_uri() . '/plugins/clingify/clingify.css' );
+    wp_enqueue_style( 'clingify-style', get_template_directory_uri() . '/plugins/clingify/clingify.css' );
     //clingifyスクリプトの呼び出し
     wp_enqueue_script( 'clingify-js', get_template_directory_uri() . '/plugins/clingify/jquery.clingify.min.js', array( 'jquery' ), false, true  );
-    if (is_global_navi_fixed()) {
-      switch (get_header_layout_type()) {
-        case 'center_logo':
-          $selector = '.navi';
-          break;
-        default:
-          $selector = '.header-container';
-          break;
+    if (is_header_fixed()) {
+      $selector = '.header-container';
+      $detached_classes = get_additional_header_container_classes();
+      $options = null;
+      if (get_header_layout_type_center_logo()) {
+        $options = '
+        detached : function() {
+          $(".header-container-in").removeClass().addClass("header-container-in'.$detached_classes.'");
+          adjustHeader();
+        },
+        locked : function() {
+          $(".header-container-in").removeClass().addClass("header-container-in hlt-top-menu wrap");
+          adjustHeader();
+        },
+        ';
       }
-      //$selector = '.sidebar-scroll';
       $data = minify_js('
               (function($){
-               $("'.$selector.'").clingify();
-              })(jQuery);
-            ');
-      wp_add_inline_script( 'clingify-js', $data, 'after' );
-    }
+                function adjustHeader(){
+                  $(".js-clingify-placeholder").height($("#header-container").height());
+                }
 
-    //position: sticky;に対応していないブラウザの場合はclingifyを実行
-    if (is_scrollable_sidebar_enable() && ($is_ie || $is_edge_version_under_16)) {
-      $data = minify_js('
-              (function($){
-               $(".sidebar-scroll").clingify();
+                $("'.$selector.'").clingify({
+                  extraClass: "fixed-header-wrapper",
+                  breakpointWidth: 834,
+                  throttle: 500,
+                  '.$options.'
+                });
               })(jQuery);
             ');
       wp_add_inline_script( 'clingify-js', $data, 'after' );
     }
-    if (is_scrollable_main_enable() && ($is_ie || $is_edge_version_under_16)) {
-      $data = minify_js('
-              (function($){
-               $(".main-scroll").clingify();
-              })(jQuery);
-            ');
-      wp_add_inline_script( 'clingify-js', $data, 'after' );
-    }
-
   }
 }
 endif;
@@ -757,7 +775,11 @@ function wp_enqueue_slicknav(){
     wp_enqueue_script( 'slicknav-js', get_template_directory_uri() . '/plugins/slicknav/jquery.slicknav.min.js', array( 'jquery' ), false, true  );
     $data = minify_js('
               (function($){
-                $(".menu-header").slicknav();
+                $(".menu-header").slicknav({
+                  label: "'.apply_filters('wp_enqueue_slicknav_label', 'MENU').'",
+                  parentTag: "div",
+                  allowParentLinks: true,
+                });
               })(jQuery);
             ');
     wp_add_inline_script( 'slicknav-js', $data, 'after' ) ;
@@ -863,6 +885,21 @@ function wp_enqueue_jquery_masonry(){
 
 }
 endif;
+
+// //数式表示用
+// if ( !function_exists( 'wp_enqueue_mathjax' ) ):
+// function wp_enqueue_mathjax(){
+//   if ( is_formula_enable()) {
+//     wp_enqueue_script( 'mathjax', '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML', array(), false, false );
+//     $data = minify_js('
+//       MathJax.Hub.Config({
+//         TeX: { equationNumbers: { autoNumber: "all" } }
+//       });
+//     ');
+//     wp_add_inline_script( 'mathjax', $data, 'after' ) ;
+//   }
+// }
+// endif;
 
 //投稿画面ポスト時の確認ダイアログ
 if ( !function_exists( 'wp_enqueue_confirmation_before_publish' ) ):
@@ -977,7 +1014,7 @@ if ( !function_exists( 'get_latest_posts' ) ):
 function get_latest_posts($count = 1){
   $count = intval($count);
   $posts = get_posts('numberposts='.$count);
-  if ($couut == 1) {
+  if ($count == 1) {
     foreach( $posts as $post ) {
       return $post;
     }
@@ -1022,7 +1059,7 @@ endif;
 //サイトアドレスが含まれているか
 if ( !function_exists( 'includes_site_url' ) ):
 function includes_site_url($url){
-  //URLにサイトアドレスが含まれていない場合
+  //URLにサイトアドレスが含まれている場合
   if (strpos($url, site_url()) === false) {
     return false;
   } else {
@@ -1035,10 +1072,10 @@ endif;
 if ( !function_exists( 'includes_home_url' ) ):
 function includes_home_url($url){
   //URLにホームアドレスが含まれていない場合
-  if (!includes_string($url, home_url())) {
-    return false;
-  } else {
+  if (includes_string($url, home_url())) {
     return true;
+  } else {
+    return false;
   }
 }
 endif;
@@ -1046,19 +1083,26 @@ endif;
 //WordPressインストールフォルダが含まれているか
 if ( !function_exists( 'includes_abspath' ) ):
 function includes_abspath($local){
-  //URLにサイトアドレスが含まれていない場合
+  //パスにサイトアドレスが含まれている場合
   if (includes_string($local, ABSPATH)) {
-    return false;
-  } else {
     return true;
+  } else {
+    return false;
   }
+}
+endif;
+
+//site_urlに対するフォルダパスが含まれているか
+if ( !function_exists( 'includes_site_path' ) ):
+function includes_site_path($local){
+  return includes_abspath($local);
 }
 endif;
 
 //ホームパスが含まれているか
 if ( !function_exists( 'includes_home_path' ) ):
 function includes_home_path($local){
-  //URLにサイトアドレスが含まれていない場合
+  //URLにホームアドレスが含まれていない場合
   if (!includes_string($local, get_abs_home_path())) {
     return false;
   } else {
@@ -1067,15 +1111,15 @@ function includes_home_path($local){
 }
 endif;
 
-//内部URLをローカルパスに変更
+//内部URLをローカルパスに変更（サイトURLを置換）
 if ( !function_exists( 'url_to_local' ) ):
 function url_to_local($url){
   //URLにサイトアドレスが含まれていない場合
-  if (!includes_home_url($url)) {
+  if (!includes_site_url($url)) {
     return false;
   }
 
-  $path = str_replace(home_url('/'), get_abs_home_path(), $url);
+  $path = str_replace(site_url('/'), ABSPATH, $url);
   $path = str_replace('//', '/', $path);
   $path = str_replace('\\', '/', $path);
 
@@ -1083,10 +1127,24 @@ function url_to_local($url){
 }
 endif;
 
-//ローカルパスを内部URLに変更
+//ローカルパスを内部URLに変更（サイトパス[ABSPATH：インストールパス]を置間）
 if ( !function_exists( 'local_to_url' ) ):
 function local_to_url($local){
-  //URLにサイトアドレスが含まれていない場合
+  //パスにサイトアドレスが含まれていない場合
+  if (!includes_site_path($local)) {
+    return false;
+  }
+  $url = str_replace(ABSPATH, site_url('/'), $local);
+  $url = str_replace('\\', '/', $url);
+
+  return $url;
+}
+endif;
+
+//ローカルパスを内部ホームURLに変更
+if ( !function_exists( 'local_to_home_url' ) ):
+function local_to_home_url($local){
+  //パスにサイトアドレスが含まれていない場合
   if (!includes_home_path($local)) {
     return false;
   }
@@ -1185,7 +1243,7 @@ endif;
 //PWAのマニフェストファイルへのURL
 if ( !function_exists( 'get_theme_pwa_manifest_json_url' ) ):
 function get_theme_pwa_manifest_json_url(){
-  return local_to_url(get_theme_pwa_manifest_json_file());
+  return local_to_home_url(get_theme_pwa_manifest_json_file());
 }
 endif;
 
@@ -1199,7 +1257,7 @@ endif;
 //PWAのサービスワーカーへのパス
 if ( !function_exists( 'get_theme_pwa_service_worker_js_url' ) ):
 function get_theme_pwa_service_worker_js_url(){
-  return local_to_url(get_theme_pwa_service_worker_js_file());
+  return local_to_home_url(get_theme_pwa_service_worker_js_file());
 }
 endif;
 
@@ -1212,6 +1270,20 @@ function get_theme_css_cache_file(){
     wp_filesystem_put_contents($file,  '');
   }
   return $file;
+}
+endif;
+
+//テーマカスタマイザーCSSファイルの書き出し
+if ( !function_exists( 'put_theme_css_cache_file' ) ):
+function put_theme_css_cache_file(){
+  ob_start();
+  get_template_part('tmp/css-custom');
+  $custum_css = ob_get_clean();
+  if ($custum_css) {
+    $custum_css_file = get_theme_css_cache_file();
+    //エディター用CSSファイルの書き出し
+    wp_filesystem_put_contents($custum_css_file, $custum_css);
+  }
 }
 endif;
 
@@ -1840,7 +1912,9 @@ function wp_filesystem_get_contents($file, $is_exfile = false, $credentials_enab
   );
 
   if (!$is_exfile) {//ローカル
-    return file_get_contents($file);
+    if (!is_dir($file)) {
+      return file_get_contents($file);
+    }
   } else {//外部URL
     return @file_get_contents($file, false, stream_context_create($options));
   }
@@ -2194,7 +2268,7 @@ function is_the_page_sidebar_visible(){
       $is_sidebar_visible = false;
       break;
     case 'no_display_front_page':
-      if (is_front_page() && !is_home()) {
+      if (is_front_top_page()) {
         $is_sidebar_visible = false;
       }
       break;
@@ -2244,7 +2318,7 @@ function is_the_page_sidebar_visible(){
   }
 
   //サイドバーにウィジェットが入っていない場合
-  if (!is_active_sidebar( 'sidebar' )) {
+  if (!is_active_sidebar( 'sidebar' ) && !is_active_sidebar( 'sidebar-scroll' )) {
     $is_sidebar_visible = false;
   }
 
@@ -2279,7 +2353,7 @@ endif;
 //フロントトップページかどうか
 if ( !function_exists( 'is_front_top_page' ) ):
 function is_front_top_page(){
-  return is_front_page() && !is_paged();
+  return is_front_page() && !is_paged() && !isset($_GET['cat']);
 }
 endif;
 
@@ -2544,7 +2618,7 @@ function get_singular_sns_share_image_url(){
     $image_id = get_post_thumbnail_id();
     $image = wp_get_attachment_image_src( $image_id, 'full');
     $sns_image_url = $image[0];
-  } else if ( preg_match( $searchPattern, $content, $image ) && !is_archive()) {//投稿にサムネイルは無いが画像がある場合の処理
+  } else if ( preg_match( $searchPattern, $content, $image ) && !is_archive() && is_auto_post_thumbnail_enable()) {//投稿にアイキャッチは無いが画像がある場合の処理
     $sns_image_url = $image[2];
   } else if ( $no_image_url = get_no_image_url() ){//NO IMAGEが設定されている場合
     $sns_image_url = $no_image_url;
@@ -2553,7 +2627,7 @@ function get_singular_sns_share_image_url(){
   } else {
     $sns_image_url = NO_IMAGE_LARGE;
   }
-  return $sns_image_url;
+  return apply_filters('get_singular_sns_share_image_url', $sns_image_url);
 }
 endif;
 
@@ -2574,7 +2648,7 @@ function get_singular_eyecatch_image_url(){
     $eyecatch_image_url = $image[0];
   } else if ($singular_sns_image_url = get_singular_sns_image_url()) {
     $eyecatch_image_url = $singular_sns_image_url;
-  } else if ( preg_match( $searchPattern, $content, $image ) && !is_archive()) {//投稿にサムネイルは無いが画像がある場合の処理
+  } else if ( preg_match( $searchPattern, $content, $image ) && !is_archive() && is_auto_post_thumbnail_enable()) {//投稿にサムネイルは無いが画像がある場合の処理
     $eyecatch_image_url = $image[2];
   } else if ( $no_image_url = get_no_image_url() ){//NO IMAGEが設定されている場合
     $eyecatch_image_url = $no_image_url;
@@ -2583,7 +2657,7 @@ function get_singular_eyecatch_image_url(){
   } else {
     $eyecatch_image_url = NO_IMAGE_LARGE;
   }
-  return $eyecatch_image_url;
+  return apply_filters('get_singular_eyecatch_image_url', $eyecatch_image_url);
 }
 endif;
 
@@ -2764,10 +2838,11 @@ if ( !function_exists( 'get_editor_key_color' ) ):
 function get_editor_key_color(){
   $site_key_color = get_site_key_color();
   if (!empty($site_key_color)) {
-    return $site_key_color;
+    $color = $site_key_color;
   } else {
-    return DEFAULT_EDITOR_KEY_COLOR;
+    $color = DEFAULT_EDITOR_KEY_COLOR;
   }
+  return apply_filters('get_editor_key_color', $color);
 }
 endif;
 
@@ -3240,5 +3315,197 @@ function change_fa($buffer){
     }
   }
   return $buffer;
+}
+endif;
+
+//WordPress「表示設定」の「1ページに表示する最大投稿数」を取得する
+if ( !function_exists( 'get_option_posts_per_page' ) ):
+function get_option_posts_per_page(){
+  return intval(get_option('posts_per_page'));
+}
+endif;
+
+//カテゴリーIDからカテゴリ名を取得
+if ( !function_exists( 'get_category_name_by_id' ) ):
+function get_category_name_by_id($id){
+  //カテゴリIDからカテゴリ情報取得
+  $category = get_category($id);
+  if (isset($category->cat_name)) {
+    //カテゴリ名表示
+    return $category->cat_name;
+  }
+}
+endif;
+
+//barba.jsのネームスペース
+if ( !function_exists( 'get_barba_name_space' ) ):
+function get_barba_name_space(){
+  if (is_singular()) {
+    $name_space = 'singular';
+  } else {
+    $name_space = 'home';
+  }
+  return $name_space;
+}
+endif;
+
+//target=_blankの場合はrel=noopenerを取得
+if ( !function_exists( 'get_rel_by_target' ) ):
+function get_rel_by_target($target){
+  if ($target == '_blank') {
+    return ' rel="noopener"';
+  }
+}
+endif;
+
+//存在するカテゴリIDかどうか
+if ( !function_exists( 'is_category_exist' ) ):
+function is_category_exist($cat_id){
+  return is_numeric($cat_id) && get_category($cat_id);
+}
+endif;
+
+//管理ページが投稿か
+if ( !function_exists( 'is_admin_single' ) ):
+function is_admin_single(){
+  global $post_type;
+  return $post_type !== 'page';
+}
+endif;
+
+//管理ページが固定ページか
+if ( !function_exists( 'is_admin_page' ) ):
+function is_admin_page(){
+  global $post_type;
+  return $post_type === 'page';
+}
+endif;
+
+//URLがAmazonかどうか
+if ( !function_exists( 'is_amazon_site_page' ) ):
+function is_amazon_site_page($URI){
+  return includes_string($URI, '//amzn.to/') || includes_string($URI, '//www.amazon.co');
+}
+endif;
+
+//URLが楽天かどうか
+if ( !function_exists( 'is_rakuten_site_page' ) ):
+function is_rakuten_site_page($URI){
+  return includes_string($URI, '//a.r10.to/') || preg_match('{//.+\.rakuten\.co\.jp/}', $URI);
+}
+endif;
+
+//投稿の個別noindex idをすべて取得する
+if ( !function_exists( 'get_postmeta_value_enable_post_ids' ) ):
+function get_postmeta_value_enable_post_ids($meta_key){
+  global $wpdb;
+  $res = $wpdb->get_results("SELECT DISTINCT GROUP_CONCAT(post_id) AS ids FROM {$wpdb->prefix}postmeta WHERE (meta_key = '{$meta_key}') AND (meta_value = 1)");
+  $result = (isset($res[0]) && $res[0]->ids) ? explode(',', $res[0]->ids) : array();
+  return $result;
+}
+endif;
+
+//カテゴリーの個別noindex idをすべて取得する
+if ( !function_exists( 'get_termmeta_value_enable_ids' ) ):
+function get_termmeta_value_enable_ids($meta_key){
+  global $wpdb;
+  $res = $wpdb->get_results("SELECT DISTINCT GROUP_CONCAT(term_id) AS ids FROM {$wpdb->prefix}termmeta WHERE (meta_key = '{$meta_key}') AND (meta_value = 1)");
+  $ids = (isset($res[0]) && $res[0]->ids) ? explode(',', $res[0]->ids) : array();
+  $result = array();
+  if ($meta_key === 'the_category_noindex') {
+    foreach ($ids as $id) {
+      if (get_category($id)) {
+        array_push($result, $id);
+      }
+    }
+  }
+  if ($meta_key === 'the_tag_noindex') {
+    foreach ($ids as $id) {
+      if (get_tag($id)) {
+        array_push($result, $id);
+      }
+    }
+  }
+  return $result;
+}
+endif;
+
+//WordPressバージョンが5.5以上かどうか
+if ( !function_exists( 'is_wp_5_5_or_over' ) ):
+function is_wp_5_5_or_over(){
+  return get_bloginfo('version') >= '5.5';
+}
+endif;
+
+//WordPressバージョンが5.8以上かどうか
+if ( !function_exists( 'is_wp_5_8_or_over' ) ):
+function is_wp_5_8_or_over(){
+  return get_bloginfo('version') >= '5.8';
+}
+endif;
+
+//WordPress5.5からのLazy Loadが有効な環境かどうか
+if ( !function_exists( 'is_wp_lazy_load_valid' ) ):
+function is_wp_lazy_load_valid(){
+  global $is_safari;
+  return is_wp_5_5_or_over() && !$is_safari;
+}
+endif;
+
+//エディターでページタイプでスタイルを変更する用のclassを出力
+if ( !function_exists( 'get_editor_page_type_class' ) ):
+function get_editor_page_type_class(){
+  return is_singular_page_type_wide() ? ' page-type-wide' : '';
+}
+endif;
+
+if ( !function_exists( 'use_gutenberg_editor' ) ):
+function use_gutenberg_editor(){
+  $current_screen = get_current_screen();
+  return ( method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor() ) || ( function_exists( 'is_gutenberg_page' ) && is_gutenberg_page() );
+}
+endif;
+
+//ピクセル数を数字にする
+if ( !function_exists( 'px_to_int' ) ):
+function px_to_int($px){
+  return intval(str_replace('px', '', $px));
+}
+endif;
+
+// //デバッグ用の関数
+// if ( !function_exists( '_v' ) ):
+// function _v($v){
+//   do_action( 'qm/debug', $v );
+// }
+// endif;
+
+//著者プロフィールページのURLを取得
+if ( !function_exists( 'get_the_auther_profile_page_url' ) ):
+function get_the_auther_profile_page_url(){
+  if (is_post_author_visible() && get_the_author()) {
+    $author_id = get_the_author_meta( 'ID' );
+    $profile_page_url = get_the_author_profile_page_url($author_id);
+    if ($profile_page_url) {
+      $url = $profile_page_url;
+    } else {
+      $url = get_author_posts_url( $author_id );
+    }
+  } else {
+    $url = home_url();
+  }
+  return $url;
+}
+endif;
+
+//著者プロフィール名前を取得
+if ( !function_exists( 'get_the_auther_profile_name' ) ):
+function get_the_auther_profile_name(){
+  if (is_post_author_visible() && get_the_author()) {
+    $name = get_the_author();
+  } else {
+    $name = get_bloginfo('name');
+  }
+  return $name;
 }
 endif;

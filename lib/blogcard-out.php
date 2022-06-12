@@ -74,12 +74,17 @@ if ( is_external_blogcard_enable() ) {//外部リンクブログカードが有�
   //add_filter('widget_classic_text', 'url_to_external_blog_card', 11);
   add_filter('widget_text_mobile_text', 'url_to_external_blog_card', 11);
   add_filter('the_category_tag_content', 'url_to_external_blog_card', 11);
+  //コメント内ブログカード
+  if (is_comment_external_blogcard_enable()) {
+    add_filter('comment_text', 'url_to_external_blog_card', 11);
+  }
 }
 
 
 //外部サイトからブログカードサムネイルを取得する
 if ( !function_exists( 'fetch_card_image' ) ):
-function fetch_card_image($image){
+function fetch_card_image($image, $url = null){
+  //var_dump($image);
   //URLの？以降のクエリを削除
   $image = preg_replace('/\?.*$/i', '', $image);
   $filename = substr($image, (strrpos($image, '/'))+1);
@@ -107,13 +112,23 @@ function fetch_card_image($image){
     }
     //ローカル画像ファイルパス
     $new_file = $dir.md5($image).'.'.$ext;
+    // var_dump($new_file);
 
     if ( $file_data ) {
       wp_filesystem_put_contents($new_file, $file_data);
       //画像編集オブジェクトの作成
       $image_editor = wp_get_image_editor($new_file);
       if ( !is_wp_error($image_editor) ){
-        $image_editor->resize(THUMB160WIDTH, THUMB160HEIGHT, true);
+        if (is_amazon_site_page($url)) {
+          $width = apply_filters('external_blogcard_amazon_image_width',THUMB160WIDTH );
+          $height = apply_filters('external_blogcard_amazon_image_height',THUMB160WIDTH );
+          $image_editor->resize($width, $height, true);
+        } else {
+          $width = apply_filters('external_blogcard_image_width',THUMB160WIDTH );
+          $height = apply_filters('external_blogcard_image_height',THUMB160HEIGHT );
+          $image_editor->resize($width, $height, true);
+        }
+
         $image_editor->save( $new_file );
         return str_replace(WP_CONTENT_DIR, content_url(), $new_file);
       }
@@ -158,24 +173,24 @@ function url_to_external_ogp_blogcard_tag($url){
 
   if ( empty($ogp) ) {
     $ogp = OpenGraphGetter::fetch( $url );
-    //_v($ogp);
+    // _v($ogp);
     if ( $ogp == false ) {
       $ogp = 'error';
     } else {
       //キャッシュ画像の取得
-      $res = fetch_card_image($ogp->image);
+      $res = fetch_card_image($ogp->image, $url);
 
       if ( $res ) {
         $ogp->image = $res;
       }
 
-      if ( isset( $ogp->title ) )
+      if ( isset( $ogp->title ) && $ogp->title )
         $title = $ogp->title;//タイトルの取得
 
-      if ( isset( $ogp->description ) )
+      if ( isset( $ogp->description ) && $ogp->description )
         $snippet = $ogp->description;//ディスクリプションの取得
 
-      if ( isset( $ogp->image ) )
+      if ( isset( $ogp->image ) && $ogp->image )
         $image = $ogp->image;////画像URLの取得
 
       $error_rel_nofollow = null;
@@ -187,21 +202,25 @@ function url_to_external_ogp_blogcard_tag($url){
   } elseif ( $ogp == 'error' ) {
     //前回取得したとき404ページだったら何も出力しない
   } else {
-    if ( isset( $ogp->title ) )
+    if ( isset( $ogp->title ) && $ogp->title )
       $title = $ogp->title;//タイトルの取得
 
-    if ( isset( $ogp->description ) )
+    if ( isset( $ogp->description ) && $ogp->description )
       $snippet = $ogp->description;//ディスクリプションの取得
 
-    if ( isset( $ogp->image ) )
+    if ( isset( $ogp->image ) && $ogp->image )
       $image = $ogp->image;//画像URLの取得
 
     $error_rel_nofollow = null;
   }
   //var_dump($image);
 
-  //ドメイン名を取得
-  $domain = get_domain_name(isset($ogp->url) ? punycode_decode($ogp->url) : punycode_decode($url));
+  //ドメイン名を取得（OGP情報のURLが正しいかのチェック）
+  $durl = punycode_decode($url);
+  if (isset($ogp->url) && preg_match(URL_REG, $ogp->url)) {
+    $durl = punycode_decode($ogp->url);
+  }
+  $domain = get_domain_name($durl);
 
   //og:imageが相対パスのとき
   if(!$image || (strpos($image, '//') === false) || (is_ssl() && (strpos($image, 'https:') === false))){    // //OGPのURL情報があるか
@@ -212,6 +231,9 @@ function url_to_external_ogp_blogcard_tag($url){
   if ($user_title) {
     $title = $user_title;
   }
+  //タイトルのフック
+  $title = apply_filters('cocoon_blogcard_title',$title);
+  $title = apply_filters('cocoon_external_blogcard_title',$title);
 
 
   $image = strip_tags($image);
@@ -225,15 +247,23 @@ function url_to_external_ogp_blogcard_tag($url){
   $snippet = apply_filters( 'cocoon_external_blogcard_snippet', $snippet );
 
   //新しいタブで開く場合
-  $target = is_external_blogcard_target_blank() ? ' target="_blank" rel="noopener"' : '';
+  $target = is_external_blogcard_target_blank() ? ' target="_blank"' : '';
 
+  $rel = '';
+  if (is_external_blogcard_target_blank()) {
+    $rel = ' rel="noopener"';
+  }
   //コメント内でブログカード呼び出しが行われた際はnofollowをつける
   global $comment; //コメント内以外で$commentを呼び出すとnullになる
-  $nofollow = $comment || $error_rel_nofollow ? ' rel="nofollow"' : null;
+  if (is_external_blogcard_target_blank() && $comment) {
+    $rel = ' rel="nofollow noopener"';
+  }
 
   //GoogleファビコンAPIを利用する
   ////www.google.com/s2/favicons?domain=nelog.jp
-  $favicon_tag = '<div class="blogcard-favicon external-blogcard-favicon"><img src="//www.google.com/s2/favicons?domain='.$domain.'" class="blogcard-favicon-image" alt="" width="16" height="16" /></div>';
+  $favicon_tag = '<div class="blogcard-favicon external-blogcard-favicon">'.
+    get_original_image_tag('https://www.google.com/s2/favicons?domain='.$durl, 16, 16, 'blogcard-favicon-image external-blogcard-favicon-image').
+  '</div>';
 
   //サイトロゴ
   $site_logo_tag = '<div class="blogcard-domain external-blogcard-domain">'.$domain.'</div>';
@@ -242,12 +272,12 @@ function url_to_external_ogp_blogcard_tag($url){
   //サムネイルを取得できた場合
   $image = apply_filters('get_external_blogcard_thumbnail_url', $image);
   if ( $image ) {
-    $thumbnail = '<img src="'.$image.'" alt="" class="blogcard-thumb-image external-blogcard-thumb-image" width="'.THUMB160WIDTH.'" height="'.THUMB160HEIGHT.'" />';
+    $thumbnail = get_original_image_tag($image, THUMB160WIDTH, THUMB160HEIGHT, 'blogcard-thumb-image external-blogcard-thumb-image');
   }
 
   //取得した情報からブログカードのHTMLタグを作成
   $tag =
-  '<a href="'.$url.'" title="'.esc_attr($title).'" class="blogcard-wrap external-blogcard-wrap a-wrap cf"'.$target.$nofollow.'>'.
+  '<a href="'.esc_url($url).'" title="'.esc_attr($title).'" class="blogcard-wrap external-blogcard-wrap a-wrap cf"'.$target.$rel.'>'.
     '<div class="blogcard external-blogcard'.get_additional_external_blogcard_classes().' cf">'.
       '<div class="blogcard-label external-blogcard-label">'.
         '<span class="fa"></span>'.

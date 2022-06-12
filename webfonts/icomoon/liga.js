@@ -39,10 +39,14 @@
             'brand65': '&#xeaca;',
             'codepen': '&#xeae8;',
             'brand81': '&#xeae8;',
+            'bubble': '&#xe96b;',
+            'comment': '&#xe96b;',
             'soundcloud': '&#xeac3;',
             'brand58': '&#xeac3;',
             'linkedin2': '&#xeacb;',
             'brand65': '&#xeacb;',
+            'twitch': '&#xea9f;',
+            'brand23': '&#xea9f;',
           '0': 0
         };
         delete icons['0'];

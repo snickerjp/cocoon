@@ -26,6 +26,11 @@ get_template_part('tmp/content') ?>
     get_template_part('tmp/pager-post-navi');
   } ?>
 
+  <?php //投稿関連記事上ウイジェット
+  if ( is_active_sidebar( 'above-single-related-entries' ) ): ?>
+    <?php dynamic_sidebar( 'above-single-related-entries' ); ?>
+  <?php endif; ?>
+
   <?php get_template_part('tmp/related-entries'); //関連記事 ?>
 
   <?php //関連記事下の広告表示
@@ -38,13 +43,18 @@ get_template_part('tmp/content') ?>
     <?php dynamic_sidebar( 'below-single-related-entries' ); ?>
   <?php endif; ?>
 
-  <?php //関連記事下ページ送りナビ
+  <?php //ページ送りナビ
   if (is_post_navi_position_under_related()) {
     get_template_part('tmp/pager-post-navi');
   } ?>
 
+  <?php //コメント上ウイジェット
+  if ( is_active_sidebar( 'above-single-comment-aria' ) ): ?>
+    <?php dynamic_sidebar( 'above-single-comment-aria' ); ?>
+  <?php endif; ?>
+
   <?php //コメントを表示する場合
-  if (is_single_comment_visible()) {
+  if (is_single_comment_visible() && !post_password_required( $post )) {
     comments_template(); //コメントテンプレート
   } ?>
 

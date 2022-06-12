@@ -21,11 +21,11 @@ function is_ads_visible(){
   //広告の除外（いずれかがあてはまれば表示しない）
   $is_exclude_ids = (
     //記事の除外
-    (!$post_ids_empty && is_single( $post_ids )) || //投稿ページの除外
-    (!$post_ids_empty && is_page( $post_ids )) ||   //個別ページの除外
+    (!$post_ids_empty && is_single( $post_ids ))//投稿ページの除外
+    || (!$post_ids_empty && is_page( $post_ids )) //個別ページの除外
     //カテゴリの除外
-    (!$category_ids_empty && is_single() && in_category( $category_ids )) ||//投稿ページの除外
-    (!$category_ids_empty && in_category( $category_ids )) //アーカイブページの除外
+    || (!$category_ids_empty && is_single() && in_category( $category_ids )) //投稿ページの除外
+    || (!$category_ids_empty && is_category( $category_ids )) //カテゴリーアーカイブページの除外
   );
 
   return is_all_ads_visible() &&
@@ -99,6 +99,11 @@ function get_normal_adsense_responsive_code($format = DATA_AD_FORMAT_AUTO, $code
 
     $adsense_script = null;
 
+    $data_full_width_responsive = 'false';
+    if (is_mobile_adsense_width_wide()) {
+      $data_full_width_responsive = 'true';
+    }
+
     return $adsense_script.
 '<!-- レスポンシブコード -->
 <ins class="adsbygoogle"
@@ -106,7 +111,8 @@ function get_normal_adsense_responsive_code($format = DATA_AD_FORMAT_AUTO, $code
   data-ad-client="'.get_adsense_data_ad_client($code).'"
   data-ad-slot="'.get_adsense_data_ad_slot($code).'"'.
   $data_ad_layout.'
-  data-ad-format="'.$format.'"></ins>
+  data-ad-format="'.$format.'"
+  data-full-width-responsive="'.$data_full_width_responsive.'"></ins>
 <script>
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script>';
@@ -123,49 +129,19 @@ function get_amp_adsense_responsive_code($format = DATA_AD_FORMAT_AUTO, $code = 
   if (get_adsense_ids($code)) {
     $ad_client = get_adsense_data_ad_client($code);
     $ad_slot = get_adsense_data_ad_slot($code);
-    //_v($format);
     //関連コンテンツユニットの場合
     if ($format == DATA_AD_FORMAT_AUTORELAXED) {
       $code = '
         <amp-ad
-          media="(max-width: 480px)"
-          layout="fixed-height"
-          height="1000"
+          width="100vw"
+          height="320"
           type="adsense"
           data-ad-client="'.$ad_client.'"
-          data-ad-slot="'.$ad_slot.'">
-        </amp-ad>
-
-        <amp-ad
-          media="(min-width: 481px)"
-          layout="fixed-height"
-          height="600"
-          type="adsense"
-          data-ad-client="'.$ad_client.'"
-          data-ad-slot="'.$ad_slot.'">
+          data-ad-slot="'.$ad_slot.'"
+          data-auto-format="mcrspv"
+          data-full-width="">
         </amp-ad>';
-      // $code = '<amp-ad
-      //   media="(max-width: 480px)"
-      //   width="100vw"
-      //   height="320"
-      //   type="adsense"
-      //   data-ad-client="'.$ad_client.'"
-      //   data-ad-slot="'.$ad_slot.'"
-      //   data-auto-format="mcrspv"
-      //   data-full-width="">
-      //   <div overflow=""></div>
-      // </amp-ad>
-
-      // <amp-ad
-      //   media="(min-width: 481px)"
-      //   layout="fixed-height"
-      //   height="600"
-      //   type="adsense"
-      //   data-ad-client="'.$ad_client.'"
-      //   data-ad-slot="'.$ad_slot.'">
-      // </amp-ad>';
     } else {
-      //$layout = ' width="300" height="250" ';
       //リンクユニットの場合
       if ($format == DATA_AD_FORMAT_LINK) {
         $code = '<amp-ad
@@ -196,7 +172,6 @@ function get_amp_adsense_responsive_code($format = DATA_AD_FORMAT_AUTO, $code = 
         </amp-ad>';
       } else {
         $code = '<amp-ad
-          media="(max-width: 480px)"
           width="100vw"
           height="320"
           type="adsense"
@@ -205,15 +180,6 @@ function get_amp_adsense_responsive_code($format = DATA_AD_FORMAT_AUTO, $code = 
           data-auto-format="rspv"
           data-full-width>
             <div overflow></div>
-        </amp-ad>
-
-        <amp-ad
-          media="(min-width: 481px)"
-          layout="fixed-height"
-          height="280"
-          type="adsense"
-          data-ad-client="'.$ad_client.'"
-          data-ad-slot="'.$ad_slot.'">
         </amp-ad>';
       }
     }
@@ -276,7 +242,8 @@ function add_ads_before_1st_h2($the_content) {
         $limit = 1;
       } else {
         //無制限に置換する
-        $limit = get_ad_pos_content_middle_count();
+        $limit = intval(get_ad_pos_content_middle_count());
+        $limit = $limit ? $limit : -1;
       }
       $the_content = preg_replace(H2_REG, $ad_template.PHP_EOL.PHP_EOL.$h2result, $the_content, $limit);
     }
@@ -301,7 +268,7 @@ endif;
 //インデックスページの最後のページかどうか
 if ( !function_exists( 'is_posts_per_page_6_and_over' ) ):
 function is_posts_per_page_6_and_over(){
-  return ( intval(get_option('posts_per_page')) >= 6 );
+  return get_option_posts_per_page() >= 6;
 }
 endif;
 

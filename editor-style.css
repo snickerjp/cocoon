@@ -4,9 +4,58 @@
   padding-right: 4px;
 }
 
+.body.font-awesome-5 .bct-related::before,
+.body.font-awesome-5 .blank-box.bb-ok::before,
+.body.font-awesome-5 .blank-box.bb-point::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 400;
+}
+.body.font-awesome-5 .bb-ok::before {
+  content: "  OK";
+}
+.body.font-awesome-5 .blank-box.bb-check::before,
+.body.font-awesome-5 .blank-box.bb-comment::before,
+.body.font-awesome-5 .blank-box.bb-tips::before,
+.body.font-awesome-5 .blank-box.bb-pickup::before,
+.body.font-awesome-5 .blank-box.bb-hint::before,
+.body.font-awesome-5 .blank-box.bb-bookmark::before,
+.body.font-awesome-5 .blank-box.bb-memo::before,
+.body.font-awesome-5 .blank-box.bb-download::before,
+.body.font-awesome-5 .blank-box.bb-break::before,
+.body.font-awesome-5 .blank-box.bb-ng::before,
+.body.font-awesome-5 .blank-box.bb-good::before,
+.body.font-awesome-5 .blank-box.bb-bad::before,
+.body.font-awesome-5 .blank-box.bb-profile::before,
+.body.font-awesome-5 .bct-none::before,
+.body.font-awesome-5 .bct-reference::before,
+.body.font-awesome-5 .bct-reference-link::before,
+.body.font-awesome-5 .bct-popular::before,
+.body.font-awesome-5 .bct-pickup::before,
+.body.font-awesome-5 .bct-check::before,
+.body.font-awesome-5 .bct-together::before,
+.body.font-awesome-5 .bct-detail::before,
+.body.font-awesome-5 .bct-official::before,
+.body.font-awesome-5 .bct-dl::before,
+.body.font-awesome-5 .bct-prev::before,
+.body.font-awesome-5 .bct-next::before,
+.body.font-awesome-5 .btn-wrap::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 501;
+}
+.body.font-awesome-5 .bb-memo::before {
+  content: "  MEMO";
+}
+.body.font-awesome-5 .blank-box.bb-tab::before {
+  font-family: "Font Awesome 5 Free", Aharoni, "Arial Black", Impact, Arial, sans-serif;
+}
+.body.font-awesome-5 .blank-box.bb-amazon::before {
+  font-family: "Font Awesome 5 Brands", Aharoni, "Arial Black", Impact, Arial, sans-serif;
+  font-weight: 400;
+}
+
 /*ビジュアルエディターのスタイルを書く*/
 body#tinymce {
-  padding: 0 20px !important;
+  padding: 1em 20px !important;
   margin-top: 0 !important;
   background-image: none;
   background-color: #fff;
@@ -39,6 +88,16 @@ html[lang="en"] .column-2::before,
 html[lang="en"] .column-3::before{
   content: "* Coloring is Editor Only.";
 } */
+.column-wrap .block-editor-block-list__layout {
+  min-height: 2em;
+}
+
+.column-left,
+.column-center,
+.column-right {
+  padding: 0.4em;
+}
+
 .column-left {
   background-color: #c7e1ef;
 }
@@ -54,8 +113,11 @@ html[lang="en"] .column-3::before{
 .btn-wrap,
 .blogcard-type {
   padding: 6px;
-  margin: 4px 0;
   position: relative;
+}
+
+.btn-wrap {
+  padding: 10px !important;
 }
 
 span.btn-wrap {
@@ -141,51 +203,12 @@ span.btn-wrap {
   content: "  ダウンロード";
 }
 
-.font-awesome-5 .bct-related::before,
-.font-awesome-5 .blank-box.bb-ok::before,
-.font-awesome-5 .blank-box.bb-point::before {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 400;
+.blogcard-type.bct-prev::before {
+  content: "  前回の記事";
 }
-.font-awesome-5 .bb-ok::before {
-  content: "  OK";
-}
-.font-awesome-5 .blank-box.bb-check::before,
-.font-awesome-5 .blank-box.bb-comment::before,
-.font-awesome-5 .blank-box.bb-tips::before,
-.font-awesome-5 .blank-box.bb-pickup::before,
-.font-awesome-5 .blank-box.bb-hint::before,
-.font-awesome-5 .blank-box.bb-bookmark::before,
-.font-awesome-5 .blank-box.bb-memo::before,
-.font-awesome-5 .blank-box.bb-download::before,
-.font-awesome-5 .blank-box.bb-break::before,
-.font-awesome-5 .blank-box.bb-ng::before,
-.font-awesome-5 .blank-box.bb-good::before,
-.font-awesome-5 .blank-box.bb-bad::before,
-.font-awesome-5 .blank-box.bb-profile::before,
-.font-awesome-5 .bct-none::before,
-.font-awesome-5 .bct-reference::before,
-.font-awesome-5 .bct-reference-link::before,
-.font-awesome-5 .bct-popular::before,
-.font-awesome-5 .bct-pickup::before,
-.font-awesome-5 .bct-check::before,
-.font-awesome-5 .bct-together::before,
-.font-awesome-5 .bct-detail::before,
-.font-awesome-5 .bct-official::before,
-.font-awesome-5 .bct-dl::before,
-.font-awesome-5 .btn-wrap::before {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 501;
-}
-.font-awesome-5 .bb-memo::before {
-  content: "  MEMO";
-}
-.font-awesome-5 .blank-box.bb-tab::before {
-  font-family: "Font Awesome 5 Free", Aharoni, "Arial Black", Impact, Arial, sans-serif;
-}
-.font-awesome-5 .blank-box.bb-amazon::before {
-  font-family: "Font Awesome 5 Brands", Aharoni, "Arial Black", Impact, Arial, sans-serif;
-  font-weight: 400;
+
+.blogcard-type.bct-next::before {
+  content: "  続きの記事";
 }
 
 /*ビジュアルエディターにinstagramの引用符が表示される対応*/
@@ -306,7 +329,7 @@ span.btn-wrap {
 }
 
 .bb-memo::before {
-  content: "  MEMO";
+  content: "  MEMO";
 }
 
 .bb-download::before {

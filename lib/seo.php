@@ -86,8 +86,8 @@ function title_parts_custom( $title ){
         $title['site'] = $cat_name;
         break;
     }
-  } elseif (is_tag()) {
-    $tag_id = get_query_var('tag_id');
+  } elseif (is_tag() || is_tax()) {
+    $tag_id = get_queried_object_id();
     $tag_name = $title['title'];
     if ($tag_id && get_the_tag_title($tag_id)) {
       $tag_name = get_the_tag_title($tag_id);
@@ -120,10 +120,10 @@ endif;
 if ( !function_exists( 'is_noindex_page' ) ):
 function is_noindex_page(){
   $is_noindex = (is_archive() && !is_category() && !is_tag() && !is_tax() && is_other_archive_page_noindex()) || //アーカイブページはインデックスに含めない
-  ( is_category()  && is_category_page_noindex() )  || //カテゴリページ
+  ( is_category() && (is_category_page_noindex() || get_the_category_noindex()) )  || //カテゴリページ
   ( is_category() && is_paged() && is_paged_category_page_noindex() )  || //カテゴリページ（2ページ目以降）
-  ( is_tax() && is_tag_page_noindex() ) || //タクソノミ
-  ( is_tag()  && is_tag_page_noindex() ) || //タグページ（2ページ目以降）
+  ( is_tax() && (is_tag_page_noindex() || get_the_tag_noindex()) ) || //タクソノミ
+  ( is_tag() && (is_tag_page_noindex() || get_the_tag_noindex()) ) || //タグページ（2ページ目以降）
   ( is_tag() && is_paged() && is_paged_tag_page_noindex() ) || //タグページ（2ページ目以降）
   (is_attachment() && is_attachment_page_noindex()) || //添付ファイルページも含めない
   is_search() || //検索結果ページはインデックスに含めない
@@ -447,7 +447,7 @@ function get_meta_description_text(){
     $description = get_the_meta_description();
   } elseif (is_category() && is_meta_description_to_category()) {
     $description = get_category_meta_description();
-  } elseif (is_tag() && is_meta_description_to_category()) {//※カテゴリーページのメタタグ設定と共通？（※今後要検討）
+  } elseif ((is_tag() || is_tax()) && is_meta_description_to_category()) {//※カテゴリーページのメタタグ設定と共通？（※今後要検討）
     $description = get_tag_meta_description();
   }
   $description = htmlspecialchars($description);
@@ -544,6 +544,21 @@ function get_tag_meta_keywords(){
 }
 endif;
 
+//メタサムネイルを出力する
+add_action( 'wp_head', 'generate_meta_thumbnail_tag' );
+if ( !function_exists( 'generate_meta_thumbnail_tag' ) ):
+function generate_meta_thumbnail_tag() {
+  if (is_singular()) {
+    $thumbnail_url = get_singular_eyecatch_image_url();
+
+    if ($thumbnail_url && !is_wpforo_plugin_page()) {
+      echo '<!-- '.THEME_NAME_CAMEL.' meta thumbnail -->'.PHP_EOL;
+      echo '<meta name="thumbnail" content="'.esc_attr($thumbnail_url).'">'.PHP_EOL;
+    }
+  }
+}
+endif;
+
 //json-ldタグを出力する
 add_action( 'wp_head', 'the_json_ld_tag' );
 if ( !function_exists( 'the_json_ld_tag' ) ):
@@ -555,6 +570,10 @@ function the_json_ld_tag() {
       echo '<!-- '.THEME_NAME_CAMEL.' Review JSON-LD -->'.PHP_EOL;
       get_template_part('tmp/json-ld-review');
     }
+    // if (apply_filters('cocoon_json_ld_faq_visible', true)) {
+    //   echo '<!-- '.THEME_NAME_CAMEL.' FAQ JSON-LD -->'.PHP_EOL;
+    //   get_template_part('tmp/json-ld-faq');
+    // }
   }
 }
 endif;
@@ -608,7 +627,7 @@ function get_the_snippet($content, $length = 70) {
     $description = str_replace('<', '&lt;', $description);
     $description = str_replace('>', '&gt;', $description);
   }
-  return apply_filters( 'get_the_snippet', $description );
+  return apply_filters( 'get_the_snippet', $description, $post );
 }
 endif;
 

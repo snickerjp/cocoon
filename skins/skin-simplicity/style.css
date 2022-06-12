@@ -6,12 +6,12 @@
   Author: わいひら
   Author URI: https://nelog.jp/
   Screenshot URI: https://im-cocoon.net/wp-content/uploads/like-simplicity.png
-  Version: 1.0.0
+  Version: 1.0.1
   Priority: 9880010000
 */
 /*以下にスタイルシートを記入してください*/
 body {
-  font-family: 'Hiragino Kaku Gothic ProN', Meiryo, Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
   background-color: transparent;
 }
 
@@ -35,6 +35,7 @@ body {
   padding: 0;
 }
 
+.sidebar h2,
 .sidebar h3 {
   background: transparent;
   padding: 0.4em;

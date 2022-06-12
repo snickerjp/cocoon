@@ -10,7 +10,7 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
 <p><?php _e( 'ランキングを作成します。次のランキングを入力するには保存ボタンを押してください。', THEME_NAME ) ?></p>
 <?php //IDがある場合はIDの取得（編集モードの場合）
 $id = isset($_GET['id']) ? intval($_GET['id']) : null;
-$action = isset($_GET['action']) ? intval($_GET['action']) : null;
+$action = isset($_GET['action']) ? $_GET['action'] : null;
 //アイテムの移動
 if ( $id && ($action == 'move') && isset($_GET['from']) && isset($_GET['to']) ) {
   $from = $_GET['from'];
@@ -79,11 +79,11 @@ if ( $id && ($action == 'item_delete') && isset($_GET['del_no']) && isset($_GET[
     echo '<br>';
 
     //TinyMCE表示
-    generate_checkbox_tag('visible' , $visible, __( 'ビジュアルエディターのリストに表示', THEME_NAME ));
+    generate_checkbox_tag('visible' , $visible, __( 'エディターのリストに表示', THEME_NAME ));
     generate_tips_tag(__( 'エディターのドロップダウンリストに表示しなくて良い場合は、無効にしてください。', THEME_NAME ));
     echo '<br>';
 
-    submit_button('保存');
+    submit_button(__( '保存', THEME_NAME ));
     echo '<br>';
     ?>
   </div>
@@ -157,7 +157,7 @@ if ( $id && ($action == 'item_delete') && isset($_GET['del_no']) && isset($_GET[
           <?php
           generate_label_tag('', __('説明文（※必須）', THEME_NAME) );
           echo '<br>';
-          generate_textarea_tag('item_ranking['.$i.'][description]', $description,  '商品等の説明文を入力してください。', 5);
+          generate_textarea_tag('item_ranking['.$i.'][description]', $description,  __( '商品等の説明文を入力してください。', THEME_NAME ), 5);
           generate_tips_tag(__( '紹介文を入力してください。タグ・ショートコード入力も可能です。', THEME_NAME ));
            ?>
         </div>

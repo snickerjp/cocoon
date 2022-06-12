@@ -19,7 +19,7 @@ endif;
 define('OP_SNS_BOTTOM_SHARE_MESSAGE', 'sns_bottom_share_message');
 if ( !function_exists( 'get_sns_bottom_share_message' ) ):
 function get_sns_bottom_share_message(){
-  return stripslashes_deep(get_theme_option(OP_SNS_BOTTOM_SHARE_MESSAGE, 'シェアする'));
+  return stripslashes_deep(get_theme_option(OP_SNS_BOTTOM_SHARE_MESSAGE, __( 'シェアする', THEME_NAME )));
 }
 endif;
 
@@ -92,6 +92,14 @@ define('OP_BOTTOM_COPY_SHARE_BUTTON_VISIBLE', 'bottom_copy_share_button_visible'
 if ( !function_exists( 'is_bottom_copy_share_button_visible' ) ):
 function is_bottom_copy_share_button_visible(){
   return get_theme_option(OP_BOTTOM_COPY_SHARE_BUTTON_VISIBLE, 1);
+}
+endif;
+
+//コメントボタンの表示
+define('OP_BOTTOM_COMMENT_SHARE_BUTTON_VISIBLE', 'bottom_comment_share_button_visible');
+if ( !function_exists( 'is_bottom_comment_share_button_visible' ) ):
+function is_bottom_comment_share_button_visible(){
+  return get_theme_option(OP_BOTTOM_COMMENT_SHARE_BUTTON_VISIBLE);
 }
 endif;
 

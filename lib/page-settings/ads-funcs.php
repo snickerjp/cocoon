@@ -59,8 +59,10 @@ endif;
 define('OP_ADSENSE_DISPLAY_METHOD', 'adsense_display_method');
 if ( !function_exists( 'get_adsense_display_method' ) ):
 function get_adsense_display_method(){
+  // $display_method = get_theme_option(OP_ADSENSE_DISPLAY_METHOD, 'by_myself');
+  // $display_method = $display_method ? $display_method : 'by_myself';
+  // return $display_method;
   return 'by_myself';
-  //return get_theme_option(OP_ADSENSE_DISPLAY_METHOD, 'by_myself');
 }
 endif;
 
@@ -94,6 +96,14 @@ endif;
 if ( !function_exists( 'is_auto_adsense_enable' ) ):
 function is_auto_adsense_enable(){
   return is_adsense_display_method_by_auto() || is_adsense_display_method_by_auto_and_myself();
+}
+endif;
+
+//モバイル広告の幅を広くする
+define('OP_MOBILE_ADSENSE_WIDTH_WIDE', 'mobile_adsense_width_wide');
+if ( !function_exists( 'is_mobile_adsense_width_wide' ) ):
+function is_mobile_adsense_width_wide(){
+  return get_theme_option(OP_MOBILE_ADSENSE_WIDTH_WIDE, 1);
 }
 endif;
 

@@ -16,7 +16,7 @@ function get_appeal_area_display_type(){
 endif;
 if ( !function_exists( 'is_appeal_area_visible' ) ):
 function is_appeal_area_visible(){
-  return (
+  $is_visible =  (
     is_appeal_area_display_type_all_page() ||
     (is_front_top_page() && is_appeal_area_display_type_front_page_only()) ||
     (!is_singular() && is_appeal_area_display_type_not_singular()) ||
@@ -25,6 +25,7 @@ function is_appeal_area_visible(){
     (is_page() && is_appeal_area_display_type_page_only()) ||
     (is_admin() && get_appeal_area_display_type() != 'none') //設定プレビュー
   );
+  return apply_filters('is_appeal_area_visible', $is_visible);
 }
 endif;
 if ( !function_exists( 'is_appeal_area_display_type_all_page' ) ):
@@ -87,6 +88,14 @@ define('OP_APPEAL_AREA_BACKGROUND_ATTACHMENT_FIXED', 'appeal_area_background_att
 if ( !function_exists( 'is_appeal_area_background_attachment_fixed' ) ):
 function is_appeal_area_background_attachment_fixed(){
   return get_theme_option(OP_APPEAL_AREA_BACKGROUND_ATTACHMENT_FIXED);
+}
+endif;
+
+//アピールエリアメッセージ表示
+define('OP_APPEAL_AREA_CONTENT_VISIBLE', 'appeal_area_content_visible');
+if ( !function_exists( 'is_appeal_area_content_visible' ) ):
+function is_appeal_area_content_visible(){
+  return get_theme_option(OP_APPEAL_AREA_CONTENT_VISIBLE, 1);
 }
 endif;
 

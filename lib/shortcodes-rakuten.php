@@ -26,10 +26,12 @@ function rakuten_product_link_shortcode($atts){
     'amazon' => 1,
     'rakuten' => 1,
     'yahoo' => 1,
+    'dmm' => 1,
     'border' => 1,
     'logo' => null,
     'sort' => null,
     'image_only' => 0,
+    'text_only' => 0,
     'btn1_url' => null,
     'btn1_text' => __( '詳細ページ', THEME_NAME ),
     'btn1_tag' => null,
@@ -75,6 +77,9 @@ function rakuten_product_link_shortcode($atts){
   $sid = trim(get_yahoo_valuecommerce_sid());
   //Yahoo!バリューコマースPID
   $pid = trim(get_yahoo_valuecommerce_pid());
+  //DMMアフィリエイトID
+  $dmm_affiliate_id = trim(get_dmm_affiliate_id());
+
   //キャッシュ更新間隔
   $days = intval(get_api_cache_retention_period());
 
@@ -147,6 +152,7 @@ function rakuten_product_link_shortcode($atts){
     $request_url = 'https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?applicationId='.$rakuten_application_id.'&affiliateId='.$rakuten_affiliate_id.'&imageFlag=1'.$sortQuery.$shopCode.'&hits=1'.$searchkw.$itemCode;
     //_v($request_url);
     $args = array( 'sslverify' => true );
+    $args = apply_filters('wp_remote_get_rakuten_args', $args);
     $json = wp_remote_get( $request_url, $args );
 
     //ジェイソンのリクエスト結果チェック
@@ -331,12 +337,14 @@ function rakuten_product_link_shortcode($atts){
             'rakuten_affiliate_id' => $rakuten_affiliate_id,
             'sid' => $sid,
             'pid' => $pid,
+            'dmm_affiliate_id' => $dmm_affiliate_id,
             'moshimo_amazon_id' => $moshimo_amazon_id,
             'moshimo_rakuten_id' => $moshimo_rakuten_id,
             'moshimo_yahoo_id' => $moshimo_yahoo_id,
             'amazon' => $amazon,
             'rakuten' => $rakuten,
             'yahoo' => $yahoo,
+            'dmm' => $dmm,
             'amazon_page_url' => null,
             'rakuten_page_url' => $affiliateUrl,
             'btn1_url' => $btn1_url,
@@ -385,13 +393,33 @@ function rakuten_product_link_shortcode($atts){
           ///////////////////////////////////////////
           // イメージリンクタグ
           ///////////////////////////////////////////
-          $image_link_tag = '<a href="'.esc_url($affiliateUrl).'" class="rakuten-item-thumb-link product-item-thumb-link" target="_blank" title="'.esc_attr($TitleAttr).'" rel="nofollow noopener">'.
+          $image_only_class = null;
+          if ($image_only) {
+            $image_only_class = ' rakuten-item-image-only product-item-image-only no-icon';
+          }
+          $image_link_tag = '<a href="'.esc_url($affiliateUrl).'" class="rakuten-item-thumb-link product-item-thumb-link'.esc_attr($image_only_class).'" target="_blank" title="'.esc_attr($TitleAttr).'" rel="nofollow noopener">'.
                   '<img src="'.esc_url($ImageUrl).'" alt="'.esc_attr($TitleAttr).'" width="'.esc_attr($ImageWidth).'" height="'.esc_attr($ImageHeight).'" class="rakuten-item-thumb-image product-item-thumb-image">'.
                   $moshimo_rakuten_impression_tag.
                 '</a>';
           //画像のみ出力する場合
           if ($image_only) {
             return apply_filters('rakuten_product_image_link_tag', $image_link_tag);
+          }
+
+          ///////////////////////////////////////////
+          // 楽天テキストリンク
+          ///////////////////////////////////////////
+          $text_only_class = null;
+          if ($text_only) {
+            $text_only_class = ' rakuten-item-text-only product-item-text-only';
+          }
+          $text_link_tag =
+          '<a href="'.esc_url($affiliateUrl).'" class="rakuten-item-title-link product-item-title-link'.esc_attr($text_only_class).'" target="_blank" title="'.esc_attr($TitleAttr).'" rel="nofollow noopener">'.
+            esc_html($TitleHtml).
+            $moshimo_rakuten_impression_tag.
+          '</a>';
+          if ($text_only) {
+            return apply_filters('rakuten_product_text_link_tag', $text_link_tag);
           }
 
           ///////////////////////////////////////////
@@ -404,10 +432,7 @@ function rakuten_product_link_shortcode($atts){
               '</figure>'.
               '<div class="rakuten-item-content product-item-content cf">'.
                 '<div class="rakuten-item-title product-item-title">'.
-                  '<a href="'.esc_url($affiliateUrl).'" class="rakuten-item-title-link product-item-title-link" target="_blank" title="'.esc_attr($TitleAttr).'" rel="nofollow noopener">'.
-                  esc_html($TitleHtml).
-                    $moshimo_rakuten_impression_tag.
-                  '</a>'.
+                  $text_link_tag.
                 '</div>'.
                 '<div class="rakuten-item-snippet product-item-snippet">'.
                   '<div class="rakuten-item-maker product-item-maker">'.
@@ -428,32 +453,33 @@ function rakuten_product_link_shortcode($atts){
         $error_message = __( '商品が見つかりませんでした。', THEME_NAME );
         //楽天商品取得エラーの出力
         if (!$json_cache) {
-          error_log_to_rakuten_product($id, $search, $error_message);
+          error_log_to_rakuten_product($id, $search, $error_message, $keyword);
         }
         return get_rakuten_error_message_tag($default_rakuten_link_tag, $error_message, $cache_delete_tag);
       }
 
     } else {
-
-      $ebody = json_decode( $json['body'] );
-      $error = $ebody->{'error'};
-      $error_description = $ebody->{'error_description'};
-      switch ($error) {
-        case 'wrong_parameter':
-        $error_message = $error_description.':'.__( 'ショートコードの値が正しく記入されていない可能性があります。', THEME_NAME );
-        //楽天商品取得エラーの出力
-        if (!$json_cache) {
-          error_log_to_rakuten_product($id, $search, $error_message);
+      if (is_array($json) && isset($json['body'])) {
+        $ebody = json_decode( $json['body'] );
+        $error = $ebody->{'error'};
+        $error_description = $ebody->{'error_description'};
+        switch ($error) {
+          case 'wrong_parameter':
+          $error_message = $error_description.':'.__( 'ショートコードの値が正しく記入されていない可能性があります。', THEME_NAME );
+          //楽天商品取得エラーの出力
+          if (!$json_cache) {
+            error_log_to_rakuten_product($id, $search, $error_message, $keyword);
+          }
+          //楽天APIキャッシュの保存
+          set_transient($transient_id, $json, $cache_expiration);
+          return get_rakuten_error_message_tag($default_rakuten_link_tag, $error_message, $cache_delete_tag);
+            break;
+          default:
+          $error_message = $error_description.':'.__( 'Bad Requestが返されました。リクエスト制限を受けた可能性があります。しばらく時間を置いた後、リロードすると商品リンクが表示される可能性があります。', THEME_NAME );
+            break;
         }
-        //楽天APIキャッシュの保存
-        set_transient($transient_id, $json, $cache_expiration);
-        return get_rakuten_error_message_tag($default_rakuten_link_tag, $error_message, $cache_delete_tag);
-          break;
-        default:
-        $error_message = $error_description.':'.__( 'Bad Requestが返されました。リクエスト制限を受けた可能性があります。しばらく時間を置いた後、リロードすると商品リンクが表示される可能性があります。', THEME_NAME );
-          break;
+        return get_rakuten_error_message_tag($default_rakuten_link_tag, $error_message);
       }
-      return get_rakuten_error_message_tag($default_rakuten_link_tag, $error_message);
     }
   } else {
     $error_message = __( 'JSONを取得できませんでした。接続環境に問題がある可能性があります。', THEME_NAME );
@@ -465,14 +491,20 @@ endif;
 
 //楽天APIで商品情報を取得できなかった場合のエラーログ
 if ( !function_exists( 'error_log_to_rakuten_product' ) ):
-  function error_log_to_rakuten_product($id, $no, $message = ''){
+  function error_log_to_rakuten_product($id, $no, $message = '', $keyword = ''){
     //エラーログに出力
     $msg = date_i18n("Y-m-d H:i:s").','.
            $id.','.
            $no.','.
            get_the_permalink().
            PHP_EOL;
-    error_log($msg, 3, get_theme_rakuten_product_error_log_file());
+   $rakuten_affiliate_id = trim(get_rakuten_affiliate_id());
+   if ($keyword) {
+     $rakuten_url = get_rakuten_affiliate_search_url($keyword, $rakuten_affiliate_id);
+   } else {
+    $rakuten_url = 'https://a.r10.to/hllTWS';
+   }
+  error_log($msg, 3, get_theme_rakuten_product_error_log_file());
 
     //メールで送信
     if (is_api_error_mail_enable()) {
@@ -484,7 +516,10 @@ if ( !function_exists( 'error_log_to_rakuten_product' ) ):
         'No.(Search):'.$no.PHP_EOL.
         'URL:'.get_the_permalink().PHP_EOL.
         'Message:'.$message.PHP_EOL.
-        THEME_MAIL_RAKUTEN_PR.THEME_MAIL_CREDIT;
+        THEME_MAIL_RAKUTEN_PR.PHP_EOL.
+        $rakuten_url.PHP_EOL.
+        THEME_MAIL_AMAZON_PR.
+        THEME_MAIL_CREDIT;
       wp_mail( get_wordpress_admin_email(), $subject, $mail_msg );
     }
   }

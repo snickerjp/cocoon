@@ -6,7 +6,7 @@
   Author URI: https://zvalinf.info
   Screenshot URI: https://im-cocoon.net/wp-content/uploads/skin-mixblue.png
   Version: 0.0.2
-  Priority: 9920001000
+  Priority: 9830002000
 */
 
 /* ---------------------------------------------------------
@@ -23,6 +23,10 @@
 
 .header-container .navi {
   background-color:#28569a;
+}
+
+.header-container.fixed-header{
+	background-color: #28569a;
 }
 
 #navi .navi-in a{
@@ -208,6 +212,7 @@
 / 『サイドバーの見出し（h3）』　　投稿のh3と同じ
 -----------------------------------------------------■□ */
 /* ----- ベースのボーダー ----- */
+.sidebar h2,
 .sidebar h3 {
   background: none;
   border-top: none;
@@ -218,6 +223,7 @@
 }
 
 /* ----- 2色目のボーダー ----- */
+.sidebar h2::after,
 .sidebar h3:after {
   position: absolute;
   content: " ";
@@ -409,27 +415,28 @@ blockquote{
 .widget-entry-cards.ranking-visible .card-thumb::before {
     content: counter(p-rank);
     position: absolute;
-    top: 3px;
-    left: 3px;
-    line-height: 30px;
+    top: 2px;
+    left: 2px;
+    line-height: 26px;
     opacity: .9;
     text-align: center;
-    font-size: 30px;
+    font-size: 26px;
     font-family: Arial,sans-serif;
     z-index: 1;
     font-weight: bold;
     font-style: italic;
     text-shadow: -2px -1px 0 #fff, 2px 1px 0 rgba(0,0,0,.9);
     color: #edad0b;
+    width: auto;
 }
 
 /* ----- 大きなサムネイル、タイトルを重ねた大きなサムネイル ----- */
 .large-thumb.widget-entry-cards.ranking-visible .card-thumb::before,
 .large-thumb-on.widget-entry-cards.ranking-visible .card-thumb::before {
     top: 6px;
-    left: 8px;
-    line-height: 50px;
-    font-size: 50px;
+    left: 6px;
+    line-height: 38px;
+    font-size: 38px;
 }
 
 /* □■-----------------------------------------------------

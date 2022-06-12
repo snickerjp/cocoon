@@ -54,9 +54,9 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
                 <?php
                 //フォント
                 $options = array(
-                  'yu_gothic' => __( '游ゴシック体, ヒラギノ角ゴ', THEME_NAME ),
+                  'hiragino' => __( 'ヒラギノ角ゴ, メイリオ', THEME_NAME ).__( '（デフォルト）', THEME_NAME ),
                   'meiryo' => __( 'メイリオ, ヒラギノ角ゴ', THEME_NAME ),
-                  'hiragino' => __( 'ヒラギノ角ゴ, メイリオ', THEME_NAME ),
+                  'yu_gothic' => __( '游ゴシック体, ヒラギノ角ゴ', THEME_NAME ),
                   'ms_pgothic' => __( 'ＭＳ Ｐゴシック, ヒラギノ角ゴ', THEME_NAME ),
                   'noto_sans_jp' => __( 'Noto Sans JP（WEBフォント）', THEME_NAME ),
                   'noto_serif_jp' => __( 'Noto Serif JP（WEBフォント）', THEME_NAME ),
@@ -68,6 +68,7 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
                   // 'kokoro' => __( 'こころ明朝（WEBフォント）', THEME_NAME ),
                   'sawarabi_gothic' => __( 'さわらびゴシック（WEBフォント）', THEME_NAME ),
                   'sawarabi_mincho' => __( 'さわらび明朝（WEBフォント）', THEME_NAME ),
+                  '' => __( '指定なし', THEME_NAME ),
                 );
                 generate_selectbox_tag(OP_SITE_FONT_FAMILY, $options, get_site_font_family(), __( 'フォント', THEME_NAME ));
                 generate_tips_tag(__( 'サイト全体適用されるフォントを選択します。', THEME_NAME ));
@@ -259,7 +260,7 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
             $options = array(
               'display_all' => __( '全てのページで表示', THEME_NAME ),
               'no_display_all' => __( '全てのページで非表示', THEME_NAME ),
-              'no_display_front_page' => __( 'フロントページで非表示（固定ページがトップページの場合）', THEME_NAME ),
+              'no_display_front_page' => __( 'フロントページで非表示', THEME_NAME ),
               'no_display_index_pages' => __( 'インデックスページで非表示', THEME_NAME ),
               'no_display_pages' => __( '固定ページで非表示', THEME_NAME ),
               'no_display_singles' => __( '投稿ページで非表示', THEME_NAME ),
@@ -321,7 +322,7 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
             generate_textbox_tag(OP_SITE_DATE_FORMAT, get_site_date_format(), '');
             generate_tips_tag(__( 'テーマ全体に使われている日付のフォーマット形式を入力してください（初期値：Y.m.d）。', THEME_NAME ));
             ?>
-            <p><?php _e( '<a href="https://wpdocs.osdn.jp/Formatting_Date_and_Time">日付と時刻の書式の解説</a>', THEME_NAME ) ?></p>
+            <p><?php _e( '<a href="https://ja.wordpress.org/support/article/formatting-date-and-time/">日付と時刻の書式の解説</a>', THEME_NAME ) ?></p>
           </td>
         </tr>
 

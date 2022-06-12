@@ -16,11 +16,8 @@
     padding-top: 4px;
 }
 
-.navi {
-    background-color: #F2E7C7;
-}
-
-.navi-in a {
+.navi-in a,
+.navi-in > ul .sub-menu {
     color: #666;
     font-weight: bold;
 }
@@ -37,7 +34,8 @@
 }
 
 main.main {
-    padding: 0px 29px;
+    padding-left: 29px;
+    padding-right: 29px;
 }
 
 .article h1, .article h2, .article h3, .article h4, .article h5, .article h6 {
@@ -46,7 +44,7 @@ main.main {
 
 .entry-title, #editor .entry-title, .archive-title {
     padding: 20px;
-    margin:38px 0;
+    margin-bottom: 38px;
     background-color: #594321;
     color: #fff;
     font-size: 24px;
@@ -80,9 +78,10 @@ main.main, div.sidebar {
     font-size: 20px;
     color:#fff;
     padding:  10px 16px;
-	margin:10px 16px;
-	border:none;
-	border-radius:4px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border:none;
+    border-radius:4px;
     background: #594321;
 }
 
@@ -108,24 +107,20 @@ main.main, div.sidebar {
 
 
 @media screen and (max-width: 480px){
-.archive-title,.entry-title {
-    font-size: 18px;
-}
+    .archive-title,.entry-title {
+        font-size: 18px;
+    }
 
-.article h2 {
-    padding: 14px 0px;
-    font-size: 16px;
-}
+    .article h2 {
+        padding: 14px 0px;
+        font-size: 16px;
+    }
 
-.article h3, .article h4, .article h5, .article h6 {
-    font-size: 16px;
-}
-}
+    .article h3, .article h4, .article h5, .article h6 {
+        font-size: 16px;
+    }
 
-.navi-in>ul li {
-    background-color: #F2E7C7;
 }
-
 
 .comment-title {
     font-size: 18px;
@@ -135,7 +130,7 @@ main.main, div.sidebar {
     padding: 18px;
 }
 
-
+.sidebar h2,
 .sidebar h3 {
     background-color: #594321;
     color: #fff;
@@ -160,6 +155,7 @@ main.main, div.sidebar {
 .footer {
     background-color: #F2E7C7;
     border-bottom: solid 6px #594321;
+    color: #fff;
 }
 
 .footer.logo-text {
@@ -197,7 +193,7 @@ main.main, div.sidebar {
 }
 
 .widget_author_box.author-thumb img {
-	border-radius: 50px;
+    border-radius: 50px;
 }
 .author-display-name{
     display:none;

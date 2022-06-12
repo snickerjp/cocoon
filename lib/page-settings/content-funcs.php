@@ -11,18 +11,21 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // 本文行間
 ///////////////////////////////////////
 //行の高さ
+
+define('OP_ENTRY_CONTENT_LINE_HIGHT_DEFAULT', 1.8);
 define('OP_ENTRY_CONTENT_LINE_HIGHT', 'entry_content_line_hight');
 if ( !function_exists( 'get_entry_content_line_hight' ) ):
 function get_entry_content_line_hight(){
-  return get_theme_option(OP_ENTRY_CONTENT_LINE_HIGHT, 1.8);
+  return get_theme_option(OP_ENTRY_CONTENT_LINE_HIGHT, OP_ENTRY_CONTENT_LINE_HIGHT_DEFAULT);
 }
 endif;
 
 //行の余白
+define('OP_ENTRY_CONTENT_MARGIN_HIGHT_DEFAULT', 1.8);
 define('OP_ENTRY_CONTENT_MARGIN_HIGHT', 'entry_content_margin_hight');
 if ( !function_exists( 'get_entry_content_margin_hight' ) ):
 function get_entry_content_margin_hight(){
-  return get_theme_option(OP_ENTRY_CONTENT_MARGIN_HIGHT, 1.4);
+  return get_theme_option(OP_ENTRY_CONTENT_MARGIN_HIGHT, OP_ENTRY_CONTENT_MARGIN_HIGHT_DEFAULT);
 }
 endif;
 
@@ -229,8 +232,11 @@ function add_responsive_table_tag($the_content) {
   if (is_responsive_table_first_column_sticky_enable()) {
     $first_column_sticky = ' stfc-sticky';
   }
+  //テーブル対応
   $the_content = preg_replace('/<table/i', '<div class="scrollable-table'.$first_column_sticky.'"><table', $the_content);
   $the_content = preg_replace('/<\/table>/i', '</table></div>', $the_content);
+  // //テーブルブロック対応
+  // $the_content = str_replace('<figure class="wp-block-table ', '<figure class="wp-block-table scrollable-block-table ', $the_content);
   return $the_content;
 }
 endif;
