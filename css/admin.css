@@ -271,9 +271,6 @@ body.wp-admin {
   ** ダブルレクタングル
   ************************************/
   /************************************
-  ** 記事内広告
-  ************************************/
-  /************************************
   ** サイドバーのダブルレクタングル
   ************************************/
   /************************************
@@ -413,9 +410,6 @@ body.wp-admin {
   /************************************
   ** Facebookページを「いいね！」するエリアのスタイル（サイドバーの時）
   ************************************/
-  /************************************
-  ** Facebookページを「いいね！」するエリアのスタイル
-  ************************************/
   /*閉じる用の薄黒カバー*/
   /*中身*/
   /*チェックが入ったらもろもろ表示*/
@@ -430,7 +424,6 @@ body.wp-admin {
   ************************************/
   /*検索フォーム*/
   /* for Desktop */
-  /* for Smartphone */
   /*Cocoon用記事ボックス*/
   /*
   .navi-card-wrap {
@@ -579,9 +572,6 @@ body.wp-admin {
   ** ダブルレクタングル
   ************************************/
   /************************************
-  ** 記事内広告
-  ************************************/
-  /************************************
   ** サイドバーのダブルレクタングル
   ************************************/
   /************************************
@@ -721,9 +711,6 @@ body.wp-admin {
   /************************************
   ** Facebookページを「いいね！」するエリアのスタイル（サイドバーの時）
   ************************************/
-  /************************************
-  ** Facebookページを「いいね！」するエリアのスタイル
-  ************************************/
   /*閉じる用の薄黒カバー*/
   /*中身*/
   /*チェックが入ったらもろもろ表示*/
@@ -738,7 +725,6 @@ body.wp-admin {
   ************************************/
   /*検索フォーム*/
   /* for Desktop */
-  /* for Smartphone */
   /*Cocoon用記事ボックス*/
   /*
   .navi-card-wrap {
@@ -818,7 +804,6 @@ body.wp-admin {
   ** カルーセルの非表示設定
   ************************************/
   /* Cocoonのリンクボタンカスタマイズ */
-  /* スマホ用 */
   /* Slider */
   /*
     Mobile Menu Core Style
@@ -1032,6 +1017,9 @@ body.wp-admin {
 }
 .admin-settings .demo a:hover {
   color: #e53900;
+}
+.has-text-color .admin-settings .demo a {
+  color: inherit;
 }
 .admin-settings .demo ol, .admin-settings .demo ul {
   padding-left: 40px;
@@ -1361,15 +1349,6 @@ body.wp-admin {
 .admin-settings .demo .header-container-in.hlt-top-menu.hlt-tm-small .logo-header img {
   max-height: 40px;
 }
-.admin-settings .demo .header-container-in.hlt-top-menu.hlt-tm-small .navi-in > ul > li,
-.admin-settings .demo .header-container-in.hlt-top-menu.hlt-tm-small .navi-in > ul > .menu-item-has-description > a > .caption-wrap {
-  line-height: 40px;
-  height: 40px;
-  display: block;
-}
-.admin-settings .demo .header-container-in.hlt-top-menu.hlt-tm-small .item-description {
-  display: none;
-}
 .admin-settings .demo .hlt-tm-right .navi-in > ul {
   justify-content: flex-end;
 }
@@ -1383,13 +1362,16 @@ body.wp-admin {
 .admin-settings .demo .fixed-header .cl-slim .logo-header img {
   max-height: 40px;
 }
+.admin-settings .demo .hlt-tm-small .navi-in > ul li,
 .admin-settings .demo .cl-slim .navi-in > ul li {
   height: 40px;
   line-height: 40px;
 }
+.admin-settings .demo .hlt-tm-small .navi-in > ul li .sub-menu ul,
 .admin-settings .demo .cl-slim .navi-in > ul li .sub-menu ul {
   top: -40px;
 }
+.admin-settings .demo .hlt-tm-small .navi-in > ul li.menu-item-has-description > a > .caption-wrap,
 .admin-settings .demo .cl-slim .navi-in > ul li.menu-item-has-description > a > .caption-wrap {
   height: 40px;
   line-height: 16px;
@@ -1590,6 +1572,11 @@ body.wp-admin {
 .admin-settings .demo .e-card-info > span {
   margin-right: 4px;
 }
+.admin-settings .demo .fpt-columns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
 .admin-settings .demo .ect-vertical-card {
   display: flex;
   flex-wrap: wrap;
@@ -1629,7 +1616,8 @@ body.wp-admin {
 .admin-settings .demo .ect-vertical-card.ect-tile-card .a-wrap {
   margin: 0 0.16666% 12px;
 }
-.admin-settings .demo .ect-2-columns > * {
+.admin-settings .demo .ect-2-columns > *,
+.admin-settings .demo .fpt-2-columns > * {
   width: 49.5%;
   display: inline-block;
 }
@@ -1646,7 +1634,8 @@ body.wp-admin {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
-.admin-settings .demo .ect-3-columns > * {
+.admin-settings .demo .ect-3-columns > *,
+.admin-settings .demo .fpt-3-columns > * {
   width: 33%;
   display: inline-block;
 }
@@ -2375,14 +2364,6 @@ body.wp-admin {
 .admin-settings .demo .sidebar .ad-additional-vertical {
   display: none;
 }
-@media screen and (max-width: 834px) {
-  .admin-settings .demo .sidebar .ad-vertical .ad-usual {
-    display: none;
-  }
-  .admin-settings .demo .sidebar .ad-vertical .ad-additional-vertical {
-    display: block;
-  }
-}
 .admin-settings .demo .blogcard-wrap {
   margin-left: auto;
   margin-right: auto;
@@ -2802,21 +2783,21 @@ body.wp-admin {
   position: relative;
 }
 .admin-settings .demo .card-arrow .a-wrap::after {
-  display: block;
-  content: '';
+  content: '\f105';
+  font-family: 'FontAwesome';
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1;
+  margin-top: -8px;
   position: absolute;
-  top: 50%;
-  bottom: 0;
   right: 20px;
-  width: 6px;
-  height: 6px;
-  border-top: solid 2px #697b91;
-  border-right: solid 2px #697b91;
-  transform: rotate(45deg);
-  margin-top: -3px;
+  top: 50%;
 }
 .admin-settings .demo .card-arrow .card-content {
   margin-right: 22px;
+}
+.admin-settings .demo .font-awesome-5 .card-arrow .a-wrap::after {
+  font-family: 'Font Awesome 5 Free';
 }
 .admin-settings .demo .widget-entry-cards.card-large-image .a-wrap {
   max-width: 400px;
@@ -3390,70 +3371,6 @@ body.wp-admin {
 }
 .admin-settings .demo #wpadminbar .alert::before {
   display: none;
-}
-@media screen and (max-width: 440px) {
-  .admin-settings .demo .is-style-information-box,
-  .admin-settings .demo .is-style-question-box,
-  .admin-settings .demo .is-style-alert-box,
-  .admin-settings .demo .is-style-memo-box,
-  .admin-settings .demo .is-style-comment-box,
-  .admin-settings .demo .is-style-ok-box,
-  .admin-settings .demo .is-style-ng-box,
-  .admin-settings .demo .is-style-good-box,
-  .admin-settings .demo .is-style-bad-box,
-  .admin-settings .demo .is-style-profile-box,
-  .admin-settings .demo .information-box,
-  .admin-settings .demo .question-box,
-  .admin-settings .demo .alert-box,
-  .admin-settings .demo .information,
-  .admin-settings .demo .question,
-  .admin-settings .demo .alert,
-  .admin-settings .demo .memo-box,
-  .admin-settings .demo .comment-box,
-  .admin-settings .demo .common-icon-box {
-    padding: 26px 6px 6px;
-  }
-  .admin-settings .demo .is-style-information-box::before,
-  .admin-settings .demo .is-style-question-box::before,
-  .admin-settings .demo .is-style-alert-box::before,
-  .admin-settings .demo .is-style-memo-box::before,
-  .admin-settings .demo .is-style-comment-box::before,
-  .admin-settings .demo .is-style-ok-box::before,
-  .admin-settings .demo .is-style-ng-box::before,
-  .admin-settings .demo .is-style-good-box::before,
-  .admin-settings .demo .is-style-bad-box::before,
-  .admin-settings .demo .is-style-profile-box::before,
-  .admin-settings .demo .information-box::before,
-  .admin-settings .demo .question-box::before,
-  .admin-settings .demo .alert-box::before,
-  .admin-settings .demo .information::before,
-  .admin-settings .demo .question::before,
-  .admin-settings .demo .alert::before,
-  .admin-settings .demo .memo-box::before,
-  .admin-settings .demo .comment-box::before,
-  .admin-settings .demo .common-icon-box::before {
-    padding: 0;
-    top: 0.7em;
-    left: 50%;
-    margin-left: -0.5em;
-    font-size: 18px;
-    border: none;
-    width: auto;
-  }
-  .admin-settings .demo .container .blank-box, .admin-settings .demo .container .is-style-blank-box-red,
-  .admin-settings .demo .container .is-style-blank-box-navy,
-  .admin-settings .demo .container .is-style-blank-box-blue,
-  .admin-settings .demo .container .is-style-blank-box-yellow,
-  .admin-settings .demo .container .is-style-blank-box-green,
-  .admin-settings .demo .container .is-style-blank-box-pink,
-  .admin-settings .demo .container .is-style-blank-box-orange, .admin-settings .demo .container .is-style-sticky-gray,
-  .admin-settings .demo .container .is-style-sticky-yellow,
-  .admin-settings .demo .container .is-style-sticky-red,
-  .admin-settings .demo .container .is-style-sticky-blue,
-  .admin-settings .demo .container .is-style-sticky-green {
-    margin-left: 0;
-    margin-right: 0;
-  }
 }
 .admin-settings .demo .blank-box, .admin-settings .demo .is-style-blank-box-red,
 .admin-settings .demo .is-style-blank-box-navy,
@@ -4341,23 +4258,6 @@ body.wp-admin {
   position: absolute;
   bottom: -1.5em;
   font-size: 25px;
-}
-@media screen and (max-width: 450px) {
-  .admin-settings .demo .search-form div {
-    padding: 3px 5px;
-    font-size: 75%;
-  }
-  .admin-settings .demo .search-form div.sform {
-    min-width: 180px;
-  }
-  .admin-settings .demo .search-form div.sbtn {
-    padding-left: 5px;
-    padding-right: 10px;
-  }
-  .admin-settings .demo .search-form div.sbtn::after {
-    font-size: 20px;
-    margin-left: -10px;
-  }
 }
 .admin-settings .demo .media-modal-content .search-form {
   margin: 0 !important;
@@ -5854,16 +5754,6 @@ body.wp-admin {
 .admin-settings .demo .wp-block-separator.is-style-wide {
   border-bottom: solid 3px !important;
 }
-@media screen and (min-width: 600px) and (max-width: 781px) {
-  .admin-settings .demo .article .wp-block-columns :nth-child(odd):nth-last-child(2) {
-    margin-bottom: 0;
-  }
-}
-@media screen and (min-width: 600px) {
-  .admin-settings .demo .column-wrap > * {
-    margin-bottom: 0 !important;
-  }
-}
 .admin-settings .demo .body .wp-block-gallery .blocks-gallery-item {
   margin-bottom: 0.6em;
 }
@@ -5914,6 +5804,36 @@ body.wp-admin {
 }
 .admin-settings .demo .faq-answer-label {
   color: #007bbb;
+}
+.admin-settings .demo .is-style-accordion {
+  padding: 0;
+}
+.admin-settings .demo .is-style-accordion .faq-question {
+  padding: .5em;
+  margin: 0;
+}
+.admin-settings .demo .is-style-accordion .faq-answer {
+  padding: 1em .5em;
+}
+.admin-settings .demo .is-style-accordion .faq-question {
+  cursor: pointer;
+  position: relative;
+  background-color: #e8ecef;
+  border-color: #e3e3e3 #cecece #b4b4b4 #d6d6d6;
+}
+.admin-settings .demo .is-style-accordion .faq-question::before {
+  content: "+";
+  position: absolute;
+  right: 1em;
+  opacity: 0.5;
+}
+.admin-settings .demo .is-style-accordion .faq-question.active::before {
+  content: "-";
+}
+.admin-settings .demo .is-style-accordion.has-border-color .faq-question,
+.admin-settings .demo .is-style-accordion.has-border-color .faq-question-label {
+  color: #fff;
+  border: none;
 }
 .admin-settings .demo .column-wrap {
   display: flex;
@@ -6730,11 +6650,6 @@ body.wp-admin {
 .admin-settings .demo .pis-s .si-thumb {
   width: 30%;
 }
-@media screen and (max-width: 480px) {
-  .admin-settings .demo .pis-m .si-thumb {
-    width: 30%;
-  }
-}
 .admin-settings .demo .booklink-info,
 .admin-settings .demo .kaerebalink-info,
 .admin-settings .demo .tomarebalink-info,
@@ -7011,62 +6926,6 @@ body.wp-admin {
   width: 100%;
   margin: 0 .5% !important;
 }
-@media screen and (max-width: 834px) {
-  .admin-settings .demo .booklink-box, .admin-settings .demo .kaerebalink-box, .admin-settings .demo .tomarebalink-box, .admin-settings .demo .product-item-box {
-    padding: 10px 10px 24px;
-    display: block;
-  }
-  .admin-settings .demo .booklink-image, .admin-settings .demo .kaerebalink-image, .admin-settings .demo .tomarebalink-image, .admin-settings .demo .product-item-thumb {
-    width: 120px;
-    min-width: 120px;
-    margin-right: 3% !important;
-    float: left !important;
-    height: 100% !important;
-  }
-  .admin-settings .demo .booklink-link2,
-  .admin-settings .demo .kaerebalink-link1,
-  .admin-settings .demo .tomarebalink-link1,
-  .admin-settings .demo .product-item-buttons {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  .admin-settings .demo .booklink-link2 > *,
-  .admin-settings .demo .kaerebalink-link1 > *,
-  .admin-settings .demo .tomarebalink-link1 > *,
-  .admin-settings .demo .product-item-buttons > * {
-    width: auto;
-    margin: 0 .5% !important;
-  }
-  .admin-settings .demo .booklink-link2 > * > a,
-  .admin-settings .demo .kaerebalink-link1 > * > a,
-  .admin-settings .demo .tomarebalink-link1 > * > a,
-  .admin-settings .demo .product-item-buttons > * > a {
-    width: auto;
-    font-size: 11px;
-  }
-  .admin-settings .demo .product-item-box::after {
-    font-size: 18px;
-  }
-}
-@media screen and (max-width: 480px) {
-  .admin-settings .demo .booklink-image, .admin-settings .demo .kaerebalink-image, .admin-settings .demo .tomarebalink-image, .admin-settings .demo .product-item-thumb {
-    width: 80px;
-    min-width: 80px;
-  }
-  .admin-settings .demo .booklink-info, .admin-settings .demo .kaerebalink-info, .admin-settings .demo .tomarebalink-info, .admin-settings .demo .product-item-content {
-    width: auto !important;
-    overflow: visible !important;
-    text-align: center !important;
-    padding: 0 !important;
-  }
-  .admin-settings .demo .booklink-link2 > *,
-  .admin-settings .demo .kaerebalink-link1 > *,
-  .admin-settings .demo .tomarebalink-link1 > *,
-  .admin-settings .demo .product-item-buttons > * {
-    width: 100%;
-    margin: 0 .5% !important;
-  }
-}
 .admin-settings .demo .fb-like-box {
   background-color: #444;
   color: #fff;
@@ -7234,39 +7093,6 @@ body.wp-admin {
 }
 .admin-settings .demo .sidebar div.fb-like-pc {
   display: none;
-}
-@media screen and (max-width: 639px) {
-  .admin-settings .demo .fb-like-balloon-body {
-    margin-right: 100px;
-    font-size: 1em;
-    line-height: 1.2em;
-  }
-  .admin-settings .demo .fb-like-balloon-body::after {
-    display: none;
-  }
-}
-@media screen and (max-width: 440px) {
-  .admin-settings .demo .fb-like-balloon-body {
-    font-size: 0.8em;
-    padding: 5px;
-    line-height: 1.1em;
-    margin-right: 0;
-    height: 70px;
-  }
-  .admin-settings .demo .fb-like-balloon-button {
-    float: none;
-    width: 100%;
-    height: 30px;
-    display: block;
-    padding-top: 0;
-    line-height: 24px;
-  }
-  .admin-settings .demo div.fb-like-mobile {
-    display: block;
-  }
-  .admin-settings .demo div.fb-like-pc {
-    display: none;
-  }
 }
 .admin-settings .demo .mobile-menu-buttons {
   background: #fff;
@@ -7908,33 +7734,6 @@ body.wp-admin {
   left: 105px;
   top: 24px;
   border-radius: 100%;
-}
-@media screen and (max-width: 480px) {
-  .admin-settings .demo .timeline-box .timeline {
-    padding-left: 10px;
-  }
-  .admin-settings .demo .timeline > li.timeline-item {
-    overflow: visible;
-    border-left: 3px #e5e5d1 solid;
-  }
-  .admin-settings .demo .timeline-item-label {
-    width: auto;
-    float: none;
-    text-align: left;
-    padding-left: 16px;
-  }
-  .admin-settings .demo .timeline-item-content {
-    width: auto;
-    padding: 8px;
-    float: none;
-    border: none;
-  }
-  .admin-settings .demo .timeline-item::before {
-    left: -12px;
-    top: 19px;
-    width: 21px;
-    height: 21px;
-  }
 }
 .admin-settings .demo .ribbon {
   width: 80px;
@@ -8679,6 +8478,9 @@ body.wp-admin {
 .admin-settings .demo a:hover {
   color: #e53900;
 }
+.has-text-color .admin-settings .demo a {
+  color: inherit;
+}
 .admin-settings .demo ol, .admin-settings .demo ul {
   padding-left: 40px;
 }
@@ -9007,15 +8809,6 @@ body.wp-admin {
 .admin-settings .demo .header-container-in.hlt-top-menu.hlt-tm-small .logo-header img {
   max-height: 40px;
 }
-.admin-settings .demo .header-container-in.hlt-top-menu.hlt-tm-small .navi-in > ul > li,
-.admin-settings .demo .header-container-in.hlt-top-menu.hlt-tm-small .navi-in > ul > .menu-item-has-description > a > .caption-wrap {
-  line-height: 40px;
-  height: 40px;
-  display: block;
-}
-.admin-settings .demo .header-container-in.hlt-top-menu.hlt-tm-small .item-description {
-  display: none;
-}
 .admin-settings .demo .hlt-tm-right .navi-in > ul {
   justify-content: flex-end;
 }
@@ -9029,13 +8822,16 @@ body.wp-admin {
 .admin-settings .demo .fixed-header .cl-slim .logo-header img {
   max-height: 40px;
 }
+.admin-settings .demo .hlt-tm-small .navi-in > ul li,
 .admin-settings .demo .cl-slim .navi-in > ul li {
   height: 40px;
   line-height: 40px;
 }
+.admin-settings .demo .hlt-tm-small .navi-in > ul li .sub-menu ul,
 .admin-settings .demo .cl-slim .navi-in > ul li .sub-menu ul {
   top: -40px;
 }
+.admin-settings .demo .hlt-tm-small .navi-in > ul li.menu-item-has-description > a > .caption-wrap,
 .admin-settings .demo .cl-slim .navi-in > ul li.menu-item-has-description > a > .caption-wrap {
   height: 40px;
   line-height: 16px;
@@ -9236,6 +9032,11 @@ body.wp-admin {
 .admin-settings .demo .e-card-info > span {
   margin-right: 4px;
 }
+.admin-settings .demo .fpt-columns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
 .admin-settings .demo .ect-vertical-card {
   display: flex;
   flex-wrap: wrap;
@@ -9275,7 +9076,8 @@ body.wp-admin {
 .admin-settings .demo .ect-vertical-card.ect-tile-card .a-wrap {
   margin: 0 0.16666% 12px;
 }
-.admin-settings .demo .ect-2-columns > * {
+.admin-settings .demo .ect-2-columns > *,
+.admin-settings .demo .fpt-2-columns > * {
   width: 49.5%;
   display: inline-block;
 }
@@ -9292,7 +9094,8 @@ body.wp-admin {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
-.admin-settings .demo .ect-3-columns > * {
+.admin-settings .demo .ect-3-columns > *,
+.admin-settings .demo .fpt-3-columns > * {
   width: 33%;
   display: inline-block;
 }
@@ -10021,14 +9824,6 @@ body.wp-admin {
 .admin-settings .demo .sidebar .ad-additional-vertical {
   display: none;
 }
-@media screen and (max-width: 834px) {
-  .admin-settings .demo .sidebar .ad-vertical .ad-usual {
-    display: none;
-  }
-  .admin-settings .demo .sidebar .ad-vertical .ad-additional-vertical {
-    display: block;
-  }
-}
 .admin-settings .demo .blogcard-wrap {
   margin-left: auto;
   margin-right: auto;
@@ -10448,21 +10243,21 @@ body.wp-admin {
   position: relative;
 }
 .admin-settings .demo .card-arrow .a-wrap::after {
-  display: block;
-  content: '';
+  content: '\f105';
+  font-family: 'FontAwesome';
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1;
+  margin-top: -8px;
   position: absolute;
-  top: 50%;
-  bottom: 0;
   right: 20px;
-  width: 6px;
-  height: 6px;
-  border-top: solid 2px #697b91;
-  border-right: solid 2px #697b91;
-  transform: rotate(45deg);
-  margin-top: -3px;
+  top: 50%;
 }
 .admin-settings .demo .card-arrow .card-content {
   margin-right: 22px;
+}
+.admin-settings .demo .font-awesome-5 .card-arrow .a-wrap::after {
+  font-family: 'Font Awesome 5 Free';
 }
 .admin-settings .demo .widget-entry-cards.card-large-image .a-wrap {
   max-width: 400px;
@@ -11036,70 +10831,6 @@ body.wp-admin {
 }
 .admin-settings .demo #wpadminbar .alert::before {
   display: none;
-}
-@media screen and (max-width: 440px) {
-  .admin-settings .demo .is-style-information-box,
-  .admin-settings .demo .is-style-question-box,
-  .admin-settings .demo .is-style-alert-box,
-  .admin-settings .demo .is-style-memo-box,
-  .admin-settings .demo .is-style-comment-box,
-  .admin-settings .demo .is-style-ok-box,
-  .admin-settings .demo .is-style-ng-box,
-  .admin-settings .demo .is-style-good-box,
-  .admin-settings .demo .is-style-bad-box,
-  .admin-settings .demo .is-style-profile-box,
-  .admin-settings .demo .information-box,
-  .admin-settings .demo .question-box,
-  .admin-settings .demo .alert-box,
-  .admin-settings .demo .information,
-  .admin-settings .demo .question,
-  .admin-settings .demo .alert,
-  .admin-settings .demo .memo-box,
-  .admin-settings .demo .comment-box,
-  .admin-settings .demo .common-icon-box {
-    padding: 26px 6px 6px;
-  }
-  .admin-settings .demo .is-style-information-box::before,
-  .admin-settings .demo .is-style-question-box::before,
-  .admin-settings .demo .is-style-alert-box::before,
-  .admin-settings .demo .is-style-memo-box::before,
-  .admin-settings .demo .is-style-comment-box::before,
-  .admin-settings .demo .is-style-ok-box::before,
-  .admin-settings .demo .is-style-ng-box::before,
-  .admin-settings .demo .is-style-good-box::before,
-  .admin-settings .demo .is-style-bad-box::before,
-  .admin-settings .demo .is-style-profile-box::before,
-  .admin-settings .demo .information-box::before,
-  .admin-settings .demo .question-box::before,
-  .admin-settings .demo .alert-box::before,
-  .admin-settings .demo .information::before,
-  .admin-settings .demo .question::before,
-  .admin-settings .demo .alert::before,
-  .admin-settings .demo .memo-box::before,
-  .admin-settings .demo .comment-box::before,
-  .admin-settings .demo .common-icon-box::before {
-    padding: 0;
-    top: 0.7em;
-    left: 50%;
-    margin-left: -0.5em;
-    font-size: 18px;
-    border: none;
-    width: auto;
-  }
-  .admin-settings .demo .container .blank-box, .admin-settings .demo .container .is-style-blank-box-red,
-  .admin-settings .demo .container .is-style-blank-box-navy,
-  .admin-settings .demo .container .is-style-blank-box-blue,
-  .admin-settings .demo .container .is-style-blank-box-yellow,
-  .admin-settings .demo .container .is-style-blank-box-green,
-  .admin-settings .demo .container .is-style-blank-box-pink,
-  .admin-settings .demo .container .is-style-blank-box-orange, .admin-settings .demo .container .is-style-sticky-gray,
-  .admin-settings .demo .container .is-style-sticky-yellow,
-  .admin-settings .demo .container .is-style-sticky-red,
-  .admin-settings .demo .container .is-style-sticky-blue,
-  .admin-settings .demo .container .is-style-sticky-green {
-    margin-left: 0;
-    margin-right: 0;
-  }
 }
 .admin-settings .demo .blank-box, .admin-settings .demo .is-style-blank-box-red,
 .admin-settings .demo .is-style-blank-box-navy,
@@ -11987,23 +11718,6 @@ body.wp-admin {
   position: absolute;
   bottom: -1.5em;
   font-size: 25px;
-}
-@media screen and (max-width: 450px) {
-  .admin-settings .demo .search-form div {
-    padding: 3px 5px;
-    font-size: 75%;
-  }
-  .admin-settings .demo .search-form div.sform {
-    min-width: 180px;
-  }
-  .admin-settings .demo .search-form div.sbtn {
-    padding-left: 5px;
-    padding-right: 10px;
-  }
-  .admin-settings .demo .search-form div.sbtn::after {
-    font-size: 20px;
-    margin-left: -10px;
-  }
 }
 .admin-settings .demo .media-modal-content .search-form {
   margin: 0 !important;
@@ -13500,16 +13214,6 @@ body.wp-admin {
 .admin-settings .demo .wp-block-separator.is-style-wide {
   border-bottom: solid 3px !important;
 }
-@media screen and (min-width: 600px) and (max-width: 781px) {
-  .admin-settings .demo .article .wp-block-columns :nth-child(odd):nth-last-child(2) {
-    margin-bottom: 0;
-  }
-}
-@media screen and (min-width: 600px) {
-  .admin-settings .demo .column-wrap > * {
-    margin-bottom: 0 !important;
-  }
-}
 .admin-settings .demo .body .wp-block-gallery .blocks-gallery-item {
   margin-bottom: 0.6em;
 }
@@ -13560,6 +13264,36 @@ body.wp-admin {
 }
 .admin-settings .demo .faq-answer-label {
   color: #007bbb;
+}
+.admin-settings .demo .is-style-accordion {
+  padding: 0;
+}
+.admin-settings .demo .is-style-accordion .faq-question {
+  padding: .5em;
+  margin: 0;
+}
+.admin-settings .demo .is-style-accordion .faq-answer {
+  padding: 1em .5em;
+}
+.admin-settings .demo .is-style-accordion .faq-question {
+  cursor: pointer;
+  position: relative;
+  background-color: #e8ecef;
+  border-color: #e3e3e3 #cecece #b4b4b4 #d6d6d6;
+}
+.admin-settings .demo .is-style-accordion .faq-question::before {
+  content: "+";
+  position: absolute;
+  right: 1em;
+  opacity: 0.5;
+}
+.admin-settings .demo .is-style-accordion .faq-question.active::before {
+  content: "-";
+}
+.admin-settings .demo .is-style-accordion.has-border-color .faq-question,
+.admin-settings .demo .is-style-accordion.has-border-color .faq-question-label {
+  color: #fff;
+  border: none;
 }
 .admin-settings .demo .column-wrap {
   display: flex;
@@ -14376,11 +14110,6 @@ body.wp-admin {
 .admin-settings .demo .pis-s .si-thumb {
   width: 30%;
 }
-@media screen and (max-width: 480px) {
-  .admin-settings .demo .pis-m .si-thumb {
-    width: 30%;
-  }
-}
 .admin-settings .demo .booklink-info,
 .admin-settings .demo .kaerebalink-info,
 .admin-settings .demo .tomarebalink-info,
@@ -14657,62 +14386,6 @@ body.wp-admin {
   width: 100%;
   margin: 0 .5% !important;
 }
-@media screen and (max-width: 834px) {
-  .admin-settings .demo .booklink-box, .admin-settings .demo .kaerebalink-box, .admin-settings .demo .tomarebalink-box, .admin-settings .demo .product-item-box {
-    padding: 10px 10px 24px;
-    display: block;
-  }
-  .admin-settings .demo .booklink-image, .admin-settings .demo .kaerebalink-image, .admin-settings .demo .tomarebalink-image, .admin-settings .demo .product-item-thumb {
-    width: 120px;
-    min-width: 120px;
-    margin-right: 3% !important;
-    float: left !important;
-    height: 100% !important;
-  }
-  .admin-settings .demo .booklink-link2,
-  .admin-settings .demo .kaerebalink-link1,
-  .admin-settings .demo .tomarebalink-link1,
-  .admin-settings .demo .product-item-buttons {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  .admin-settings .demo .booklink-link2 > *,
-  .admin-settings .demo .kaerebalink-link1 > *,
-  .admin-settings .demo .tomarebalink-link1 > *,
-  .admin-settings .demo .product-item-buttons > * {
-    width: auto;
-    margin: 0 .5% !important;
-  }
-  .admin-settings .demo .booklink-link2 > * > a,
-  .admin-settings .demo .kaerebalink-link1 > * > a,
-  .admin-settings .demo .tomarebalink-link1 > * > a,
-  .admin-settings .demo .product-item-buttons > * > a {
-    width: auto;
-    font-size: 11px;
-  }
-  .admin-settings .demo .product-item-box::after {
-    font-size: 18px;
-  }
-}
-@media screen and (max-width: 480px) {
-  .admin-settings .demo .booklink-image, .admin-settings .demo .kaerebalink-image, .admin-settings .demo .tomarebalink-image, .admin-settings .demo .product-item-thumb {
-    width: 80px;
-    min-width: 80px;
-  }
-  .admin-settings .demo .booklink-info, .admin-settings .demo .kaerebalink-info, .admin-settings .demo .tomarebalink-info, .admin-settings .demo .product-item-content {
-    width: auto !important;
-    overflow: visible !important;
-    text-align: center !important;
-    padding: 0 !important;
-  }
-  .admin-settings .demo .booklink-link2 > *,
-  .admin-settings .demo .kaerebalink-link1 > *,
-  .admin-settings .demo .tomarebalink-link1 > *,
-  .admin-settings .demo .product-item-buttons > * {
-    width: 100%;
-    margin: 0 .5% !important;
-  }
-}
 .admin-settings .demo .fb-like-box {
   background-color: #444;
   color: #fff;
@@ -14880,39 +14553,6 @@ body.wp-admin {
 }
 .admin-settings .demo .sidebar div.fb-like-pc {
   display: none;
-}
-@media screen and (max-width: 639px) {
-  .admin-settings .demo .fb-like-balloon-body {
-    margin-right: 100px;
-    font-size: 1em;
-    line-height: 1.2em;
-  }
-  .admin-settings .demo .fb-like-balloon-body::after {
-    display: none;
-  }
-}
-@media screen and (max-width: 440px) {
-  .admin-settings .demo .fb-like-balloon-body {
-    font-size: 0.8em;
-    padding: 5px;
-    line-height: 1.1em;
-    margin-right: 0;
-    height: 70px;
-  }
-  .admin-settings .demo .fb-like-balloon-button {
-    float: none;
-    width: 100%;
-    height: 30px;
-    display: block;
-    padding-top: 0;
-    line-height: 24px;
-  }
-  .admin-settings .demo div.fb-like-mobile {
-    display: block;
-  }
-  .admin-settings .demo div.fb-like-pc {
-    display: none;
-  }
 }
 .admin-settings .demo .mobile-menu-buttons {
   background: #fff;
@@ -15554,33 +15194,6 @@ body.wp-admin {
   left: 105px;
   top: 24px;
   border-radius: 100%;
-}
-@media screen and (max-width: 480px) {
-  .admin-settings .demo .timeline-box .timeline {
-    padding-left: 10px;
-  }
-  .admin-settings .demo .timeline > li.timeline-item {
-    overflow: visible;
-    border-left: 3px #e5e5d1 solid;
-  }
-  .admin-settings .demo .timeline-item-label {
-    width: auto;
-    float: none;
-    text-align: left;
-    padding-left: 16px;
-  }
-  .admin-settings .demo .timeline-item-content {
-    width: auto;
-    padding: 8px;
-    float: none;
-    border: none;
-  }
-  .admin-settings .demo .timeline-item::before {
-    left: -12px;
-    top: 19px;
-    width: 21px;
-    height: 21px;
-  }
 }
 .admin-settings .demo .ribbon {
   width: 80px;
@@ -16378,21 +15991,6 @@ body.wp-admin {
 .admin-settings .demo .btn-wrap-circle > a {
   background: #999;
 }
-@media screen and (max-width: 834px) {
-  .admin-settings .demo .index-tab-buttons {
-    flex-wrap: wrap;
-  }
-  .admin-settings .demo .index-tab-buttons .index-tab-button {
-    width: calc(98% / 2);
-    margin: .5%;
-  }
-  .admin-settings .demo .list-columns {
-    flex-direction: column;
-  }
-  .admin-settings .demo .list-columns .list-column {
-    width: 100%;
-  }
-}
 .admin-settings .demo .list-title {
   text-align: center;
   font-size: 18px;
@@ -16501,25 +16099,6 @@ body.wp-admin {
 .admin-settings .demo .apdt-mobile-only {
   display: none;
 }
-@media screen and (max-width: 1023px) {
-  .admin-settings .demo .admin-bar .mobile-header-menu-buttons {
-    margin-top: 32px;
-  }
-  .admin-settings .demo .admin-bar.mblt-header-mobile-buttons,
-  .admin-settings .demo .admin-bar.mblt-header-and-footer-mobile-buttons {
-    margin-top: 32px;
-  }
-}
-@media screen and (max-width: 1023px) and (max-width: 782px) {
-  .admin-settings .demo .admin-bar .mobile-header-menu-buttons {
-    margin-top: 0;
-  }
-  .admin-settings .demo .admin-bar.mblt-header-mobile-buttons,
-  .admin-settings .demo .admin-bar.mblt-header-and-footer-mobile-buttons {
-    margin-top: 0;
-  }
-}
-
 .admin-settings .demo .entry-card .admin-pv {
   margin: 0.4em 0 1.4em;
   padding: 0;
@@ -16863,23 +16442,6 @@ body.wp-admin {
 .admin-settings .demo #bbp_search_submit {
   padding: 4px;
   width: auto;
-}
-@media screen and (max-width: 480px) {
-  .admin-settings .demo div#bbpress-forums div.bbp-reply-author img.avatar {
-    position: static;
-  }
-  .admin-settings .demo div#bbpress-forums .bbp-body div.bbp-reply-author {
-    padding-left: 0;
-    width: 80px;
-    text-align: center;
-  }
-  .admin-settings .demo div#bbpress-forums .bbp-body div.bbp-reply-content {
-    clear: none;
-    margin: 0;
-  }
-  .admin-settings .demo div#bbpress-forums .bbp-body div.bbp-reply-content p {
-    margin-top: 0;
-  }
 }
 .admin-settings .demo #buddypress h2 {
   background-color: transparent;
@@ -17267,21 +16829,11 @@ body.wp-admin {
   .admin-settings .demo .mblt-header-and-footer-mobile-buttons .go-to-top-button {
     display: none;
   }
-  .admin-settings .demo .mblt-header-mobile-buttons .menu-pc {
+  .admin-settings .demo .navi-in .menu-pc {
     display: none;
   }
   .admin-settings .demo .no-mobile-header-logo .header .header-in {
     min-height: auto;
-  }
-}
-@media screen and (max-width: 834px) {
-  .admin-settings .demo {
-    /************************************
-    ** 関連記事
-    ************************************/
-  }
-  .admin-settings .demo .navi-in > .menu-header {
-    display: none;
   }
   .admin-settings .demo #navi .navi-in > .menu-mobile {
     display: flex;
@@ -17299,6 +16851,36 @@ body.wp-admin {
     font-size: 14px;
   }
   .admin-settings .demo #navi .navi-in > .menu-mobile li a:after {
+    display: none;
+  }
+  .admin-settings .demo .slicknav_menu {
+    display: block;
+  }
+  .admin-settings .demo .admin-bar .mobile-header-menu-buttons {
+    margin-top: 32px;
+  }
+  .admin-settings .demo .admin-bar.mblt-header-mobile-buttons,
+  .admin-settings .demo .admin-bar.mblt-header-and-footer-mobile-buttons {
+    margin-top: 32px;
+  }
+  .admin-settings .demo .admin-bar .mobile-header-menu-buttons {
+    margin-top: 0;
+  }
+  .admin-settings .demo .admin-bar.mblt-header-mobile-buttons,
+  .admin-settings .demo .admin-bar.mblt-header-and-footer-mobile-buttons {
+    margin-top: 0;
+  }
+}
+@media screen and (max-width: 834px) {
+  .admin-settings .demo {
+    /************************************
+    ** 関連記事
+    ************************************/
+    /************************************
+    ** Facebookページを「いいね！」するエリアのスタイル
+    ************************************/
+  }
+  .admin-settings .demo .navi-in > .menu-header {
     display: none;
   }
   .admin-settings .demo main.main,
@@ -17412,9 +16994,6 @@ body.wp-admin {
   }
   .admin-settings .demo .widget_mobile_text,
   .admin-settings .demo .widget_mobile_ad {
-    display: block;
-  }
-  .admin-settings .demo .slicknav_menu {
     display: block;
   }
   .admin-settings .demo .fb-like-box {
@@ -17551,8 +17130,6 @@ body.wp-admin {
   .admin-settings .demo .recommended.rcs-card-margin a:last-child {
     margin-right: 1%;
   }
-}
-@media screen and (max-width: 599px) {
   .admin-settings .demo .container .column-wrap {
     flex-direction: column;
   }
@@ -17565,6 +17142,74 @@ body.wp-admin {
   .admin-settings .demo .wwa .box-menus {
     margin-left: 10px;
     margin-right: 10px;
+  }
+  .admin-settings .demo .article .wp-block-columns :nth-child(odd):nth-last-child(2) {
+    margin-bottom: 0;
+  }
+  .admin-settings .demo .column-wrap > * {
+    margin-bottom: 0 !important;
+  }
+  .admin-settings .demo .fb-like-balloon-body {
+    margin-right: 100px;
+    font-size: 1em;
+    line-height: 1.2em;
+  }
+  .admin-settings .demo .fb-like-balloon-body::after {
+    display: none;
+  }
+  .admin-settings .demo .index-tab-buttons {
+    flex-wrap: wrap;
+  }
+  .admin-settings .demo .index-tab-buttons .index-tab-button {
+    width: calc(98% / 2);
+    margin: .5%;
+  }
+  .admin-settings .demo .list-columns {
+    flex-direction: column;
+  }
+  .admin-settings .demo .list-columns .list-column {
+    width: 100%;
+  }
+  .admin-settings .demo .sidebar .ad-vertical .ad-usual {
+    display: none;
+  }
+  .admin-settings .demo .sidebar .ad-vertical .ad-additional-vertical {
+    display: block;
+  }
+  .admin-settings .demo .booklink-box, .admin-settings .demo .kaerebalink-box, .admin-settings .demo .tomarebalink-box, .admin-settings .demo .product-item-box {
+    padding: 10px 10px 24px;
+    display: block;
+  }
+  .admin-settings .demo .booklink-image, .admin-settings .demo .kaerebalink-image, .admin-settings .demo .tomarebalink-image, .admin-settings .demo .product-item-thumb {
+    width: 120px;
+    min-width: 120px;
+    margin-right: 3% !important;
+    float: left !important;
+    height: 100% !important;
+  }
+  .admin-settings .demo .booklink-link2,
+  .admin-settings .demo .kaerebalink-link1,
+  .admin-settings .demo .tomarebalink-link1,
+  .admin-settings .demo .product-item-buttons {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .admin-settings .demo .booklink-link2 > *,
+  .admin-settings .demo .kaerebalink-link1 > *,
+  .admin-settings .demo .tomarebalink-link1 > *,
+  .admin-settings .demo .product-item-buttons > * {
+    width: auto;
+    margin: 0 .5% !important;
+  }
+  .admin-settings .demo .booklink-link2 > * > a,
+  .admin-settings .demo .kaerebalink-link1 > * > a,
+  .admin-settings .demo .tomarebalink-link1 > * > a,
+  .admin-settings .demo .product-item-buttons > * > a {
+    width: auto;
+    font-size: 11px;
+  }
+  .admin-settings .demo .product-item-box::after {
+    font-size: 18px;
   }
 }
 @media screen and (max-width: 480px) {
@@ -17842,12 +17487,172 @@ body.wp-admin {
   .admin-settings .demo .blogcard {
     padding-top: 3%;
   }
+  .admin-settings .demo .is-style-information-box,
+  .admin-settings .demo .is-style-question-box,
+  .admin-settings .demo .is-style-alert-box,
+  .admin-settings .demo .is-style-memo-box,
+  .admin-settings .demo .is-style-comment-box,
+  .admin-settings .demo .is-style-ok-box,
+  .admin-settings .demo .is-style-ng-box,
+  .admin-settings .demo .is-style-good-box,
+  .admin-settings .demo .is-style-bad-box,
+  .admin-settings .demo .is-style-profile-box,
+  .admin-settings .demo .information-box,
+  .admin-settings .demo .question-box,
+  .admin-settings .demo .alert-box,
+  .admin-settings .demo .information,
+  .admin-settings .demo .question,
+  .admin-settings .demo .alert,
+  .admin-settings .demo .memo-box,
+  .admin-settings .demo .comment-box,
+  .admin-settings .demo .common-icon-box {
+    padding: 26px 6px 6px;
+  }
+  .admin-settings .demo .is-style-information-box::before,
+  .admin-settings .demo .is-style-question-box::before,
+  .admin-settings .demo .is-style-alert-box::before,
+  .admin-settings .demo .is-style-memo-box::before,
+  .admin-settings .demo .is-style-comment-box::before,
+  .admin-settings .demo .is-style-ok-box::before,
+  .admin-settings .demo .is-style-ng-box::before,
+  .admin-settings .demo .is-style-good-box::before,
+  .admin-settings .demo .is-style-bad-box::before,
+  .admin-settings .demo .is-style-profile-box::before,
+  .admin-settings .demo .information-box::before,
+  .admin-settings .demo .question-box::before,
+  .admin-settings .demo .alert-box::before,
+  .admin-settings .demo .information::before,
+  .admin-settings .demo .question::before,
+  .admin-settings .demo .alert::before,
+  .admin-settings .demo .memo-box::before,
+  .admin-settings .demo .comment-box::before,
+  .admin-settings .demo .common-icon-box::before {
+    padding: 0;
+    top: 0.7em;
+    left: 50%;
+    margin-left: -0.5em;
+    font-size: 18px;
+    border: none;
+    width: auto;
+  }
+  .admin-settings .demo .container .blank-box, .admin-settings .demo .container .is-style-blank-box-red,
+  .admin-settings .demo .container .is-style-blank-box-navy,
+  .admin-settings .demo .container .is-style-blank-box-blue,
+  .admin-settings .demo .container .is-style-blank-box-yellow,
+  .admin-settings .demo .container .is-style-blank-box-green,
+  .admin-settings .demo .container .is-style-blank-box-pink,
+  .admin-settings .demo .container .is-style-blank-box-orange, .admin-settings .demo .container .is-style-sticky-gray,
+  .admin-settings .demo .container .is-style-sticky-yellow,
+  .admin-settings .demo .container .is-style-sticky-red,
+  .admin-settings .demo .container .is-style-sticky-blue,
+  .admin-settings .demo .container .is-style-sticky-green {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .admin-settings .demo .timeline-box .timeline {
+    padding-left: 10px;
+  }
+  .admin-settings .demo .timeline > li.timeline-item {
+    overflow: visible;
+    border-left: 3px #e5e5d1 solid;
+  }
+  .admin-settings .demo .timeline-item-label {
+    width: auto;
+    float: none;
+    text-align: left;
+    padding-left: 16px;
+  }
+  .admin-settings .demo .timeline-item-content {
+    width: auto;
+    padding: 8px;
+    float: none;
+    border: none;
+  }
+  .admin-settings .demo .timeline-item::before {
+    left: -12px;
+    top: 19px;
+    width: 21px;
+    height: 21px;
+  }
+  .admin-settings .demo .fb-like-balloon-body {
+    font-size: 0.8em;
+    padding: 5px;
+    line-height: 1.1em;
+    margin-right: 0;
+    height: 70px;
+  }
+  .admin-settings .demo .fb-like-balloon-button {
+    float: none;
+    width: 100%;
+    height: 30px;
+    display: block;
+    padding-top: 0;
+    line-height: 24px;
+  }
+  .admin-settings .demo div.fb-like-mobile {
+    display: block;
+  }
+  .admin-settings .demo div.fb-like-pc {
+    display: none;
+  }
+  .admin-settings .demo .pis-m .si-thumb {
+    width: 30%;
+  }
+  .admin-settings .demo .search-form div {
+    padding: 3px 5px;
+    font-size: 75%;
+  }
+  .admin-settings .demo .search-form div.sform {
+    min-width: 180px;
+  }
+  .admin-settings .demo .search-form div.sbtn {
+    padding-left: 5px;
+    padding-right: 10px;
+  }
+  .admin-settings .demo .search-form div.sbtn::after {
+    font-size: 20px;
+    margin-left: -10px;
+  }
+  .admin-settings .demo div#bbpress-forums div.bbp-reply-author img.avatar {
+    position: static;
+  }
+  .admin-settings .demo div#bbpress-forums .bbp-body div.bbp-reply-author {
+    padding-left: 0;
+    width: 80px;
+    text-align: center;
+  }
+  .admin-settings .demo div#bbpress-forums .bbp-body div.bbp-reply-content {
+    clear: none;
+    margin: 0;
+  }
+  .admin-settings .demo div#bbpress-forums .bbp-body div.bbp-reply-content p {
+    margin-top: 0;
+  }
+  .admin-settings .demo .booklink-image, .admin-settings .demo .kaerebalink-image, .admin-settings .demo .tomarebalink-image, .admin-settings .demo .product-item-thumb {
+    width: 80px;
+    min-width: 80px;
+  }
+  .admin-settings .demo .booklink-info, .admin-settings .demo .kaerebalink-info, .admin-settings .demo .tomarebalink-info, .admin-settings .demo .product-item-content {
+    width: auto !important;
+    overflow: visible !important;
+    text-align: center !important;
+    padding: 0 !important;
+  }
+  .admin-settings .demo .booklink-link2 > *,
+  .admin-settings .demo .kaerebalink-link1 > *,
+  .admin-settings .demo .tomarebalink-link1 > *,
+  .admin-settings .demo .product-item-buttons > * {
+    width: 100%;
+    margin: 0 .5% !important;
+  }
 }
 @media screen and (max-width: 356px) {
   .admin-settings .demo .ect-vertical-card .entry-card-wrap,
   .admin-settings .demo .rect-vertical-card .related-entry-card-wrap,
   .admin-settings .demo .ect-2-columns > *,
-  .admin-settings .demo .ect-3-columns > * {
+  .admin-settings .demo .ect-3-columns > *,
+  .admin-settings .demo .fpt-2-columns > *,
+  .admin-settings .demo .fpt-3-columns > * {
     width: 100% !important;
   }
 }
@@ -19196,70 +19001,6 @@ textarea[name="the_page_memo"] {
 .components-popover__content #wpadminbar .alert::before {
   display: none;
 }
-@media screen and (max-width: 440px) {
-  .components-popover__content .is-style-information-box,
-  .components-popover__content .is-style-question-box,
-  .components-popover__content .is-style-alert-box,
-  .components-popover__content .is-style-memo-box,
-  .components-popover__content .is-style-comment-box,
-  .components-popover__content .is-style-ok-box,
-  .components-popover__content .is-style-ng-box,
-  .components-popover__content .is-style-good-box,
-  .components-popover__content .is-style-bad-box,
-  .components-popover__content .is-style-profile-box,
-  .components-popover__content .information-box,
-  .components-popover__content .question-box,
-  .components-popover__content .alert-box,
-  .components-popover__content .information,
-  .components-popover__content .question,
-  .components-popover__content .alert,
-  .components-popover__content .memo-box,
-  .components-popover__content .comment-box,
-  .components-popover__content .common-icon-box {
-    padding: 26px 6px 6px;
-  }
-  .components-popover__content .is-style-information-box::before,
-  .components-popover__content .is-style-question-box::before,
-  .components-popover__content .is-style-alert-box::before,
-  .components-popover__content .is-style-memo-box::before,
-  .components-popover__content .is-style-comment-box::before,
-  .components-popover__content .is-style-ok-box::before,
-  .components-popover__content .is-style-ng-box::before,
-  .components-popover__content .is-style-good-box::before,
-  .components-popover__content .is-style-bad-box::before,
-  .components-popover__content .is-style-profile-box::before,
-  .components-popover__content .information-box::before,
-  .components-popover__content .question-box::before,
-  .components-popover__content .alert-box::before,
-  .components-popover__content .information::before,
-  .components-popover__content .question::before,
-  .components-popover__content .alert::before,
-  .components-popover__content .memo-box::before,
-  .components-popover__content .comment-box::before,
-  .components-popover__content .common-icon-box::before {
-    padding: 0;
-    top: 0.7em;
-    left: 50%;
-    margin-left: -0.5em;
-    font-size: 18px;
-    border: none;
-    width: auto;
-  }
-  .components-popover__content .container .blank-box, .components-popover__content .container .is-style-blank-box-red,
-  .components-popover__content .container .is-style-blank-box-navy,
-  .components-popover__content .container .is-style-blank-box-blue,
-  .components-popover__content .container .is-style-blank-box-yellow,
-  .components-popover__content .container .is-style-blank-box-green,
-  .components-popover__content .container .is-style-blank-box-pink,
-  .components-popover__content .container .is-style-blank-box-orange, .components-popover__content .container .is-style-sticky-gray,
-  .components-popover__content .container .is-style-sticky-yellow,
-  .components-popover__content .container .is-style-sticky-red,
-  .components-popover__content .container .is-style-sticky-blue,
-  .components-popover__content .container .is-style-sticky-green {
-    margin-left: 0;
-    margin-right: 0;
-  }
-}
 .components-popover__content .blank-box, .components-popover__content .admin-settings .demo .is-style-blank-box-red, .admin-settings .demo .components-popover__content .is-style-blank-box-red,
 .components-popover__content .admin-settings .demo .is-style-blank-box-navy,
 .admin-settings .demo .components-popover__content .is-style-blank-box-navy,
@@ -20206,23 +19947,6 @@ textarea[name="the_page_memo"] {
   position: absolute;
   bottom: -1.5em;
   font-size: 25px;
-}
-@media screen and (max-width: 450px) {
-  .components-popover__content .search-form div {
-    padding: 3px 5px;
-    font-size: 75%;
-  }
-  .components-popover__content .search-form div.sform {
-    min-width: 180px;
-  }
-  .components-popover__content .search-form div.sbtn {
-    padding-left: 5px;
-    padding-right: 10px;
-  }
-  .components-popover__content .search-form div.sbtn::after {
-    font-size: 20px;
-    margin-left: -10px;
-  }
 }
 .components-popover__content .media-modal-content .search-form {
   margin: 0 !important;
@@ -21720,16 +21444,6 @@ textarea[name="the_page_memo"] {
 .components-popover__content .wp-block-separator.is-style-wide {
   border-bottom: solid 3px !important;
 }
-@media screen and (min-width: 600px) and (max-width: 781px) {
-  .components-popover__content .article .wp-block-columns :nth-child(odd):nth-last-child(2) {
-    margin-bottom: 0;
-  }
-}
-@media screen and (min-width: 600px) {
-  .components-popover__content .column-wrap > * {
-    margin-bottom: 0 !important;
-  }
-}
 .components-popover__content .body .wp-block-gallery .blocks-gallery-item {
   margin-bottom: 0.6em;
 }
@@ -21780,6 +21494,36 @@ textarea[name="the_page_memo"] {
 }
 .components-popover__content .faq-answer-label {
   color: #007bbb;
+}
+.components-popover__content .is-style-accordion {
+  padding: 0;
+}
+.components-popover__content .is-style-accordion .faq-question {
+  padding: .5em;
+  margin: 0;
+}
+.components-popover__content .is-style-accordion .faq-answer {
+  padding: 1em .5em;
+}
+.components-popover__content .is-style-accordion .faq-question {
+  cursor: pointer;
+  position: relative;
+  background-color: #e8ecef;
+  border-color: #e3e3e3 #cecece #b4b4b4 #d6d6d6;
+}
+.components-popover__content .is-style-accordion .faq-question::before {
+  content: "+";
+  position: absolute;
+  right: 1em;
+  opacity: 0.5;
+}
+.components-popover__content .is-style-accordion .faq-question.active::before {
+  content: "-";
+}
+.components-popover__content .is-style-accordion.has-border-color .faq-question,
+.components-popover__content .is-style-accordion.has-border-color .faq-question-label {
+  color: #fff;
+  border: none;
 }
 .components-popover__content .red {
   margin: 0;
