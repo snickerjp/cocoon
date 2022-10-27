@@ -70,7 +70,7 @@ if ( !function_exists( 'get_post_navi_thumbnail_tag' ) ):
 function get_post_navi_thumbnail_tag($id, $width = THUMB120WIDTH, $height = THUMB120HEIGHT){
   $thumbnail_size = 'thumb'.strval($width);
   $thumbnail_size = apply_filters('get_post_navi_thumbnail_size', $thumbnail_size);
-  $thumb = get_the_post_thumbnail( $id, $thumbnail_size, array('alt' => '') );
+  $thumb = get_the_post_thumbnail( $id, $thumbnail_size, array('alt' => '', 'loading' => 'lazy', 'decoding' => 'async') );
   if ( !$thumb ) {
     $image = get_template_directory_uri().'/images/no-image-%s.png';
 
@@ -352,12 +352,62 @@ add_action('init', function () {
     'name' => 'accordion',
     'label' => __('アコーディオン', THEME_NAME),
   ));
+
+  //画像
+  register_block_style('core/image', array(
+    'name' => 'filter-clarendon',
+    'label' => __('Clarendon', THEME_NAME),
+  ));
+  register_block_style('core/image', array(
+    'name' => 'filter-gingham',
+    'label' => __('Gingham', THEME_NAME),
+  ));
+  register_block_style('core/image', array(
+    'name' => 'filter-moon',
+    'label' => __('Moon', THEME_NAME),
+  ));
+  register_block_style('core/image', array(
+    'name' => 'filter-lark',
+    'label' => __('Lark', THEME_NAME),
+  ));
+  register_block_style('core/image', array(
+    'name' => 'filter-reyes',
+    'label' => __('Reyes', THEME_NAME),
+  ));
+  register_block_style('core/image', array(
+    'name' => 'filter-juno',
+    'label' => __('Juno', THEME_NAME),
+  ));
+  register_block_style('core/image', array(
+    'name' => 'filter-slumber',
+    'label' => __('Slumber', THEME_NAME),
+  ));
+  register_block_style('core/image', array(
+    'name' => 'filter-crema',
+    'label' => __('Crema', THEME_NAME),
+  ));
+  register_block_style('core/image', array(
+    'name' => 'filter-ludwig',
+    'label' => __('Ludwig', THEME_NAME),
+  ));
+  register_block_style('core/image', array(
+    'name' => 'filter-aden',
+    'label' => __('Aden', THEME_NAME),
+  ));
+  register_block_style('core/image', array(
+    'name' => 'filter-perpetua',
+    'label' => __('Perpetua', THEME_NAME),
+  ));
+  register_block_style('core/image', array(
+    'name' => 'filter-monochrome',
+    'label' => __('Mono', THEME_NAME),
+  ));
 });
 
 
 //wpForoで添付画像をイメージリンクにする
 add_filter('wpforo_body_text_filter', function ($text){
-  $text = preg_replace('#(<div id="wpfa-\d+?" class="wpforo-attached-file"><a class="wpforo-default-attachment" .*?href="(.+?(\.jpe?g|\.png|\.gif))".*?>).+?(</a></div>)#i', '$1<i class="fas fa-paperclip paperclip"></i><img alt="" src="$2" />$4', $text);
+  $text = preg_replace('#(<div id="wpfa-\d+?" class="wpforo-attached-file"><a class="wpforo-default-attachment" .*?href="(.+?(\.jpe?g|\.png|\.gif))".*?>).+?(</a></div>)#i', '$1<i class="fas fa-paperclip paperclip"></i><img alt="" src="$2" loading="lazy" decoding="async" />$4', $text);
   return $text;
 });
 

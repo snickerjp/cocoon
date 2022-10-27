@@ -50,6 +50,7 @@ function new_entries_shortcode($atts) {
     'snippet' => 0,
     'author' => null,
     'offset' => 0,
+    'horizontal' => 0,
   ), $atts, 'new_list'));
 
   //カテゴリを配列化
@@ -82,6 +83,7 @@ function new_entries_shortcode($atts) {
     'snippet' => $snippet,
     'author' => $author,
     'offset' => $offset,
+    'horizontal' => $horizontal,
   );
   ob_start();
   generate_widget_entries_tag($atts);
@@ -108,6 +110,7 @@ function popular_entries_shortcode($atts) {
     'arrow' => 0,
     'class' => null,
     'author' => null,
+    'post_type' => 'post',
   ), $atts, 'popular_list'));
   $cat_ids = array();
   if ($cats && $cats != 'all') {
@@ -125,11 +128,10 @@ function popular_entries_shortcode($atts) {
     'arrow' => $arrow,
     'class' => $class,
     'author' => $author,
+    'post_type' => $post_type,
   );
   ob_start();
   generate_popular_entries_tag($atts);
-  //_v($atts);
-  //generate_popular_entries_tag($days, $count, $type, $rank, $pv, $categories);
   $res = ob_get_clean();
   return $res;
 }
@@ -698,7 +700,7 @@ function get_box_menu_tag($atts){
     //画像URLの場合
     if (preg_match('/(https?)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)\.(jpg|jpeg|gif|png)/', $attr_title)) {
       $img_url = $attr_title;
-      $icon_tag = '<img src="'.esc_url($img_url).'" alt="'.esc_attr($title).'" />';
+      $icon_tag = '<img src="'.esc_url($img_url).'" alt="'.esc_attr($title).'" loading="lazy" decoding="async" />';
     } //アイコンフォントの場合
     elseif (preg_match('/fa.? fa-[a-z\-]+/', $classes)) {
       $icon_tag = '<div class="'.esc_attr($classes).'" aria-hidden="true"></div>';
@@ -779,7 +781,7 @@ function get_rss_feed_tag( $atts ) {
       $feed_content .= '<a href="' . esc_url($feed_url) . '" title="' . esc_attr($feed_title) . '" class="rss-entry-card-link widget-entry-card-link a-wrap" target="'.esc_attr($target).'"'.get_rel_by_target($target).'>';
       $feed_content .= '<div class="rss-entry-card widget-entry-card e-card cf">';
       $feed_content .= '<figure class="rss-entry-card-thumb widget-entry-card-thumb card-thumb">';
-      $feed_content .= '<img src="' . esc_url($feed_img) . '" class="rss-entry-card-thumb-image widget-entry-card-thumb-image card-thumb-image" alt="">';
+      $feed_content .= '<img src="' . esc_url($feed_img) . '" class="rss-entry-card-thumb-image widget-entry-card-thumb-image card-thumb-image" alt="" loading="lazy" decoding="async">';
       $feed_content .= '</figure>';
       $feed_content .= '<div class="rss-entry-card-content widget-entry-card-content card-content">';
       $feed_content .= '<div class="rss-entry-card-title widget-entry-card-title card-title">' . esc_html($feed_title) . '</div>';

@@ -422,7 +422,7 @@ function generate_the_site_logo_tag($is_header = true){
   $logo_before_tag = '<'.$tag.' class="logo'.$class.'"><a href="'.esc_url($home_url).'" class="site-name site-name-text-link" itemprop="url"><span class="site-name-text" itemprop="name about">';
   $logo_after_tag = '</span></a></'.$tag.'>';
   if ($logo_url) {
-    $site_logo_tag = '<img class="site-logo-image '.$img_class.'" src="'.$logo_url.'" alt="'.esc_attr($site_logo_text).'"'.$width_attr.$height_attr.'>';
+    $site_logo_tag = '<img class="site-logo-image '.$img_class.'" src="'.$logo_url.'" alt="'.esc_attr($site_logo_text).'"'.$width_attr.$height_attr.' decoding="async">';
   } else {
     $site_logo_tag = esc_html($site_logo_text);
   }
@@ -572,7 +572,7 @@ function generate_upload_image_tag($name, $value, $id = null){
   <input type="button" name="<?php echo $name; ?>_clear" value="<?php _e( 'クリア', THEME_NAME ) ?>" />
   <div id="<?php echo $thumb_id; ?>_thumbnail" class="uploded-thumbnail">
     <?php if ($value): ?>
-      <img src="<?php echo $value; ?>" alt="選択中の画像">
+      <img src="<?php echo $value; ?>" alt="選択中の画像" loading="lazy" decoding="async">
     <?php endif ?>
   </div>
   <?php if (0/*$value*/): ?>
@@ -628,7 +628,7 @@ function generate_upload_image_tag($name, $value, $id = null){
                   $("input:text[name='<?php echo $name; ?>']").val(file.attributes.sizes.full.url);
 
                   /* プレビュー用に選択されたサムネイル画像を表示 */
-                  $("#<?php echo $thumb_id; ?>_thumbnail").append('<img src="'+file.attributes.sizes.full.url+'" />');
+                  $("#<?php echo $thumb_id; ?>_thumbnail").append('<img src="'+file.attributes.sizes.full.url+'" loading="lazy" decoding="async" />');
 
               });
           });
@@ -1003,9 +1003,10 @@ function generate_popular_entries_tag($atts){
     'arrow' => 0,
     'class' => null,
     'author' => null,
+    'post_type' => 'post',
   ), $atts));
 
-  $records = get_access_ranking_records($days, $entry_count, $entry_type, $cat_ids, $exclude_post_ids, $exclude_cat_ids, $children, $author);
+  $records = get_access_ranking_records($days, $entry_count, $entry_type, $cat_ids, $exclude_post_ids, $exclude_cat_ids, $children, $author, $post_type);
 
   $thumb_size = get_popular_entries_thumbnail_size($entry_type);
   $atts = array(
@@ -1028,7 +1029,7 @@ function generate_popular_entries_tag($atts){
       $w   = ($entry_type == ET_DEFAULT) ? THUMB120WIDTH  : THUMB320WIDTH;
       $h   = ($entry_type == ET_DEFAULT) ? THUMB120HEIGHT : THUMB320HEIGHT;
 
-      $post_thumbnail = get_the_post_thumbnail( $post->ID, $thumb_size, array('alt' => '') );
+      $post_thumbnail = get_the_post_thumbnail( $post->ID, $thumb_size, array('alt' => '', 'loading' => 'lazy', 'decoding' => 'async') );
       $pv = $post->sum_count;
 
       if ($post_thumbnail) {
@@ -1107,6 +1108,7 @@ function generate_widget_entries_tag($atts){
     'snippet' => 0,
     'author' => null,
     'offset' => 0,
+    'horizontal' => 0,
   ), $atts));
   global $post;
 
@@ -1191,14 +1193,10 @@ function generate_widget_entries_tag($atts){
 
   //除外カテゴリーの設定
   if (!empty($exclude_cat_ids)) {
-    // _v($cat_ids);
-    // _v($exclude_cat_ids);
     $cat_ids = array_diff($cat_ids, $exclude_cat_ids);
-    // _v($cat_ids);
   }
   //カテゴリー・タグの指定
   if ( $cat_ids || $tag_ids ) {
-    //_v($cat_ids);
     $tax_querys = array();
     if ($cat_ids) {
       $tax_querys[] = array(
@@ -1238,14 +1236,15 @@ function generate_widget_entries_tag($atts){
     $thumb_size = apply_filters('get_new_entries_thumbnail_size', $thumb_size, $type);
   }
   $args = apply_filters('widget_entries_args', $args);
-  //_v($args);
-  //query_posts( $args ); //クエリの作成
+  
+  //クエリの作成
   $query = new WP_Query( $args );
   $atts = array(
     'type' => $type,
     'bold' => $bold,
     'arrow' => $arrow,
     'class' => $class,
+    'horizontal' => $horizontal,
   );
   $cards_classes = get_additional_widget_entry_cards_classes($atts);
   ?>
@@ -1284,7 +1283,7 @@ function get_widget_entry_card_thumbnail_tag($prefix, $thumb_size, $type){
   global $post;
   ob_start();
   if ( has_post_thumbnail() ){ // サムネイルを持っているときの処理
-    the_post_thumbnail( $thumb_size, array('alt' => '') );
+    the_post_thumbnail( $thumb_size, array('alt' => '', 'loading' => 'lazy', 'decoding' => 'async') );
   } else { // サムネイルを持っていないときの処理
     echo get_widget_entry_card_no_image_tag($type, $prefix);
   }
@@ -1514,7 +1513,7 @@ function get_widget_entry_card_link_tag($atts){
             } else {
               $size = THUMB320;
             }
-            $attr = array();
+            $attr = array('loading' => 'lazy', 'decoding' => 'async');
             $attr['class'] = $class;
 
             $thumbnail_tag = get_the_post_thumbnail( $object_id, $size, $attr );
