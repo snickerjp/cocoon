@@ -690,11 +690,6 @@ if (!$entry_content_margin_hight) {
 [data-type="core/freeform"] {
   margin-bottom: <?php echo $entry_content_margin_hight; ?>em;
 }
-@media screen and (max-width:834px) {
-  .body .column-left :last-child{
-    margin-bottom: <?php echo $entry_content_margin_hight; ?>em;
-  }
-}
 .article h2,
 .article h3,
 .article h4,
@@ -721,13 +716,6 @@ if ($mobile_site_font_size): ?>
   .column-wrap > div{
     margin-bottom: <?php echo $entry_content_margin_hight; ?>em;
   }
-}
-.article h2,
-.article h3,
-.article h4,
-.article h5,
-.article h6 {
-  margin-top: <?php echo round($entry_content_margin_hight * 1.3333, 2); ?>em;
 }
 .article .micro-top{
   margin-bottom: <?php echo $entry_content_margin_hight * 0.2; ?>em;
