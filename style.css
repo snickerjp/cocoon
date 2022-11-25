@@ -6,7 +6,7 @@ Theme URI: https://wp-cocoon.com/
 Author: わいひら
 Author URI: https://nelog.jp/
 Text Domain: cocoon
-Version: 2.5.2.1
+Version: 2.5.3
 Requires at least: 5.7.0
 Requires PHP: 7.4.0
 Tags: two-columns, left-sidebar, right-sidebar
@@ -5939,6 +5939,56 @@ figcaption {
   margin: 0 !important;
 }
 
+.is-style-solid-line {
+  padding: .7em 2.5em;
+  border: solid 1px #323232;
+  color: #323232;
+}
+
+.is-style-gray-back {
+  padding: 0.7em 2.5em;
+  color: #323232;
+  background: rgba(50, 50, 50, 0.07);
+}
+
+.is-style-solid-back {
+  padding: .7em 2.5em;
+  color: #323232;
+  border: solid 2px #323232;
+  background: rgba(50, 50, 50, 0.07);
+}
+
+.is-style-solid-back {
+  padding: .7em 2.5em;
+  color: #323232;
+  border: solid 2px #323232;
+  background: rgba(50, 50, 50, 0.07);
+}
+
+.is-style-solid-cross {
+  position: relative;
+  margin: 15px auto;
+  padding: 1.5em 3.2em;
+  color: #323232;
+  border-top: solid 2px #323232;
+  border-bottom: solid 2px #323232;
+}
+.is-style-solid-cross::before, .is-style-solid-cross::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  width: 2px;
+  height: -webkit-calc(100% + 20px);
+  height: calc(100% + 20px);
+  background-color: #323232;
+}
+.is-style-solid-cross::before {
+  left: 10px;
+}
+.is-style-solid-cross::after {
+  right: 10px;
+}
+
 .column-wrap {
   display: flex;
   justify-content: space-between;
@@ -8908,7 +8958,6 @@ https://codepen.io/nxworld/pen/oLdoWb
 .is-list-horizontal {
   display: flex;
   flex-direction: row;
-  overflow-x: scroll;
   /* カードのサムネイル幅200px */
 }
 .is-list-horizontal .widget-entry-card-link {
@@ -11213,6 +11262,10 @@ _:-ms-lang(x), .mc-circle {
   }
   div#bbpress-forums .bbp-body div.bbp-reply-content p {
     margin-top: 0;
+  }
+
+  .appeal-in {
+    min-height: 200px;
   }
 
   .booklink-image, .kaerebalink-image, .tomarebalink-image, .product-item-thumb {

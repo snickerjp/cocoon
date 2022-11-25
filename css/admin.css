@@ -5945,6 +5945,51 @@ body.wp-admin {
 .admin-settings .demo .is-layout-flex > * {
   margin: 0 !important;
 }
+.admin-settings .demo .is-style-solid-line {
+  padding: .7em 2.5em;
+  border: solid 1px #323232;
+  color: #323232;
+}
+.admin-settings .demo .is-style-gray-back {
+  padding: 0.7em 2.5em;
+  color: #323232;
+  background: rgba(50, 50, 50, 0.07);
+}
+.admin-settings .demo .is-style-solid-back {
+  padding: .7em 2.5em;
+  color: #323232;
+  border: solid 2px #323232;
+  background: rgba(50, 50, 50, 0.07);
+}
+.admin-settings .demo .is-style-solid-back {
+  padding: .7em 2.5em;
+  color: #323232;
+  border: solid 2px #323232;
+  background: rgba(50, 50, 50, 0.07);
+}
+.admin-settings .demo .is-style-solid-cross {
+  position: relative;
+  margin: 15px auto;
+  padding: 1.5em 3.2em;
+  color: #323232;
+  border-top: solid 2px #323232;
+  border-bottom: solid 2px #323232;
+}
+.admin-settings .demo .is-style-solid-cross::before, .admin-settings .demo .is-style-solid-cross::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  width: 2px;
+  height: -webkit-calc(100% + 20px);
+  height: calc(100% + 20px);
+  background-color: #323232;
+}
+.admin-settings .demo .is-style-solid-cross::before {
+  left: 10px;
+}
+.admin-settings .demo .is-style-solid-cross::after {
+  right: 10px;
+}
 .admin-settings .demo .column-wrap {
   display: flex;
   justify-content: space-between;
@@ -8417,7 +8462,6 @@ body.wp-admin {
 .admin-settings .demo .is-list-horizontal {
   display: flex;
   flex-direction: row;
-  overflow-x: scroll;
   /* カードのサムネイル幅200px */
 }
 .admin-settings .demo .is-list-horizontal .widget-entry-card-link {
@@ -13598,6 +13642,51 @@ body.wp-admin {
 .admin-settings .demo .is-layout-flex > * {
   margin: 0 !important;
 }
+.admin-settings .demo .is-style-solid-line {
+  padding: .7em 2.5em;
+  border: solid 1px #323232;
+  color: #323232;
+}
+.admin-settings .demo .is-style-gray-back {
+  padding: 0.7em 2.5em;
+  color: #323232;
+  background: rgba(50, 50, 50, 0.07);
+}
+.admin-settings .demo .is-style-solid-back {
+  padding: .7em 2.5em;
+  color: #323232;
+  border: solid 2px #323232;
+  background: rgba(50, 50, 50, 0.07);
+}
+.admin-settings .demo .is-style-solid-back {
+  padding: .7em 2.5em;
+  color: #323232;
+  border: solid 2px #323232;
+  background: rgba(50, 50, 50, 0.07);
+}
+.admin-settings .demo .is-style-solid-cross {
+  position: relative;
+  margin: 15px auto;
+  padding: 1.5em 3.2em;
+  color: #323232;
+  border-top: solid 2px #323232;
+  border-bottom: solid 2px #323232;
+}
+.admin-settings .demo .is-style-solid-cross::before, .admin-settings .demo .is-style-solid-cross::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  width: 2px;
+  height: -webkit-calc(100% + 20px);
+  height: calc(100% + 20px);
+  background-color: #323232;
+}
+.admin-settings .demo .is-style-solid-cross::before {
+  left: 10px;
+}
+.admin-settings .demo .is-style-solid-cross::after {
+  right: 10px;
+}
 .admin-settings .demo .column-wrap {
   display: flex;
   justify-content: space-between;
@@ -16070,7 +16159,6 @@ body.wp-admin {
 .admin-settings .demo .is-list-horizontal {
   display: flex;
   flex-direction: row;
-  overflow-x: scroll;
   /* カードのサムネイル幅200px */
 }
 .admin-settings .demo .is-list-horizontal .widget-entry-card-link {
@@ -18018,6 +18106,9 @@ body.wp-admin {
   }
   .admin-settings .demo div#bbpress-forums .bbp-body div.bbp-reply-content p {
     margin-top: 0;
+  }
+  .admin-settings .demo .appeal-in {
+    min-height: 200px;
   }
   .admin-settings .demo .booklink-image, .admin-settings .demo .kaerebalink-image, .admin-settings .demo .tomarebalink-image, .admin-settings .demo .product-item-thumb {
     width: 80px;
@@ -22012,6 +22103,51 @@ textarea[name="the_page_memo"] {
 }
 .components-popover__content .is-layout-flex > * {
   margin: 0 !important;
+}
+.components-popover__content .is-style-solid-line {
+  padding: .7em 2.5em;
+  border: solid 1px #323232;
+  color: #323232;
+}
+.components-popover__content .is-style-gray-back {
+  padding: 0.7em 2.5em;
+  color: #323232;
+  background: rgba(50, 50, 50, 0.07);
+}
+.components-popover__content .is-style-solid-back {
+  padding: .7em 2.5em;
+  color: #323232;
+  border: solid 2px #323232;
+  background: rgba(50, 50, 50, 0.07);
+}
+.components-popover__content .is-style-solid-back {
+  padding: .7em 2.5em;
+  color: #323232;
+  border: solid 2px #323232;
+  background: rgba(50, 50, 50, 0.07);
+}
+.components-popover__content .is-style-solid-cross {
+  position: relative;
+  margin: 15px auto;
+  padding: 1.5em 3.2em;
+  color: #323232;
+  border-top: solid 2px #323232;
+  border-bottom: solid 2px #323232;
+}
+.components-popover__content .is-style-solid-cross::before, .components-popover__content .is-style-solid-cross::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  width: 2px;
+  height: -webkit-calc(100% + 20px);
+  height: calc(100% + 20px);
+  background-color: #323232;
+}
+.components-popover__content .is-style-solid-cross::before {
+  left: 10px;
+}
+.components-popover__content .is-style-solid-cross::after {
+  right: 10px;
 }
 .components-popover__content .red {
   margin: 0;

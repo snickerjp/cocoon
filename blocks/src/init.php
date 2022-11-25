@@ -98,6 +98,7 @@ function cocoon_blocks_cgb_editor_assets() { // phpcs:ignore
   $templates = get_function_texts(null, 'title');
   $affiliates = get_affiliate_tags(null, 'title');
   $rankings = get_item_rankings(null, 'title');
+
   $is_templates_visible = (has_valid_shortcode_item($templates) && is_block_editor_template_shortcode_dropdown_visible()) ? 1 : 0;
   $is_affiliates_visible = (has_valid_shortcode_item($affiliates) && is_block_editor_affiliate_shortcode_dropdown_visible()) ? 1 : 0;
   $is_rankings_visible = (has_valid_shortcode_item($rankings) && is_block_editor_ranking_shortcode_dropdown_visible()) ? 1 : 0;
@@ -149,13 +150,11 @@ function cocoon_blocks_cgb_editor_assets() { // phpcs:ignore
     $colors//プロバティ
   );
   //テンプレート情報を渡す
-  if ($is_templates_visible) {
-    wp_localize_script(
-      'cocoon-blocks-js', //値を渡すjsファイルのハンドル名
-      'gbTemplates', //任意のオブジェクト名
-      $templates //プロバティ
-    );
-  }
+  wp_localize_script(
+    'cocoon-blocks-js', //値を渡すjsファイルのハンドル名
+    'gbTemplates', //任意のオブジェクト名
+    $templates //プロバティ
+  );
 
   //アフィリエイト情報を渡す
   if ($is_affiliates_visible) {
@@ -167,13 +166,19 @@ function cocoon_blocks_cgb_editor_assets() { // phpcs:ignore
   }
 
   //ランキング情報を渡す
-  if ($is_rankings_visible) {
-    wp_localize_script(
-      'cocoon-blocks-js', //値を渡すjsファイルのハンドル名
-      'gbItemRankings', //任意のオブジェクト名
-      $rankings //プロバティ
-    );
-  }
+  wp_localize_script(
+    'cocoon-blocks-js', //値を渡すjsファイルのハンドル名
+    'gbItemRankings', //任意のオブジェクト名
+    $rankings //プロバティ
+  );
+
+  //メニュー情報を渡す
+  $menus = wp_get_nav_menus();
+  wp_localize_script(
+    'cocoon-blocks-js', //値を渡すjsファイルのハンドル名
+    'gbNavMenus', //任意のオブジェクト名
+    $menus //プロバティ
+  );
 
   //カラーパレット情報渡し
   wp_localize_script(
@@ -280,7 +285,7 @@ function cocoon_editor_color_palette_setup() {
 		add_theme_support('custom-spacing');
     // 単位設定
     add_theme_support( 'custom-units' );
-    
+
     return $colors;
 }
 endif;
@@ -300,6 +305,8 @@ require_once abspath(__FILE__).'block/tab-box/index.php';
 require_once abspath(__FILE__).'block/timeline/index.php';
 require_once abspath(__FILE__).'block/timeline-item/index.php';
 require_once abspath(__FILE__).'block/toggle-box/index.php';
+require_once abspath(__FILE__).'block/ranking/index.php';
+require_once abspath(__FILE__).'block/template/index.php';
 
 require_once abspath(__FILE__).'block-universal/caption-box/index.php';
 require_once abspath(__FILE__).'block-universal/tab-caption-box/index.php';

@@ -1341,3 +1341,16 @@ body::before,
   display: flex;
   margin-bottom: 1em;
 }
+
+div.cocoon-render-message {
+  padding: 20px;
+  border: solid aliceblue 2px;
+  margin-bottom: 1em;
+}
+
+div.cocoon-render-dropdown {
+  margin-bottom: 1em;
+}
+div.cocoon-render-dropdown select option[disabled] {
+  display: none;
+}

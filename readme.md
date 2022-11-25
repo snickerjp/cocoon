@@ -1,9 +1,8 @@
-Cocoon
-===================================
+# Cocoon
 
-Cocoonは、モバイル・高速化・SEO最適化済みのWordPressテーマです。
+Cocoon は、モバイル・高速化・SEO 最適化済みの WordPress テーマです。
 
-Cocoonテーマの詳細は以下のURLを参照してください。
+Cocoon テーマの詳細は以下の URL を参照してください。
 
 https://wp-cocoon.com/
 
@@ -11,8 +10,8 @@ https://wp-cocoon.com/
 
 https://wp-cocoon.com/terms-of-use/
 
-テーマファイルカスタマイズ
---------------------------
+## テーマファイルカスタマイズ
+
 テーマファイルをカスタマイズする場合は、この親テーマをカスタマイズしてしまうと、アップデート時編集部分も上書きされてしまいます。
 
 ですので、子テーマを利用したカスタマイズをおすすめします。
@@ -21,33 +20,32 @@ https://wp-cocoon.com/terms-of-use/
 
 https://github.com/yhira/cocoon-child
 
-テーマライセンス
-----------
-Cocoonテーマは、100％GPLです。
+## テーマライセンス
 
-Cocoon（テーマ配布物）に含まれているPHP、画像、JavaScript、CSS（スキン含む）等のすべてをGPLとして公開します（100%GPL）。
+Cocoon テーマは、100％GPL です。
 
-Cocoonテーマの再配布もしくは、Cocoonを基盤として作成したテーマを配布する場合は、配布物すべて（PHP、JavaScript、CSS、画像、その他同梱物）をGPLとして公開してください（100％GPL：無料、有料問わず）。
+Cocoon（テーマ配布物）に含まれている PHP、画像、JavaScript、CSS（スキン含む）等のすべてを GPL として公開します（100%GPL）。
 
+Cocoon テーマの再配布もしくは、Cocoon を基盤として作成したテーマを配布する場合は、配布物すべて（PHP、JavaScript、CSS、画像、その他同梱物）を GPL として公開してください（100％GPL：無料、有料問わず）。
 
 ライセンス：[GNU General Public License](http://www.gnu.org/licenses/gpl-2.0.html)
 
-開発者
-------
+## 開発者
+
 わいひら： [yhira](https://github.com/yhira)
 
-使用ライブラリ
-------
-[php-html-css-js-minifier.php（CSS、JavaScript、HTMLの縮小化）](https://gist.github.com/tovic/d7b310dea3b33e4732c0#file-php-html-css-js-minifier-php)
+## 使用ライブラリ
+
+[php-html-css-js-minifier.php（CSS、JavaScript、HTML の縮小化）](https://gist.github.com/tovic/d7b310dea3b33e4732c0#file-php-html-css-js-minifier-php)
 
 [Punycode（ピュニコード変換）](https://github.com/true/php-punycode)
 
-[Theme Update Checker Library（テーマ自動アップデート）](https://w-shadow.com/blog/2011/06/02/automatic-updates-for-commercial-themes/comment-page-8/)
+[Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker)
 
 [Open Graph Protocol helper for PHP](https://github.com/scottmac/opengraph)
 
-使用リソース
-------
+## 使用リソース
+
 [highlight.js](https://highlightjs.org/)
 
 [Lightbox](http://lokeshdhakar.com/projects/lightbox2/)
@@ -78,38 +76,37 @@ Cocoonテーマの再配布もしくは、Cocoonを基盤として作成した�
 
 [clipboard.js](https://clipboardjs.com/)
 
-コードを参考にしたプラグイン
-------
+## コードを参考にしたプラグイン
+
 [Auto Post Thumbnail](https://ja.wordpress.org/plugins/auto-post-thumbnail/)
 
 [Youtube SpeedLoad](https://ja.wordpress.org/plugins/youtube-speedload/)
 
-カスタマイズ参考
-------
-[Cocoon用記事一覧ショートコード（中古ドメイン騎士 オーラン）](https://www.orank.net/1972)
+## カスタマイズ参考
+
+[Cocoon 用記事一覧ショートコード（中古ドメイン騎士 オーラン）](https://www.orank.net/1972)
 
 [年齢を表示するショートコード（fullnote）](https://fullnoteblog.com/age-short-code/)
 
 [カウントダウンタイマを設置するショートコード（fullnote）](https://fullnoteblog.com/count-down-timer/)
 
-[Gutenbergでサイドバーに選択式のCSSクラス設定を追加する（ものぐさWEBノート）](https://web.monogusa-note.com/gutenberg-add-select-classname)
+[Gutenberg でサイドバーに選択式の CSS クラス設定を追加する（ものぐさ WEB ノート）](https://web.monogusa-note.com/gutenberg-add-select-classname)
 
-CSS参考
-------
+## CSS 参考
+
 [ボックス参考（naenote.net）](https://www.naenote.net/entry/cocoon-box-customize)
 
 [リボン参考（nxworld）](https://www.nxworld.net/tips/pure-css-corner-ribbon.html) [(CodePen)](https://codepen.io/nxworld/pen/oLdoWb)
 
 [ボックスメニュー参考（ぽんひろ.com）](https://ponhiro.com/box-nav/)
 
-ブックマークレット参考・利用
-------
-[Amazon商品リンクブックマークレット（naenote.net）](https://www.naenote.net/entry/cocoon-amazon-shortcode-javascript)
+## ブックマークレット参考・利用
 
-[【電子書籍対応】Cocoon楽天商品リンクブックマークレット（ものぐさWEBノート）](https://web.monogusa-note.com/cocoon-rakuten-bookmarklet)
+[Amazon 商品リンクブックマークレット（naenote.net）](https://www.naenote.net/entry/cocoon-amazon-shortcode-javascript)
 
-プルリクエストでのご協力
-------
+[【電子書籍対応】Cocoon 楽天商品リンクブックマークレット（ものぐさ WEB ノート）](https://web.monogusa-note.com/cocoon-rakuten-bookmarklet)
+
+## プルリクエストでのご協力
 
 [technote-space](https://github.com/technote-space)
 
@@ -138,3 +135,5 @@ CSS参考
 [hausercarl](https://github.com/hausercarl)
 
 [mirumi](https://github.com/mirumirumi)
+
+[vic322](https://github.com/vic322)

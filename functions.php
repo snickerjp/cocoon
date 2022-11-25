@@ -15,10 +15,12 @@ endif;
 require_once abspath(__FILE__).'lib/_defins.php'; //定数を定義
 
 //アップデートチェックの初期化
-require abspath(__FILE__).'lib/theme-update-checker.php'; //ライブラリのパス
-$example_update_checker = new ThemeUpdateChecker(
-  strtolower(THEME_PARENT_DIR), //テーマフォルダ名
-  'https://raw.githubusercontent.com/xserver-inc/cocoon/master/update-info.json' //JSONファイルのURL
+require_once abspath(__FILE__).'lib/plugin-update-checker/plugin-update-checker.php';
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+$myUpdateChecker = PucFactory::buildUpdateChecker(
+    'https://raw.githubusercontent.com/xserver-inc/cocoon/master/update-info.json', //JSONファイルのURL
+    __FILE__,
+    'wp-cocoon-theme' 
 );
 
 //本文部分の冒頭を綺麗に抜粋する
@@ -352,56 +354,6 @@ add_action('init', function () {
     'name' => 'accordion',
     'label' => __('アコーディオン', THEME_NAME),
   ));
-
-  //画像
-  register_block_style('core/image', array(
-    'name' => 'filter-clarendon',
-    'label' => __('Clarendon', THEME_NAME),
-  ));
-  register_block_style('core/image', array(
-    'name' => 'filter-gingham',
-    'label' => __('Gingham', THEME_NAME),
-  ));
-  register_block_style('core/image', array(
-    'name' => 'filter-moon',
-    'label' => __('Moon', THEME_NAME),
-  ));
-  register_block_style('core/image', array(
-    'name' => 'filter-lark',
-    'label' => __('Lark', THEME_NAME),
-  ));
-  register_block_style('core/image', array(
-    'name' => 'filter-reyes',
-    'label' => __('Reyes', THEME_NAME),
-  ));
-  register_block_style('core/image', array(
-    'name' => 'filter-juno',
-    'label' => __('Juno', THEME_NAME),
-  ));
-  register_block_style('core/image', array(
-    'name' => 'filter-slumber',
-    'label' => __('Slumber', THEME_NAME),
-  ));
-  register_block_style('core/image', array(
-    'name' => 'filter-crema',
-    'label' => __('Crema', THEME_NAME),
-  ));
-  register_block_style('core/image', array(
-    'name' => 'filter-ludwig',
-    'label' => __('Ludwig', THEME_NAME),
-  ));
-  register_block_style('core/image', array(
-    'name' => 'filter-aden',
-    'label' => __('Aden', THEME_NAME),
-  ));
-  register_block_style('core/image', array(
-    'name' => 'filter-perpetua',
-    'label' => __('Perpetua', THEME_NAME),
-  ));
-  register_block_style('core/image', array(
-    'name' => 'filter-monochrome',
-    'label' => __('Mono', THEME_NAME),
-  ));
 });
 
 
@@ -438,7 +390,30 @@ function cocoon_add_faq($content, $block, $faq, $question) {
   $answer = '';
   $innerBlocks = $block['innerBlocks'];
   foreach ($innerBlocks as $innerBlock) {
-    $answer .= $innerBlock['innerHTML'];
+    
+    //WordPress 6.1以上の場合
+    if (is_wp_6_1_or_over()) {
+      //リストブロックかどうか
+      if ($innerBlock['blockName'] === 'core/list') {
+        $lis = isset($innerBlock['innerBlocks']) ? $innerBlock['innerBlocks'] : '';
+        if ($lis) {
+          //<ul> or <ol>
+          $answer .= $innerBlock['innerContent'][0];
+          //liを取得する
+          foreach ($lis as $li) {
+            $answer .= trim($li['innerHTML']);
+          }
+          //</ul> or </ol>
+          $answer .= $innerBlock['innerContent'][count($innerBlock['innerContent']) - 1];
+        }      
+      } else {
+        //リストブロック以外
+        $answer .= trim($innerBlock['innerHTML']);
+      }      
+    } else {
+      //ONE PIECE 6.1未満の場合
+      $answer .= trim($innerBlock['innerHTML']);
+    }
   }
   $text = strip_tags(str_replace(["\n", "\r"], '', $answer), '<h1><h2><h3><h4><h5><h6><br><ol><ul><li><a><p><div><b><strong><i><em>');
 
