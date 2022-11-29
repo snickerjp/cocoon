@@ -1163,7 +1163,6 @@ body.wp-admin {
 .admin-settings .demo img {
   max-width: 100%;
   height: auto;
-  border: 0;
 }
 .admin-settings .demo .circle-image img {
   border-radius: 50%;
@@ -8141,6 +8140,7 @@ body.wp-admin {
   font-family: FontAwesome;
   margin-right: 0.4em;
   margin-left: -1em;
+  position: absolute;
 }
 .admin-settings .demo .iconlist-title {
   font-weight: 700;
@@ -8860,7 +8860,6 @@ body.wp-admin {
 .admin-settings .demo img {
   max-width: 100%;
   height: auto;
-  border: 0;
 }
 .admin-settings .demo .circle-image img {
   border-radius: 50%;
@@ -15838,6 +15837,7 @@ body.wp-admin {
   font-family: FontAwesome;
   margin-right: 0.4em;
   margin-left: -1em;
+  position: absolute;
 }
 .admin-settings .demo .iconlist-title {
   font-weight: 700;
