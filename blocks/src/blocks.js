@@ -30,6 +30,8 @@ import * as faq from './block/faq';
 import * as ranking from './block/ranking';
 import * as template from './block/template';
 import * as boxMenu from './block/box-menu';
+import * as ad from './block/ad';
+import * as profile from './block/profile';
 
 import * as captionBox from './block-universal/caption-box';
 import * as labelBox from './block-universal/label-box';
@@ -57,6 +59,8 @@ const cocoonBlocks = [
   ranking,
   template,
   boxMenu,
+  ad,
+  profile,
 
   captionBox,
   tabCaptionBox,
@@ -87,7 +91,7 @@ const registerBlock = (block) => {
   if (compareVersions(wpVersion, '5.5') < 0) {
     //nameを削除
      delete metadata.name;
-     //カテゴリ等を追加
+     //カテゴリー等を追加
      settings = {
        ...settings,
        ...metadata,

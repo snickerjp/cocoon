@@ -247,7 +247,7 @@ body.wp-admin {
   ** 内容
   ************************************/
   /*エントリー・アーカイブの見出し*/
-  /*本文下カテゴリとタグ*/
+  /*本文下カテゴリーとタグ*/
   /*本文下カテゴリ*/
   /*本文下タグ*/
   /************************************
@@ -550,7 +550,7 @@ body.wp-admin {
   ** 内容
   ************************************/
   /*エントリー・アーカイブの見出し*/
-  /*本文下カテゴリとタグ*/
+  /*本文下カテゴリーとタグ*/
   /*本文下カテゴリ*/
   /*本文下タグ*/
   /************************************
@@ -1229,10 +1229,10 @@ body.wp-admin {
 .admin-settings .demo .no-thumbnail .entry-card-day {
   display: inline;
 }
-.admin-settings .demo .no-thumbnail .entry-card-meta .entry-card-categorys {
+.admin-settings .demo .no-thumbnail .e-card-meta .e-card-categorys {
   display: inline;
 }
-.admin-settings .demo .no-thumbnail .entry-card-meta .entry-card-categorys > span {
+.admin-settings .demo .no-thumbnail .e-card-meta .e-card-categorys > span {
   margin-left: 0.6em;
 }
 .admin-settings .demo img.emoji {
@@ -1558,7 +1558,7 @@ body.wp-admin {
   font-size: 0.7em;
   padding: 2px;
 }
-.admin-settings .demo .entry-card-meta .entry-card-categorys {
+.admin-settings .demo .e-card-meta .e-card-categorys {
   display: none;
 }
 .admin-settings .demo .e-card-info .post-author {
@@ -5942,7 +5942,7 @@ body.wp-admin {
   gap: 1.5rem;
 }
 .admin-settings .demo .is-layout-flex > * {
-  margin: 0 !important;
+  margin: 0;
 }
 .admin-settings .demo .is-style-solid-line {
   padding: .7em 2.5em;
@@ -5988,6 +5988,9 @@ body.wp-admin {
 }
 .admin-settings .demo .is-style-solid-cross::after {
   right: 10px;
+}
+.admin-settings .demo .wp-block-button.alignright {
+  margin-left: auto !important;
 }
 .admin-settings .demo .column-wrap {
   display: flex;
@@ -8536,6 +8539,28 @@ body.wp-admin {
   content: "";
   border: solid rgba(255, 255, 255, 0.7);
   border-width: 2px 2px 0 0;
+}
+.admin-settings .demo .info-list-item {
+  display: flex;
+}
+.admin-settings .demo .info-list-title {
+  text-align: center;
+}
+.admin-settings .demo .info-list-item > div {
+  padding: 4px 8px;
+  line-height: 20px;
+}
+.admin-settings .demo .info-list-item-date {
+  font-size: 0.8em;
+  width: 136px;
+  text-align: right;
+}
+.admin-settings .demo .info-list-item-content-link {
+  color: #333;
+  text-decoration: none;
+}
+.admin-settings .demo .info-list-item-content-link:hover {
+  text-decoration: underline;
 }
 .admin-settings .demo .no-border {
   border: none;
@@ -8926,10 +8951,10 @@ body.wp-admin {
 .admin-settings .demo .no-thumbnail .entry-card-day {
   display: inline;
 }
-.admin-settings .demo .no-thumbnail .entry-card-meta .entry-card-categorys {
+.admin-settings .demo .no-thumbnail .e-card-meta .e-card-categorys {
   display: inline;
 }
-.admin-settings .demo .no-thumbnail .entry-card-meta .entry-card-categorys > span {
+.admin-settings .demo .no-thumbnail .e-card-meta .e-card-categorys > span {
   margin-left: 0.6em;
 }
 .admin-settings .demo img.emoji {
@@ -9255,7 +9280,7 @@ body.wp-admin {
   font-size: 0.7em;
   padding: 2px;
 }
-.admin-settings .demo .entry-card-meta .entry-card-categorys {
+.admin-settings .demo .e-card-meta .e-card-categorys {
   display: none;
 }
 .admin-settings .demo .e-card-info .post-author {
@@ -13639,7 +13664,7 @@ body.wp-admin {
   gap: 1.5rem;
 }
 .admin-settings .demo .is-layout-flex > * {
-  margin: 0 !important;
+  margin: 0;
 }
 .admin-settings .demo .is-style-solid-line {
   padding: .7em 2.5em;
@@ -13685,6 +13710,9 @@ body.wp-admin {
 }
 .admin-settings .demo .is-style-solid-cross::after {
   right: 10px;
+}
+.admin-settings .demo .wp-block-button.alignright {
+  margin-left: auto !important;
 }
 .admin-settings .demo .column-wrap {
   display: flex;
@@ -16233,6 +16261,28 @@ body.wp-admin {
   content: "";
   border: solid rgba(255, 255, 255, 0.7);
   border-width: 2px 2px 0 0;
+}
+.admin-settings .demo .info-list-item {
+  display: flex;
+}
+.admin-settings .demo .info-list-title {
+  text-align: center;
+}
+.admin-settings .demo .info-list-item > div {
+  padding: 4px 8px;
+  line-height: 20px;
+}
+.admin-settings .demo .info-list-item-date {
+  font-size: 0.8em;
+  width: 136px;
+  text-align: right;
+}
+.admin-settings .demo .info-list-item-content-link {
+  color: #333;
+  text-decoration: none;
+}
+.admin-settings .demo .info-list-item-content-link:hover {
+  text-decoration: underline;
 }
 .admin-settings .demo .no-border {
   border: none;
@@ -17654,6 +17704,13 @@ body.wp-admin {
   }
   .admin-settings .demo .sidebar .ad-vertical .ad-additional-vertical {
     display: block;
+  }
+  .admin-settings .demo .info-list-item {
+    flex-direction: column;
+    margin-bottom: 8px;
+  }
+  .admin-settings .demo .info-list-item > div {
+    padding: 2px;
   }
   .admin-settings .demo .booklink-box, .admin-settings .demo .kaerebalink-box, .admin-settings .demo .tomarebalink-box, .admin-settings .demo .product-item-box {
     padding: 10px 10px 24px;
@@ -22102,7 +22159,7 @@ textarea[name="the_page_memo"] {
   gap: 1.5rem;
 }
 .components-popover__content .is-layout-flex > * {
-  margin: 0 !important;
+  margin: 0;
 }
 .components-popover__content .is-style-solid-line {
   padding: .7em 2.5em;
@@ -22148,6 +22205,9 @@ textarea[name="the_page_memo"] {
 }
 .components-popover__content .is-style-solid-cross::after {
   right: 10px;
+}
+.components-popover__content .wp-block-button.alignright {
+  margin-left: auto !important;
 }
 .components-popover__content .red {
   margin: 0;

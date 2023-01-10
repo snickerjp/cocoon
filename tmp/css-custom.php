@@ -257,7 +257,7 @@ if (get_appeal_area_button_background_color()): ?>
 $cats = get_categories();
 $colors = array();
 $text_colors = array();
-//カテゴリ色の振り分け
+//カテゴリー色の振り分け
 foreach ($cats as $cat) {
   $color = get_the_category_color($cat->cat_ID);
   $text_color = get_the_category_text_color($cat->cat_ID);
@@ -679,10 +679,13 @@ if (!$entry_content_margin_hight) {
 .comment-area,
 .related-entries,
 .pager-post-navi,
-.comment-respond,
+.comment-respond {
+  margin-bottom: <?php echo $entry_content_margin_hight; ?>em;
+}
+.wp-block-post-title,
 .is-root-container > *,
 [data-type="core/freeform"] {
-  margin-bottom: <?php echo $entry_content_margin_hight; ?>em;
+  margin-bottom: <?php echo $entry_content_margin_hight; ?>em !important;
 }
 .article h2,
 .article h3,

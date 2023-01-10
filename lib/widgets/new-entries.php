@@ -23,7 +23,7 @@ class NewEntryWidgetItem extends WP_Widget {
   }
   function widget($args, $instance) {
     extract( $args );
-    //ウィジェットモード（全ての新着記事を表示するか、カテゴリ別に表示するか）
+    //ウィジェットモード（全ての新着記事を表示するか、カテゴリー別に表示するか）
     $widget_mode = apply_filters( 'new_entries_widget_mode', empty($instance['widget_mode']) ? WM_DEFAULT : $instance['widget_mode'] );
     //タイトル名を取得
     $title = apply_filters( 'new_entries_widget_title', empty($instance['title']) ? '' : $instance['title'] );
@@ -36,8 +36,9 @@ class NewEntryWidgetItem extends WP_Widget {
     $is_bold = apply_filters( 'new_entries_widget_is_bold', empty($instance['is_bold']) ? 0 : 1 );
     $is_arrow_visible = apply_filters( 'new_entries_widget_is_arrow_visible', empty($instance['is_arrow_visible']) ? 0 : 1 );
     $is_sticky_visible = apply_filters( 'new_entries_widget_is_sticky_visible', empty($instance['is_sticky_visible']) ? 0 : 1 );
+    $is_modified_enable = apply_filters( 'new_entries_widget_is_modified_enable', empty($instance['is_modified_enable']) ? 0 : 1 );
 
-    //現在のカテゴリを取得
+    //現在のカテゴリーを取得
     $categories = array();
     if ($widget_mode == 'category') {
       $categories = get_category_ids();//カテゴリ配列の取得
@@ -47,7 +48,7 @@ class NewEntryWidgetItem extends WP_Widget {
     //classにwidgetと一意となるクラス名を追加する
     if ( //「表示モード」が「全ての新着記事」のとき
               ($widget_mode == WM_DEFAULT) ||
-              //「表示モード」が「カテゴリ別新着記事」のとき
+              //「表示モード」が「カテゴリー別新着記事」のとき
               ( ($widget_mode == 'category') && get_category_ids() ) ):
       echo $args['before_widget'];
       if (!is_null($title)) {
@@ -74,6 +75,7 @@ class NewEntryWidgetItem extends WP_Widget {
         'bold' => $is_bold,
         'arrow' => $is_arrow_visible,
         'sticky' => $is_sticky_visible,
+        'modified' => $is_modified_enable,
       );
       //新着記事リストの作成
       generate_widget_entries_tag($atts);
@@ -98,6 +100,7 @@ class NewEntryWidgetItem extends WP_Widget {
     $instance['is_bold'] = !empty($new_instance['is_bold']) ? 1 : 0;
     $instance['is_arrow_visible'] = !empty($new_instance['is_arrow_visible']) ? 1 : 0;
     $instance['is_sticky_visible'] = !empty($new_instance['is_sticky_visible']) ? 1 : 0;
+    $instance['is_modified_enable'] = !empty($new_instance['is_modified_enable']) ? 1 : 0;
     return $instance;
   }
   function form($instance) {
@@ -111,6 +114,7 @@ class NewEntryWidgetItem extends WP_Widget {
         'is_bold'  => 0,
         'is_arrow_visible'  => 0,
         'is_sticky_visible'  => 1,
+        'is_modified_enable'  => 0,
       );
     }
     $widget_mode = WM_DEFAULT;
@@ -130,15 +134,16 @@ class NewEntryWidgetItem extends WP_Widget {
     $is_bold = empty($instance['is_bold']) ? 0 : 1;
     $is_arrow_visible = empty($instance['is_arrow_visible']) ? 0 : 1;
     $is_sticky_visible = empty($instance['is_sticky_visible']) ? 0 : 1;
+    $is_modified_enable = empty($instance['is_modified_enable']) ? 0 : 1;
     ?>
-    <?php //ウィジェットモード（全てか、カテゴリ別か） ?>
+    <?php //ウィジェットモード（全てか、カテゴリー別か） ?>
     <p>
       <?php
       generate_label_tag($this->get_field_id('widget_mode'), __('表示モード', THEME_NAME) );
       echo '<br>';
       $options = array(
         'all' => __( '全ての新着記事（全ページで表示）'),
-        'category' => __( 'カテゴリ別新着記事（投稿・カテゴリで表示）'),
+        'category' => __( 'カテゴリー別新着記事（投稿・カテゴリーで表示）'),
       );
       generate_radiobox_tag($this->get_field_name('widget_mode'), $options, $widget_mode);
       ?>
@@ -189,6 +194,12 @@ class NewEntryWidgetItem extends WP_Widget {
     <p>
       <?php
         generate_checkbox_tag($this->get_field_name('is_sticky_visible') , $is_sticky_visible, __( '「固定表示」記事を表示', THEME_NAME ));
+      ?>
+    </p>
+    <?php //更新日順に並べ替え ?>
+    <p>
+      <?php
+        generate_checkbox_tag($this->get_field_name('is_modified_enable') , $is_modified_enable, __( '更新日順に並び替え', THEME_NAME ));
       ?>
     </p>
     <?php

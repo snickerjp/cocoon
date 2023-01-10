@@ -16,10 +16,11 @@ function author_box_shortcode($atts) {
   extract(shortcode_atts(array(
     'id' => null,
     'label' => null,
+    'is_image_circle' => 0,
   ), $atts, 'author_box'));
   $label = sanitize_shortcode_value($label);
   ob_start();
-  generate_author_box_tag($id, $label);
+  generate_author_box_tag($id, $label, $is_image_circle);
   $res = ob_get_clean();
   return $res;
 }
@@ -53,7 +54,7 @@ function new_entries_shortcode($atts) {
     'horizontal' => 0,
   ), $atts, 'new_list'));
 
-  //カテゴリを配列化
+  //カテゴリーを配列化
   $cat_ids = array();
   if ($cats && $cats != 'all') {
     $cat_ids = explode(',', $cats);
@@ -959,3 +960,23 @@ function ad_shortcode( $atts ) {
 }
 endif;
 
+
+//インフォリストショートコード
+add_shortcode('info_list', 'get_info_list_shortcode');
+if ( !function_exists( 'get_info_list_shortcode' ) ):
+function get_info_list_shortcode($atts){
+  extract(shortcode_atts(array(
+    'count' => 5,
+    'title' => __( '新着情報', THEME_NAME ),
+  ), $atts, 'navi'));
+  $atts = array(
+    'count' => $count,
+    'title' => $title,
+  );
+  ob_start();
+  generate_info_list_tag($atts);
+  $tag = ob_get_clean();
+
+  return apply_filters('get_info_list_tag', $tag);
+}
+endif;

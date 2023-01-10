@@ -1352,6 +1352,14 @@ div.cocoon-render-message {
   margin-bottom: 1em;
 }
 
+div.editor-ad-message {
+  border: solid #ddd 1px;
+  text-align: center;
+  height: 280px;
+  line-height: 260px;
+  background-color: #fbfcfc;
+}
+
 div.cocoon-render-dropdown {
   margin-bottom: 1em;
 }
@@ -1421,4 +1429,20 @@ div.cocoon-render-dropdown select option[disabled] {
 .wp-block-image.aligncenter > figcaption {
   display: block;
   margin-top: -0.8em !important;
+}
+
+.wp-block-cocoon-blocks-button-1 {
+  float: none !important;
+  max-width: 840px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.wp-block-cocoon-blocks-button-1.alignleft {
+  text-align: left;
+}
+.wp-block-cocoon-blocks-button-1.aligncenter {
+  text-align: center;
+}
+.wp-block-cocoon-blocks-button-1.alignright {
+  text-align: right;
 }
