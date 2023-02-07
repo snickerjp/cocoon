@@ -227,8 +227,13 @@ endif;
 
 //フォームの際のスキンオプションの取得
 if ( !function_exists( 'get_form_skin_option' ) ):
-function get_form_skin_option($name){
+function get_form_skin_option($name, $value = 1){
   global $_FORM_SKIN_OPTIONS;
+  $name = str_replace('[]', '', $name);
+  if (isset($_FORM_SKIN_OPTIONS[$name]) && is_array($_FORM_SKIN_OPTIONS[$name])) {
+    // _v([$name, $value, $_FORM_SKIN_OPTIONS[$name]]);
+    return in_array($value, $_FORM_SKIN_OPTIONS[$name]);
+  }
   //スキンにより固定値がある場合は採用する
   if (isset($_FORM_SKIN_OPTIONS[$name])) {
     return $_FORM_SKIN_OPTIONS[$name];
@@ -363,7 +368,7 @@ function get_jquery_core_url($ver){
   $url = null;
   switch ($ver) {
     case '3':
-      $url = 'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js';
+      $url = 'https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js';
       break;
     case '2':
       $url = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js';
@@ -382,7 +387,7 @@ function get_jquery_core_full_version($ver){
   $full_ver = null;
   switch ($ver) {
     case '3':
-      $full_ver = '3.6.0';
+      $full_ver = '3.6.1';
       break;
     case '2':
       $full_ver = '2.2.4';
@@ -745,12 +750,12 @@ function wp_enqueue_slick(){
 }
 endif;
 
-// //Swiper
-// if ( !function_exists( 'wp_enqueue_swiper' ) ):
-// function wp_enqueue_swiper(){
-//   wp_enqueue_style( 'swiper-style', 'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css');
-// }
-// endif;
+//Swiper
+if ( !function_exists( 'wp_enqueue_swiper' ) ):
+function wp_enqueue_swiper(){
+  wp_enqueue_style( 'swiper-style', 'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css');
+}
+endif;
 
 //SlickNav
 if ( !function_exists( 'wp_enqueue_slicknav' ) ):
@@ -2514,12 +2519,20 @@ endif;
 
 //人間感覚の年の取得
 if ( !function_exists( 'get_human_years_ago' ) ):
+// function get_human_years_ago( $from, $unit = '' ) {
+//   $to    = date('Ymd');
+//   $from  = date('Ymd', $from);
+//   $years = floor(($to - $from) / 10000);
+
+//   $since = sprintf('%s'.$unit, $years);
+//   return $since;
+// }
 function get_human_years_ago( $from, $unit = '' ) {
-  $to = time();
-  $diff = (int) abs($to - $from);
-  $years = floor($diff / 31536000);
-  $since = sprintf('%s'.$unit, $years);
-  return $since;
+  $from = new DateTime(date('Y-m-d', $from));
+  $to = new DateTime('today');
+  $diff = $from->diff($to);
+  $year = $diff->format('%y'.$unit);
+  return $year;
 }
 endif;
 
@@ -3520,5 +3533,21 @@ endif;
 if ( !function_exists( 'get_front_page_type_class' ) ):
 function get_front_page_type_class(){
   return 'front-page-type-'.str_replace('_', '-', get_front_page_type());;
+}
+endif;
+
+//RESTリクエストかどうか
+if ( !function_exists( 'is_rest' ) ):
+function is_rest() {
+  return ( defined( 'REST_REQUEST' ) && REST_REQUEST );
+}
+endif;
+
+//HTML内のAタグをSPANタグに変換
+if ( !function_exists( 'replace_a_tags_to_span_tags' ) ):
+function replace_a_tags_to_span_tags( $html ) {
+  $html = str_replace('<a ', '<span ', $html);
+  $html = str_replace('</a>', '</span>', $html);
+  return $html;
 }
 endif;

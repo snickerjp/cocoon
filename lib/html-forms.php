@@ -38,7 +38,7 @@ endif;
 //チェックボックスのチェックを付けるか
 if ( !function_exists( 'the_checkbox_checked' ) ):
 function the_checkbox_checked($val1, $val2 = 1){
-  if ( $val1 == $val2 ) {
+  if ( (is_array($val1) && in_array($val2, $val1)) || ($val1 == $val2) ) {
     echo ' checked="checked"';
   }
 }
@@ -114,10 +114,13 @@ function get_skin_control_tag($tag){
 endif;
 
 //入力フォームをスキン制御タグで囲む
-add_filter( 'admin_input_form_tag', 'wrap_skin_control_tag', 10, 2 );
+add_filter( 'admin_input_form_tag', 'wrap_skin_control_tag', 10, 3 );
 if ( !function_exists( 'wrap_skin_control_tag' ) ):
-function wrap_skin_control_tag($tag, $name){
-  if (!is_null(get_form_skin_option($name))) {
+function wrap_skin_control_tag($tag, $name, $value = 1){
+  // if ($name == OP_EXCLUDE_WIDGET_CLASSES.'[]') {
+  //   _v((get_form_skin_option($name, $value)));
+  // }
+  if (get_form_skin_option($name, $value)) {
     $tag = get_skin_control_tag($tag);
   }
   return $tag;
@@ -126,12 +129,14 @@ endif;
 
 //チェックボックスの生成
 if ( !function_exists( 'generate_checkbox_tag' ) ):
-function generate_checkbox_tag($name, $now_value, $label){
-  ob_start();?>
-  <input type="checkbox" name="<?php echo $name; ?>" id="<?php echo $name; ?>" value="1"<?php the_checkbox_checked($now_value); ?>><?php generate_label_tag($name, $label); ?>
+function generate_checkbox_tag($name, $now_value, $label, $default_value = 1){
+  ob_start();
+  $id = $name.'_'.$default_value;
+  ?>
+  <input type="checkbox" name="<?php echo $name; ?>" id="<?php echo $id; ?>" value="<?php echo $default_value; ?>"<?php the_checkbox_checked($now_value, $default_value); ?>><?php generate_label_tag($id, $label); ?>
   <?php
   $res = ob_get_clean();
-  echo apply_filters('admin_input_form_tag', $res, $name);
+  echo apply_filters('admin_input_form_tag', $res, $name, $default_value);
 }
 endif;
 
@@ -165,16 +170,16 @@ endif;
 
 //ラベルの取得
 if ( !function_exists( 'get_label_tag' ) ):
-function get_label_tag($name, $caption){
-  return '<label for="'. $name.'">'.$caption.'</label>';
+function get_label_tag($id, $caption){
+  return '<label for="'. $id.'">'.$caption.'</label>';
 }
 endif;
 
 
 //ラベルの生成
 if ( !function_exists( 'generate_label_tag' ) ):
-function generate_label_tag($name, $caption){
-  echo get_label_tag($name, $caption);
+function generate_label_tag($id, $caption){
+  echo get_label_tag($id, $caption);
 }
 endif;
 
@@ -707,13 +712,7 @@ function hierarchical_category_check_list( $cat, $name, $checks ) {
   if( $next ) :
     foreach( $next as $cat ) :
       $checked = '';
-      // if (is_string($checks)) {
-      //   $checks = array();
-      // }
-      // //デフォルトのカテゴリは誤動作を起こすので除外
-      // if ($cat->term_id == 1) {
-      //   continue;
-      // }
+
       if (in_array($cat->term_id, $checks)) {
         $checked = ' checked="checked"';
       }
@@ -1740,26 +1739,27 @@ endif;
 //インフォリスト生成タグ
 if ( !function_exists( 'generate_info_list_tag' ) ):
 function generate_info_list_tag($atts){
-  extract(shortcode_atts(array(
-    'count' => 5,
-    'title' => __( '新着情報', THEME_NAME ),
-  ), $atts));
+  extract(shortcode_atts($atts, $atts));
   $args = array(
+    'cat' => $cats,
     'no_found_rows' => true,
     'ignore_sticky_posts' => true,
     'posts_per_page' => $count,
   );
+  $args = apply_filters( 'get_info_list_args', $args );
   $query = new WP_Query( $args );
+  $frame_class = ($frame ? ' is-style-frame-border' : '');
+  $divider_class = ($divider ? ' is-style-divider-line' : '');
   if( $query -> have_posts() ): //投稿が存在する時
   ?>
-  <div id="info-list" class="info-list">
-    <?php if ($title): ?>
-      <div class="info-list-title"><?php echo esc_html($title); ?></div>
+  <div id="info-list" class="info-list<?php echo $frame_class; ?><?php echo $divider_class; ?>">
+    <?php if ($caption): ?>
+      <div class="info-list-caption"><?php echo esc_html($caption); ?></div>
     <?php endif; ?>
     <?php while ($query -> have_posts()) : $query -> the_post(); ?>
       <div class="info-list-item">
-        <div class="info-list-item-date"><?php the_time(get_option('date_format')); ?></div>
         <div class="info-list-item-content"><a href="<?php the_permalink(); ?>" class="info-list-item-content-link"><?php the_title();?></a></div>
+        <div class="info-list-item-date"><?php the_time(get_option('date_format')); ?></div>
       </div>
     <?php endwhile;
   else :
