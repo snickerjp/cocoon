@@ -2144,6 +2144,10 @@ img.blogcard-favicon-image {
   margin: 1em auto;
 }
 
+.nwa .widget_toc .widget-title + .toc-widget-box .toc-title {
+  display: none;
+}
+
 /************************************
 ** サイドバーのスタイル
 ************************************/
@@ -5260,6 +5264,10 @@ div.search-form {
   border-color: var(--cocoon-white-color);
 }
 
+html .body .tab-caption-box.has-white-background-color .box-content {
+  background-color: #fff;
+}
+
 /************************************
 ** ラベルボックス
 ************************************/
@@ -5363,6 +5371,10 @@ div.search-form {
 
 .lb-white .label-box-content {
   border-color: var(--cocoon-white-color);
+}
+
+html .body .label-box.has-white-background-color .box-content {
+  background-color: var(--wp--preset--color--white) !important;
 }
 
 /************************************
