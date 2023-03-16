@@ -6132,6 +6132,9 @@ body.wp-admin {
   margin: 0.2em;
   font-size: 0.8em;
 }
+.admin-settings .demo .comment-form .submit {
+  margin: 1em 0;
+}
 .admin-settings .demo .comment-area.website-hide .comment-form-url {
   display: none;
 }
@@ -7697,6 +7700,7 @@ body.wp-admin {
   z-index: 99999;
 }
 .admin-settings .demo .go-to-top-button {
+  border-width: 0;
   background-color: #eee;
   color: #333;
   text-decoration: none;
@@ -8105,7 +8109,7 @@ body.wp-admin {
 .admin-settings .demo .iconlist-box li::before {
   font-family: FontAwesome;
   margin-right: 0.4em;
-  margin-left: -1em;
+  margin-left: -1.4em;
   position: absolute;
 }
 .admin-settings .demo .iconlist-title {
@@ -8516,9 +8520,12 @@ body.wp-admin {
   text-align: center;
 }
 .admin-settings .demo .info-list-item {
-  padding: 10px 0;
+  padding: 14px 0;
   font-size: 16px;
-  line-height: 1.4;
+  line-height: 1.6;
+}
+.admin-settings .demo .info-list-item-content {
+  margin-bottom: 8px;
 }
 .admin-settings .demo .is-style-divider-line .info-list-item {
   border-bottom: 1px dashed var(--cocoon-basic-border-color);
@@ -8526,9 +8533,18 @@ body.wp-admin {
 .admin-settings .demo .is-style-divider-line .info-list-item:last-child {
   border-bottom-style: none;
 }
-.admin-settings .demo .info-list-item-date {
+.admin-settings .demo .info-list-item-meta {
   font-size: 12px;
   opacity: 0.6;
+  line-height: 20px;
+}
+.admin-settings .demo .info-list-item-date {
+  margin-right: 18px;
+}
+.admin-settings .demo .info-list-item-categorys .entry-category {
+  padding: 1px 20px;
+  margin-right: 8px;
+  border: 1px solid #999;
 }
 .admin-settings .demo .info-list-item-content-link {
   color: var(--cocoon-black-color);
@@ -13867,6 +13883,9 @@ body.wp-admin {
   margin: 0.2em;
   font-size: 0.8em;
 }
+.admin-settings .demo .comment-form .submit {
+  margin: 1em 0;
+}
 .admin-settings .demo .comment-area.website-hide .comment-form-url {
   display: none;
 }
@@ -15432,6 +15451,7 @@ body.wp-admin {
   z-index: 99999;
 }
 .admin-settings .demo .go-to-top-button {
+  border-width: 0;
   background-color: #eee;
   color: #333;
   text-decoration: none;
@@ -15840,7 +15860,7 @@ body.wp-admin {
 .admin-settings .demo .iconlist-box li::before {
   font-family: FontAwesome;
   margin-right: 0.4em;
-  margin-left: -1em;
+  margin-left: -1.4em;
   position: absolute;
 }
 .admin-settings .demo .iconlist-title {
@@ -16251,9 +16271,12 @@ body.wp-admin {
   text-align: center;
 }
 .admin-settings .demo .info-list-item {
-  padding: 10px 0;
+  padding: 14px 0;
   font-size: 16px;
-  line-height: 1.4;
+  line-height: 1.6;
+}
+.admin-settings .demo .info-list-item-content {
+  margin-bottom: 8px;
 }
 .admin-settings .demo .is-style-divider-line .info-list-item {
   border-bottom: 1px dashed var(--cocoon-basic-border-color);
@@ -16261,9 +16284,18 @@ body.wp-admin {
 .admin-settings .demo .is-style-divider-line .info-list-item:last-child {
   border-bottom-style: none;
 }
-.admin-settings .demo .info-list-item-date {
+.admin-settings .demo .info-list-item-meta {
   font-size: 12px;
   opacity: 0.6;
+  line-height: 20px;
+}
+.admin-settings .demo .info-list-item-date {
+  margin-right: 18px;
+}
+.admin-settings .demo .info-list-item-categorys .entry-category {
+  padding: 1px 20px;
+  margin-right: 8px;
+  border: 1px solid #999;
 }
 .admin-settings .demo .info-list-item-content-link {
   color: var(--cocoon-black-color);
