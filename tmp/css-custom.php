@@ -690,9 +690,8 @@ if (!$entry_content_margin_hight) {
 .comment-respond {
   margin-bottom: <?php echo $entry_content_margin_hight; ?>em;
 }
-.wp-block-post-title,
-.is-root-container > *,
-[data-type="core/freeform"] {
+
+.is-root-container > * {
   margin-bottom: <?php echo $entry_content_margin_hight; ?>em !important;
 }
 .article h2,
@@ -871,6 +870,7 @@ $color = get_site_key_color() ? get_site_key_color() : '#f6a068';
   font-display: swap;
 }
 <?php //囲みブログカードスタイル（エディター画面）
+global $locale;
 //日本語でない時
 if (is_admin() && isset($locale) && !preg_match('/^ja/', $locale)): ?>
 .blogcard-type.bct-none::before {

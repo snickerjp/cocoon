@@ -10,11 +10,11 @@
       "default": ""
     },
     "count": {
-      "type": "integer",
+      "type": "number",
       "default": 5
     },
     "type": {
-      "type": [ "default", "border_partition", "border_square", "large_thumb", "large_thumb_on"],
+      "type": "string",
       "default": "default"
     },
     "bold": {
@@ -54,11 +54,11 @@
       "default": false
     },
     "order": {
-      "type": ["desc", "asc"],
+      "type": "string",
       "default": "desc"
     },
     "offset": {
-      "type": "integer",
+      "type": "number",
       "default": 0
     },
     "sticky": {

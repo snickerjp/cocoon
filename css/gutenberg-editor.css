@@ -127,8 +127,6 @@
 .edit-post-visual-editor__post-title-wrapper > :where(:not(.alignleft):not(.alignright):not(.alignfull)),
 .block-editor-block-list__layout.is-root-container > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
   max-width: 840px;
-  margin-left: auto !important;
-  margin-right: auto !important;
 }
 
 [class*="fab-"]::before {
@@ -865,10 +863,6 @@ ul{
   margin: 1em 0;
 }
 
-.wp-block-table table {
-  font-size: 16px;
-}
-
 .wp-block .wp-block-table__cell-content {
   min-width: 50px;
   padding: 8px;
@@ -1524,4 +1518,31 @@ div.cocoon-render-dropdown select option[disabled] {
 
 .block-editor-block-inspector .components-disabled {
   opacity: 0.3;
+}
+
+.wp-block-button.wp-block {
+  margin: 0 !important;
+}
+
+.components-dropdown-menu__menu .components-button.has-icon {
+  justify-content: flex-start;
+}
+
+.wp-block-post-title {
+  margin-bottom: 0.8em !important;
+}
+
+div.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper {
+  margin-top: 0;
+}
+
+.editor-styles-wrapper.font-awesome-5 .card-arrow .a-wrap::after {
+  font-family: 'Font Awesome 5 Free';
+}
+
+.editor-styles-wrapper [data-type="core/image"].aligncenter {
+  display: table;
+}
+.editor-styles-wrapper [data-type="core/image"].aligncenter figcaption {
+  margin-top: 0 !important;
 }

@@ -24,8 +24,6 @@ if (is_front_page_type_index()) {
           array(
             'class' => 'entry-card-thumb-image card-thumb-image',
             'alt' => '',
-            'loading' => 'lazy',
-            'decoding' => 'async',
           )
         );
       // サムネイルを持っているとき

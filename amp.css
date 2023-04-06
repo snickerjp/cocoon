@@ -1528,8 +1528,7 @@ img.emoji {
   margin-bottom: 3em;
 }
 
-pre,
-pre * {
+pre {
   line-height: 1.6;
   word-wrap: normal;
 }
@@ -6040,6 +6039,11 @@ figcaption {
   margin-left: auto !important;
 }
 
+.wp-block-pullquote.has-background blockquote {
+  background-color: transparent;
+  border-color: transparent;
+}
+
 .column-wrap {
   display: flex;
   justify-content: space-between;
@@ -9078,9 +9082,13 @@ https://codepen.io/nxworld/pen/oLdoWb
 }
 
 .info-list-item-categorys .entry-category {
-  padding: 1px 20px;
+  padding: 1px 18px;
   margin-right: 8px;
   border: 1px solid #999;
+  height: 20px;
+  line-height: 17px;
+  display: inline-block;
+  border-radius: 2px;
 }
 
 .info-list-item-content-link {

@@ -35,9 +35,9 @@ function fetch_updater_url( $new_sv_weight ) {
 
   // 指定したウェイトよりも小さい数であれば新サーバー、それ以外は既存を見に行く
   if ( $percent <= $new_sv_weight ) {
-      $url = 'https://download.wp-cocoon.com/v1/update.php?action=get_metadata&slug=cocoon-master';
+    $url = 'https://download.wp-cocoon.com/v1/update.php?action=get_metadata&slug=cocoon-master';
   } else {
-      $url = 'https://raw.githubusercontent.com/xserver-inc/cocoon/master/update-info.json';
+    $url = 'https://raw.githubusercontent.com/xserver-inc/cocoon/master/update-info.json';
   }
 
   return $url;
@@ -47,9 +47,9 @@ function fetch_updater_url( $new_sv_weight ) {
 require_once abspath(__FILE__).'lib/plugin-update-checker/plugin-update-checker.php';
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 $myUpdateChecker = PucFactory::buildUpdateChecker(
-    fetch_updater_url(40), //JSONファイルのURL
-    __FILE__,
-    'wp-cocoon-theme'
+  fetch_updater_url(60), //JSONファイルのURL
+  __FILE__,
+  'cocoon-master'
 );
 
 //本文部分の冒頭を綺麗に抜粋する
@@ -100,7 +100,7 @@ if ( !function_exists( 'get_post_navi_thumbnail_tag' ) ):
 function get_post_navi_thumbnail_tag($id, $width = THUMB120WIDTH, $height = THUMB120HEIGHT){
   $thumbnail_size = 'thumb'.strval($width);
   $thumbnail_size = apply_filters('get_post_navi_thumbnail_size', $thumbnail_size);
-  $thumb = get_the_post_thumbnail( $id, $thumbnail_size, array('alt' => '', 'loading' => 'lazy', 'decoding' => 'async') );
+  $thumb = get_the_post_thumbnail( $id, $thumbnail_size, array('alt' => '') );
   if ( !$thumb ) {
     $image = get_template_directory_uri().'/images/no-image-%s.png';
 
@@ -387,7 +387,7 @@ add_action('init', function () {
 
 //wpForoで添付画像をイメージリンクにする
 add_filter('wpforo_body_text_filter', function ($text){
-  $text = preg_replace('#(<div id="wpfa-\d+?" class="wpforo-attached-file"><a class="wpforo-default-attachment" .*?href="(.+?(\.jpe?g|\.png|\.gif))".*?>).+?(</a></div>)#i', '$1<i class="fas fa-paperclip paperclip"></i><img alt="" src="$2" loading="lazy" decoding="async" />$4', $text);
+  $text = preg_replace('#(<div id="wpfa-\d+?" class="wpforo-attached-file"><a class="wpforo-default-attachment" .*?href="(.+?(\.jpe?g|\.png|\.gif))".*?>).+?(</a></div>)#i', '$1<i class="fas fa-paperclip paperclip"></i><img alt="" src="$2" />$4', $text);
   return $text;
 });
 

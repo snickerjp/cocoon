@@ -10,7 +10,7 @@
       "default": ""
     },
     "count": {
-      "type": "integer",
+      "type": "number",
       "default": 5
     },
     "showAllCats": {
