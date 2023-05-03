@@ -372,8 +372,10 @@ a.site-name:hover {
 }
 
 .carousel-entry-card-title {
-  margin: 0;
+  margin: 0 0 0.6em 0;
   padding: 0.3em;
+  line-height: 1.25;
+  height: 4.05em;
 }
 
 .carousel .slick-arrow:before {
@@ -383,6 +385,10 @@ a.site-name:hover {
 
 .slick-dots {
   z-index: 2;
+}
+
+.carousel .a-wrap:hover {
+  box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.2);
 }
 
 /* 記事一覧 */

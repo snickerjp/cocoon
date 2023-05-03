@@ -29,13 +29,17 @@
 
   .slick-track{
     display: flex;
+    padding: 10px 0;
   }
   .slick-slide {
     height: auto;
     //display: block;
   }
   .a-wrap{
-    margin: 0 3px 3px;
+    margin: 0 6px 3px;
+    &:first-child{
+      margin-left: 4px;
+    }
   }
 }
 
@@ -54,9 +58,10 @@
 }
 
 .carousel-entry-card-title{
+  margin-bottom: 0.6em;
   font-size: 16px;
   margin-top: 4px;
-  max-height: 3.2em;
+  height: 3.2em;
   overflow: hidden;
 }
 
