@@ -8599,6 +8599,7 @@ body.wp-admin {
 }
 .admin-settings .demo .is-list-horizontal.large-thumb .card-title, .admin-settings .demo .is-list-horizontal.large-thumb-on .card-title {
   -webkit-line-clamp: 2;
+  height: 2.6em;
 }
 .admin-settings .demo .is-list-horizontal.large-thumb-on .card-content {
   max-height: 45%;
@@ -8607,43 +8608,29 @@ body.wp-admin {
 .admin-settings .demo .is-list-horizontal.large-thumb-on .card-title {
   font-size: 14px;
 }
-.admin-settings .demo .is-list-horizontal .swiper-button-next {
-  left: calc(100% - 62px);
-}
-.admin-settings .demo .is-list-horizontal .swiper-button-next {
-  position: absolute;
-  z-index: 1;
+.admin-settings .demo .is-list-horizontal .swiper-button-next,
+.admin-settings .demo .is-list-horizontal .swiper-button-prev {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
   top: 0;
   bottom: 0;
   margin: auto;
+  position: absolute;
+  height: 50px;
+  width: 50px;
+  z-index: 1;
+  transition: var(--transition);
+  -webkit-transition: var(--transition);
+  box-shadow: var(--box-shadow);
+  -webkit-box-shadow: var(--box-shadow);
 }
 .admin-settings .demo .is-list-horizontal .swiper-button-next {
-  display: grid;
-  place-content: center;
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-  -webkit-transition: var(--transition);
-  transition: var(--transition);
+  left: calc(100% - 62px);
 }
 .admin-settings .demo .is-list-horizontal .swiper-button-next:hover {
   left: calc(100% - 66px);
   width: 60px;
   height: 60px;
-}
-.admin-settings .demo .is-list-horizontal .swiper-button-next::before {
-  background-color: rgba(0, 0, 0, 0.3);
-}
-.admin-settings .demo .is-list-horizontal .swiper-button-next::before {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  content: "";
-  border-radius: 50%;
-  -webkit-box-shadow: var(--box-shadow);
-  box-shadow: var(--box-shadow);
 }
 .admin-settings .demo .is-list-horizontal .swiper-button-next::after {
   border-color: #ffffff;
@@ -8655,6 +8642,25 @@ body.wp-admin {
   content: "";
   border: solid rgba(255, 255, 255, 0.7);
   border-width: 2px 2px 0 0;
+}
+.admin-settings .demo .is-list-horizontal .swiper-button-prev {
+  left: 22px;
+  display: none;
+}
+.admin-settings .demo .is-list-horizontal .swiper-button-prev:hover {
+  left: 17px;
+  width: 60px;
+  height: 60px;
+}
+.admin-settings .demo .is-list-horizontal .swiper-button-prev::after {
+  border-color: #ffffff;
+  margin-left: 0.4rem;
+  transform: rotate(45deg);
+  width: 12px;
+  height: 12px;
+  content: "";
+  border: solid rgba(255, 255, 255, 0.7);
+  border-width: 0 0 2px 2px;
 }
 .admin-settings .demo .info-list {
   padding: 20px;
@@ -16499,6 +16505,7 @@ body.wp-admin {
 }
 .admin-settings .demo .is-list-horizontal.large-thumb .card-title, .admin-settings .demo .is-list-horizontal.large-thumb-on .card-title {
   -webkit-line-clamp: 2;
+  height: 2.6em;
 }
 .admin-settings .demo .is-list-horizontal.large-thumb-on .card-content {
   max-height: 45%;
@@ -16507,43 +16514,29 @@ body.wp-admin {
 .admin-settings .demo .is-list-horizontal.large-thumb-on .card-title {
   font-size: 14px;
 }
-.admin-settings .demo .is-list-horizontal .swiper-button-next {
-  left: calc(100% - 62px);
-}
-.admin-settings .demo .is-list-horizontal .swiper-button-next {
-  position: absolute;
-  z-index: 1;
+.admin-settings .demo .is-list-horizontal .swiper-button-next,
+.admin-settings .demo .is-list-horizontal .swiper-button-prev {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
   top: 0;
   bottom: 0;
   margin: auto;
+  position: absolute;
+  height: 50px;
+  width: 50px;
+  z-index: 1;
+  transition: var(--transition);
+  -webkit-transition: var(--transition);
+  box-shadow: var(--box-shadow);
+  -webkit-box-shadow: var(--box-shadow);
 }
 .admin-settings .demo .is-list-horizontal .swiper-button-next {
-  display: grid;
-  place-content: center;
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-  -webkit-transition: var(--transition);
-  transition: var(--transition);
+  left: calc(100% - 62px);
 }
 .admin-settings .demo .is-list-horizontal .swiper-button-next:hover {
   left: calc(100% - 66px);
   width: 60px;
   height: 60px;
-}
-.admin-settings .demo .is-list-horizontal .swiper-button-next::before {
-  background-color: rgba(0, 0, 0, 0.3);
-}
-.admin-settings .demo .is-list-horizontal .swiper-button-next::before {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  content: "";
-  border-radius: 50%;
-  -webkit-box-shadow: var(--box-shadow);
-  box-shadow: var(--box-shadow);
 }
 .admin-settings .demo .is-list-horizontal .swiper-button-next::after {
   border-color: #ffffff;
@@ -16555,6 +16548,25 @@ body.wp-admin {
   content: "";
   border: solid rgba(255, 255, 255, 0.7);
   border-width: 2px 2px 0 0;
+}
+.admin-settings .demo .is-list-horizontal .swiper-button-prev {
+  left: 22px;
+  display: none;
+}
+.admin-settings .demo .is-list-horizontal .swiper-button-prev:hover {
+  left: 17px;
+  width: 60px;
+  height: 60px;
+}
+.admin-settings .demo .is-list-horizontal .swiper-button-prev::after {
+  border-color: #ffffff;
+  margin-left: 0.4rem;
+  transform: rotate(45deg);
+  width: 12px;
+  height: 12px;
+  content: "";
+  border: solid rgba(255, 255, 255, 0.7);
+  border-width: 0 0 2px 2px;
 }
 .admin-settings .demo .info-list {
   padding: 20px;
