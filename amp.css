@@ -4084,19 +4084,23 @@ div.search-form {
   right: 0;
 }
 
-.btn, .ranking-item-link-buttons a,
+.button-block,
 .btn-wrap {
-  --cocoon-custom-background-color: var(--cocoon-text-color);
+  --cocoon-custom-background-color: var(--cocoon-black-color);
   --cocoon-custom-text-color: var(--cocoon-white-color);
+  --cocoon-custom-border-color: transparent;
+}
+
+.btn[class*="btn-"], .ranking-item-link-buttons a[class*="btn-"] {
   --cocoon-custom-border-color: transparent;
 }
 
 .btn, .ranking-item-link-buttons a,
 .btn-wrap > a,
 .wp-block-freeform .btn-wrap > a {
+  --cocoon-custom-text-color: var(--cocoon-white-color);
   border-width: 2px;
   border-style: solid;
-  border-color: transparent;
   color: var(--cocoon-custom-text-color);
   background-color: var(--cocoon-custom-background-color);
   border-color: var(--cocoon-custom-border-color);
@@ -4116,6 +4120,10 @@ div.search-form {
 .btn-wrap > a amp-img,
 .wp-block-freeform .btn-wrap > a amp-img {
   position: absolute;
+}
+
+.mce-content-body .btn-wrap a[data-mce-selected] {
+  padding: 7px 13px;
 }
 
 .btn:before, .ranking-item-link-buttons a:before,
@@ -4203,6 +4211,10 @@ div.search-form {
 
 #container .btn-white:hover, #container .btn-wrap.btn-wrap-white > a:hover {
   color: var(--cocoon-text-color);
+}
+
+.btn-black, .btn-wrap.btn-wrap-black > a {
+  background-color: var(--cocoon-black-color);
 }
 
 .btn-red, .ranking-item-link a, .btn-wrap.btn-wrap-red > a {
@@ -6742,6 +6754,7 @@ canvas, iframe, video,
 
 .cta-button {
   margin-top: 1em;
+  --cocoon-custom-border-color: transparent;
 }
 
 .sidebar .cta-box {
@@ -7948,6 +7961,7 @@ div.fb-like-mobile {
 }
 
 .ranking-item-link-buttons {
+  --cocoon-custom-border-color: transparent;
   margin-top: 6px;
 }
 .ranking-item-link-buttons > div {
