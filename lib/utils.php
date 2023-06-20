@@ -2680,7 +2680,12 @@ endif;
 //wpForo URLが含まれている場合
 if ( !function_exists( 'includes_wpforo_url' ) ):
 function includes_wpforo_url($url){
-  return is_wpforo_exist() && includes_string($url, WPF()->url);
+  if (is_wpforo_exist()) {
+    if (isset(WPF()->url)) {
+      return includes_string($url, WPF()->url);
+    }
+  }
+  return false;
 }
 endif;
 
@@ -2944,6 +2949,7 @@ function get_shortcode_removed_content($content){
   $removed_content = preg_replace('/\[rank.*\]/', '', $removed_content);
   $removed_content = preg_replace('/\[star.*\]/', '', $removed_content);
   $removed_content = preg_replace('/\[\[.*\]\]/', '', $removed_content);
+  $removed_content = apply_filters('get_shortcode_removed_content', $removed_content);
   return $removed_content;
 }
 endif;
