@@ -264,7 +264,7 @@ $marker_u_blue: $marker_blue;
   .column-left,
   .column-center,
   .column-right,
-  .column-wrap,
+  // .column-wrap,
   .timeline-box,
   .wp-block-cover,
   .blogcard-type,
@@ -286,11 +286,6 @@ $marker_u_blue: $marker_blue;
     :last-child{
       margin-bottom: 0;
     }
-
-    // ol,
-    // ul{
-    //   margin: 0;
-    // }
   }
 
   div.scrollable-table,
@@ -490,11 +485,8 @@ $bb_yellow: #fc9f4d;
 $bb_red: #d05a6e;
 $bb_blue: #2ea9df;
 $bb_green: var(--cocoon-green-color);
-@mixin blank_box{
+@mixin bace_box{
   --cocoon-custom-border-color: var(--cocoon-grey-color);
-  border-style: solid;
-  border-width: 3px;
-  border-color: var(--cocoon-custom-border-color);
   padding: 1.2em 1em;
   border-radius: var(--cocoon-basic-border-radius);
   background-color: var(--cocoon-custom-background-color);
@@ -502,6 +494,12 @@ $bb_green: var(--cocoon-green-color);
   ol, ul {
     margin: 0;
   }
+  border-style: solid;
+}
+@mixin blank_box{
+  @include bace_box;
+  border-width: 3px;
+  border-color: var(--cocoon-custom-border-color);
 }
 @mixin sticky{
   border-width: 0 0 0 6px;
@@ -510,17 +508,6 @@ $bb_green: var(--cocoon-green-color);
 }
 .blank-box{
   @include blank_box;
-  // --cocoon-custom-border-color: var(--cocoon-grey-color);
-  // border-style: solid;
-  // border-width: 3px;
-  // border-color: var(--cocoon-custom-border-color);
-  // padding: 1.2em 1em;
-  // border-radius: var(--cocoon-basic-border-radius);
-  // background-color: var(--cocoon-custom-background-color);
-  // color: var(--cocoon-custom-text-color);
-  // ol, ul {
-  //   margin: 0;
-  // }
 
   &.bb-red{border-color: var(--cocoon-red-color);}
   &.bb-pink{border-color: var(--cocoon-pink-color);}
@@ -606,50 +593,50 @@ $bb_green: var(--cocoon-green-color);
 [class*="is-style-blank-box-"]{
   @include blank_box;
 }
-:is(div, p).is-style-blank-box-red{
+.is-style-blank-box-red{
   border-color: var(--cocoon-red-color);
 }
-:is(div, p).is-style-blank-box-pink{
+.is-style-blank-box-pink{
   border-color: var(--cocoon-pink-color);
 }
-:is(div, p).is-style-blank-box-navy{
+.is-style-blank-box-navy{
   border-color: var(--cocoon-indigo-color);
 }
-:is(div, p).is-style-blank-box-blue{
+.is-style-blank-box-blue{
   border-color: var(--cocoon-blue-color);
 }
-:is(div, p).is-style-blank-box-yellow{
+.is-style-blank-box-yellow{
   border-color: var(--cocoon-yellow-color);
 }
-:is(div, p).is-style-blank-box-green{
+.is-style-blank-box-green{
   border-color: var(--cocoon-green-color);
 }
-:is(div, p).is-style-blank-box-orange{
+.is-style-blank-box-orange{
   border-color: var(--cocoon-orange-color);
 }
 
 [class*="is-style-sticky-"]{
-  @include blank_box;
+  @include bace_box;
   @include sticky;
 }
 
-:is(div, p).is-style-sticky-yellow{
+.is-style-sticky-yellow{
   border-color: #FFA103;
   background-color: #ffeac7;
 }
 
-:is(div, p).is-style-sticky-red{
+.is-style-sticky-red{
   border-color: #CD3740;
   background-color: #F5DADC;
 }
 
-:is(div, p).is-style-sticky-blue{
+.is-style-sticky-blue{
   border-color: #0066cc;
   background-color: #E5F2FF;
 
 }
 
-:is(div, p).is-style-sticky-green{
+.is-style-sticky-green{
   border-color: #028760;
   background-color: #CBEFE4;
 
@@ -817,7 +804,6 @@ div.search-form{
   .search-form{
     margin: 0 !important;
     display: block !important;
-    max-width: auto !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     border: none !important;
@@ -848,11 +834,10 @@ div.search-form{
 .btn,
 .btn-wrap > a,
 .wp-block-freeform .btn-wrap > a{
-  --cocoon-custom-text-color: var(--cocoon-white-color);
   border-width: 2px;
   border-style: solid;
-  color: var(--cocoon-custom-text-color);
-  background-color: var(--cocoon-custom-background-color);;
+  color: var(--cocoon-custom-text-color, #fff);
+  background-color: var(--cocoon-custom-background-color, #333);
   border-color: var(--cocoon-custom-border-color);
   font-weight: bold;
   border-radius: 4px;
@@ -908,8 +893,7 @@ div.search-form{
 
 .btn:hover,
 .btn-wrap > a:hover{
-  filter: opacity(0.7);
-  opacity: 1;
+  opacity: 0.7;
   color: var(--cocoon-white-color);
   &::after{
     right: -4px;
@@ -950,9 +934,9 @@ div.search-form{
 .btn-circle,
 .btn-wrap-circle > a{
   border-radius: 99px;
-  clip-path: border-box;
 }
 
+//古いバージョンのブロックに対応
 .btn-white, .btn-wrap.btn-wrap-white > a{color: var(--cocoon-text-color);background-color: var(--cocoon-white-color);}
 #container .btn-white:hover, #container .btn-wrap.btn-wrap-white > a:hover{color: var(--cocoon-text-color);}
 .btn-black, .btn-wrap.btn-wrap-black > a{background-color: var(--cocoon-black-color);}
@@ -975,7 +959,7 @@ div.search-form{
 .btn-brown, .btn-wrap.btn-wrap-brown > a{background-color: var(--cocoon-brown-color);}
 .btn-grey, .btn-wrap.btn-wrap-grey > a{background-color: var(--cocoon-grey-color);}
 .btn-blue-grey, .btn-wrap.btn-wrap-blue-grey > a{background-color: var(--cocoon-blue-gray-color);}
-.btn-black, .btn-wrap.btn-wrap-black > a{background-color: var(--cocoon-black-color);}
+
 
 .btn-arrow-right:before, .btn-wrap.btn-wrap-arrow-right > a:before{content: "\f061";}
 .btn-chevron-right:before, .btn-wrap.btn-wrap-chevron-circle-right > a:before{content: "\f054";}
@@ -1150,29 +1134,30 @@ div.search-form{
   }
 }
 
-// .micro-balloon{
-//   &.mc-red{@include micro_copycolor(var(--cocoon-red-color));}
-//   &.mc-pink{@include micro_copycolor(var(--cocoon-pink-color));}
-//   &.mc-purple{@include micro_copycolor(var(--cocoon-purple-color));}
-//   &.mc-blue{@include micro_copycolor(var(--cocoon-blue-color));}
-//   &.mc-green{@include micro_copycolor(var(--cocoon-green-color));}
-//   &.mc-orange{@include micro_copycolor(var(--cocoon-orange-color));}
-//   &.mc-yellow{@include micro_copycolor(var(--cocoon-yellow-color));}
-//   &.mc-brown{@include micro_copycolor(var(--cocoon-brown-color));}
-//   &.mc-grey{@include micro_copycolor(var(--cocoon-grey-color));}
-//   &.mc-black{@include micro_copycolor(var(--cocoon-black-color));}
+//古いバージョンのブロックに対応
+.micro-balloon{
+  &.mc-red{@include micro_copycolor(var(--cocoon-red-color));}
+  &.mc-pink{@include micro_copycolor(var(--cocoon-pink-color));}
+  &.mc-purple{@include micro_copycolor(var(--cocoon-purple-color));}
+  &.mc-blue{@include micro_copycolor(var(--cocoon-blue-color));}
+  &.mc-green{@include micro_copycolor(var(--cocoon-green-color));}
+  &.mc-orange{@include micro_copycolor(var(--cocoon-orange-color));}
+  &.mc-yellow{@include micro_copycolor(var(--cocoon-yellow-color));}
+  &.mc-brown{@include micro_copycolor(var(--cocoon-brown-color));}
+  &.mc-grey{@include micro_copycolor(var(--cocoon-grey-color));}
+  &.mc-black{@include micro_copycolor(var(--cocoon-black-color));}
 
-//   &.mc-deep{@include micro_copycolor(var(--cocoon-deep-color));}
-//   &.mc-indigo{@include micro_copycolor(var(--cocoon-indigo-color));}
-//   &.mc-light-blue{@include micro_copycolor(var(--cocoon-light-blue-color));}
-//   &.mc-cyan{@include micro_copycolor(var(--cocoon-cyan-color));}
-//   &.mc-teal{@include micro_copycolor(var(--cocoon-teal-color));}
-//   &.mc-light-green{@include micro_copycolor(var(--cocoon-light-green-color));}
-//   &.mc-lime{@include micro_copycolor(var(--cocoon-lime-color));}
-//   &.mc-amber{@include micro_copycolor(var(--cocoon-amber-color));}
-//   &.mc-deep-orange{@include micro_copycolor(var(--cocoon-deep-orange-color));}
-//   &.mc-white{@include micro_copycolor(var(--cocoon-white-color));}
-// }
+  &.mc-deep{@include micro_copycolor(var(--cocoon-deep-color));}
+  &.mc-indigo{@include micro_copycolor(var(--cocoon-indigo-color));}
+  &.mc-light-blue{@include micro_copycolor(var(--cocoon-light-blue-color));}
+  &.mc-cyan{@include micro_copycolor(var(--cocoon-cyan-color));}
+  &.mc-teal{@include micro_copycolor(var(--cocoon-teal-color));}
+  &.mc-light-green{@include micro_copycolor(var(--cocoon-light-green-color));}
+  &.mc-lime{@include micro_copycolor(var(--cocoon-lime-color));}
+  &.mc-amber{@include micro_copycolor(var(--cocoon-amber-color));}
+  &.mc-deep-orange{@include micro_copycolor(var(--cocoon-deep-orange-color));}
+  &.mc-white{@include micro_copycolor(var(--cocoon-white-color));}
+}
 
 
 .blogcard-label{
@@ -1333,6 +1318,7 @@ div.search-form{
   }
 }
 
+//古いバージョンのブロックに対応
 .cb-red{@include caption_color(var(--cocoon-red-color));}
 .cb-pink{@include caption_color(var(--cocoon-pink-color));}
 .cb-purple{@include caption_color(var(--cocoon-purple-color));}
@@ -1399,6 +1385,7 @@ div.search-form{
   }
 }
 
+//古いバージョンのブロックに対応
 .tcb-red{@include caption_tab_color(var(--cocoon-red-color));}
 .tcb-pink{@include caption_tab_color(var(--cocoon-pink-color));}
 .tcb-purple{@include caption_tab_color(var(--cocoon-purple-color));}
@@ -1479,6 +1466,7 @@ html .body .tab-caption-box.has-white-background-color .box-content {
   }
 }
 
+//古いバージョンのブロックに対応
 .lb-red{@include label_color(var(--cocoon-red-color));}
 .lb-pink{@include label_color(var(--cocoon-pink-color));}
 .lb-purple{@include label_color(var(--cocoon-purple-color));}
@@ -1615,6 +1603,7 @@ $toggle_border_width: 2px;
   }
 }
 
+//古いバージョンのブロックに対応
 .tb-red{@include toggle_color(var(--cocoon-red-color));}
 .tb-pink{@include toggle_color(var(--cocoon-pink-color));}
 .tb-purple{@include toggle_color(var(--cocoon-purple-color));}
@@ -1684,11 +1673,6 @@ figcaption{
   .faq-question{
     padding: .5em;
     margin: 0;
-  }
-  .faq-answer{
-    padding: 1em .5em;
-  }
-  .faq-question{
     cursor: pointer;
     position: relative;
     background-color: #e8ecef;
@@ -1704,6 +1688,10 @@ figcaption{
     &.active::before{
       content: "-";
     }
+  }
+
+  .faq-answer{
+    padding: 1em .5em;
   }
 
   &.has-border-color{
