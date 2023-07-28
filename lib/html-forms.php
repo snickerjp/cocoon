@@ -1784,28 +1784,48 @@ endif;
 //インフォリスト生成タグ
 if ( !function_exists( 'generate_info_list_tag' ) ):
 function generate_info_list_tag($atts){
-  extract(shortcode_atts($atts, $atts));
+  extract(shortcode_atts(array(
+    'count' => 5,
+    'cats' => 'all',
+    'caption' => __( '新着情報', THEME_NAME ),
+    'frame' => 1,
+    'divider' => 1,
+    'modified' => 0,
+  ), $atts));
+
   $args = array(
     'cat' => $cats,
     'no_found_rows' => true,
     'ignore_sticky_posts' => true,
     'posts_per_page' => $count,
   );
+
+  //更新日順
+  if ($modified) {
+    $args += array(
+      'orderby' => 'modified',
+    );
+  }
   $args = apply_filters( 'get_info_list_args', $args );
   $query = new WP_Query( $args );
   $frame_class = ($frame ? ' is-style-frame-border' : '');
   $divider_class = ($divider ? ' is-style-divider-line' : '');
-  if( $query -> have_posts() ): //投稿が存在する時
-  ?>
+  if( $query -> have_posts() ): //投稿が存在する時 ?>
   <div id="info-list" class="info-list<?php echo $frame_class; ?><?php echo $divider_class; ?>">
     <?php if ($caption): ?>
       <div class="info-list-caption"><?php echo esc_html($caption); ?></div>
     <?php endif; ?>
-    <?php while ($query -> have_posts()) : $query -> the_post(); ?>
+    <?php while ($query -> have_posts()) : $query -> the_post();
+      $date = get_the_time(get_site_date_format());
+      $update_date = get_update_time(get_site_date_format());
+      if ($modified && $update_date) {
+        $date = $update_date;
+      }
+    ?>
       <div class="info-list-item">
         <div class="info-list-item-content"><a href="<?php the_permalink(); ?>" class="info-list-item-content-link"><?php the_title();?></a></div>
         <div class="info-list-item-meta">
-          <span class="info-list-item-date"><?php the_time(get_site_date_format()); ?></span><span class="info-list-item-categorys"><?php the_nolink_categories() ?></span>
+          <span class="info-list-item-date"><?php echo $date; ?></span><span class="info-list-item-categorys"><?php the_nolink_categories() ?></span>
         </div>
       </div>
     <?php endwhile; ?>

@@ -91,7 +91,7 @@ export default function edit( { attributes, setAttributes, className } ) {
         <RichText
           onChange={ onChangeContent }
           value={ content }
-          multiline="p"
+          // multiline="p"
         />
       </div>
     </Fragment>

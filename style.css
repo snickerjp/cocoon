@@ -6,7 +6,7 @@ Theme URI: https://wp-cocoon.com/
 Author: わいひら
 Author URI: https://nelog.jp/
 Text Domain: cocoon
-Version: 2.6.2.7
+Version: 2.6.3.2
 Requires at least: 5.7.0
 Requires PHP: 7.4.0
 Tags: two-columns, left-sidebar, right-sidebar
@@ -1215,13 +1215,12 @@ img.emoji {
   position: relative;
   text-align: center;
   width: 32%;
+  transition: all 0.3s ease-in-out;
   color: var(--cocoon-white-color);
   text-decoration: none;
 }
 .sns-buttons a:hover {
   opacity: 0.7;
-  color: var(--cocoon-white-color);
-  transition: all 0.3s ease-in-out;
 }
 
 .bc-brand-color-white a {
@@ -1985,6 +1984,10 @@ img.blogcard-favicon-image {
 .nwa .eb-right .blogcard-content {
   margin-right: 31.6%;
   margin-left: 0;
+}
+
+.blogcard-type br {
+  display: none;
 }
 
 /************************************
@@ -10361,6 +10364,10 @@ _:-ms-lang(x), .mc-circle {
 
   .sidebar-scroll {
     position: static;
+  }
+
+  .ba-fixed.header {
+    background-position: top center;
   }
 
   .ba-fixed.header,
