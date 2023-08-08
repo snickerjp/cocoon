@@ -1683,6 +1683,7 @@ function get_navi_card_image_attributes($menu, $type = ET_DEFAULT){
   //大きなサムネイル画像を使用する場合
   $image_attributes = array();
   $post_types = get_custum_post_types();
+  //投稿ページ・固定ページ・カスタム投稿ページ
   if ($object == 'post' || $object == 'page' || in_array($object, $post_types)) {
     $thumbnail_id = get_post_thumbnail_id($object_id);
     $image_attributes = wp_get_attachment_image_src($thumbnail_id, $thumb_size);
@@ -1722,14 +1723,15 @@ function get_navi_card_image_attributes($menu, $type = ET_DEFAULT){
 
   }
 
-  if (!$image_attributes) {//アイキャッチがない場合
+  //アイキャッチがない場合
+  if (!$image_attributes) {
     $image_attributes = array();
     if ($is_large_image_use) {
-      $image_attributes[0] = get_no_image_320x180_url();
+      $image_attributes[0] = get_no_image_320x180_url($object_id, false); //postするタイプのページではない引数を追加
       $image_attributes[1] = THUMB320WIDTH_DEF;
       $image_attributes[2] = THUMB320HEIGHT_DEF;
     } else {
-      $image_attributes[0] = get_no_image_120x68_url();
+      $image_attributes[0] = get_no_image_120x68_url($object_id, false); //postするタイプのページではない引数を追加
       $image_attributes[1] = THUMB120WIDTH_DEF;
       $image_attributes[2] = THUMB120HEIGHT_DEF;
     }
