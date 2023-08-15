@@ -1431,7 +1431,7 @@ pre {
 }
 
 .ctdt-one-row > div {
-  display: inline-block;
+  display: inline;
 }
 
 .ctdt-category-only .entry-tags {
@@ -7080,7 +7080,7 @@ div.fb-like-mobile {
   overflow: hidden;
 }
 .logo-menu-button img {
-  max-height: 44px;
+  max-height: 50px;
   display: block;
   margin: 0 auto;
 }
@@ -9673,10 +9673,6 @@ pre {
   .wwa .box-menus {
     margin-left: 10px;
     margin-right: 10px;
-  }
-
-  .article .wp-block-columns :nth-child(odd):nth-last-child(2) {
-    margin-bottom: 0;
   }
 
   /************************************

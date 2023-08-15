@@ -1861,7 +1861,7 @@ body.wp-admin {
   margin-right: 0.4em;
 }
 .admin-settings .demo .ctdt-one-row > div {
-  display: inline-block;
+  display: inline;
 }
 .admin-settings .demo .ctdt-category-only .entry-tags {
   display: none;
@@ -6728,7 +6728,7 @@ body.wp-admin {
   overflow: hidden;
 }
 .admin-settings .demo .logo-menu-button img {
-  max-height: 44px;
+  max-height: 50px;
   display: block;
   margin: 0 auto;
 }
@@ -9504,7 +9504,7 @@ body.wp-admin {
   margin-right: 0.4em;
 }
 .admin-settings .demo .ctdt-one-row > div {
-  display: inline-block;
+  display: inline;
 }
 .admin-settings .demo .ctdt-category-only .entry-tags {
   display: none;
@@ -14371,7 +14371,7 @@ body.wp-admin {
   overflow: hidden;
 }
 .admin-settings .demo .logo-menu-button img {
-  max-height: 44px;
+  max-height: 50px;
   display: block;
   margin: 0 auto;
 }
@@ -17474,9 +17474,6 @@ body.wp-admin {
   .admin-settings .demo .wwa .box-menus {
     margin-left: 10px;
     margin-right: 10px;
-  }
-  .admin-settings .demo .article .wp-block-columns :nth-child(odd):nth-last-child(2) {
-    margin-bottom: 0;
   }
   .admin-settings .demo .fb-like-balloon-body {
     margin-right: 100px;
