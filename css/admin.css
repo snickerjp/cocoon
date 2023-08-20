@@ -5355,6 +5355,9 @@ body.wp-admin {
   background-color: transparent;
   border-color: transparent;
 }
+.admin-settings .demo .wp-block-code code {
+  white-space: pre;
+}
 .admin-settings .demo .column-wrap {
   display: flex;
   justify-content: space-between;
@@ -12997,6 +13000,9 @@ body.wp-admin {
 .admin-settings .demo .wp-block-pullquote.has-background blockquote {
   background-color: transparent;
   border-color: transparent;
+}
+.admin-settings .demo .wp-block-code code {
+  white-space: pre;
 }
 .admin-settings .demo .column-wrap {
   display: flex;
@@ -21554,6 +21560,9 @@ textarea[name="the_page_memo"] {
   background-color: transparent;
   border-color: transparent;
 }
+.components-popover__content .wp-block-code code {
+  white-space: pre;
+}
 .components-popover__content .red {
   margin: 0;
 }
@@ -21741,4 +21750,8 @@ textarea[name="the_page_memo"] {
 
 .demo .ranking-item, .admin-settings .demo .timeline-box {
   margin-bottom: 1em;
+}
+
+.wp-picker-container .button[style*="background-color"] .wp-color-result-text {
+  color: red;
 }
