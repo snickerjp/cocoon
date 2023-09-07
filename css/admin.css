@@ -1664,6 +1664,7 @@ body.wp-admin {
   text-align: center;
   width: 32%;
   transition: all 0.3s ease-in-out;
+  cursor: pointer;
   color: var(--cocoon-white-color);
   text-decoration: none;
 }
@@ -1916,8 +1917,7 @@ body.wp-admin {
 .admin-settings .demo table tr:nth-of-type(2n+1) {
   background-color: var(--cocoon-xxx-thin-color);
 }
-.admin-settings .demo table th,
-.admin-settings .demo table td {
+.admin-settings .demo table:not(.has-border-color) th, .admin-settings .demo table:not(.has-border-color) td {
   border: 1px solid var(--cocoon-x-thin-color);
   padding: 6px;
 }
@@ -9310,6 +9310,7 @@ body.wp-admin {
   text-align: center;
   width: 32%;
   transition: all 0.3s ease-in-out;
+  cursor: pointer;
   color: var(--cocoon-white-color);
   text-decoration: none;
 }
@@ -9562,8 +9563,7 @@ body.wp-admin {
 .admin-settings .demo table tr:nth-of-type(2n+1) {
   background-color: var(--cocoon-xxx-thin-color);
 }
-.admin-settings .demo table th,
-.admin-settings .demo table td {
+.admin-settings .demo table:not(.has-border-color) th, .admin-settings .demo table:not(.has-border-color) td {
   border: 1px solid var(--cocoon-x-thin-color);
   padding: 6px;
 }
@@ -17145,7 +17145,6 @@ body.wp-admin {
     bottom: auto;
     justify-content: space-around;
     min-width: 46px;
-    z-index: 3;
     box-shadow: 0 0 5px darkgrey;
   }
   .admin-settings .demo .has-logo-button .menu-button {
