@@ -826,10 +826,9 @@ img.emoji {
 }
 .navi .item-label,
 .navi .item-description {
-  display: -webkit-box;
   overflow: hidden;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .navi-in .has-icon {
@@ -1498,7 +1497,7 @@ table th {
 table tr:nth-of-type(2n+1) {
   background-color: var(--cocoon-xxx-thin-color);
 }
-table:not(.has-border-color) th, table:not(.has-border-color) td {
+table:not(.has-border-color) :where(th, td) {
   border: 1px solid var(--cocoon-x-thin-color);
   padding: 6px;
 }
@@ -1713,8 +1712,8 @@ span.internal-icon {
   border: 1px solid var(--cocoon-basic-border-color);
 }
 
-.no-post-date .post-date,
-.no-post-update .post-update,
+.no-post-date .article-header .post-date,
+.no-post-update .article-header .post-update,
 .no-post-author .author-info {
   display: none;
 }
@@ -3517,6 +3516,19 @@ div.search-form {
   padding: 7px 13px;
 }
 
+.btn.cocoon-block-button__width-25, .ranking-item-link-buttons a.cocoon-block-button__width-25 {
+  width: 25%;
+}
+.btn.cocoon-block-button__width-50, .ranking-item-link-buttons a.cocoon-block-button__width-50 {
+  width: 50%;
+}
+.btn.cocoon-block-button__width-75, .ranking-item-link-buttons a.cocoon-block-button__width-75 {
+  width: 75%;
+}
+.btn.cocoon-block-button__width-100, .ranking-item-link-buttons a.cocoon-block-button__width-100 {
+  width: 100%;
+}
+
 .btn:before, .ranking-item-link-buttons a:before,
 .btn:after,
 .ranking-item-link-buttons a:after,
@@ -3547,6 +3559,19 @@ div.search-form {
   position: absolute;
   right: 0;
   font-size: 20px;
+}
+
+.alignleft .btn-l.has-custom-width, .alignleft .ranking-item-link-buttons a.has-custom-width, .ranking-item-link-buttons .alignleft a.has-custom-width {
+  margin-right: auto;
+}
+
+.aligncenter .btn-l.has-custom-width, .aligncenter .ranking-item-link-buttons a.has-custom-width, .ranking-item-link-buttons .aligncenter a.has-custom-width {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.alignright .btn-l.has-custom-width, .alignright .ranking-item-link-buttons a.has-custom-width, .ranking-item-link-buttons .alignright a.has-custom-width {
+  margin-left: auto;
 }
 
 .btn:hover, .ranking-item-link-buttons a:hover,
