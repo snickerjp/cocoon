@@ -5,7 +5,13 @@
  * @link: https://wp-cocoon.com/
  * @license: http://www.gnu.org/licenses/gpl-2.0.html GPL v2 or later
  */
-if ( !defined( 'ABSPATH' ) ) exit; ?>
+if ( !defined( 'ABSPATH' ) ) exit;
+
+//PRラベルの表示
+if (is_small_pr_labels_visible()) {
+  generate_small_pr_label_tag(); //PR表記出力
+}
+?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class('article') ?> itemscope="itemscope" itemprop="blogPost" itemtype="https://schema.org/BlogPosting" data-clarity-region="article">
   <?php
@@ -34,6 +40,7 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
       } ?>
 
       <header class="article-header entry-header">
+
         <h1 class="entry-title" itemprop="headline"><?php the_title(); ?></h1>
 
         <?php //レビュー表示
@@ -90,6 +97,11 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
           <div class="read-time"><?php echo '<span class="fa fa-hourglass-half" aria-hidden="true"></span>
 '.sprintf(__( 'この記事は<span class="bold">約%s分</span>で読めます。', THEME_NAME ), get_time_to_content_read(get_the_content())); ?></div>
         <?php endif; ?>
+
+        <?php //PR表記大の出力
+        if (is_large_pr_labels_visible()) {
+          generate_large_pr_label_tag();
+        } ?>
 
          <?php //本文上の広告表示
         if (is_ad_pos_content_top_visible() && is_all_adsenses_visible()){

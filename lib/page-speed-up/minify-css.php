@@ -107,8 +107,10 @@ function tag_code_to_minify_css($buffer) {
           if (empty($css_inline_code)) {
             continue;
           }
-          //最終出力縮小化CSSコードに縮小化したCSSコードを加える
-          $last_minfified_css .= minify_css($css_inline_code);
+          // //最終出力縮小化CSSコードに縮小化したCSSコードを加える
+          // $last_minfified_css .= minify_css($css_inline_code);
+          //最終出力縮小化CSSコードにCSSコードを加える
+          $last_minfified_css .= $css_inline_code;
           //ヘッダー出力コードからstyleタグを削除
           $buffer = str_replace($tag, '', $buffer);
           //_v($match);
@@ -120,7 +122,7 @@ function tag_code_to_minify_css($buffer) {
 
     //縮小化したCSSをデータの最後に付け加える
     if ($last_minfified_css) {
-      $buffer = $buffer.PHP_EOL.'<style>'.$last_minfified_css.'</style>';
+      $buffer = $buffer.PHP_EOL.'<style>'.minify_css($last_minfified_css).'</style>';
     }
 
     ///////////////////////////////////////
@@ -173,6 +175,8 @@ function css_url_to_css_minify_code( $url ) {
     //CSS内容を縮小化して書式を統一化する
     $css = minify_css($css);
 
+    //urlにシングルコーテーションやダブルコーテーションが含まれている場合は削除
+    $css = preg_replace('{url\([\'"](.+?)[\'"]\)}', 'url($1)', $css);
     //url(./xxxxxx)をurl(xxxxxx)に統一化
     $css = str_replace('url(./', 'url(', $css);
     $css = str_replace('url(/', 'url(', $css);
@@ -190,7 +194,7 @@ function css_url_to_css_minify_code( $url ) {
           //url(data:XXXXX)形式でない
           !preg_match('{data:}i', $match) &&
           //url(#XXXX)形式でない
-          !preg_match('{url\(#\w+?\)}i', $match)
+          !preg_match('{url\(#.+?\)}i', $match)
         ) {
           //url(xxxxx)をurl(http://xxxxx)に変更
           $url = str_replace('url(', 'url('.$dir_url, $match);
