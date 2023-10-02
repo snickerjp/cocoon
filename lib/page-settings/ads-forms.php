@@ -279,6 +279,12 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
 
             generate_checkbox_tag(OP_PR_LABEL_PAGE_VISIBLE, is_pr_label_page_visible(), __( '全ての固定ページ', THEME_NAME ));
             generate_tips_tag(__('全固定ページで「自動挿入エリア」で設定した場所に「PR表記」を挿入します。', THEME_NAME));
+
+            generate_checkbox_tag(OP_PR_LABEL_CATEGORY_PAGE_VISIBLE, is_pr_label_category_page_visible(), __( '全てのカテゴリーページ', THEME_NAME ));
+            generate_tips_tag(__('全カテゴリーページで「自動挿入エリア」で設定した場所に「PR表記」を挿入します。', THEME_NAME));
+
+            generate_checkbox_tag(OP_PR_LABEL_TAG_PAGE_VISIBLE, is_pr_label_tag_page_visible(), __( '全てのタグページ', THEME_NAME ));
+            generate_tips_tag(__('全タグページで「自動挿入エリア」で設定した場所に「PR表記」を挿入します。', THEME_NAME));
           ?>
         </td>
       </tr>
@@ -342,11 +348,24 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
         <td>
           <?php
           generate_hierarchical_category_check_list( 0, OP_PR_LABEL_EXCLUDE_CATEGORY_IDS, get_pr_label_exclude_category_ids(), 300 );
-          generate_tips_tag(__( '「PR表記」を非表示にするカテゴリーを選択してください。', THEME_NAME ));
+          generate_tips_tag(__( '「PR表記」を非表示にするカテゴリーを選択してください。', THEME_NAME ).__( '除外したカテゴリーに属する投稿ページもまとめて非表示になります。', THEME_NAME ));
           ?>
         </td>
       </tr>
 
+
+      <!-- PR表記除外タグID -->
+      <tr>
+        <th scope="row">
+          <?php generate_label_tag(OP_PR_LABEL_EXCLUDE_TAG_IDS, __( '除外タグID', THEME_NAME )); ?>
+        </th>
+        <td>
+          <?php
+          generate_textbox_tag(OP_PR_LABEL_EXCLUDE_TAG_IDS, get_pr_label_exclude_tag_ids(), __( '例：111,222,3333', THEME_NAME ));
+          generate_tips_tag(__( '「PR表記」を非表示にするタグページのIDを,（カンマ）区切りで指定してください。', THEME_NAME ).__( '除外したタグに属する投稿ページもまとめて非表示になります。', THEME_NAME ));
+          ?>
+        </td>
+      </tr>
     </tbody>
   </table>
   </div>
@@ -420,7 +439,7 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
             <?php
             generate_hierarchical_category_check_list( 0, OP_AD_EXCLUDE_CATEGORY_IDS, get_ad_exclude_category_ids(), 300 );
             //generate_textbox_tag(OP_AD_EXCLUDE_CATEGORY_IDS, get_ad_exclude_category_ids(), __( '例：111,222,3333', THEME_NAME ));
-            generate_tips_tag(__( '広告を非表示にするカテゴリーを選択してください。', THEME_NAME ));
+            generate_tips_tag(__( '広告を非表示にするカテゴリーを選択してください。', THEME_NAME ).__( '除外したカテゴリーに属する投稿ページもまとめて非表示になります。', THEME_NAME ));
             ?>
           </td>
         </tr>
