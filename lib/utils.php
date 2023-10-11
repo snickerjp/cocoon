@@ -204,7 +204,7 @@ function get_template_part_with_ad_format($format = DATA_AD_FORMAT_AUTO, $wrap_c
   //$ad_code変数をテンプレートファイルに渡す
   set_query_var('ad_code', $ad_code);
   //広告テンプレートの呼び出し
-  get_template_part('tmp/ad');
+  cocoon_template_part('tmp/ad');
 }
 endif;
 
@@ -214,7 +214,7 @@ function get_template_part_with_option($slug, $option = null){
   //$option変数をテンプレートファイルに渡す
   set_query_var('option', $option);
   //広告テンプレートの呼び出し
-  get_template_part($slug);
+  cocoon_template_part($slug);
 }
 endif;
 
@@ -954,7 +954,7 @@ endif;
 if ( !function_exists( 'wp_add_css_custome_to_inline_style' ) ):
 function wp_add_css_custome_to_inline_style(){
   ob_start();//バッファリング
-  get_template_part('tmp/css-custom');
+  cocoon_template_part('tmp/css-custom');
   $css_custom = ob_get_clean();
   //CSSの縮小化
   $css_custom = minify_css($css_custom);
@@ -1016,14 +1016,14 @@ function get_update_time($format = null, $post_id = null) {
   if (empty($format)) {
     $format = get_site_date_format();
   }
-  $mtime = get_post_modified_time('Ymd', false, $post_id);
+  $mtime = get_the_modified_time('Ymd', $post_id);
   $ptime = get_the_time('Ymd', $post_id);
   if ($ptime > $mtime) {
     return get_the_time($format, $post_id);
   } elseif ($ptime === $mtime) {
     return null;
   } else {
-    return get_post_modified_time($format, false, $post_id);
+    return get_the_modified_time($format, $post_id);
   }
 }
 endif;
@@ -1261,7 +1261,7 @@ endif;
 if ( !function_exists( 'put_theme_css_cache_file' ) ):
 function put_theme_css_cache_file(){
   ob_start();
-  get_template_part('tmp/css-custom');
+  cocoon_template_part('tmp/css-custom');
   $custum_css = ob_get_clean();
   if ($custum_css) {
     $custum_css_file = get_theme_css_cache_file();
@@ -2991,11 +2991,36 @@ function get_shortcode_removed_content($content){
 }
 endif;
 
+//get_template_partに関するフック付加
+if ( !function_exists( 'cocoon_template_part' ) ):
+function cocoon_template_part($slug){
+  ob_start();
+  get_template_part($slug);
+  $content = ob_get_clean();
+
+  // 読み込み前発火
+  if (has_filter("cocoon_part_before__{$slug}")) {
+    do_action("cocoon_part_before__{$slug}");
+  }
+
+  // 書き換え
+  if (has_filter("cocoon_part__{$slug}")) {
+    $content = apply_filters("cocoon_part__{$slug}" ,$content);
+  }
+  echo $content;
+
+  // 読み込み後発火
+  if (has_filter("cocoon_part_after__{$slug}")) {
+    do_action("cocoon_part_after__{$slug}");
+  }
+}
+endif;
+
 //テンプレートのタグ取得
 if ( !function_exists( 'get_template_part_tag' ) ):
 function get_template_part_tag($slug){
   ob_start();
-  get_template_part($slug);
+  cocoon_template_part($slug);
   return ob_get_clean();
 }
 endif;

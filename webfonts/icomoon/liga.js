@@ -47,6 +47,10 @@
             'brand65': '&#xeacb;',
             'twitch': '&#xea9f;',
             'brand23': '&#xea9f;',
+            'heart': '&#xe9da;',
+            'like': '&#xe9da;',
+            'heart-broken': '&#xe9db;',
+            'heart2': '&#xe9db;',
           '0': 0
         };
         delete icons['0'];

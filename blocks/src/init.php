@@ -46,6 +46,7 @@ function cocoon_blocks_cgb_block_assets()
 	);
 
 	//Font Awesome
+	wp_enqueue_style_font_awesome();
 	if (apply_filters('cocoon_blocks_wp_enqueue_script_fontawesome', true)) {
 		//これを読み込んでおかないと以下のブロック等のアイコンが表示されなくなる
     // ・白抜ボックス
@@ -360,6 +361,24 @@ if (!function_exists('cocoon_editor_color_palette_setup')):
 		add_theme_support('custom-units');
 
 		return $colors;
+	}
+endif;
+
+
+//「ブロック下余白」のattributesに値格納用のextraBottomMargin追加（「ブロック読み込みエラー: 無効なパラメータ: attributes」エラー対策）
+add_filter('register_block_type_args', 'register_block_type_args_custom', 10, 2);
+if (!function_exists('register_block_type_args_custom')):
+	function register_block_type_args_custom($args, $name)
+	{
+		$extra_attributes = array(
+			"extraBottomMargin" => array(
+				"type" => "string",
+				"default" => "",
+			)
+		);
+		$args['attributes'] = array_merge($args['attributes'], $extra_attributes);
+
+		return $args;
 	}
 endif;
 

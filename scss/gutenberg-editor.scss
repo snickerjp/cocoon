@@ -17,6 +17,7 @@
 @import "extension";
 @import "extension-layout";
 @import "faq";
+@import "iconlist-box";
 @import "box-border";
 @import "box-style";
 
@@ -1266,7 +1267,7 @@ div.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper {
   flex-wrap: wrap;
   column-gap: 0;
   .display-none{
-    display: none;
+    display: none !important;
   }
   .__btnBox{
     width: 33%;
@@ -1287,11 +1288,21 @@ div.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper {
     display: block;
     padding: 4px;
   }
+  //プレビュー画面
   .__prev {
     height: 48px;
     display: block;
     padding: 10px !important;
     width: 100%;
+
+    //リスト
+    &.wp-block-list{
+      padding: 0 10px !important;
+      margin-left: 1em;
+      font-size: 8px !important;
+      line-height: 1.6;
+    }
+
     &.is-style-stapler-box::before,
     &.is-style-stapler-box::after {
       top: 5px;
@@ -1314,6 +1325,36 @@ div.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper {
     }
     &.is-style-hole-punch-box::before { left: 20%;}
     &.is-style-hole-punch-box::after { right: 20%;}
+
+
+    //リスト
+    &.wp-block-list{
+      margin-top: 0.4em;
+    }
+    // &:is(.is-style-numeric-list-enclosed, .is-style-numeric-list-rank, .is-style-numeric-list-step)
+    &[class*="is-style-numeric-list-"]
+    {
+      li{
+        margin: 0;
+        &::before{
+          font-size: 6px;
+          line-height: 1;
+          width: 1.7em;
+          height: 1.7em;
+        }
+      }
+    }
+    &.is-style-numeric-list-step li::before{
+      border-width: 1px;
+    }
+    &.is-style-numeric-list-step li{
+      // margin: 0.4em 0;
+      &::after{
+        border-width: 1px;
+        left: 0.6em;
+      }
+    }
+
   }
   .__prevTitle {
     display: block;
@@ -1352,15 +1393,16 @@ div.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper {
   border: 1px solid var(--cocoon-basic-border-color);
 }
 
+.components-range-control .components-base-control__label{
+  margin: 0.2em 0 1em;
+}
 .block-editor-iframe__body .editor-post-title::after{
   display: none;
 }
 
-// [data-type="cocoon-blocks/blogcard"]{
-//   [data-rich-text-line-break="true"]{
-//     display: none;
-//   }
-// }
+.body .wp-block li{
+  margin: 0.2em 0;
+}
 
 //pのブロンカードURL入力と、brのブログカードURL入力の表示を均一化
 .block-editor-block-list__block.blogcard-type{
@@ -1386,4 +1428,13 @@ div.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper {
 //グループボックスの上下揃えのデフォルトを中央揃えに（エディター画面）
 .is-layout-flex{
   align-items: center;
+}
+
+
+
+.wp-block-list{
+  .wp-block-list{
+    padding-top: 0;
+    padding-bottom: 0;
+  }
 }

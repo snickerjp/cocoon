@@ -493,5 +493,5 @@ endif;
 </div>
 
 <style>
-  <?php get_template_part('tmp/css-custom'); ?>
+  <?php cocoon_template_part('tmp/css-custom'); ?>
 </style>

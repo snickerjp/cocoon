@@ -15,7 +15,7 @@ if ($eye_catch_url || $content): ?>
 <article class="tag-content article">
   <header class="article-header tag-header">
     <?php //タイトル
-    get_template_part('tmp/list-title'); ?>
+    cocoon_template_part('tmp/list-title'); ?>
     <?php if ($eye_catch_url): ?>
       <div class="eye-catch-wrap">
         <figure class="eye-catch">
@@ -25,7 +25,7 @@ if ($eye_catch_url || $content): ?>
       <?php do_action('tag_eye_catch_after'); ?>
     <?php endif ?>
     <?php //タグシェアボタン
-    get_template_part('tmp/tag-sns-share-top'); ?>
+    cocoon_template_part('tmp/tag-sns-share-top'); ?>
 
     <?php //PR表記（大）の出力
     if (is_large_pr_labels_visible()) {
@@ -41,12 +41,16 @@ if ($eye_catch_url || $content): ?>
 </article>
 <?php else: ?>
   <?php //タグタイトル
-  get_template_part('tmp/list-title');
+  cocoon_template_part('tmp/list-title');
   //タグシェアボタン
+<<<<<<< HEAD
+  cocoon_template_part('tmp/tag-sns-share-top'); ?>
+=======
   get_template_part('tmp/tag-sns-share-top'); ?>
 
   <?php //PR表記（大）の出力
   if (is_large_pr_labels_visible()) {
     generate_large_pr_label_tag();
   } ?>
+>>>>>>> master
 <?php endif ?>

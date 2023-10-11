@@ -13,6 +13,24 @@
   }
 }
 
+.has-list-style{
+  padding: var(--cocoon-list-padding);
+  &.has-background{
+    padding: var(--cocoon-list-wide-padding);
+  }
+}
+.wp-block{
+  .has-list-style{
+    padding: var(--cocoon-list-padding);
+  }
+}
+:is(ul, ol).has-border{
+  padding: var(--cocoon-list-wide-padding);
+  &.has-background{
+    padding: var(--cocoon-list-wide-padding);
+  }
+}
+
 /*拡張クラスを追加するスタイルシート*/
 %badge{
   color: var(--cocoon-white-color);
@@ -248,7 +266,6 @@ $marker_u_blue: $marker_blue;
 .comment-box,
 .common-icon-box{
   //background-color: #F4F3EB;
-  --cocoon-box-padding: 20px 20px 20px 72px;
   padding: 20px 20px 20px 72px;
   border-radius: 4px;
   position: relative;
@@ -604,6 +621,9 @@ $bb_green: var(--cocoon-green-color);
 }
 .is-style-blank-box-blue{
   border-color: var(--cocoon-blue-color);
+}
+.is-style-blank-box-purple{
+  border-color: var(--cocoon-purple-color);
 }
 .is-style-blank-box-yellow{
   border-color: var(--cocoon-yellow-color);
@@ -1931,6 +1951,14 @@ figcaption{
   blockquote{
     background-color: transparent;
     border-color: transparent;
+  }
+}
+
+//ブロックしたの余白
+//for width-のクラス
+@for $i from 0 through 20 {
+  .has-bottom-margin.is-style-bottom-margin-#{$i}em {
+    margin-bottom: $i * 1em !important;
   }
 }
 
