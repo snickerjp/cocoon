@@ -3800,7 +3800,6 @@ figcaption {
 
 .faq-question {
   margin-bottom: 1.8em;
-  align-items: center;
 }
 
 .faq-question-label {
@@ -5572,7 +5571,7 @@ div.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper {
   display: none;
 }
 
-.body .wp-block li {
+.body .wp-block:not(.wp-block-group) li {
   margin: 0.2em 0;
 }
 
