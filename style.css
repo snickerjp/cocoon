@@ -6,7 +6,7 @@ Theme URI: https://wp-cocoon.com/
 Author: わいひら
 Author URI: https://nelog.jp/
 Text Domain: cocoon
-Version: 2.6.8.4
+Version: 2.6.8.8
 Requires at least: 5.7.0
 Requires PHP: 7.4.0
 Tags: two-columns, left-sidebar, right-sidebar
@@ -189,7 +189,15 @@ select {
   font-size: 12px;
 }
 
+.wp-admin-fz-12px .editor-styles-wrapper {
+  font-size: 12px;
+}
+
 .fz-13px {
+  font-size: 13px;
+}
+
+.wp-admin-fz-13px .editor-styles-wrapper {
   font-size: 13px;
 }
 
@@ -197,7 +205,15 @@ select {
   font-size: 14px;
 }
 
+.wp-admin-fz-14px .editor-styles-wrapper {
+  font-size: 14px;
+}
+
 .fz-15px {
+  font-size: 15px;
+}
+
+.wp-admin-fz-15px .editor-styles-wrapper {
   font-size: 15px;
 }
 
@@ -205,7 +221,15 @@ select {
   font-size: 16px;
 }
 
+.wp-admin-fz-16px .editor-styles-wrapper {
+  font-size: 16px;
+}
+
 .fz-17px {
+  font-size: 17px;
+}
+
+.wp-admin-fz-17px .editor-styles-wrapper {
   font-size: 17px;
 }
 
@@ -213,7 +237,15 @@ select {
   font-size: 18px;
 }
 
+.wp-admin-fz-18px .editor-styles-wrapper {
+  font-size: 18px;
+}
+
 .fz-19px {
+  font-size: 19px;
+}
+
+.wp-admin-fz-19px .editor-styles-wrapper {
   font-size: 19px;
 }
 
@@ -221,7 +253,15 @@ select {
   font-size: 20px;
 }
 
+.wp-admin-fz-20px .editor-styles-wrapper {
+  font-size: 20px;
+}
+
 .fz-21px {
+  font-size: 21px;
+}
+
+.wp-admin-fz-21px .editor-styles-wrapper {
   font-size: 21px;
 }
 
@@ -229,7 +269,15 @@ select {
   font-size: 22px;
 }
 
+.wp-admin-fz-22px .editor-styles-wrapper {
+  font-size: 22px;
+}
+
 .fz-24px {
+  font-size: 24px;
+}
+
+.wp-admin-fz-24px .editor-styles-wrapper {
   font-size: 24px;
 }
 
@@ -237,7 +285,15 @@ select {
   font-size: 28px;
 }
 
+.wp-admin-fz-28px .editor-styles-wrapper {
+  font-size: 28px;
+}
+
 .fz-32px {
+  font-size: 32px;
+}
+
+.wp-admin-fz-32px .editor-styles-wrapper {
   font-size: 32px;
 }
 
@@ -245,7 +301,15 @@ select {
   font-size: 36px;
 }
 
+.wp-admin-fz-36px .editor-styles-wrapper {
+  font-size: 36px;
+}
+
 .fz-40px {
+  font-size: 40px;
+}
+
+.wp-admin-fz-40px .editor-styles-wrapper {
   font-size: 40px;
 }
 
@@ -253,7 +317,15 @@ select {
   font-size: 44px;
 }
 
+.wp-admin-fz-44px .editor-styles-wrapper {
+  font-size: 44px;
+}
+
 .fz-48px {
+  font-size: 48px;
+}
+
+.wp-admin-fz-48px .editor-styles-wrapper {
   font-size: 48px;
 }
 
@@ -261,7 +333,15 @@ select {
   font-weight: 100;
 }
 
+.wp-admin-fw-100 .editor-styles-wrapper {
+  font-weight: 100;
+}
+
 .fw-200 {
+  font-weight: 200;
+}
+
+.wp-admin-fw-200 .editor-styles-wrapper {
   font-weight: 200;
 }
 
@@ -269,7 +349,15 @@ select {
   font-weight: 300;
 }
 
+.wp-admin-fw-300 .editor-styles-wrapper {
+  font-weight: 300;
+}
+
 .fw-400 {
+  font-weight: 400;
+}
+
+.wp-admin-fw-400 .editor-styles-wrapper {
   font-weight: 400;
 }
 
@@ -277,7 +365,15 @@ select {
   font-weight: 500;
 }
 
+.wp-admin-fw-500 .editor-styles-wrapper {
+  font-weight: 500;
+}
+
 .fw-600 {
+  font-weight: 600;
+}
+
+.wp-admin-fw-600 .editor-styles-wrapper {
   font-weight: 600;
 }
 
@@ -285,7 +381,15 @@ select {
   font-weight: 700;
 }
 
+.wp-admin-fw-700 .editor-styles-wrapper {
+  font-weight: 700;
+}
+
 .fw-800 {
+  font-weight: 800;
+}
+
+.wp-admin-fw-800 .editor-styles-wrapper {
   font-weight: 800;
 }
 
@@ -293,56 +397,71 @@ select {
   font-weight: 900;
 }
 
+.wp-admin-fw-900 .editor-styles-wrapper {
+  font-weight: 900;
+}
+
 .ff-meiryo,
-.wf-loading body {
+.wf-loading body,
+.wp-admin-ff-meiryo .editor-styles-wrapper {
   font-family: Meiryo, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
 }
 
-.ff-yu-gothic {
+.ff-yu-gothic,
+.wp-admin-ff-yu-gothic .editor-styles-wrapper {
   font-family: "Yu Gothic", Meiryo, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
 }
 
-.ff-ms-pgothic {
+.ff-ms-pgothic,
+.wp-admin-ff-ms-pgothic .editor-styles-wrapper {
   font-family: "MS PGothic", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
 }
 
 .ff-noto-sans-jp,
-.wf-active .ff-noto-sans-jp {
+.wf-active .ff-noto-sans-jp,
+.wp-admin-ff-noto-sans-jp .editor-styles-wrapper {
   font-family: "Noto Sans JP" ,sans-serif;
 }
 
 .ff-noto-serif-jp,
-.wf-active .ff-noto-serif-jp {
+.wf-active .ff-noto-serif-jp,
+.wp-admin-ff-noto-serif-jp .editor-styles-wrapper {
   font-family: "Noto Serif JP" ,sans-serif;
 }
 
 .ff-mplus-1p,
-.wf-active .ff-mplus-1p {
+.wf-active .ff-mplus-1p,
+.wp-admin-ff-mplus-1p .editor-styles-wrapper {
   font-family: "M PLUS 1p" ,sans-serif;
 }
 
 .ff-rounded-mplus-1c,
-.wf-active .ff-rounded-mplus-1c {
+.wf-active .ff-rounded-mplus-1c,
+.wp-admin-ff-rounded-mplus-1c .editor-styles-wrapper {
   font-family: "M PLUS Rounded 1c" ,sans-serif;
 }
 
 .ff-kosugi,
-.wf-active .ff-kosugi {
+.wf-active .ff-kosugi,
+.wp-admin-ff-kosugi .editor-styles-wrapper {
   font-family: "Kosugi" ,sans-serif;
 }
 
 .ff-kosugi-maru,
-.wf-active .ff-kosugi-maru {
+.wf-active .ff-kosugi-maru,
+.wp-admin-ff-kosugi-maru .editor-styles-wrapper {
   font-family: "Kosugi Maru" ,sans-serif;
 }
 
 .ff-sawarabi-gothic,
-.wf-active .ff-sawarabi-gothic {
+.wf-active .ff-sawarabi-gothic,
+.wp-admin-ff-sawarabi-gothic .editor-styles-wrapper {
   font-family: "Sawarabi Gothic" ,sans-serif;
 }
 
 .ff-sawarabi-mincho,
-.wf-active .ff-sawarabi-mincho {
+.wf-active .ff-sawarabi-mincho,
+.wp-admin-ff-sawarabi-mincho .editor-styles-wrapper {
   font-family: "Sawarabi Mincho" ,sans-serif;
 }
 
@@ -408,7 +527,6 @@ a:hover {
 }
 
 ol, ul {
-  padding: 1em;
   padding-left: 40px;
 }
 
@@ -1264,7 +1382,7 @@ img.emoji {
   opacity: 0.5;
 }
 
-[class*="bc-brand-color"] .twitter-button {
+[class*="bc-brand-color"] .x-corp-button {
   --cocoon-sns-color: var(--cocoon-twitter-color);
 }
 
@@ -1789,6 +1907,9 @@ span.internal-icon {
   border-bottom: 4px double var(--cocoon-x-thin-color);
   margin: 0 3%;
   margin-bottom: 1em;
+}
+.read-time .hourglass-half-icon {
+  margin-right: 3px;
 }
 
 .eye-catch-wrap {
@@ -2902,6 +3023,27 @@ label.screen-reader-text {
   border-radius: 4px;
   position: relative;
   display: block;
+}
+.is-style-information-box.has-background,
+.is-style-question-box.has-background,
+.is-style-alert-box.has-background,
+.is-style-memo-box.has-background,
+.is-style-comment-box.has-background,
+.is-style-ok-box.has-background,
+.is-style-ng-box.has-background,
+.is-style-good-box.has-background,
+.is-style-bad-box.has-background,
+.is-style-profile-box.has-background,
+.information-box.has-background,
+.question-box.has-background,
+.alert-box.has-background,
+.information.has-background,
+.question.has-background,
+.alert.has-background,
+.memo-box.has-background,
+.comment-box.has-background,
+.common-icon-box.has-background {
+  padding: 20px 20px 20px 72px;
 }
 
 .body blockquote :last-child,
@@ -5954,6 +6096,9 @@ figcaption {
   display: inline;
   padding: 5px 8px;
 }
+.comment-reply-link .comment-icon {
+  margin-right: 3px;
+}
 
 .comment-page-link {
   text-align: center;
@@ -8018,6 +8163,12 @@ ul.timeline ul ul ul {
 .iconlist-box ul {
   list-style: none;
 }
+.iconlist-box ul li::before {
+  display: initial;
+}
+.iconlist-box ol:not(.has-list-style) > li::before {
+  display: none;
+}
 .iconlist-box.list-none ul {
   list-style: disc;
 }
@@ -8773,6 +8924,9 @@ https://codepen.io/nxworld/pen/oLdoWb
 }
 .is-list-horizontal .card-title {
   font-size: 16px;
+}
+.is-list-horizontal .card-title,
+.is-list-horizontal .card-snippet {
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -8791,6 +8945,9 @@ https://codepen.io/nxworld/pen/oLdoWb
 }
 .is-list-horizontal.large-thumb-on .card-title {
   font-size: 14px;
+}
+.is-list-horizontal .swiper-wrapper {
+  height: initial;
 }
 .is-list-horizontal .swiper-button-next,
 .is-list-horizontal .swiper-button-prev {
@@ -11603,7 +11760,28 @@ _:-ms-lang(x), .mc-circle {
   .memo-box,
   .comment-box,
   .common-icon-box {
-    padding: 28px 6px 6px;
+    padding: 28px 12px 12px;
+  }
+  .is-style-information-box.has-background,
+  .is-style-question-box.has-background,
+  .is-style-alert-box.has-background,
+  .is-style-memo-box.has-background,
+  .is-style-comment-box.has-background,
+  .is-style-ok-box.has-background,
+  .is-style-ng-box.has-background,
+  .is-style-good-box.has-background,
+  .is-style-bad-box.has-background,
+  .is-style-profile-box.has-background,
+  .information-box.has-background,
+  .question-box.has-background,
+  .alert-box.has-background,
+  .information.has-background,
+  .question.has-background,
+  .alert.has-background,
+  .memo-box.has-background,
+  .comment-box.has-background,
+  .common-icon-box.has-background {
+    padding: 28px 12px 12px;
   }
 
   .is-style-information-box::before,
