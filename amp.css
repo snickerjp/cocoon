@@ -1551,6 +1551,11 @@ img.emoji {
   z-index: 2;
 }
 
+.article-header .sns-share:not(:has(.sns-button)),
+.article-footer .sns-share:not(:has(.sns-button)) {
+  display: none;
+}
+
 /************************************
 ** 内容
 ************************************/
@@ -4832,6 +4837,10 @@ div.search-form {
   padding: 0.4em 0.8em;
   border-radius: var(--cocoon-middle-border-radius);
   border-top-left-radius: 0;
+}
+
+.has-border-color > .tab-caption-box-content {
+  border-color: var(--cocoon-custom-border-color);
 }
 
 .tcb-red .tab-caption-box-label {
@@ -8238,6 +8247,10 @@ ul.timeline ul ul ul {
   left: 105px;
   top: 24px;
   border-radius: 100%;
+}
+
+.has-point-color .timeline-item:before {
+  background: var(--cocoon-custom-point-color);
 }
 
 .iconlist-box {

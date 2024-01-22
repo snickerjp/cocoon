@@ -353,9 +353,25 @@ function minify_css(...$lot) {
 // function minify_html(...$lot) {
 //     return fn_minify_html(...$lot);
 // }
-function minify_html(...$lot) {
-    $html = [...$lot];
-    return fn_minify_html($html);
+function minify_html($html) {
+    // 改行やタブ、余分なスペースを削除
+    $search = array(
+        '/\>[^\S ]+/s',     // タグの後の空白を削除
+        '/[^\S ]+\</s',     // タグの前の空白を削除
+        // '/(\s)+/s',         // 連続する空白を一つに
+        '/<!--(.|\s)*?-->/' // HTMLコメントを削除
+    );
+
+    $replace = array(
+        '>',
+        '<',
+        // '\\1',
+        ''
+    );
+
+    $html = preg_replace($search, $replace, $html);
+
+    return $html;
 }
 
 

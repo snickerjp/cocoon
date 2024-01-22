@@ -2600,13 +2600,15 @@ div.search-form {
   border: 1px solid var(--LtGray_T30);
 }
 
-.caption-box .caption-box-label {
+.caption-box.not-nested-style:not(.has-border-color) > .caption-box-label,
+.caption-box > .caption-box-label {
   background-color: var(--LtGray_T0);
   color: var(--white);
 }
 
 /* ラベルBox */
-.label-box .label-box-content {
+.label-box.not-nested-style:not(.has-border-color) > .box-content,
+.label-box > .label-box-content {
   border-radius: 0;
   border: 1px solid var(--LtGray_T30);
 }
@@ -2648,6 +2650,9 @@ div.search-form {
 }
 
 /* タイムライン */
+.cocoon-block-timeline.not-nested-style{
+  --cocoon-custom-background-color: var(--LtBlue_T90);
+}
 .timeline-box {
   border: none;
   background-color: var(--LtBlue_T90);
@@ -2693,7 +2698,7 @@ div.search-form {
   float: none;
 }
 
-.timeline-box .timeline-item:before {
+.timeline-item:before {
   background-color: var(--LtBlue_S30);
   width: 9px;
   height: 9px;

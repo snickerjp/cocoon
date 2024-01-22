@@ -1968,6 +1968,10 @@ body.wp-admin {
   box-shadow: 0 4px 8px var(--cocoon-x-pallid-text-color);
   z-index: 2;
 }
+.admin-settings .demo .article-header .sns-share:not(:has(.sns-button)),
+.admin-settings .demo .article-footer .sns-share:not(:has(.sns-button)) {
+  display: none;
+}
 .admin-settings .demo .content {
   margin-top: 24px;
 }
@@ -4779,6 +4783,9 @@ body.wp-admin {
   padding: 0.4em 0.8em;
   border-radius: var(--cocoon-middle-border-radius);
   border-top-left-radius: 0;
+}
+.admin-settings .demo .has-border-color > .tab-caption-box-content {
+  border-color: var(--cocoon-custom-border-color);
 }
 .admin-settings .demo .tcb-red .tab-caption-box-label {
   background-color: var(--cocoon-red-color);
@@ -7726,6 +7733,9 @@ body.wp-admin {
   top: 24px;
   border-radius: 100%;
 }
+.admin-settings .demo .has-point-color .timeline-item:before {
+  background: var(--cocoon-custom-point-color);
+}
 .admin-settings .demo .iconlist-box {
   --cocoon-custom-icon-color: var(--cocoon-text-color);
   --cocoon-custom-border-color: transparent;
@@ -10168,6 +10178,10 @@ body.wp-admin {
   opacity: 0.8;
   box-shadow: 0 4px 8px var(--cocoon-x-pallid-text-color);
   z-index: 2;
+}
+.admin-settings .demo .article-header .sns-share:not(:has(.sns-button)),
+.admin-settings .demo .article-footer .sns-share:not(:has(.sns-button)) {
+  display: none;
 }
 .admin-settings .demo .content {
   margin-top: 24px;
@@ -12980,6 +12994,9 @@ body.wp-admin {
   padding: 0.4em 0.8em;
   border-radius: var(--cocoon-middle-border-radius);
   border-top-left-radius: 0;
+}
+.admin-settings .demo .has-border-color > .tab-caption-box-content {
+  border-color: var(--cocoon-custom-border-color);
 }
 .admin-settings .demo .tcb-red .tab-caption-box-label {
   background-color: var(--cocoon-red-color);
@@ -15926,6 +15943,9 @@ body.wp-admin {
   left: 105px;
   top: 24px;
   border-radius: 100%;
+}
+.admin-settings .demo .has-point-color .timeline-item:before {
+  background: var(--cocoon-custom-point-color);
 }
 .admin-settings .demo .iconlist-box {
   --cocoon-custom-icon-color: var(--cocoon-text-color);
@@ -22007,6 +22027,9 @@ textarea[name=the_page_memo] {
   padding: 0.4em 0.8em;
   border-radius: var(--cocoon-middle-border-radius);
   border-top-left-radius: 0;
+}
+.components-popover__content .has-border-color > .tab-caption-box-content {
+  border-color: var(--cocoon-custom-border-color);
 }
 .components-popover__content .tcb-red .tab-caption-box-label {
   background-color: var(--cocoon-red-color);
