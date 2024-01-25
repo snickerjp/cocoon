@@ -1434,6 +1434,7 @@ div.search-form{
   display: inline-block;
   border-top-left-radius: var(--cocoon-middle-border-radius);
   border-top-right-radius: var(--cocoon-middle-border-radius);
+  color: var(--cocoon-text-color);
 }
 .tab-caption-box-content{
   margin-top: -3px;
@@ -1445,6 +1446,9 @@ div.search-form{
   padding: 0.4em 0.8em;
   border-radius: var(--cocoon-middle-border-radius);
   border-top-left-radius: 0;
+}
+.has-border-color > .tab-caption-box-label{
+  background-color: var(--cocoon-custom-border-color);
 }
 .has-border-color > .tab-caption-box-content{
   border-color: var(--cocoon-custom-border-color);
@@ -1613,6 +1617,7 @@ $toggle_border_width: 2px;
   border-radius: var(--cocoon-basic-border-radius);
   position: relative;
   margin: 0;
+  color: var(--cocoon-text-color);
 
   &::before{
     content: '\f067';

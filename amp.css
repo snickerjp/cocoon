@@ -4825,6 +4825,7 @@ div.search-form {
   display: inline-block;
   border-top-left-radius: var(--cocoon-middle-border-radius);
   border-top-right-radius: var(--cocoon-middle-border-radius);
+  color: var(--cocoon-text-color);
 }
 
 .tab-caption-box-content {
@@ -4837,6 +4838,10 @@ div.search-form {
   padding: 0.4em 0.8em;
   border-radius: var(--cocoon-middle-border-radius);
   border-top-left-radius: 0;
+}
+
+.has-border-color > .tab-caption-box-label {
+  background-color: var(--cocoon-custom-border-color);
 }
 
 .has-border-color > .tab-caption-box-content {
@@ -5169,6 +5174,7 @@ html .body .label-box.has-white-background-color .box-content {
   border-radius: var(--cocoon-basic-border-radius);
   position: relative;
   margin: 0;
+  color: var(--cocoon-text-color);
 }
 .toggle-button::before {
   content: "\f067";
@@ -8249,7 +8255,7 @@ ul.timeline ul ul ul {
   border-radius: 100%;
 }
 
-.has-point-color .timeline-item:before {
+.has-point-color > .timeline > .timeline-item:before {
   background: var(--cocoon-custom-point-color);
 }
 
