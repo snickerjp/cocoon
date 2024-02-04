@@ -5,24 +5,24 @@ msgstr ""
 "Project-Id-Version: wp-cocoon\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/cocoon\n"
 "Last-Translator: \n"
-"Language-Team: Portuguese\n"
+"Language-Team: Chinese Traditional\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2024-02-03T13:23:39+00:00\n"
-"PO-Revision-Date: 2024-02-03 13:26\n"
+"PO-Revision-Date: 2024-02-04 01:46\n"
 "X-Generator: WP-CLI 2.9.0\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Crowdin-Project: wp-cocoon\n"
 "X-Crowdin-Project-ID: 568447\n"
-"X-Crowdin-Language: pt-PT\n"
+"X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /translation_master/languages/cocoon.pot\n"
 "X-Crowdin-File-ID: 37\n"
-"Language: pt_PT\n"
+"Language: zh_TW\n"
 
 #. Theme Name of the theme
 msgid "Cocoon"
-msgstr ""
+msgstr "Cocoon"
 
 #. Theme URI of the theme
 msgid "https://wp-cocoon.com/"
@@ -1343,7 +1343,7 @@ msgstr ""
 #: lib/page-backup/backup-forms.php:24
 #: lib/page-backup/_top-page.php:40
 msgid "バックアップ"
-msgstr "Cópias de segurança"
+msgstr ""
 
 #: lib/admin.php:464
 #: lib/original-menu.php:48
@@ -1802,7 +1802,7 @@ msgstr ""
 #: lib/custom-fields/other-field.php:20
 #: lib/page-settings/_top-page.php:276
 msgid "その他"
-msgstr "Outro"
+msgstr ""
 
 #: lib/custom-fields/other-field.php:31
 msgid "アーカイブに出力しない"
@@ -2089,7 +2089,7 @@ msgstr ""
 
 #: lib/custom-fields/update-field.php:34
 msgid "更新"
-msgstr "Atualializado"
+msgstr ""
 
 #: lib/custom-fields/update-field.php:35
 msgid "更新しない"
@@ -2447,7 +2447,7 @@ msgstr ""
 
 #: lib/html-forms.php:592
 msgid "クリア"
-msgstr "Borrar"
+msgstr ""
 
 #: lib/html-forms.php:599
 msgid "大きな画像は縮小して表示されます。"
@@ -7014,7 +7014,7 @@ msgstr ""
 
 #: lib/page-settings/header-forms.php:113
 msgid " × "
-msgstr "×"
+msgstr ""
 
 #: lib/page-settings/header-forms.php:114
 msgid "高さ："
@@ -8940,7 +8940,7 @@ msgstr ""
 
 #: lib/page-settings/sns-follow-forms.php:78
 msgid "YouTube"
-msgstr "Globo.com"
+msgstr ""
 
 #: lib/page-settings/sns-follow-forms.php:79
 #: lib/page-settings/sns-share-forms-bottom.php:89
@@ -9658,11 +9658,11 @@ msgstr ""
 
 #: lib/page-settings/title-funcs.php:22
 msgid " - "
-msgstr "-"
+msgstr ""
 
 #: lib/page-settings/title-funcs.php:25
 msgid " | "
-msgstr "|"
+msgstr ""
 
 #: lib/page-settings/toc-forms.php:13
 msgid "目次設定"
@@ -10892,7 +10892,7 @@ msgstr ""
 #: blocks/src/block/search-box/edit.js:26
 #: blocks/src/block/search-box/save.js:19
 msgid "検索"
-msgstr "Procurar"
+msgstr ""
 
 #: lib/tinymce/html-tags.php:119
 msgid "検索フォーム風"
@@ -11081,31 +11081,26 @@ msgstr ""
 msgid "%s min"
 msgid_plural "%s mins"
 msgstr[0] ""
-msgstr[1] ""
 
 #: lib/utils.php:2495
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] ""
-msgstr[1] ""
 
 #: lib/utils.php:2503
 msgid "%s day"
 msgid_plural "%s days"
 msgstr[0] ""
-msgstr[1] ""
 
 #: lib/utils.php:2511
 msgid "%s週間"
 msgid_plural "%s週間"
 msgstr[0] ""
-msgstr[1] ""
 
 #: lib/utils.php:2519
 msgid "%sヶ月"
 msgid_plural "%sヶ月"
 msgstr[0] ""
-msgstr[1] ""
 
 #: lib/utils.php:2530
 msgid "%s年"
@@ -11965,7 +11960,7 @@ msgstr ""
 
 #: lib/_defins.php:335
 msgid "www.amazon.co.jp"
-msgstr "www.amazon.com"
+msgstr ""
 
 #: lib/_defins.php:338
 msgid "商品を取得できませんでした。存在しないASINを指定している可能性があります。"
@@ -12325,11 +12320,11 @@ msgstr ""
 #: tmp/breadcrumbs.php:28
 #: tmp/mobile-home-button.php:19
 msgid "ホーム"
-msgstr "Início"
+msgstr ""
 
 #: tmp/button-go-to-top.php:11
 msgid "トップへ戻る"
-msgstr "Voltar ao início"
+msgstr ""
 
 #: tmp/content.php:91
 msgid "この記事は<span class=\"bold\">約%s分</span>で読めます。"
