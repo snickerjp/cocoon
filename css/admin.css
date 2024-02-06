@@ -1507,7 +1507,7 @@ body.wp-admin {
   display: none;
   position: absolute;
   margin: 0;
-  min-width: 240px;
+  width: 240px;
   list-style: none;
   padding: 0;
   background-color: var(--cocoon-xxx-thin-color);
@@ -2680,14 +2680,8 @@ body.wp-admin {
   transition: all 0.3s ease-in-out;
   color: var(--cocoon-text-color);
 }
-.admin-settings .demo .widget_recent_entries ul li a .post-count,
 .admin-settings .demo .widget_categories ul li a .post-count,
-.admin-settings .demo .widget_archive ul li a .post-count,
-.admin-settings .demo .widget_pages ul li a .post-count,
-.admin-settings .demo .widget_meta ul li a .post-count,
-.admin-settings .demo .widget_rss ul li a .post-count,
-.admin-settings .demo .widget_nav_menu ul li a .post-count,
-.admin-settings .demo .widget_block ul li a .post-count {
+.admin-settings .demo .widget_archive ul li a .post-count {
   display: block;
   float: right;
 }
@@ -9754,7 +9748,7 @@ body.wp-admin {
   display: none;
   position: absolute;
   margin: 0;
-  min-width: 240px;
+  width: 240px;
   list-style: none;
   padding: 0;
   background-color: var(--cocoon-xxx-thin-color);
@@ -10927,14 +10921,8 @@ body.wp-admin {
   transition: all 0.3s ease-in-out;
   color: var(--cocoon-text-color);
 }
-.admin-settings .demo .widget_recent_entries ul li a .post-count,
 .admin-settings .demo .widget_categories ul li a .post-count,
-.admin-settings .demo .widget_archive ul li a .post-count,
-.admin-settings .demo .widget_pages ul li a .post-count,
-.admin-settings .demo .widget_meta ul li a .post-count,
-.admin-settings .demo .widget_rss ul li a .post-count,
-.admin-settings .demo .widget_nav_menu ul li a .post-count,
-.admin-settings .demo .widget_block ul li a .post-count {
+.admin-settings .demo .widget_archive ul li a .post-count {
   display: block;
   float: right;
 }

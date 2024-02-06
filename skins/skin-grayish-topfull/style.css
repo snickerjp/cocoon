@@ -226,6 +226,15 @@ a:hover {
   color: var(--skin-grayish-a-wrap-txt);
 }
 
+.skin-grayish #navi-in .search-menu-button .search-edit,
+.skin-grayish .mobile-menu-buttons .navi-menu-content .menu-drawer>.search-menu-button .search-edit {
+  font-family: var(--cocoon-default-font);
+}
+
+.skin-grayish .mobile-menu-buttons .navi-menu-content .menu-drawer>.search-menu-button .search-edit {
+  font-size: 16px;
+}
+
 
 /****************************** Header ******************************/
 /*============== Navi Menu : LargeSize ==============*/
@@ -411,12 +420,14 @@ a:hover {
   font-size: clamp(12px, 1.17vw, 14px);
   min-height: 0vw;
   padding: 8px;
+  width: 100%;
 }
 
 /* メニュー３階層のとき・・・ */
 .skin-grayish .navi-in>ul li .sub-menu ul {
   display: block;
   background-color: var(--skin-grayish-site-main-thin);
+  width: 100%;
   left: 0;
   right: 0;
   top: auto;
