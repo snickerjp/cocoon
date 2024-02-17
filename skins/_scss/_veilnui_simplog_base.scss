@@ -325,12 +325,12 @@ body {
   .widget_sns_follow_buttons {
     .sns-follow {
       .feedly-button:hover {
-        background-color: #2BB24C;
+        background-color: var(--cocoon-feedly-color);
         opacity: 0.7;
       }
 
       .rss-button:hover {
-        background-color: #F26522;
+        background-color: var(--cocoon-rss-color);
         opacity: 0.7;
       }
     }
@@ -395,7 +395,7 @@ body {
       }
 
       .website-button {
-        background-color: #002561;
+        background-color: var(--cocoon-website-color);
       }
 
       .x-corp-button {
@@ -403,71 +403,96 @@ body {
       }
 
       .facebook-button {
-        background-color: #3B5998;
+        background-color: var(--cocoon-facebook-color);
       }
 
       .hatebu-button {
-        background-color: #2C6EBD;
+        background-color: var(--cocoon-hatebu-color);
       }
 
       .instagram-button {
-        background-color: #405DE6;
+        background-color: var(--cocoon-instagram-color);
       }
 
       .youtube-button {
-        background-color: #CD201F;
+        background-color: var(--cocoon-youtube-color);
       }
 
       .linkedin-button {
-        background-color: #0077B5;
+        background-color: var(--cocoon-linkedin-color);
       }
 
       .note-button {
-        background-color: #41C9B4;
+        background-color: var(--cocoon-note-color);
       }
 
       .flickr-button {
-        background-color: #111111;
+        background-color: var(--cocoon-flickr-color);
       }
 
       .pinterest-button {
-        background-color: #BD081C;
+        background-color: var(--cocoon-pinterest-color);
       }
 
       .line-button {
-        background-color: #00C300;
+        background-color: var(--cocoon-line-color);
       }
 
       .slack-button {
-        background-color: #E01563;
+        background-color: var(--cocoon-slack-color);
       }
 
       .amazon-button {
-        background-color: #FF9900;
+        background-color: var(--cocoon-amazon-color);
       }
 
       .twitch-button {
-        background-color: #6441A4;
+        background-color: var(--cocoon-twitch-color);
       }
 
       .rakuten-room-button {
-        background-color: #C61E79;
+        background-color: var(--cocoon-rakuten-room-color);
       }
 
       .github-button {
-        background-color: #4078C0;
+        background-color: var(--cocoon-github-color);
       }
 
       .codepen-button {
-        background-color: #333333;
+        background-color: var(--cocoon-codepen-color);
       }
 
       .feedly-button {
-        background-color: #2BB24C;
+        background-color: var(--cocoon-feedly-color);
       }
 
       .rss-button {
-        background-color: #F26522;
+        background-color: var(--cocoon-rss-color);
+      }
+
+      // mastodon
+      .mastodon-button {
+        background-color: var(--cocoon-mastodon-color);
+      }
+
+      // bluesky
+      .bluesky-button {
+        background-color: var(--cocoon-bluesky-color);
+      }
+
+      // misskey
+      .misskey-button {
+        background-color: var(--cocoon-misskey-color);
+      }
+
+      // tiktok
+      .tiktok-button {
+        background-color: var(--cocoon-tiktok-color);
+      }
+
+      // soundcloud
+      .soundcloud-button {
+        background-color: var(--cocoon-soundcloud-color);
       }
     }
   }

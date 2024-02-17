@@ -599,59 +599,59 @@ body.public-page,.content .main, .navi {
 
 .bc-brand-color.sns-share.ss-top .facebook-button, .bc-brand-color.sns-share.ss-bottom .facebook-button {
    background-color: #fff;
-   color: #3b5998;
-	border:solid 2px #3b5998;
+   color: var(--cocoon-facebook-color);
+	border:solid 2px var(--cocoon-facebook-color);
 }
 
 .bc-brand-color.sns-share.ss-top .facebook-button:hover, .bc-brand-color.sns-share.ss-bottom .facebook-button:hover {
-   background-color: #3b5998;
+   background-color: var(--cocoon-facebook-color);
    color: #fff;
 	opacity:1;
 }
 
 .bc-brand-color.sns-share.ss-top .hatebu-button, .bc-brand-color.sns-share.ss-bottom .hatebu-button {
 	background-color: #fff;
-   color: #2c6ebd;
-	border:solid 2px #2c6ebd;
+   color: var(--cocoon-hatebu-color);
+	border:solid 2px var(--cocoon-hatebu-color);
 }
 .bc-brand-color.sns-share.ss-top .hatebu-button:hover, .bc-brand-color.sns-share.ss-bottom .hatebu-button:hover {
-   background-color: #2c6ebd;
+   background-color: var(--cocoon-hatebu-color);
    color: #fff;
 	opacity:1;
 }
 
 .bc-brand-color.sns-share.ss-top .google-plus-button, .bc-brand-color.sns-share.ss-bottom .google-plus-button {
 	background-color: #fff;
-   color: #dd4b39;
-	border:solid 2px #dd4b39;
+   color: var(--cocoon-google-plus-color);
+	border:solid 2px var(--cocoon-google-plus-color);
 }
 
 .bc-brand-color.sns-share.ss-top .google-plus-button:hover, .bc-brand-color.sns-share.ss-bottom .google-plus-button:hover {
-   background-color: #dd4b39;
+   background-color: var(--cocoon-google-plus-color);
    color: #fff;
 	opacity:1;
 }
 
 .bc-brand-color.sns-share.ss-top .pocket-button, .bc-brand-color.sns-share.ss-bottom .pocket-button {
 	background-color: #fff;
-   color: #ef4056;
-	border:solid 2px #ef4056;
+   color: var(--cocoon-pocket-color);
+	border:solid 2px var(--cocoon-pocket-color);
 }
 
 .bc-brand-color.sns-share.ss-top .pocket-button:hover, .bc-brand-color.sns-share.ss-bottom .pocket-button:hover {
-   background-color: #ef4056;
+   background-color: var(--cocoon-pocket-color);
    color: #fff;
 	opacity:1;
 }
 
 .bc-brand-color.sns-share.ss-top .line-button, .bc-brand-color.sns-share.ss-bottom .line-button {
 	background-color: #fff;
-   color: #00c300;
-	border:solid 2px #00c300;
+   color: var(--cocoon-line-color);
+	border:solid 2px var(--cocoon-line-color);
 }
 
 .bc-brand-color.sns-share.ss-top .line-button:hover, .bc-brand-color.sns-share.ss-bottom .line-button:hover {
-   background-color: #00c300;
+   background-color: var(--cocoon-line-color);
 	color: #fff;
 	opacity:1;
 }
@@ -672,24 +672,24 @@ body.public-page,.content .main, .navi {
 
 .bc-brand-color.sns-share.ss-top .pinterest-button, .bc-brand-color.sns-share.ss-bottom .pinterest-button {
 	background-color: #fff;
-   color: #bd081c;
-	border:solid 2px #bd081c;
+   color: var(--cocoon-pinterest-color);
+	border:solid 2px var(--cocoon-pinterest-color);
 }
 
 .bc-brand-color.sns-share.ss-top .pinterest-button:hover, .bc-brand-color.sns-share.ss-bottom .pinterest-button:hover {
-   background-color: #bd081c;
+   background-color: var(--cocoon-pinterest-color);
 	color: #fff;
 	opacity:1;
 }
 
 .bc-brand-color.sns-share.ss-top .linkedin-button, .bc-brand-color.sns-share.ss-bottom .linkedin-button {
 	background-color: #fff;
-   color: #0077b5;
-	border:solid 2px #0077b5;
+   color: var(--cocoon-linkedin-color);
+	border:solid 2px var(--cocoon-linkedin-color);
 }
 
 .bc-brand-color.sns-share.ss-top .linkedin-button:hover, .bc-brand-color.sns-share.ss-bottom .linkedin-button:hover {
-   background-color: #0077b5;
+   background-color: var(--cocoon-linkedin-color);
 	color: #fff;
 	opacity:1;
 }

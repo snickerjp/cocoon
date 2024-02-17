@@ -9,6 +9,9 @@ body.wp-admin {
 
 :root {
   --cocoon-twitter-color: #000000;
+  --cocoon-mastodon-color: #6364FF;
+  --cocoon-bluesky-color: #0085ff;
+  --cocoon-misskey-color: #96d04a;
   --cocoon-facebook-color: #3b5998;
   --cocoon-hatebu-color: #2c6ebd;
   --cocoon-google-plus-color: #dd4b39;
@@ -110,6 +113,10 @@ body.wp-admin {
   margin: 0 0 5px 0;
   line-height: 1.6;
   font-weight: bold;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .admin-settings .demo .related-entry-card-snippet, .admin-settings .demo .entry-card-snippet {
@@ -286,6 +293,7 @@ body.wp-admin {
   /*ボーダー（太線）*/
   /*シャドー*/
   /*シャドーペーパー*/
+  /* サムネイルアスペクト比 */
   /************************************
   ** ヘッダー
   ************************************/
@@ -538,6 +546,7 @@ body.wp-admin {
   /*ボーダー（太線）*/
   /*シャドー*/
   /*シャドーペーパー*/
+  /* サムネイルアスペクト比 */
   /************************************
   ** ヘッダー
   ************************************/
@@ -1319,6 +1328,35 @@ body.wp-admin {
   margin: 0;
   word-break: break-all;
 }
+.admin-settings .demo .thumb-wide {
+  --card-ratio: 16 / 9;
+}
+.admin-settings .demo .thumb-golden-ratio {
+  --card-ratio: 8 / 5;
+}
+.admin-settings .demo .thumb-postcard {
+  --card-ratio: 3 / 2;
+}
+.admin-settings .demo .thumb-silver-ratio {
+  --card-ratio: 7 / 5;
+}
+.admin-settings .demo .thumb-standard {
+  --card-ratio: 4 / 3;
+}
+.admin-settings .demo .thumb-square,
+.admin-settings .demo .post-navi-square {
+  --card-ratio: 1 / 1;
+}
+.admin-settings .demo .ect-tile-card,
+.admin-settings .demo .ect-big-card,
+.admin-settings .demo .ec-big-card-first {
+  --card-ratio: auto;
+}
+.admin-settings .demo .blogcard-thumbnail img,
+.admin-settings .demo .card-thumb img {
+  aspect-ratio: var(--card-ratio);
+  object-fit: cover;
+}
 .admin-settings .demo .header {
   height: 100%;
   flex-shrink: 0;
@@ -1579,7 +1617,6 @@ body.wp-admin {
   display: block;
   color: var(--cocoon-text-color);
   padding: 1.5%;
-  margin-bottom: 3%;
   transition: all 0.3s ease-in-out;
 }
 .admin-settings .demo .a-wrap:hover {
@@ -1666,20 +1703,30 @@ body.wp-admin {
 .admin-settings .demo .fpt-columns {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
+  column-gap: 0.5%;
 }
 .admin-settings .demo .post-comment-count .comment-icon {
   margin-right: 3px;
 }
-.admin-settings .demo .ect-vertical-card {
+.admin-settings .demo .list {
   display: flex;
+  flex-direction: column;
+  row-gap: 1em;
+}
+.admin-settings .demo #list,
+.admin-settings .demo .list-wrap {
+  margin-bottom: 3em;
+}
+.admin-settings .demo .ect-vertical-card {
+  flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
+  column-gap: 1%;
 }
 .admin-settings .demo .ect-vertical-card .entry-card-wrap {
   width: 49.5%;
   display: inline-block;
-  margin-bottom: 12px;
 }
 .admin-settings .demo .ect-vertical-card .entry-card-wrap .entry-card {
   display: flex;
@@ -1723,7 +1770,7 @@ body.wp-admin {
   display: inline-block;
 }
 .admin-settings .demo .ect-3-columns {
-  justify-content: space-around;
+  column-gap: 0.5%;
 }
 .admin-settings .demo .ect-3-columns .entry-card-wrap {
   width: 33%;
@@ -1748,6 +1795,9 @@ body.wp-admin {
 .admin-settings .demo .front-top-page .ect-big-card-first .a-wrap:first-of-type .card-content,
 .admin-settings .demo .ect-big-card .card-content {
   margin: 0;
+}
+.admin-settings .demo .body .list .widget-entry-cards {
+  margin-bottom: 0;
 }
 .admin-settings .demo .entry-date {
   margin-left: 3px;
@@ -1796,6 +1846,12 @@ body.wp-admin {
 .admin-settings .demo .sns-buttons {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  align-content: center;
+  row-gap: 10px;
+  column-gap: 6px;
+  margin-top: 0.3em;
+  margin-bottom: 2em;
 }
 .admin-settings .demo .sns-buttons a {
   align-content: center;
@@ -1806,12 +1862,12 @@ body.wp-admin {
   font-size: 18px;
   justify-content: center;
   height: 45px;
-  margin-bottom: 8px;
   position: relative;
   text-align: center;
   width: 32%;
   transition: all 0.3s ease-in-out;
   cursor: pointer;
+  margin: 0 !important;
   color: var(--cocoon-white-color);
   text-decoration: none;
 }
@@ -1829,6 +1885,15 @@ body.wp-admin {
 }
 .admin-settings .demo [class*=bc-brand-color] .x-corp-button {
   --cocoon-sns-color: var(--cocoon-twitter-color);
+}
+.admin-settings .demo [class*=bc-brand-color] .mastodon-button {
+  --cocoon-sns-color: var(--cocoon-mastodon-color);
+}
+.admin-settings .demo [class*=bc-brand-color] .bluesky-button {
+  --cocoon-sns-color: var(--cocoon-bluesky-color);
+}
+.admin-settings .demo [class*=bc-brand-color] .misskey-button {
+  --cocoon-sns-color: var(--cocoon-misskey-color);
 }
 .admin-settings .demo [class*=bc-brand-color] .facebook-button {
   --cocoon-sns-color: var(--cocoon-facebook-color);
@@ -1906,14 +1971,32 @@ body.wp-admin {
 .admin-settings .demo .sns-share.ss-col-1 a {
   width: 100%;
 }
+.admin-settings .demo .sns-share.ss-col-2 .sns-buttons {
+  column-gap: 1%;
+}
 .admin-settings .demo .sns-share.ss-col-2 a {
-  width: 49%;
+  width: 49.5%;
+}
+.admin-settings .demo .sns-share.ss-col-3 .sns-buttons {
+  column-gap: 0.75%;
+}
+.admin-settings .demo .sns-share.ss-col-3 a {
+  width: 32.5%;
+}
+.admin-settings .demo .sns-share.ss-col-4 .sns-buttons {
+  column-gap: 1.3333333333%;
 }
 .admin-settings .demo .sns-share.ss-col-4 a {
   width: 24%;
 }
+.admin-settings .demo .sns-share.ss-col-5 .sns-buttons {
+  column-gap: 1.25%;
+}
 .admin-settings .demo .sns-share.ss-col-5 a {
   width: 19%;
+}
+.admin-settings .demo .sns-share.ss-col-6 .sns-buttons {
+  column-gap: 0.8%;
 }
 .admin-settings .demo .sns-share.ss-col-6 a {
   width: 16%;
@@ -1944,11 +2027,6 @@ body.wp-admin {
 }
 .admin-settings .demo .sns-share.ss-high-and-low-cl a {
   flex-direction: column-reverse;
-}
-.admin-settings .demo .sns-share-buttons {
-  flex-wrap: wrap;
-  justify-content: space-around;
-  align-content: center;
 }
 .admin-settings .demo .sns-share-buttons a .button-caption {
   font-size: 16px;
@@ -2063,6 +2141,11 @@ body.wp-admin {
   border-collapse: collapse;
   border-spacing: 0;
 }
+.admin-settings .demo table th,
+.admin-settings .demo table td {
+  position: relative;
+  padding: 0.5em;
+}
 .admin-settings .demo table th {
   background-color: var(--cocoon-xx-thin-color);
 }
@@ -2071,7 +2154,39 @@ body.wp-admin {
 }
 .admin-settings .demo table:not(.has-border-color) :where(th, td) {
   border: 1px solid var(--cocoon-x-thin-color);
-  padding: 6px;
+}
+.admin-settings .demo table:has(.s-circle, .d-circle, .triangle, .cross) td {
+  height: 60px;
+}
+.admin-settings .demo .s-circle:before,
+.admin-settings .demo .d-circle:before,
+.admin-settings .demo .triangle:before,
+.admin-settings .demo .cross:before {
+  content: "";
+  display: block;
+  height: 40px;
+  left: 50%;
+  opacity: 0.3;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+}
+.admin-settings .demo .s-circle:before {
+  background-color: #00bcd4;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16 32q-3.313 0-6.219-1.25-2.906-1.281-5.078-3.453t-3.453-5.078q-1.25-2.906-1.25-6.219t1.25-6.219q1.281-2.906 3.453-5.078t5.078-3.453q2.906-1.25 6.219-1.25t6.219 1.25q2.906 1.281 5.078 3.453t3.453 5.078q1.25 2.906 1.25 6.219t-1.25 6.219q-1.281 2.906-3.453 5.078t-5.078 3.453q-2.906 1.25-6.219 1.25zM16 2.906q-2.719 0-5.094 1.031t-4.156 2.813-2.813 4.156-1.031 5.094 1.031 5.094 2.813 4.156 4.156 2.813 5.094 1.031 5.094-1.031 4.156-2.813 2.813-4.156 1.031-5.094-1.031-5.094-2.813-4.156-4.156-2.813-5.094-1.031z"></path></svg>');
+}
+.admin-settings .demo .d-circle:before {
+  background-color: #8bc34a;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16 32q-3.313 0-6.219-1.25-2.906-1.281-5.078-3.453t-3.453-5.078q-1.25-2.906-1.25-6.219t1.25-6.219q1.281-2.906 3.453-5.078t5.078-3.453q2.906-1.25 6.219-1.25t6.219 1.25q2.906 1.281 5.078 3.453t3.453 5.078q1.25 2.906 1.25 6.219t-1.25 6.219q-1.281 2.906-3.453 5.078t-5.078 3.453q-2.906 1.25-6.219 1.25zM16 2.906q-2.719 0-5.094 1.031t-4.156 2.813-2.813 4.156-1.031 5.094 1.031 5.094 2.813 4.156 4.156 2.813 5.094 1.031 5.094-1.031 4.156-2.813 2.813-4.156 1.031-5.094-1.031-5.094-2.813-4.156-4.156-2.813-5.094-1.031zM16 26.875q-2.25 0-4.219-0.875-1.969-0.844-3.453-2.328t-2.328-3.453q-0.875-1.969-0.875-4.219t0.875-4.219q0.844-1.969 2.328-3.453t3.453-2.328q1.969-0.875 4.219-0.875t4.219 0.875q1.969 0.844 3.453 2.328t2.328 3.453q0.875 1.969 0.875 4.219t-0.875 4.219q-0.844 1.969-2.328 3.453t-3.453 2.328q-1.969 0.875-4.219 0.875zM16 8.063q-1.656 0-3.094 0.625t-2.516 1.703-1.703 2.516-0.625 3.094 0.625 3.094 1.703 2.516 2.516 1.703 3.094 0.625 3.094-0.625 2.516-1.703 1.703-2.516 0.625-3.094v0q0-1.656-0.625-3.094t-1.703-2.516-2.516-1.703-3.094-0.625v0 0z"></path></svg>');
+}
+.admin-settings .demo .triangle:before {
+  background-color: #ffc107;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M31.719 29.281h-31.313l15.656-27.094zM4.625 26.844h22.875l-11.438-19.813z"></path></svg>');
+}
+.admin-settings .demo .cross:before {
+  background-color: #f44336;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16 18.125l-11.938 11.938-2.094-2.125 11.906-11.938-11.906-11.938 2.094-2.094 11.938 11.906 11.938-11.906 2.125 2.094-11.938 11.938 11.938 11.938-2.125 2.125-11.938-11.938z"></path></svg>');
 }
 .admin-settings .demo .scrollable-table {
   -webkit-overflow-scrolling: touch;
@@ -2095,7 +2210,6 @@ body.wp-admin {
 }
 .admin-settings .demo .scrollable-table th,
 .admin-settings .demo .scrollable-table td {
-  padding: 3px 5px;
   white-space: nowrap;
 }
 .admin-settings .demo .scrollable-table .has-fixed-layout th,
@@ -2947,12 +3061,10 @@ body.wp-admin {
   margin-left: -9px;
 }
 .admin-settings .demo .nwa .sns-follow-buttons {
-  flex-wrap: wrap;
-  justify-content: space-between;
+  column-gap: 1%;
 }
 .admin-settings .demo .nwa .sns-follow-buttons a {
-  width: 49%;
-  margin-right: 0;
+  width: 48%;
 }
 .admin-settings .demo .widget_mobile_text,
 .admin-settings .demo .widget_mobile_ad {
@@ -5739,9 +5851,8 @@ body.wp-admin {
   padding: 0 1em;
 }
 .admin-settings .demo .sns-follow-buttons a {
-  width: 100%;
-  margin-right: 8px;
-  margin-bottom: 8px;
+  width: 40px;
+  height: 40px;
   font-size: 30px;
   display: flex;
   align-items: center;
@@ -5762,6 +5873,12 @@ body.wp-admin {
 .admin-settings .demo .fbc-hide .follow-count {
   display: none;
 }
+.admin-settings .demo .related-list {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.8em;
+  margin-bottom: 2em;
+}
 .admin-settings .demo .related-entry-card .cat-label {
   font-size: 9px;
 }
@@ -5778,8 +5895,9 @@ body.wp-admin {
 }
 .admin-settings .demo .rect-mini-card .related-list {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
+  column-gap: 1%;
 }
 .admin-settings .demo .rect-mini-card .related-entry-card-wrap {
   width: 49.5%;
@@ -5797,14 +5915,14 @@ body.wp-admin {
 .admin-settings .demo .rect-mini-card .related-entry-card-snippet {
   display: none;
 }
+.admin-settings .demo .rect-vertical-card .related-list {
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: 1%;
+}
 .admin-settings .demo .rect-vertical-card .related-entry-card {
   display: flex;
   flex-direction: column;
-}
-.admin-settings .demo .rect-vertical-card .related-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
 }
 .admin-settings .demo .rect-vertical-card .related-entry-card-wrap {
   padding: 5px;
@@ -5831,8 +5949,14 @@ body.wp-admin {
   padding-top: 5px;
   position: unset;
 }
+.admin-settings .demo .rect-vertical-card-3 .related-list {
+  column-gap: 0.5%;
+}
 .admin-settings .demo .rect-vertical-card-3 .related-entry-card-wrap {
   width: 33%;
+}
+.admin-settings .demo .rect-vertical-card-4 .related-list {
+  column-gap: 0.6666666667%;
 }
 .admin-settings .demo .rect-vertical-card-4 .related-entry-card-wrap {
   width: 24.5%;
@@ -6036,6 +6160,13 @@ body.wp-admin {
   text-align: center;
   color: var(--cocoon-middle-thickness-color);
 }
+.admin-settings .demo .prev-post-title,
+.admin-settings .demo .next-post-title {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
 .admin-settings .demo .post-navi-square a {
   height: auto;
 }
@@ -6145,22 +6276,19 @@ body.wp-admin {
   display: none;
 }
 .admin-settings .demo .author-box .sns-follow-buttons {
-  flex-wrap: wrap;
-  justify-content: flex-start;
+  margin-bottom: 0;
 }
 .admin-settings .demo .author-box .sns-follow-buttons a.follow-button {
   font-size: 18px;
-  width: 24px;
-  height: 24px;
-  margin-bottom: 4px;
-  margin-right: 4px;
+  width: 26px;
+  height: 26px;
   background-color: transparent;
   color: var(--cocoon-x-pallid-text-color);
   border: 1px solid var(--cocoon-basic-border-color);
   border-radius: 2px;
 }
 .admin-settings .demo .author-box .sns-follow-buttons a.follow-button:hover {
-  background-color: var(--cocoon-xxx-thin-color);
+  opacity: 0.6;
 }
 .admin-settings .demo .author-box .sns-follow-buttons a.follow-button .follow-count {
   display: none;
@@ -6196,13 +6324,6 @@ body.wp-admin {
 }
 .admin-settings .demo .nwa .author-box .author-description {
   text-align: left;
-}
-.admin-settings .demo .nwa .author-box .sns-follow-buttons {
-  justify-content: center;
-}
-.admin-settings .demo .nwa .author-box .sns-follow-buttons a {
-  display: inline-block;
-  margin: 2px;
 }
 .admin-settings .demo .cta-box {
   background-color: #444;
@@ -6799,7 +6920,7 @@ body.wp-admin {
   background: #f79901;
 }
 .admin-settings .demo .shoplinkrakuten a {
-  background: #bf0000;
+  background: var(--cocoon-rakuten-color);
 }
 .admin-settings .demo .shoplinkyahoo a {
   background: #e60033;
@@ -6824,7 +6945,7 @@ body.wp-admin {
   background: #0074c1;
 }
 .admin-settings .demo .shoplinkrakukobo a {
-  background: #bf0000;
+  background: var(--cocoon-rakuten-color);
 }
 .admin-settings .demo .shoplinkbk1 a {
   background: #0085cd;
@@ -7111,6 +7232,7 @@ body.wp-admin {
   display: none;
 }
 .admin-settings .demo .mobile-menu-buttons {
+  color: var(--cocoon-black-color);
   background: var(--cocoon-white-color);
   box-shadow: 0 0 5px darkgrey;
   font-size: 19px;
@@ -7146,7 +7268,7 @@ body.wp-admin {
 }
 .admin-settings .demo .mobile-menu-buttons .menu-button > a {
   display: block;
-  color: var(--cocoon-text-color);
+  color: var(--cocoon-black-color);
   text-decoration: none;
 }
 .admin-settings .demo .mobile-menu-buttons .menu-button:hover .menu-button-in {
@@ -7299,9 +7421,6 @@ body.wp-admin {
   text-align: center;
   font-size: 2em;
 }
-.admin-settings .demo .share-menu-content .sns-buttons {
-  justify-content: space-around;
-}
 .admin-settings .demo .share-menu-content .sns-buttons .share-count {
   color: var(--cocoon-white-color);
 }
@@ -7310,9 +7429,6 @@ body.wp-admin {
 }
 .admin-settings .demo .share-menu-content .comment-button {
   display: none;
-}
-.admin-settings .demo .follow-menu-content .sns-buttons {
-  justify-content: space-around;
 }
 .admin-settings .demo .follow-menu-content .sns-buttons a {
   width: 24%;
@@ -9560,6 +9676,35 @@ body.wp-admin {
   margin: 0;
   word-break: break-all;
 }
+.admin-settings .demo .thumb-wide {
+  --card-ratio: 16 / 9;
+}
+.admin-settings .demo .thumb-golden-ratio {
+  --card-ratio: 8 / 5;
+}
+.admin-settings .demo .thumb-postcard {
+  --card-ratio: 3 / 2;
+}
+.admin-settings .demo .thumb-silver-ratio {
+  --card-ratio: 7 / 5;
+}
+.admin-settings .demo .thumb-standard {
+  --card-ratio: 4 / 3;
+}
+.admin-settings .demo .thumb-square,
+.admin-settings .demo .post-navi-square {
+  --card-ratio: 1 / 1;
+}
+.admin-settings .demo .ect-tile-card,
+.admin-settings .demo .ect-big-card,
+.admin-settings .demo .ec-big-card-first {
+  --card-ratio: auto;
+}
+.admin-settings .demo .blogcard-thumbnail img,
+.admin-settings .demo .card-thumb img {
+  aspect-ratio: var(--card-ratio);
+  object-fit: cover;
+}
 .admin-settings .demo .header {
   height: 100%;
   flex-shrink: 0;
@@ -9820,7 +9965,6 @@ body.wp-admin {
   display: block;
   color: var(--cocoon-text-color);
   padding: 1.5%;
-  margin-bottom: 3%;
   transition: all 0.3s ease-in-out;
 }
 .admin-settings .demo .a-wrap:hover {
@@ -9907,20 +10051,30 @@ body.wp-admin {
 .admin-settings .demo .fpt-columns {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
+  column-gap: 0.5%;
 }
 .admin-settings .demo .post-comment-count .comment-icon {
   margin-right: 3px;
 }
-.admin-settings .demo .ect-vertical-card {
+.admin-settings .demo .list {
   display: flex;
+  flex-direction: column;
+  row-gap: 1em;
+}
+.admin-settings .demo #list,
+.admin-settings .demo .list-wrap {
+  margin-bottom: 3em;
+}
+.admin-settings .demo .ect-vertical-card {
+  flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
+  column-gap: 1%;
 }
 .admin-settings .demo .ect-vertical-card .entry-card-wrap {
   width: 49.5%;
   display: inline-block;
-  margin-bottom: 12px;
 }
 .admin-settings .demo .ect-vertical-card .entry-card-wrap .entry-card {
   display: flex;
@@ -9964,7 +10118,7 @@ body.wp-admin {
   display: inline-block;
 }
 .admin-settings .demo .ect-3-columns {
-  justify-content: space-around;
+  column-gap: 0.5%;
 }
 .admin-settings .demo .ect-3-columns .entry-card-wrap {
   width: 33%;
@@ -9989,6 +10143,9 @@ body.wp-admin {
 .admin-settings .demo .front-top-page .ect-big-card-first .a-wrap:first-of-type .card-content,
 .admin-settings .demo .ect-big-card .card-content {
   margin: 0;
+}
+.admin-settings .demo .body .list .widget-entry-cards {
+  margin-bottom: 0;
 }
 .admin-settings .demo .entry-date {
   margin-left: 3px;
@@ -10037,6 +10194,12 @@ body.wp-admin {
 .admin-settings .demo .sns-buttons {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  align-content: center;
+  row-gap: 10px;
+  column-gap: 6px;
+  margin-top: 0.3em;
+  margin-bottom: 2em;
 }
 .admin-settings .demo .sns-buttons a {
   align-content: center;
@@ -10047,12 +10210,12 @@ body.wp-admin {
   font-size: 18px;
   justify-content: center;
   height: 45px;
-  margin-bottom: 8px;
   position: relative;
   text-align: center;
   width: 32%;
   transition: all 0.3s ease-in-out;
   cursor: pointer;
+  margin: 0 !important;
   color: var(--cocoon-white-color);
   text-decoration: none;
 }
@@ -10070,6 +10233,15 @@ body.wp-admin {
 }
 .admin-settings .demo [class*=bc-brand-color] .x-corp-button {
   --cocoon-sns-color: var(--cocoon-twitter-color);
+}
+.admin-settings .demo [class*=bc-brand-color] .mastodon-button {
+  --cocoon-sns-color: var(--cocoon-mastodon-color);
+}
+.admin-settings .demo [class*=bc-brand-color] .bluesky-button {
+  --cocoon-sns-color: var(--cocoon-bluesky-color);
+}
+.admin-settings .demo [class*=bc-brand-color] .misskey-button {
+  --cocoon-sns-color: var(--cocoon-misskey-color);
 }
 .admin-settings .demo [class*=bc-brand-color] .facebook-button {
   --cocoon-sns-color: var(--cocoon-facebook-color);
@@ -10147,14 +10319,32 @@ body.wp-admin {
 .admin-settings .demo .sns-share.ss-col-1 a {
   width: 100%;
 }
+.admin-settings .demo .sns-share.ss-col-2 .sns-buttons {
+  column-gap: 1%;
+}
 .admin-settings .demo .sns-share.ss-col-2 a {
-  width: 49%;
+  width: 49.5%;
+}
+.admin-settings .demo .sns-share.ss-col-3 .sns-buttons {
+  column-gap: 0.75%;
+}
+.admin-settings .demo .sns-share.ss-col-3 a {
+  width: 32.5%;
+}
+.admin-settings .demo .sns-share.ss-col-4 .sns-buttons {
+  column-gap: 1.3333333333%;
 }
 .admin-settings .demo .sns-share.ss-col-4 a {
   width: 24%;
 }
+.admin-settings .demo .sns-share.ss-col-5 .sns-buttons {
+  column-gap: 1.25%;
+}
 .admin-settings .demo .sns-share.ss-col-5 a {
   width: 19%;
+}
+.admin-settings .demo .sns-share.ss-col-6 .sns-buttons {
+  column-gap: 0.8%;
 }
 .admin-settings .demo .sns-share.ss-col-6 a {
   width: 16%;
@@ -10185,11 +10375,6 @@ body.wp-admin {
 }
 .admin-settings .demo .sns-share.ss-high-and-low-cl a {
   flex-direction: column-reverse;
-}
-.admin-settings .demo .sns-share-buttons {
-  flex-wrap: wrap;
-  justify-content: space-around;
-  align-content: center;
 }
 .admin-settings .demo .sns-share-buttons a .button-caption {
   font-size: 16px;
@@ -10304,6 +10489,11 @@ body.wp-admin {
   border-collapse: collapse;
   border-spacing: 0;
 }
+.admin-settings .demo table th,
+.admin-settings .demo table td {
+  position: relative;
+  padding: 0.5em;
+}
 .admin-settings .demo table th {
   background-color: var(--cocoon-xx-thin-color);
 }
@@ -10312,7 +10502,39 @@ body.wp-admin {
 }
 .admin-settings .demo table:not(.has-border-color) :where(th, td) {
   border: 1px solid var(--cocoon-x-thin-color);
-  padding: 6px;
+}
+.admin-settings .demo table:has(.s-circle, .d-circle, .triangle, .cross) td {
+  height: 60px;
+}
+.admin-settings .demo .s-circle:before,
+.admin-settings .demo .d-circle:before,
+.admin-settings .demo .triangle:before,
+.admin-settings .demo .cross:before {
+  content: "";
+  display: block;
+  height: 40px;
+  left: 50%;
+  opacity: 0.3;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+}
+.admin-settings .demo .s-circle:before {
+  background-color: #00bcd4;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16 32q-3.313 0-6.219-1.25-2.906-1.281-5.078-3.453t-3.453-5.078q-1.25-2.906-1.25-6.219t1.25-6.219q1.281-2.906 3.453-5.078t5.078-3.453q2.906-1.25 6.219-1.25t6.219 1.25q2.906 1.281 5.078 3.453t3.453 5.078q1.25 2.906 1.25 6.219t-1.25 6.219q-1.281 2.906-3.453 5.078t-5.078 3.453q-2.906 1.25-6.219 1.25zM16 2.906q-2.719 0-5.094 1.031t-4.156 2.813-2.813 4.156-1.031 5.094 1.031 5.094 2.813 4.156 4.156 2.813 5.094 1.031 5.094-1.031 4.156-2.813 2.813-4.156 1.031-5.094-1.031-5.094-2.813-4.156-4.156-2.813-5.094-1.031z"></path></svg>');
+}
+.admin-settings .demo .d-circle:before {
+  background-color: #8bc34a;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16 32q-3.313 0-6.219-1.25-2.906-1.281-5.078-3.453t-3.453-5.078q-1.25-2.906-1.25-6.219t1.25-6.219q1.281-2.906 3.453-5.078t5.078-3.453q2.906-1.25 6.219-1.25t6.219 1.25q2.906 1.281 5.078 3.453t3.453 5.078q1.25 2.906 1.25 6.219t-1.25 6.219q-1.281 2.906-3.453 5.078t-5.078 3.453q-2.906 1.25-6.219 1.25zM16 2.906q-2.719 0-5.094 1.031t-4.156 2.813-2.813 4.156-1.031 5.094 1.031 5.094 2.813 4.156 4.156 2.813 5.094 1.031 5.094-1.031 4.156-2.813 2.813-4.156 1.031-5.094-1.031-5.094-2.813-4.156-4.156-2.813-5.094-1.031zM16 26.875q-2.25 0-4.219-0.875-1.969-0.844-3.453-2.328t-2.328-3.453q-0.875-1.969-0.875-4.219t0.875-4.219q0.844-1.969 2.328-3.453t3.453-2.328q1.969-0.875 4.219-0.875t4.219 0.875q1.969 0.844 3.453 2.328t2.328 3.453q0.875 1.969 0.875 4.219t-0.875 4.219q-0.844 1.969-2.328 3.453t-3.453 2.328q-1.969 0.875-4.219 0.875zM16 8.063q-1.656 0-3.094 0.625t-2.516 1.703-1.703 2.516-0.625 3.094 0.625 3.094 1.703 2.516 2.516 1.703 3.094 0.625 3.094-0.625 2.516-1.703 1.703-2.516 0.625-3.094v0q0-1.656-0.625-3.094t-1.703-2.516-2.516-1.703-3.094-0.625v0 0z"></path></svg>');
+}
+.admin-settings .demo .triangle:before {
+  background-color: #ffc107;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M31.719 29.281h-31.313l15.656-27.094zM4.625 26.844h22.875l-11.438-19.813z"></path></svg>');
+}
+.admin-settings .demo .cross:before {
+  background-color: #f44336;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16 18.125l-11.938 11.938-2.094-2.125 11.906-11.938-11.906-11.938 2.094-2.094 11.938 11.906 11.938-11.906 2.125 2.094-11.938 11.938 11.938 11.938-2.125 2.125-11.938-11.938z"></path></svg>');
 }
 .admin-settings .demo .scrollable-table {
   -webkit-overflow-scrolling: touch;
@@ -10336,7 +10558,6 @@ body.wp-admin {
 }
 .admin-settings .demo .scrollable-table th,
 .admin-settings .demo .scrollable-table td {
-  padding: 3px 5px;
   white-space: nowrap;
 }
 .admin-settings .demo .scrollable-table .has-fixed-layout th,
@@ -11188,12 +11409,10 @@ body.wp-admin {
   margin-left: -9px;
 }
 .admin-settings .demo .nwa .sns-follow-buttons {
-  flex-wrap: wrap;
-  justify-content: space-between;
+  column-gap: 1%;
 }
 .admin-settings .demo .nwa .sns-follow-buttons a {
-  width: 49%;
-  margin-right: 0;
+  width: 48%;
 }
 .admin-settings .demo .widget_mobile_text,
 .admin-settings .demo .widget_mobile_ad {
@@ -13980,9 +14199,8 @@ body.wp-admin {
   padding: 0 1em;
 }
 .admin-settings .demo .sns-follow-buttons a {
-  width: 100%;
-  margin-right: 8px;
-  margin-bottom: 8px;
+  width: 40px;
+  height: 40px;
   font-size: 30px;
   display: flex;
   align-items: center;
@@ -14003,6 +14221,12 @@ body.wp-admin {
 .admin-settings .demo .fbc-hide .follow-count {
   display: none;
 }
+.admin-settings .demo .related-list {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.8em;
+  margin-bottom: 2em;
+}
 .admin-settings .demo .related-entry-card .cat-label {
   font-size: 9px;
 }
@@ -14019,8 +14243,9 @@ body.wp-admin {
 }
 .admin-settings .demo .rect-mini-card .related-list {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
+  column-gap: 1%;
 }
 .admin-settings .demo .rect-mini-card .related-entry-card-wrap {
   width: 49.5%;
@@ -14038,14 +14263,14 @@ body.wp-admin {
 .admin-settings .demo .rect-mini-card .related-entry-card-snippet {
   display: none;
 }
+.admin-settings .demo .rect-vertical-card .related-list {
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: 1%;
+}
 .admin-settings .demo .rect-vertical-card .related-entry-card {
   display: flex;
   flex-direction: column;
-}
-.admin-settings .demo .rect-vertical-card .related-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
 }
 .admin-settings .demo .rect-vertical-card .related-entry-card-wrap {
   padding: 5px;
@@ -14072,8 +14297,14 @@ body.wp-admin {
   padding-top: 5px;
   position: unset;
 }
+.admin-settings .demo .rect-vertical-card-3 .related-list {
+  column-gap: 0.5%;
+}
 .admin-settings .demo .rect-vertical-card-3 .related-entry-card-wrap {
   width: 33%;
+}
+.admin-settings .demo .rect-vertical-card-4 .related-list {
+  column-gap: 0.6666666667%;
 }
 .admin-settings .demo .rect-vertical-card-4 .related-entry-card-wrap {
   width: 24.5%;
@@ -14277,6 +14508,13 @@ body.wp-admin {
   text-align: center;
   color: var(--cocoon-middle-thickness-color);
 }
+.admin-settings .demo .prev-post-title,
+.admin-settings .demo .next-post-title {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
 .admin-settings .demo .post-navi-square a {
   height: auto;
 }
@@ -14386,22 +14624,19 @@ body.wp-admin {
   display: none;
 }
 .admin-settings .demo .author-box .sns-follow-buttons {
-  flex-wrap: wrap;
-  justify-content: flex-start;
+  margin-bottom: 0;
 }
 .admin-settings .demo .author-box .sns-follow-buttons a.follow-button {
   font-size: 18px;
-  width: 24px;
-  height: 24px;
-  margin-bottom: 4px;
-  margin-right: 4px;
+  width: 26px;
+  height: 26px;
   background-color: transparent;
   color: var(--cocoon-x-pallid-text-color);
   border: 1px solid var(--cocoon-basic-border-color);
   border-radius: 2px;
 }
 .admin-settings .demo .author-box .sns-follow-buttons a.follow-button:hover {
-  background-color: var(--cocoon-xxx-thin-color);
+  opacity: 0.6;
 }
 .admin-settings .demo .author-box .sns-follow-buttons a.follow-button .follow-count {
   display: none;
@@ -14437,13 +14672,6 @@ body.wp-admin {
 }
 .admin-settings .demo .nwa .author-box .author-description {
   text-align: left;
-}
-.admin-settings .demo .nwa .author-box .sns-follow-buttons {
-  justify-content: center;
-}
-.admin-settings .demo .nwa .author-box .sns-follow-buttons a {
-  display: inline-block;
-  margin: 2px;
 }
 .admin-settings .demo .cta-box {
   background-color: #444;
@@ -15040,7 +15268,7 @@ body.wp-admin {
   background: #f79901;
 }
 .admin-settings .demo .shoplinkrakuten a {
-  background: #bf0000;
+  background: var(--cocoon-rakuten-color);
 }
 .admin-settings .demo .shoplinkyahoo a {
   background: #e60033;
@@ -15065,7 +15293,7 @@ body.wp-admin {
   background: #0074c1;
 }
 .admin-settings .demo .shoplinkrakukobo a {
-  background: #bf0000;
+  background: var(--cocoon-rakuten-color);
 }
 .admin-settings .demo .shoplinkbk1 a {
   background: #0085cd;
@@ -15352,6 +15580,7 @@ body.wp-admin {
   display: none;
 }
 .admin-settings .demo .mobile-menu-buttons {
+  color: var(--cocoon-black-color);
   background: var(--cocoon-white-color);
   box-shadow: 0 0 5px darkgrey;
   font-size: 19px;
@@ -15387,7 +15616,7 @@ body.wp-admin {
 }
 .admin-settings .demo .mobile-menu-buttons .menu-button > a {
   display: block;
-  color: var(--cocoon-text-color);
+  color: var(--cocoon-black-color);
   text-decoration: none;
 }
 .admin-settings .demo .mobile-menu-buttons .menu-button:hover .menu-button-in {
@@ -15540,9 +15769,6 @@ body.wp-admin {
   text-align: center;
   font-size: 2em;
 }
-.admin-settings .demo .share-menu-content .sns-buttons {
-  justify-content: space-around;
-}
 .admin-settings .demo .share-menu-content .sns-buttons .share-count {
   color: var(--cocoon-white-color);
 }
@@ -15551,9 +15777,6 @@ body.wp-admin {
 }
 .admin-settings .demo .share-menu-content .comment-button {
   display: none;
-}
-.admin-settings .demo .follow-menu-content .sns-buttons {
-  justify-content: space-around;
 }
 .admin-settings .demo .follow-menu-content .sns-buttons a {
   width: 24%;
@@ -18481,23 +18704,26 @@ body.wp-admin {
     font-size: 14px;
     margin-left: 4px;
   }
+  .admin-settings .demo .sns-share.ss-top.ss-col-6 .sns-buttons,
+  .admin-settings .demo .sns-share.ss-bottom.ss-col-6 .sns-buttons {
+    column-gap: 0.75%;
+  }
   .admin-settings .demo .sns-share.ss-top.ss-col-6 a,
   .admin-settings .demo .sns-share.ss-bottom.ss-col-6 a {
-    width: 32%;
+    width: 32.5%;
   }
   .admin-settings .demo .sns-follow-buttons {
-    flex-wrap: wrap;
-    justify-content: space-around;
+    column-gap: 1%;
   }
   .admin-settings .demo .sns-follow-buttons a {
     margin-right: 0;
-    width: 48%;
+    width: 49.5%;
+  }
+  .admin-settings .demo .rect-vertical-card .related-list {
+    column-gap: 1%;
   }
   .admin-settings .demo .rect-vertical-card .related-entry-card-wrap {
-    width: 49%;
-  }
-  .admin-settings .demo .rect-mini-card .related-entry-card-wrap {
-    margin-bottom: 10px;
+    width: 49.5%;
   }
   .admin-settings .demo .rect-mini-card .cat-label {
     font-size: 8px;
@@ -18998,9 +19224,6 @@ body.wp-admin {
   .admin-settings .demo .blogcard-snippet {
     font-size: 0.74em;
   }
-  .admin-settings .demo .ect-vertical-card .entry-card-wrap {
-    margin-bottom: 8px;
-  }
   .admin-settings .demo .ect-vertical-card.sp-entry-card-1-column .entry-card-wrap {
     display: block;
   }
@@ -19467,6 +19690,11 @@ pre {
 /*記事一覧の文字数幅*/
 .column-word-count {
   width: 76px;
+}
+
+/*パターン一覧のショートコード幅*/
+.column-shortcode {
+  width: 160px;
 }
 
 .admin-custum-label {
@@ -20179,7 +20407,7 @@ textarea[name=the_page_memo] {
 }
 
 .rakuten-badge {
-  background-color: #bf0000;
+  background-color: var(--cocoon-rakuten-color);
 }
 
 .moshimo-badge {

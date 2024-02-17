@@ -1,4 +1,5 @@
 .mobile-menu-buttons {
+  color: var(--cocoon-black-color);
   background: var(--cocoon-white-color);
   box-shadow: 0 0 5px darkgrey;
   font-size: 19px;
@@ -39,7 +40,7 @@
 
     >a {
       display: block;
-      @include link_cancel;
+      @include link_cancel(var(--cocoon-black-color));
     }
 
     &:hover .menu-button-in {
@@ -228,7 +229,7 @@
 
 .share-menu-content {
   .sns-buttons {
-    justify-content: space-around;
+    // justify-content: space-around;
 
     .share-count {
       color: var(--cocoon-white-color);
@@ -247,7 +248,7 @@
 
 .follow-menu-content {
   .sns-buttons {
-    justify-content: space-around;
+    // justify-content: space-around;
 
     a {
       width: 24%;

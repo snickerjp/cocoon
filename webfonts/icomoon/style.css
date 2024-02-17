@@ -23,6 +23,24 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-mastodon-logo:before {
+  content: "\e927";
+}
+.icon-mastodon:before {
+  content: "\e928";
+}
+.icon-bluesky-logo:before {
+  content: "\e925";
+}
+.icon-bluesky:before {
+  content: "\e923";
+}
+.icon-misskey-logo:before {
+  content: "\e926";
+}
+.icon-misskey:before {
+  content: "\e924";
+}
 .icon-paw:before {
   content: "\e907";
 }

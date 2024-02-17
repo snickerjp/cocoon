@@ -684,68 +684,76 @@ a.tag-link {
     color: var(--cocoon-twitter-color);
 }
 
+.bc-brand-color a.mastodon-button {
+    color:var(--cocoon-mastodon-color);
+}
+
+.bc-brand-color a.misskey-button {
+    color:var(--cocoon-misskey-color);
+}
+
 .bc-brand-color a.facebook-button {
-    color:#3b5998;
+    color:var(--cocoon-facebook-color);
 }
 
 .bc-brand-color a.hatebu-button {
-    color:#2c6ebd;
+    color:var(--cocoon-hatebu-color);
 }
 
 .bc-brand-color a.instagram-button {
-    color: #405de6;
+    color: var(--cocoon-instagram-color);
 }
 
 .bc-brand-color a.youtube-button {
-    color: #cd201f;
+    color: var(--cocoon-youtube-color);
 }
 
 .bc-brand-color a.linkedin-button {
-    color: #0077b5;
+    color: var(--cocoon-linkedin-color);
 }
 
 .bc-brand-color a.note-button {
-    color: #41c9b4;
+    color: var(--cocoon-note-color);
 }
 
 .bc-brand-color a.flickr-button {
-    color: #111;
+    color: var(--cocoon-flickr-color);
 }
 
 .bc-brand-color a.pinterest-button {
-    color: #bd081c;
+    color: var(--cocoon-pinterest-color);
 }
 
 .bc-brand-color a.pocket-button {
-    color:#ef4056;
+    color:var(--cocoon-pocket-color);
 }
 
 .bc-brand-color a.line-button {
-    color:#00c300;
+    color:var(--cocoon-line-color);
 }
 
 .bc-brand-color a.amazon-button {
-    color: #ff9900;
+    color: var(--cocoon-amazon-color);
 }
 
 .bc-brand-color a.rakuten-room-button {
-    color: #c61e79;
+    color: var(--cocoon-rakuten-room-color);
 }
 
 .bc-brand-color a.slack-button {
-    color: #e01563;
+    color: var(--cocoon-slack-color);
 }
 
 .bc-brand-color a.github-button {
-    color: #4078c0;
+    color: var(--cocoon-github-color);
 }
 
 .bc-brand-color a.feedly-button {
-    color:#2bb24c;
+    color:var(--cocoon-feedly-color);
 }
 
 .bc-brand-color a.rss-button {
-    color:#f26522;
+    color:var(--cocoon-rss-color);
 }
 
 .sns-share-message, .sns-follow-message,span.related-entry-main-heading.main-caption,.comment-title{

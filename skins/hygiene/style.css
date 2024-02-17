@@ -439,7 +439,7 @@ border-bottom:4px solid #5572ff;
 
 .bc-brand-color.sns-share .sns-share-buttons a .social-icon.icon-x-corp,
  .bc-brand-color.sns-share .sns-share-buttons a .share-count.x-corp-share-count{
-  filter: drop-shadow(1px 1px 1px #000000);
+  filter: drop-shadow(1px 1px 1px var(--cocoon-twitter-color));
 }
 .bc-brand-color.sns-share .sns-share-buttons a .social-icon.icon-facebook,
  .bc-brand-color.sns-share .sns-share-buttons a .share-count.facebook-share-count{
@@ -463,14 +463,14 @@ border-bottom:4px solid #5572ff;
 }
 .bc-brand-color.sns-share .sns-share-buttons a .social-icon.icon-pinterest,
 .bc-brand-color.sns-share .sns-share-buttons a .share-count.pinterest-share-count{
-  filter: drop-shadow(1px 1px 1px #bd081c);
+  filter: drop-shadow(1px 1px 1px var(--cocoon-pinterest-color));
 }
 .pinterest-share-count::after {
   content: 'PIN';
 }
 .bc-brand-color.sns-share .sns-share-buttons a .social-icon.icon-linkedin,
 .bc-brand-color.sns-share .sns-share-buttons a .share-count.linkedin-share-count{
-  filter: drop-shadow(1px 1px 1px #0077b5);
+  filter: drop-shadow(1px 1px 1px var(--cocoon-linkedin-color));
 }
 .linkedin-share-count::after {
   content: 'SHARE';
@@ -523,7 +523,7 @@ border-bottom:4px solid #5572ff;
 }
 
 .sns-follow.bc-brand-color > .sns-follow-buttons a {
-    width: 51%;
+    width: 25%;
     height: 1.7em;
     color: white;
     -webkit-clip-path: polygon(5% 0, 100% 0%, 95% 100%, 0% 100%);
@@ -541,7 +541,7 @@ border-bottom:4px solid #5572ff;
 }
 .sns-follow.bc-brand-color > .sns-follow-buttons a:hover{
   opacity: unset;
-  transform: translate(30px,0px);
+  transform: translate(0px,-6px);
 }
 /* HACK: ブランドカラー（白抜き）選択時 */
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a {
@@ -559,156 +559,271 @@ border-bottom:4px solid #5572ff;
 }
 .bc-brand-color-white.sns-follow .website-button,
 .author-box .sns-follow-buttons a.follow-button.website-button{
-  filter: drop-shadow(1px 1px 1px #002561);
+  filter: drop-shadow(1px 1px 1px var(--cocoon-website-color));
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-home-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-home-logo{
-  color: #002561;
+  color: var(--cocoon-website-color);
 }
 .bc-brand-color-white.sns-follow .x-corp-button,
 .author-box .sns-follow-buttons a.follow-button.x-corp-button{
-  filter: drop-shadow(1px 1px 1px #000000)
+  filter: drop-shadow(1px 1px 1px var(--cocoon-twitter-color))
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-x-corp-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-x-corp-logo{
-  color: #000000;
+  color: var(--cocoon-twitter-color);
 }
 .bc-brand-color-white.sns-follow .facebook-button,
 .author-box .sns-follow-buttons a.follow-button.facebook-button {
-  filter: drop-shadow(1px 1px 1px #3b5998)
+  filter: drop-shadow(1px 1px 1px var(--cocoon-facebook-color))
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-facebook-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-facebook-logo{
-  color: #3b5998;
+  color: var(--cocoon-facebook-color);
 }
 .bc-brand-color-white.sns-follow .hatebu-button,
 .author-box .sns-follow-buttons a.follow-button.hatebu-button {
-  filter: drop-shadow(1px 1px 1px #2c6ebd)
+  filter: drop-shadow(1px 1px 1px var(--cocoon-hatebu-color))
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-hatebu-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-hatebu-logo{
-  color: #2c6ebd;
+  color: var(--cocoon-hatebu-color);
 }
 .bc-brand-color-white.sns-follow .google-plus-button,
 .author-box .sns-follow-buttons a.follow-button.google-plus-button {
-  filter: drop-shadow(1px 1px 1px #dd4b39)
+  filter: drop-shadow(1px 1px 1px var(--cocoon-google-plus-color))
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-google-plus-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-google-plus-logo{
-  color: #dd4b39;
+  color: var(--cocoon-google-plus-color);
 }
 .bc-brand-color-white.sns-follow .instagram-button,
 .author-box .sns-follow-buttons a.follow-button.instagram-button{
-  filter: drop-shadow(1px 1px 1px #405de6)
+  filter: drop-shadow(1px 1px 1px var(--cocoon-instagram-color))
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-instagram-new,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-instagram-new{
-  color: #405de6;
+  color: var(--cocoon-instagram-color);
 }
 .bc-brand-color-white.sns-follow .youtube-button,
 .author-box .sns-follow-buttons a.follow-button.youtube-button{
-  filter: drop-shadow(1px 1px 1px #cd201f)
+  filter: drop-shadow(1px 1px 1px var(--cocoon-youtube-color))
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-youtube-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-youtube-logo{
-  color: #cd201f;
+  color: var(--cocoon-youtube-color);
 }
 .bc-brand-color-white.sns-follow .youtube-button,
 .author-box .sns-follow-buttons a.follow-button.linkedin-button{
-  filter: drop-shadow(1px 1px 1px #0077b5);
+  filter: drop-shadow(1px 1px 1px var(--cocoon-linkedin-color));
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-linkedin-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-linkedin-logo{
-  color: #0077b5;
+  color: var(--cocoon-linkedin-color);
 }
 .bc-brand-color-white.sns-follow .note-button,
 .author-box .sns-follow-buttons a.follow-button.note-button{
-  filter: drop-shadow(1px 1px 1px #41c9b4);
+  filter: drop-shadow(1px 1px 1px var(--cocoon-note-color));
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-note-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-note-logo{
-  color: #41c9b4;
+  color: var(--cocoon-note-color);
 }
 .bc-brand-color-white.sns-follow .flickr-button,
 .author-box .sns-follow-buttons a.follow-button.flickr-button{
-  filter: drop-shadow(1px 1px 1px #111)
+  filter: drop-shadow(1px 1px 1px var(--cocoon-flickr-color))
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-flickr-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-flickr-logo{
-  color: #111;
+  color: var(--cocoon-flickr-color);
 }
 .bc-brand-color-white.sns-follow .pinterest-button,
 .author-box .sns-follow-buttons a.follow-button.pinterest-button{
-  filter: drop-shadow(1px 1px 1px #bd081c)
+  filter: drop-shadow(1px 1px 1px var(--cocoon-pinterest-color))
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-pinterest-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-pinterest-logo{
-  color: #bd081c;
+  color: var(--cocoon-pinterest-color);
 }
 .bc-brand-color-white.sns-follow .line-button,
 .author-box .sns-follow-buttons a.follow-button.line-button{
-  filter: drop-shadow(1px 1px 1px #00c300)
+  filter: drop-shadow(1px 1px 1px var(--cocoon-line-color))
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-line-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-line-logo{
-  color: #00c300;
+  color: var(--cocoon-line-color);
 }
 .bc-brand-color-white.sns-follow .amazon-button,
 .author-box .sns-follow-buttons a.follow-button.amazon-button {
-  filter: drop-shadow(1px 1px 1px #ff9900)
+  filter: drop-shadow(1px 1px 1px var(--cocoon-amazon-color))
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-amazon-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-amazon-logo{
-  color: #ff9900;
+  color: var(--cocoon-amazon-color);
 }
 .bc-brand-color-white.sns-follow .rakuten-room-button,
 .author-box .sns-follow-buttons a.follow-button.rakuten-room-button{
-  filter: drop-shadow(1px 1px 1px #c61e79);
+  filter: drop-shadow(1px 1px 1px var(--cocoon-rakuten-room-color));
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-rakuten-room-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-rakuten-room-logo{
-  color: #c61e79;
+  color: var(--cocoon-rakuten-room-color);
 }
 .bc-brand-color-white.sns-follow .slack-button,
 .author-box .sns-follow-buttons a.follow-button.slack-button{
-  filter: drop-shadow(1px 1px 1px #e01563);
+  filter: drop-shadow(1px 1px 1px var(--cocoon-slack-color));
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-slack-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-slack-logo{
-  color: #e01563;
+  color: var(--cocoon-slack-color);
 }
 .bc-brand-color-white.sns-follow .github-button,
 .author-box .sns-follow-buttons a.follow-button.github-button{
-  filter: drop-shadow(1px 1px 1px #4078c0)
+  filter: drop-shadow(1px 1px 1px var(--cocoon-github-color))
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-github-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-github-logo{
-  color: #4078c0;
+  color: var(--cocoon-github-color);
 }
 .bc-brand-color-white.sns-follow .codepen-button,
 .author-box .sns-follow-buttons a.follow-button.codepen-button{
-  filter: drop-shadow(1px 1px 1px #333);
+  filter: drop-shadow(1px 1px 1px var(--cocoon-codepen-color));
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-codepen-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-codepen-logo{
-  color: #333;
+  color: var(--cocoon-codepen-color);
 }
 .bc-brand-color-white.sns-follow .feedly-button,
 .author-box .sns-follow-buttons a.follow-button.feedly-button {
-  filter: drop-shadow(1px 1px 1px #2bb24c)
+  filter: drop-shadow(1px 1px 1px var(--cocoon-feedly-color))
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-feedly-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-feedly-logo{
-  color: #2bb24c;
+  color: var(--cocoon-feedly-color);
 }
 .bc-brand-color-white.sns-follow .rss-button,
 .author-box .sns-follow-buttons a.follow-button.rss-button {
-  filter: drop-shadow(1px 1px 1px #f26522)
+  filter: drop-shadow(1px 1px 1px var(--cocoon-rss-color))
 }
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-rss-logo,
 .author-box .sns-follow-buttons a.follow-button:hover .icon-rss-logo{
-  color: #f26522;
+  color: var(--cocoon-rss-color);
 }
+
+/*********************
+  SNSフォロー
+**********************/
+
+/* mastodon */
+.bc-brand-color-white.sns-follow .mastodon-button,
+.author-box .sns-follow-buttons a.follow-button.mastodon-button {
+  filter: drop-shadow(1px 1px 1px var(--cocoon-mastodon-color))
+}
+
+.sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-mastodon-logo,
+.author-box .sns-follow-buttons a.follow-button:hover .icon-mastodon-logo {
+  color: var(--cocoon-mastodon-color);
+}
+
+
+/* bluesky */
+.bc-brand-color-white.sns-follow .bluesky-button,
+.author-box .sns-follow-buttons a.follow-button.bluesky-button {
+  filter: drop-shadow(1px 1px 1px var(--cocoon-bluesky-color))
+}
+
+.sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-bluesky-logo,
+.author-box .sns-follow-buttons a.follow-button:hover .icon-bluesky-logo {
+  color: var(--cocoon-bluesky-color);
+}
+
+
+/* misskey */
+.bc-brand-color-white.sns-follow .misskey-button,
+.author-box .sns-follow-buttons a.follow-button.misskey-button {
+  filter: drop-shadow(1px 1px 1px var(--cocoon-misskey-color))
+}
+
+.sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-misskey-logo,
+.author-box .sns-follow-buttons a.follow-button:hover .icon-misskey-logo {
+  color: var(--cocoon-misskey-color);
+}
+
+
+/* tiktok */
+.bc-brand-color-white.sns-follow .tiktok-button,
+.author-box .sns-follow-buttons a.follow-button.tiktok-button {
+  filter: drop-shadow(1px 1px 1px var(--cocoon-tiktok-color))
+}
+
+.sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-tiktok-logo,
+.author-box .sns-follow-buttons a.follow-button:hover .icon-tiktok-logo {
+  color: var(--cocoon-tiktok-color);
+}
+
+
+/* soundcloud */
+.bc-brand-color-white.sns-follow .soundcloud-button,
+.author-box .sns-follow-buttons a.follow-button.soundcloud-button {
+  filter: drop-shadow(1px 1px 1px var(--cocoon-soundcloud-color))
+}
+
+.sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-soundcloud-logo,
+.author-box .sns-follow-buttons a.follow-button:hover .icon-soundcloud-logo {
+  color: var(--cocoon-soundcloud-color);
+}
+
+
+/* twitch */
+.bc-brand-color-white.sns-follow .twitch-button,
+.author-box .sns-follow-buttons a.follow-button.twitch-button {
+  filter: drop-shadow(1px 1px 1px var(--cocoon-twitch-color))
+}
+
+.sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-twitch-logo,
+.author-box .sns-follow-buttons a.follow-button:hover .icon-twitch-logo {
+  color: var(--cocoon-twitch-color);
+}
+
+
+/* instagram */
+.sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover .icon-instagram-logo,
+.author-box .sns-follow-buttons a.follow-button:hover .icon-instagram-logo {
+  color: var(--cocoon-instagram-color);
+}
+
+/*********************
+  SNSシェア(白抜き)
+**********************/
+
+/* mastodon */
+.bc-brand-color.sns-share .sns-share-buttons a .social-icon.icon-mastodon {
+  filter: drop-shadow(1px 1px 1px var(--cocoon-mastodon-color));
+}
+
+.sns-share-buttons a:hover .icon-mastodon {
+  color: var(--cocoon-mastodon-color);
+}
+
+/* misskey */
+.bc-brand-color.sns-share .sns-share-buttons a .social-icon.icon-misskey {
+  filter: drop-shadow(1px 1px 1px var(--cocoon-misskey-color));
+}
+
+.sns-share-buttons a:hover .icon-misskey {
+  color: var(--cocoon-misskey-color);
+}
+
+/* pinterest */
+.sns-share-buttons a:hover .icon-pinterest {
+  color: var(--cocoon-pinterest-color);
+}
+
+/* linkedin　*/
+.sns-share-buttons a:hover .icon-linkedin {
+  color: var(--cocoon-linkedin-color);
+}
+
 
 .sns-follow.bc-brand-color-white > .sns-follow-buttons a:hover span{
   transition: all 0.8s ease;
@@ -2234,4 +2349,27 @@ body{
 
 .widget{
   margin-bottom: 60px;
+}
+
+/* 記事下フォローボタン余白の調整　*/
+.sf-bottom .sns-follow-buttons {
+  column-gap: 20px;
+  row-gap: 28px;
+}
+
+/* モバイルフォローボタンエリアの調整　*/
+.sns-follow.sf-mobile {
+  margin: 0;
+  padding: 0;
+}
+
+.sf-mobile .sns-follow-buttons {
+  padding-top: 32px;
+  padding-bottom: 32px;
+  margin: 0;
+}
+
+.follow-menu-content{
+  top: initial;
+  bottom: 12%;
 }

@@ -430,15 +430,15 @@ input[type="submit"] {
 /* Twitter */
 .bc-brand-color-white.sns-share .x-corp-button,
 .bc-brand-color-white.sns-follow .x-corp-button {
-	border: 1px solid #7fbfff; /* 枠線色 */
-	color: #7fbfff; /* 文字色 */
+	border: 1px solid #666666; /* 枠線色 */
+	color: #666666; /* 文字色 */
 }
 .bc-brand-color-white.sns-share .x-corp-button:hover, .bc-brand-color-white.sns-follow .x-corp-button:hover,
 /* color */
 .bc-brand-color.sns-share .x-corp-button, .bc-brand-color.sns-follow .x-corp-button,
 /* profile */
 .author-box .sns-follow-buttons a.follow-button.x-corp-button {
-	background-color: #7fbfff;
+	background-color: #666666;
 }
 /* Facebook */
 .bc-brand-color-white.sns-share .facebook-button,
@@ -514,7 +514,7 @@ input[type="submit"] {
 /* LINE */
 .bc-brand-color-white.sns-share .line-button,
 .bc-brand-color-white.sns-follow .line-button {
-	border: 1px solid #41c9b4; /* 枠線色 */
+	border: 1px solid var(--cocoon-note-color); /* 枠線色 */
 	color: #03c8a8; /* 文字色 */
 }
 .bc-brand-color-white.sns-share .line-button:hover, .bc-brand-color-white.sns-follow .line-button:hover,
@@ -522,7 +522,7 @@ input[type="submit"] {
 .bc-brand-color.sns-share .line-button, .bc-brand-color.sns-follow .line-button,
 /* profile */
 .author-box .sns-follow-buttons a.follow-button.line-button {
-	background-color: #41c9b4;
+	background-color: var(--cocoon-note-color);
 	color: #fff;
 }
 /* コピーボタン */
@@ -535,6 +535,9 @@ input[type="submit"] {
 .bc-brand-color-white.sns-follow a:hover,
 .sns-buttons a {
 	background-color: #fb217580;
+}
+.bc-brand-color-white .sns-buttons a{
+	background-color: #fff;
 }
 
 /* RSS */
@@ -597,13 +600,13 @@ input[type="submit"] {
 /* Github */
 .bc-brand-color-white.sns-share .github-button,
 .bc-brand-color-white.sns-follow .github-button {
-	border: 1px solid #4078c0; /* 枠線色 */
-	color: #4078c0; /* 文字色 */
+	border: 1px solid var(--cocoon-github-color); /* 枠線色 */
+	color: var(--cocoon-github-color); /* 文字色 */
 }
 .bc-brand-color-white.sns-share .github-button:hover, .bc-brand-color-white.sns-follow .github-button:hover,
 /* profile */
 .author-box .sns-follow-buttons a.follow-button.github-button {
-	background-color: #4078c0; /* 枠線色 */
+	background-color: var(--cocoon-github-color); /* 枠線色 */
 	color: #fff; /* 文字色 */
 }
 /* Amazon */
@@ -671,21 +674,137 @@ input[type="submit"] {
 /* flicker */
 .bc-brand-color-white.sns-share .flickr-button,
 .bc-brand-color-white.sns-follow .flickr-button {
-	color: #405de6;
-	border-color: #405de6;
+	color: var(--cocoon-instagram-color);
+	border-color: var(--cocoon-instagram-color);
 }
 .bc-brand-color-white.sns-share .flickr-button:hover, .bc-brand-color-white.sns-follow .flickr-button:hover,
 .bc-brand-color.sns-share .flickr-button, .bc-brand-color.sns-follow .flickr-button,
 /* profile */
 .author-box .sns-follow-buttons a.follow-button.flickr-button {
-	background-color: #405de6;
+	background-color: var(--cocoon-instagram-color);
 }
-/* SoundCloud */
+
+/* Mastodon */
+.bc-brand-color-white.sns-share .mastodon-button, .bc-brand-color-white.sns-follow .mastodon-button {
+	border: 1px solid #a1a2ff; /* 枠線色 */
+	color: #a1a2ff; /* 文字色 */
+}
+.bc-brand-color-white.sns-share .mastodon-button:hover, .bc-brand-color-white.sns-follow .mastodon-button:hover,
+/* color */
+.bc-brand-color.sns-share .mastodon-button, .bc-brand-color.sns-follow .mastodon-button,
+/* profile */
+.author-box .sns-follow-buttons a.follow-button.mastodon-button {
+	background-color: #a1a2ff;
+}
+/* Bluesky */
+.bc-brand-color-white.sns-share .bluesky-button, .bc-brand-color-white.sns-follow .bluesky-button {
+	border: 1px solid #66b5ff; /* 枠線色 */
+	color: #66b5ff; /* 文字色 */
+}
+.bc-brand-color-white.sns-share .bluesky-button:hover, .bc-brand-color-white.sns-follow .bluesky-button:hover,
+/* color */
+.bc-brand-color.sns-share .bluesky-button, .bc-brand-color.sns-follow .bluesky-button,
+/* profile */
+.author-box .sns-follow-buttons a.follow-button.bluesky-button {
+	background-color: #66b5ff;
+}
+/* Misskey */
+.bc-brand-color-white.sns-share .misskey-button, .bc-brand-color-white.sns-follow .misskey-button {
+	border: 1px solid #c0e292; /* 枠線色 */
+	color: #c0e292; /* 文字色 */
+}
+.bc-brand-color-white.sns-share .misskey-button:hover, .bc-brand-color-white.sns-follow .misskey-button:hover,
+/* color */
+.bc-brand-color.sns-share .misskey-button, .bc-brand-color.sns-follow .misskey-button,
+/* profile */
+.author-box .sns-follow-buttons a.follow-button.misskey-button {
+	background-color: #c0e292;
+}
+/* Tiktok */
+.bc-brand-color-white.sns-share .tiktok-button, .bc-brand-color-white.sns-follow .tiktok-button {
+	border: 1px solid #666666; /* 枠線色 */
+	color: #666666; /* 文字色 */
+}
+.bc-brand-color-white.sns-share .tiktok-button:hover, .bc-brand-color-white.sns-follow .tiktok-button:hover,
+/* color */
+.bc-brand-color.sns-share .tiktok-button, .bc-brand-color.sns-follow .tiktok-button,
+/* profile */
+.author-box .sns-follow-buttons a.follow-button.tiktok-button {
+	background-color: #666666;
+}
+/* note */
+.bc-brand-color-white.sns-share .note-button, .bc-brand-color-white.sns-follow .note-button {
+	border: 1px solid #8dded2; /* 枠線色 */
+	color: #8dded2; /* 文字色 */
+}
+.bc-brand-color-white.sns-share .note-button:hover, .bc-brand-color-white.sns-follow .note-button:hover,
+/* color */
+.bc-brand-color.sns-share .note-button, .bc-brand-color.sns-follow .note-button,
+/* profile */
+.author-box .sns-follow-buttons a.follow-button.note-button {
+	background-color: #8dded2;
+}
+/* soundcloud */
+.bc-brand-color-white.sns-share .soundcloud-button, .bc-brand-color-white.sns-follow .soundcloud-button {
+	border: 1px solid #ffb766; /* 枠線色 */
+	color: #ffb766; /* 文字色 */
+}
 .bc-brand-color-white.sns-share .soundcloud-button:hover, .bc-brand-color-white.sns-follow .soundcloud-button:hover,
+/* color */
+.bc-brand-color.sns-share .soundcloud-button, .bc-brand-color.sns-follow .soundcloud-button,
 /* profile */
 .author-box .sns-follow-buttons a.follow-button.soundcloud-button {
-	background-color: #ff8800;
+	background-color: #ffb766;
 }
+/* pinterest */
+.bc-brand-color-white.sns-share .pinterest-button, .bc-brand-color-white.sns-follow .pinterest-button {
+	border: 1px solid #d76a76; /* 枠線色 */
+	color: #d76a76; /* 文字色 */
+}
+.bc-brand-color-white.sns-share .pinterest-button:hover, .bc-brand-color-white.sns-follow .pinterest-button:hover,
+/* color */
+.bc-brand-color.sns-share .pinterest-button, .bc-brand-color.sns-follow .pinterest-button,
+/* profile */
+.author-box .sns-follow-buttons a.follow-button.pinterest-button {
+	background-color: #d76a76;
+}
+/* amazon */
+.bc-brand-color-white.sns-share .amazon-button, .bc-brand-color-white.sns-follow .amazon-button {
+	border: 1px solid #ffc166; /* 枠線色 */
+	color: #ffc166; /* 文字色 */
+}
+.bc-brand-color-white.sns-share .amazon-button:hover, .bc-brand-color-white.sns-follow .amazon-button:hover,
+/* color */
+.bc-brand-color.sns-share .amazon-button, .bc-brand-color.sns-follow .amazon-button,
+/* profile */
+.author-box .sns-follow-buttons a.follow-button.amazon-button {
+	background-color: #ffc166;
+}
+/* twitch */
+.bc-brand-color-white.sns-share .twitch-button, .bc-brand-color-white.sns-follow .twitch-button {
+	border: 1px solid #a28dc8; /* 枠線色 */
+	color: #a28dc8; /* 文字色 */
+}
+.bc-brand-color-white.sns-share .twitch-button:hover, .bc-brand-color-white.sns-follow .twitch-button:hover,
+/* color */
+.bc-brand-color.sns-share .twitch-button, .bc-brand-color.sns-follow .twitch-button,
+/* profile */
+.author-box .sns-follow-buttons a.follow-button.twitch-button {
+	background-color: #a28dc8;
+}
+/* github */
+.bc-brand-color-white.sns-share .github-button, .bc-brand-color-white.sns-follow .github-button {
+	border: 1px solid #8caed9; /* 枠線色 */
+	color: #8caed9; /* 文字色 */
+}
+.bc-brand-color-white.sns-share .github-button:hover, .bc-brand-color-white.sns-follow .github-button:hover,
+/* color */
+.bc-brand-color.sns-share .github-button, .bc-brand-color.sns-follow .github-button,
+/* profile */
+.author-box .sns-follow-buttons a.follow-button.github-button {
+	background-color: #8caed9;
+}
+
 /* 記事下ウィジェット用 */
 .author-box .sns-follow-buttons a.follow-button {
 	color: #fff;
