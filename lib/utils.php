@@ -855,7 +855,7 @@ function wp_enqueue_jquery_masonry(){
       wp_enqueue_script('jquery-masonry');
 
       $common_code = '
-        $("#list.ect-tile-card").masonry({
+        $(".ect-tile-card").masonry({
           itemSelector: ".entry-card-wrap",
           isAnimated: false
         });
@@ -2446,12 +2446,14 @@ endif;
 //ショートコードの値をサニタイズする
 if ( !function_exists( 'sanitize_shortcode_value' ) ):
 function sanitize_shortcode_value($value){
-  $value = strip_tags($value);
-  $value = esc_html(trim($value));
-  $value = str_replace('"', '', $value);
-  $value = str_replace("'", '', $value);
-  $value = str_replace('[', '', $value);
-  $value = str_replace(']', '', $value);
+  if ($value) {
+    $value = strip_tags($value);
+    $value = esc_html(trim($value));
+    $value = str_replace('"', '', $value);
+    $value = str_replace("'", '', $value);
+    $value = str_replace('[', '', $value);
+    $value = str_replace(']', '', $value);
+  }
   return $value;
 }
 endif;
