@@ -86,6 +86,7 @@ body.wp-admin {
   --cocoon-list-wide-padding: min(3%, 24px) min(5%, 40px) min(3%, 24px) min(7%, 56px);
   --cocoon-box-border-color: #47585c;
   --cocoon-sns-color: var(--cocoon-text-color);
+  --card-ratio: 16/9;
 }
 
 .faw::before {
@@ -1761,9 +1762,6 @@ body.wp-admin {
 .admin-settings .demo .ect-vertical-card.ect-tile-card .card-meta {
   position: static;
 }
-.admin-settings .demo .ect-vertical-card.ect-tile-card {
-  column-gap: initial;
-}
 .admin-settings .demo .ect-vertical-card.ect-tile-card .a-wrap {
   margin: 0 0.16666% 0;
 }
@@ -2158,7 +2156,7 @@ body.wp-admin {
 .admin-settings .demo table:not(.has-border-color) :where(th, td) {
   border: 1px solid var(--cocoon-x-thin-color);
 }
-.admin-settings .demo table:has(.s-circle, .d-circle, .triangle, .cross) td {
+.admin-settings .demo table :is(th, td):has(.s-circle, .d-circle, .triangle, .cross) {
   height: 60px;
 }
 .admin-settings .demo .s-circle:before,
@@ -10112,9 +10110,6 @@ body.wp-admin {
 .admin-settings .demo .ect-vertical-card.ect-tile-card .card-meta {
   position: static;
 }
-.admin-settings .demo .ect-vertical-card.ect-tile-card {
-  column-gap: initial;
-}
 .admin-settings .demo .ect-vertical-card.ect-tile-card .a-wrap {
   margin: 0 0.16666% 0;
 }
@@ -10509,7 +10504,7 @@ body.wp-admin {
 .admin-settings .demo table:not(.has-border-color) :where(th, td) {
   border: 1px solid var(--cocoon-x-thin-color);
 }
-.admin-settings .demo table:has(.s-circle, .d-circle, .triangle, .cross) td {
+.admin-settings .demo table :is(th, td):has(.s-circle, .d-circle, .triangle, .cross) {
   height: 60px;
 }
 .admin-settings .demo .s-circle:before,

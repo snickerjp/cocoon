@@ -92,6 +92,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
   --cocoon-list-wide-padding: min(3%, 24px) min(5%, 40px) min(3%, 24px) min(7%, 56px);
   --cocoon-box-border-color: #47585c;
   --cocoon-sns-color: var(--cocoon-text-color);
+  --card-ratio: 16/9;
 }
 
 .faw::before {
@@ -1325,9 +1326,6 @@ img.emoji {
 .ect-vertical-card.ect-tile-card .card-meta {
   position: static;
 }
-.ect-vertical-card.ect-tile-card {
-  column-gap: initial;
-}
 .ect-vertical-card.ect-tile-card .a-wrap {
   margin: 0 0.16666% 0;
 }
@@ -1802,7 +1800,7 @@ table tr:nth-of-type(2n+1) {
 table:not(.has-border-color) :where(th, td) {
   border: 1px solid var(--cocoon-x-thin-color);
 }
-table:has(.s-circle, .d-circle, .triangle, .cross) td {
+table :is(th, td):has(.s-circle, .d-circle, .triangle, .cross) {
   height: 60px;
 }
 
