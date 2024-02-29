@@ -5,15 +5,17 @@
  Description: 基本デザインを整えたシンプルなデザインです。
  Author: chu-ya
  Screenshot URI:
- Version: 1.0.0
+ Version: 0.0.2
  Priority: 6900001000
-  Visibility: false
+ Visibility: false
 */
 
 
 /*******************************************************************************
 **
-**  履歴: 0.0 2023-06-01  新規作成
+**  履歴: 0.0.0 2023-06-01  新規作成
+**        0.0.1 2023-02-28  バグ対策
+**        0.0.2 2023-02-29  バグ対策
 **
 *******************************************************************************/
 
@@ -699,15 +701,6 @@ span.fas.fa-history:before {
 }
 
 
-/* 先頭固定表示 */
-
-.front-page-type-index .a-wrap:has(.sticky),
-.front-page-type-tab-index .tb1 .a-wrap:has(.sticky),
-.body:not(.front-top-page) .a-wrap:has(.sticky) {
-  display: none;
-}
-
-
 /*******************************************************************************
 **  カテゴリーごと
 *******************************************************************************/
@@ -1169,9 +1162,7 @@ span.fas.fa-history:before {
 *******************************************************************************/
 
 .body .sns-buttons {
-  flex-wrap: wrap;
   gap: 5px!important;
-  justify-content: center;
   margin: 0;
 }
 
@@ -1849,11 +1840,14 @@ aside.widget .widget-title {
 
 .body .blogcard-title,
 .body .e-card .card-title {
+  display: -webkit-box;
   font-size: 16px!important;
   font-weight: bold;
   line-height: 1.4;
   margin: 0;
   text-align: left;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
   -webkit-line-clamp: var(--title-line)!important;
 }
 
@@ -2300,10 +2294,6 @@ aside.widget .widget-title {
   margin-top: var(--padding15);
 }
 
-.author-box .sns-follow-buttons {
-  justify-content: unset;
-}
-
 .author-box .sns-follow-buttons a.follow-button {
   background-color: unset!important;
   border: 1px solid var(--cocoon-text-color);
@@ -2343,10 +2333,6 @@ aside.widget .widget-title {
 .nwa .author-box .author-content {
   border: 0;
   padding: var(--padding15) var(--main-padding) var(--gap30);
-}
-
-.nwa .author-box .sns-follow-buttons {
-  justify-content: center;
 }
 
 
@@ -2862,6 +2848,10 @@ aside.widget select {
   padding: 0;
 }
 
+.navi-menu-close-button .fa-times:before {
+  content: '\f060';
+}
+
 
 /*******************************************************************************
 **  検索
@@ -2971,6 +2961,7 @@ table tr:nth-of-type(2n+1),
   border-color: var(--border-color)!important;
   font-size: 16px;
   padding: 3px 5px;
+  word-break: break-all;
 }
 
 .wp-block-table.is-style-stripes {
@@ -3016,6 +3007,10 @@ table tr:nth-of-type(2n+1),
 **  アイコンボックス
 *******************************************************************************/
 
+.is-style-profile-box,
+.profile-box,
+.is-style-comment-box,
+.comment-box,
 blockquote {
   background-color: #f9f9f9;
   border: 0;
@@ -3171,7 +3166,7 @@ blockquote:after {
   border-radius: 0;
   font-size: var(--cocoon-text-size-s);
   left: -1px;
-  padding: 0 1em;
+  padding: 0 var(--padding15);
 }
 
 .blank-box.bb-tab {
@@ -3204,7 +3199,7 @@ blockquote:after {
   font-size: var(--cocoon-text-size-s);
   left: auto;
   line-height: 1.8;
-  padding: 0 1em;
+  padding: 0 var(--padding15);
   top: -0.9em;
 }
 
@@ -3354,6 +3349,9 @@ blockquote:after {
 /*******************************************************************************
 **  見出しボックス
 *******************************************************************************/
+.block-box-label::before {
+  margin-right: 6px;
+}
 
 .caption-box {
   border-color: var(--border-color);
@@ -3386,9 +3384,9 @@ blockquote:after {
   border-radius: 0;
   color: #fff!important;
   font-size: var(--cocoon-text-size-s);
-  padding: 0 1em;
+  padding: 0 var(--padding15);
   position: absolute;
-  top: -1.8em;
+  top: calc(-1.8em + 1px);
 }
 
 .tab-caption-box-content {
@@ -3403,33 +3401,16 @@ blockquote:after {
 *******************************************************************************/
 
 .label-box-label {
+  --cocoon-white-color: var(--white-bgcolor);
+  display: inline;
   font-size: var(--cocoon-text-size-s);
   font-weight: normal;
-  margin: 0;
-  padding: 0 1em;
-  text-shadow: unset;
-}
-
-.label-box-label-text {
-  padding: 0 1em;
-  position: relative;
-  z-index: 1;
-}
-
-.label-box-label-text:after {
-  border-top: 1px solid var(--white-bgcolor);
-  bottom: 13px;
-  content: '';
-  display: block;
-  left: 0;
-  position: absolute;
-  width: 100%;
-  z-index: -1;
+  margin: 0 var(--padding15);
+  padding: 0;
 }
 
 .label-box-content {
   border-width: 1px;
-  margin-top: -14px;
   padding: var(--padding15);
 }
 
