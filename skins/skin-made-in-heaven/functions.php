@@ -6,17 +6,14 @@ global $_THEME_OPTIONS;
 global $_MOBILE_COPY_BUTTON;
 global $_HVN_EYECATCH;
 
-$skin     = '/skins/skin-made-in-heaven/';
-$skin_url = get_theme_file_uri($skin);
+define('HVN_SKIN', '/skins/skin-made-in-heaven/');
 
-define('HVN_SKIN', $skin);
-define('HVN_SKIN_URL', $skin_url);
 
 //******************************************************************************
 //  関数定義
 //******************************************************************************
-$path = url_to_local(HVN_SKIN_URL);
-$files = glob($path . '/lib/*.php');
+$path = url_to_local(get_theme_file_uri(HVN_SKIN . '/lib/*.php'));
+$files = glob($path);
 foreach ($files as $file) {
   require_once($file);
 }
@@ -227,7 +224,6 @@ $_THEME_OPTIONS = array(
     'WP_Widget_Media_Image',
     'WP_Widget_Media_Gallery',
     'WP_Widget_Meta',
-    'WP_Widget_Text',
     'WP_Widget_Recent_Posts',
     'WP_Widget_Recent_Comments',
     'WP_Widget_Block',
@@ -254,7 +250,7 @@ $_THEME_OPTIONS = array(
     'single-content-middle',
     'single-content-bottom',
 //    'above-single-sns-buttons',
-    'below-single-sns-buttons',
+//    'below-single-sns-buttons',
     'above-single-related-entries',
     'below-single-related-entries',
     'above-single-comment-aria',
@@ -266,7 +262,7 @@ $_THEME_OPTIONS = array(
     'page-content-middle',
     'page-content-bottom',
 //    'above-page-sns-buttons',
-    'below-page-sns-buttons',
+//    'below-page-sns-buttons',
 
 //  'index-top',
     'index-middle',
