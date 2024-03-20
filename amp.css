@@ -392,7 +392,7 @@
 
 .ff-yu-gothic,
 .wp-admin-ff-yu-gothic .editor-styles-wrapper {
-  font-family: "Yu Gothic", Meiryo, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+  font-family: YuGothic, "Yu Gothic", Meiryo, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
 }
 
 .ff-ms-pgothic,
@@ -3922,6 +3922,9 @@ div.search-form {
   background-color: #fff;
   border-width: 1px;
 }
+[class*=inline-button-white-]:hover {
+  opacity: 0.3;
+}
 
 .inline-button-white-black {
   color: var(--cocoon-black-color);
@@ -6348,6 +6351,7 @@ figcaption {
 
 .comment-page-link {
   text-align: center;
+  margin: 24px 0;
 }
 .comment-page-link .page-numbers {
   width: auto;
