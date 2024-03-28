@@ -7,7 +7,7 @@
  */
 if ( !defined( 'ABSPATH' ) ) exit;
 
-if ( is_comment_allow() || have_comments() ): ?>
+if ( is_comment_open() || have_comments() ): ?>
 <!-- comment area -->
 <div id="comment-area" class="comment-area<?php echo get_additional_comment_area_classes(); ?>">
   <section class="comment-list">
@@ -27,9 +27,13 @@ if ( is_comment_allow() || have_comments() ): ?>
         wp_list_comments($args); //コメント一覧を表示 ?>
         </ol>
 
+        <?php
+        if (get_comment_pages_count() > 1): ?>
         <div class="comment-page-link">
           <?php paginate_comments_links(); //コメントが多い場合、ページャーを表示 ?>
         </div>
+        <?php endif; ?>
+
     <?php
     endif; ?>
   </section>
@@ -63,8 +67,9 @@ if ( is_comment_allow() || have_comments() ): ?>
     ) . '</p>'.$comment_info_msg_tag,
     'comment_notes_before' => '<p class="comment-notes"><span id="email-notes">' . __( 'Your email address will not be published.' ) . '</span>'. ( $req ? $required_text : '' ) . '</p>'.$comment_info_msg_tag,
   );
-  echo '<aside class="comment-form">';
+
   if (is_comment_open()) {
+     echo '<aside class="comment-form">';
     if (!is_amp()) {
       if (is_comment_form_display_type_toggle_button()) {?>
         <button type="button" id="comment-reply-btn" class="comment-btn key-btn"><?php _e( 'コメントを書き込む', THEME_NAME ) ?></button>
@@ -77,12 +82,8 @@ if ( is_comment_allow() || have_comments() ): ?>
       <a class="comment-btn" href="<?php echo get_permalink().'#comment-area'; ?>"><?php _e( 'コメントを書き込む', THEME_NAME ) ?></a>
       <?php
     }
+      echo '</aside>';
   }
-
-
-
-  echo '</aside>';
-
   ?>
 </div><!-- /.comment area -->
 <?php endif ?>
