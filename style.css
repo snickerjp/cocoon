@@ -6,7 +6,7 @@ Theme URI: https://wp-cocoon.com/
 Author: わいひら
 Author URI: https://nelog.jp/
 Text Domain: cocoon
-Version: 2.7.2.1
+Version: 2.7.2.2
 Requires at least: 5.7.0
 Requires PHP: 7.4.0
 Tags: two-columns, left-sidebar, right-sidebar
@@ -189,8 +189,9 @@ select, .search-edit {
   padding: 11px;
   border: 1px solid var(--cocoon-basic-border-color);
   border-radius: var(--cocoon-basic-border-radius);
-  font-size: var(--cocoon-default-text-size);
+  font-size: inherit;
   width: 100%;
+  color: inherit;
 }
 
 .fz-12px {
@@ -2471,8 +2472,9 @@ img.blogcard-favicon-image {
   font-size: 20px;
 }
 
-.nwa .ranking-item-description p {
-  font-size: 0.9em;
+.nwa .ranking-item-description {
+  margin-top: 1em;
+  font-size: 0.8em;
 }
 
 .nwa .blogcard-wrap {
@@ -6801,9 +6803,6 @@ canvas, iframe, video,
   --cocoon-custom-border-color: transparent;
 }
 
-.nwa .cta-box {
-  font-size: 0.8em;
-}
 .nwa .cta-heading {
   font-size: 20px;
   padding: 8px;
@@ -6822,6 +6821,9 @@ canvas, iframe, video,
 .nwa .cta-button .btn-l, .nwa .cta-button .ranking-item-link-buttons a, .ranking-item-link-buttons .nwa .cta-button a {
   padding: 1em;
   font-size: 16px;
+}
+.nwa .cta-box {
+  font-size: 0.8em;
 }
 
 .speech-wrap {
@@ -7998,7 +8000,6 @@ div.fb-like-mobile {
   line-height: 1.4;
 }
 .ranking-items p {
-  font-size: 18px;
   margin-top: 0;
 }
 
@@ -9395,7 +9396,7 @@ https://codepen.io/nxworld/pen/oLdoWb
   padding: 20px;
 }
 .info-list.is-style-frame-border {
-  border: 1px solid var(--cocoon-basic-border-color);
+  border: 1px solid;
   border-color: var(--cocoon-three-d-border-colors);
   border-radius: var(--cocoon-basic-border-radius);
 }
@@ -11502,9 +11503,6 @@ _:-ms-lang(x), .mc-circle {
     max-width: none;
     flex-direction: column;
   }
-  .cta-box {
-    font-size: 0.8em;
-  }
   .cta-heading {
     font-size: 20px;
     padding: 8px;
@@ -11932,6 +11930,9 @@ _:-ms-lang(x), .mc-circle {
   }
   .menu-content {
     max-width: 84%;
+  }
+  .ranking-item-description {
+    margin-top: 1em;
   }
   .ranking-item-img-desc,
   .ranking-item-link-buttons {
