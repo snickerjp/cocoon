@@ -1918,6 +1918,7 @@ div.search-form {
 
 .inline-button-black {
   border-color: var(--cocoon-black-color);
+  background-color: var(--cocoon-black-color);
 }
 
 .inline-button-red {
@@ -4164,10 +4165,6 @@ figcaption {
   border-color: var(--cocoon-custom-border-color);
   background-color: var(--cocoon-custom-background-color);
   color: var(--cocoon-custom-text-color);
-}
-
-.faq {
-  line-height: 24px;
 }
 
 .faq-item {

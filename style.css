@@ -6,7 +6,7 @@ Theme URI: https://wp-cocoon.com/
 Author: わいひら
 Author URI: https://nelog.jp/
 Text Domain: cocoon
-Version: 2.7.2.2
+Version: 2.7.2.4
 Requires at least: 5.7.0
 Requires PHP: 7.4.0
 Tags: two-columns, left-sidebar, right-sidebar
@@ -1020,25 +1020,6 @@ img.emoji {
 .cl-slim .navi-in > ul li.menu-item-has-description > a > .caption-wrap {
   height: 40px;
   line-height: 16px;
-}
-
-.header.ba-fixed,
-.appeal.ba-fixed {
-  clip-path: inset(0 0 0 0);
-}
-
-.header.ba-fixed:before,
-.appeal.ba-fixed:before {
-  background-image: inherit;
-  background-position: top center;
-  background-size: cover;
-  content: "";
-  height: 100vh;
-  left: 0;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: -1;
 }
 
 /************************************
@@ -3951,6 +3932,7 @@ div.search-form {
 
 .inline-button-black {
   border-color: var(--cocoon-black-color);
+  background-color: var(--cocoon-black-color);
 }
 
 .inline-button-red {
@@ -8592,10 +8574,6 @@ ul.timeline ul ul ul {
   color: var(--cocoon-custom-text-color);
 }
 
-.faq {
-  line-height: 24px;
-}
-
 .faq-item {
   display: flex;
 }
@@ -11503,25 +11481,6 @@ _:-ms-lang(x), .mc-circle {
     max-width: none;
     flex-direction: column;
   }
-  .cta-heading {
-    font-size: 20px;
-    padding: 8px;
-  }
-  .cta-left-and-right .cta-content,
-  .cta-right-and-left .cta-content {
-    display: block;
-  }
-  .cta-left-and-right .cta-content div,
-  .cta-right-and-left .cta-content div {
-    width: 100%;
-  }
-  .cta-message {
-    margin-top: 1em;
-  }
-  .cta-button .btn-l, .cta-button .ranking-item-link-buttons a, .ranking-item-link-buttons .cta-button a {
-    padding: 1em;
-    font-size: 16px;
-  }
   .sbp-l {
     margin-right: auto;
   }
@@ -11930,6 +11889,25 @@ _:-ms-lang(x), .mc-circle {
   }
   .menu-content {
     max-width: 84%;
+  }
+  .cta-heading {
+    font-size: 20px;
+    padding: 8px;
+  }
+  .cta-left-and-right .cta-content,
+  .cta-right-and-left .cta-content {
+    display: block;
+  }
+  .cta-left-and-right .cta-content div,
+  .cta-right-and-left .cta-content div {
+    width: 100%;
+  }
+  .cta-message {
+    margin-top: 1em;
+  }
+  .cta-button .btn-l, .cta-button .ranking-item-link-buttons a, .ranking-item-link-buttons .cta-button a {
+    padding: 1em;
+    font-size: 16px;
   }
   .ranking-item-description {
     margin-top: 1em;

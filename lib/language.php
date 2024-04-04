@@ -8,25 +8,29 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 global $locale;
-//_v($locale);
-if (preg_match('/^ja/', $locale)){
-  //日本語環境では何もしない
-} elseif (preg_match('/^en/', $locale)) {
-  //言語の最初の文字がenだったら全てen.moを呼び出す（英語）
-  $locale = 'en';
-} elseif (preg_match('/^de/', $locale)) {
-  //言語の最初の文字がdeだったら全てde.moを呼び出す（ドイツ語）
-  $locale = 'de';
-} elseif (preg_match('/^fr/', $locale)) {
-  //言語の最初の文字がfrだったら全てfr.moを呼び出す（フランス語）
-  $locale = 'fr';
-} elseif (preg_match('/^pt/', $locale)) {
-  //言語の最初の文字がptだったら全てpt.moを呼び出す（ポルトガル語）
-  $locale = 'pt';
-} elseif (preg_match('/^ko_/', $locale)) {
-  //言語の最初の文字がkoだったら全てko.moを呼び出す（韓国語）
-  $locale = 'ko';
-}
+
+// if (preg_match('/^ja/', $locale)){
+//   //日本語環境では何もしない
+// } elseif (preg_match('/^en/', $locale)) {
+//   //言語の最初の文字がenだったら全てen.moを呼び出す（英語）
+//   $locale = 'en';
+// }
+// elseif (preg_match('/^de/', $locale)) {
+//   //言語の最初の文字がdeだったら全てde.moを呼び出す（ドイツ語）
+//   $locale = 'de';
+// }
+// elseif (preg_match('/^fr/', $locale)) {
+//   //言語の最初の文字がfrだったら全てfr.moを呼び出す（フランス語）
+//   $locale = 'fr';
+// }
+// elseif (preg_match('/^pt/', $locale)) {
+//   //言語の最初の文字がptだったら全てpt.moを呼び出す（ポルトガル語）
+//   $locale = 'pt';
+// }
+// elseif (preg_match('/^ko_/', $locale)) {
+//   //言語の最初の文字がkoだったら全てko.moを呼び出す（韓国語）
+//   $locale = 'ko';
+// }
 
 //親テーマの翻訳ディレクトリ
 $language_dir = get_template_directory() . '/languages';

@@ -1494,23 +1494,6 @@ body.wp-admin {
   height: 40px;
   line-height: 16px;
 }
-.admin-settings .demo .header.ba-fixed,
-.admin-settings .demo .appeal.ba-fixed {
-  clip-path: inset(0 0 0 0);
-}
-.admin-settings .demo .header.ba-fixed:before,
-.admin-settings .demo .appeal.ba-fixed:before {
-  background-image: inherit;
-  background-position: top center;
-  background-size: cover;
-  content: "";
-  height: 100vh;
-  left: 0;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: -1;
-}
 .admin-settings .demo .navi {
   background-color: var(--cocoon-white-color);
 }
@@ -3983,6 +3966,7 @@ body.wp-admin {
 }
 .admin-settings .demo .inline-button-black {
   border-color: var(--cocoon-black-color);
+  background-color: var(--cocoon-black-color);
 }
 .admin-settings .demo .inline-button-red {
   border-color: var(--cocoon-red-color);
@@ -8011,9 +7995,6 @@ body.wp-admin {
   background-color: var(--cocoon-custom-background-color);
   color: var(--cocoon-custom-text-color);
 }
-.admin-settings .demo .faq {
-  line-height: 24px;
-}
 .admin-settings .demo .faq-item {
   display: flex;
 }
@@ -9921,23 +9902,6 @@ body.wp-admin {
 .admin-settings .demo .cl-slim .navi-in > ul li.menu-item-has-description > a > .caption-wrap {
   height: 40px;
   line-height: 16px;
-}
-.admin-settings .demo .header.ba-fixed,
-.admin-settings .demo .appeal.ba-fixed {
-  clip-path: inset(0 0 0 0);
-}
-.admin-settings .demo .header.ba-fixed:before,
-.admin-settings .demo .appeal.ba-fixed:before {
-  background-image: inherit;
-  background-position: top center;
-  background-size: cover;
-  content: "";
-  height: 100vh;
-  left: 0;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: -1;
 }
 .admin-settings .demo .navi {
   background-color: var(--cocoon-white-color);
@@ -12411,6 +12375,7 @@ body.wp-admin {
 }
 .admin-settings .demo .inline-button-black {
   border-color: var(--cocoon-black-color);
+  background-color: var(--cocoon-black-color);
 }
 .admin-settings .demo .inline-button-red {
   border-color: var(--cocoon-red-color);
@@ -16439,9 +16404,6 @@ body.wp-admin {
   background-color: var(--cocoon-custom-background-color);
   color: var(--cocoon-custom-text-color);
 }
-.admin-settings .demo .faq {
-  line-height: 24px;
-}
 .admin-settings .demo .faq-item {
   display: flex;
 }
@@ -18924,25 +18886,6 @@ body.wp-admin {
     max-width: none;
     flex-direction: column;
   }
-  .admin-settings .demo .cta-heading {
-    font-size: 20px;
-    padding: 8px;
-  }
-  .admin-settings .demo .cta-left-and-right .cta-content,
-  .admin-settings .demo .cta-right-and-left .cta-content {
-    display: block;
-  }
-  .admin-settings .demo .cta-left-and-right .cta-content div,
-  .admin-settings .demo .cta-right-and-left .cta-content div {
-    width: 100%;
-  }
-  .admin-settings .demo .cta-message {
-    margin-top: 1em;
-  }
-  .admin-settings .demo .cta-button .btn-l, .admin-settings .demo .cta-button .ranking-item-link-buttons a, .admin-settings .demo .ranking-item-link-buttons .cta-button a {
-    padding: 1em;
-    font-size: 16px;
-  }
   .admin-settings .demo .sbp-l {
     margin-right: auto;
   }
@@ -19350,6 +19293,25 @@ body.wp-admin {
   }
   .admin-settings .demo .menu-content {
     max-width: 84%;
+  }
+  .admin-settings .demo .cta-heading {
+    font-size: 20px;
+    padding: 8px;
+  }
+  .admin-settings .demo .cta-left-and-right .cta-content,
+  .admin-settings .demo .cta-right-and-left .cta-content {
+    display: block;
+  }
+  .admin-settings .demo .cta-left-and-right .cta-content div,
+  .admin-settings .demo .cta-right-and-left .cta-content div {
+    width: 100%;
+  }
+  .admin-settings .demo .cta-message {
+    margin-top: 1em;
+  }
+  .admin-settings .demo .cta-button .btn-l, .admin-settings .demo .cta-button .ranking-item-link-buttons a, .admin-settings .demo .ranking-item-link-buttons .cta-button a {
+    padding: 1em;
+    font-size: 16px;
   }
   .admin-settings .demo .ranking-item-description {
     margin-top: 1em;
@@ -21537,6 +21499,7 @@ textarea[name=the_page_memo] {
 }
 .components-popover__content .inline-button-black {
   border-color: var(--cocoon-black-color);
+  background-color: var(--cocoon-black-color);
 }
 .components-popover__content .inline-button-red {
   border-color: var(--cocoon-red-color);
