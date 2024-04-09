@@ -6,7 +6,7 @@ Theme URI: https://wp-cocoon.com/
 Author: わいひら
 Author URI: https://nelog.jp/
 Text Domain: cocoon
-Version: 2.7.2.4
+Version: 2.7.2.7
 Requires at least: 5.7.0
 Requires PHP: 7.4.0
 Tags: two-columns, left-sidebar, right-sidebar
@@ -191,7 +191,6 @@ select, .search-edit {
   border-radius: var(--cocoon-basic-border-radius);
   font-size: inherit;
   width: 100%;
-  color: inherit;
 }
 
 .fz-12px {
@@ -5830,35 +5829,6 @@ figcaption {
   margin-bottom: 0.6em;
 }
 
-.is-style-accordion {
-  padding: 0;
-}
-.is-style-accordion:not(.not-nested-style) .faq-question {
-  padding: 0.5em;
-  margin: 0;
-  cursor: pointer;
-  position: relative;
-  background-color: #e8ecef;
-  border-color: var(--cocoon-three-d-border-colors);
-}
-.is-style-accordion:not(.not-nested-style) .faq-question::before {
-  content: "+";
-  position: absolute;
-  right: 1em;
-  opacity: 0.5;
-}
-.is-style-accordion:not(.not-nested-style) .faq-question.active::before {
-  content: "-";
-}
-.is-style-accordion:not(.not-nested-style) .faq-answer {
-  padding: 1em 0.5em;
-}
-.is-style-accordion:not(.not-nested-style).has-border-color .faq-question,
-.is-style-accordion:not(.not-nested-style).has-border-color .faq-question-label {
-  color: var(--cocoon-white-color);
-  border: none;
-}
-
 .is-style-filter-clarendon img {
   filter: sepia(0.15) contrast(1.25) brightness(1.25) hue-rotate(5deg);
 }
@@ -7788,6 +7758,9 @@ div.fb-like-mobile {
   position: relative;
   width: 100%;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .mobile-menu-buttons .menu-button > a {
   display: block;
@@ -7813,7 +7786,6 @@ div.fb-like-mobile {
   text-align: center;
   font-weight: 900;
   line-height: 50px;
-  min-width: 200px;
   overflow: hidden;
 }
 .logo-menu-button img {
@@ -8602,6 +8574,7 @@ ul.timeline ul ul ul {
 
 .faq-question {
   margin-bottom: 1.8em;
+  align-items: center;
 }
 
 .faq-question-label {
@@ -8610,14 +8583,72 @@ ul.timeline ul ul ul {
 
 .faq-question-content {
   font-weight: 700;
+  margin-right: 30px;
 }
 
 .faq .faq-answer {
   margin-left: 0;
 }
 
+.faq-answer-content {
+  margin-top: 6px;
+}
+
 .faq-answer-label {
   color: var(--cocoon-custom-answer-color);
+}
+
+.is-style-square .faq-item-label {
+  font-size: 20px;
+  padding: 5px 8px;
+  height: 100%;
+}
+
+.is-style-accordion {
+  padding: 0;
+}
+.is-style-accordion .faq-question {
+  padding: 0.5em;
+  margin: 0;
+  cursor: pointer;
+  position: relative;
+  background-color: #e8ecef;
+  border-color: var(--cocoon-three-d-border-colors);
+}
+.is-style-accordion .faq-question::before {
+  content: "+";
+  position: absolute;
+  right: 1em;
+  opacity: 0.5;
+}
+.is-style-accordion .faq-question.active::before {
+  content: "-";
+}
+.is-style-accordion .faq-answer {
+  padding: 1em 0.5em;
+}
+.is-style-accordion.has-border-color .faq-question {
+  border: none;
+}
+.is-style-accordion:not(.not-nested-style).has-border-color .faq-question {
+  color: var(--cocoon-white-color);
+}
+
+.faq-wrap.is-style-square.not-nested-style > .faq > * > .faq-item-label {
+  color: #fff;
+}
+
+.faq-wrap.is-style-square.not-nested-style > .faq > * > .faq-question-label {
+  background-color: var(--cocoon-custom-question-color);
+}
+
+.faq-wrap.is-style-square.not-nested-style > .faq > * > .faq-answer-label {
+  background-color: var(--cocoon-custom-answer-color);
+}
+
+.faq-wrap.is-style-accordion.has-border-color.not-nested-style > .faq > .faq-question {
+  color: var(--cocoon-white-color);
+  background-color: var(--cocoon-custom-border-color);
 }
 
 /*Cocoon用記事ボックス*/
@@ -10338,11 +10369,6 @@ input[name=tab_item] {
   animation: tab-index-show 0.3s ease-in;
 }
 
-/* Cocoonのリンクボタンカスタマイズ */
-.btn-wrap-circle > a {
-  background: #999;
-}
-
 .list-title {
   text-align: center;
   font-size: 18px;
@@ -11279,6 +11305,7 @@ _:-ms-lang(x), .mc-circle {
   }
   .mobile-menu-buttons {
     display: flex;
+    align-items: stretch;
   }
   .mobile-header-menu-buttons {
     top: 0;

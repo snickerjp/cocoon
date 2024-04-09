@@ -36,18 +36,99 @@
 
 .faq-question{
   margin-bottom: 1.8em;
+  align-items: center;
 }
 .faq-question-label{
   color: var(--cocoon-custom-question-color);
 }
 .faq-question-content{
   font-weight: 700;
+  margin-right: 30px;
 }
 
 .faq .faq-answer{
   margin-left: 0;
 }
 
+.faq-answer-content {
+  margin-top: 6px;
+}
+
 .faq-answer-label{
   color: var(--cocoon-custom-answer-color);
+}
+
+//スクエアラベル
+.is-style-square{
+  .faq-item-label{
+    font-size: 20px;
+    padding: 5px 8px;
+    height: 100%;
+  }
+}
+
+
+//アコーディオンスタイル
+.is-style-accordion{
+  padding: 0;
+
+  .faq-question{
+    padding: .5em;
+    margin: 0;
+    cursor: pointer;
+    position: relative;
+    background-color: #e8ecef;
+    border-color: var(--cocoon-three-d-border-colors);
+    // align-items: center;
+
+    &::before{
+      content: "+";
+      position: absolute;
+      right: 1em;
+      opacity: 0.5;
+    }
+
+    &.active::before{
+      content: "-";
+    }
+  }
+
+  .faq-answer{
+    padding: 1em .5em;
+  }
+
+  &.has-border-color{
+    .faq-question{
+      border: none;
+    }
+  }
+
+  &:not(.not-nested-style) {
+
+    &.has-border-color{
+      .faq-question{
+        color: var(--cocoon-white-color);
+      }
+    }
+
+
+  }
+}
+
+//ブロックネスト時のスタイル
+.faq-wrap.is-style-square.not-nested-style > .faq > * > .faq-item-label{
+  color: #fff;
+}
+
+.faq-wrap.is-style-square.not-nested-style > .faq > * > .faq-question-label{
+  background-color: var(--cocoon-custom-question-color);
+}
+
+.faq-wrap.is-style-square.not-nested-style > .faq > * > .faq-answer-label{
+  background-color: var(--cocoon-custom-answer-color);
+}
+
+.faq-wrap.is-style-accordion.has-border-color.not-nested-style > .faq > .faq-question {
+  color: var(--cocoon-white-color);
+  background-color: var(--cocoon-custom-border-color);
 }

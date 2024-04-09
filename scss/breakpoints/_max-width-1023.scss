@@ -88,6 +88,7 @@ div.sidebar {
 
 .mobile-menu-buttons {
   display: flex;
+  align-items: stretch;
 }
 
 .mobile-header-menu-buttons {
@@ -106,6 +107,7 @@ div.sidebar {
 
   .logo-menu-button {
     flex-grow: 99;
+    // flex-shrink: 0;
   }
 }
 
