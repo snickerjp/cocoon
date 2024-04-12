@@ -3368,6 +3368,7 @@ body.wp-admin {
 .admin-settings .demo .body .secondary-box :last-child,
 .admin-settings .demo .body .light-box :last-child,
 .admin-settings .demo .body .dark-box :last-child,
+.admin-settings .demo .body .tab-content :last-child,
 .admin-settings .demo .body .toc :last-child {
   margin-bottom: 0;
 }
@@ -5827,6 +5828,42 @@ body.wp-admin {
 .admin-settings .demo .wp-block-code code {
   white-space: pre;
 }
+.admin-settings .demo .tab-block .tab-label-group {
+  padding-left: 0;
+}
+.admin-settings .demo .tab-label-group {
+  list-style: none !important;
+  display: flex;
+  gap: 2px;
+  padding: 0;
+  margin: 0 !important;
+  font-size: 13px;
+  overflow: auto;
+  white-space: nowrap;
+}
+.admin-settings .demo .tab-label-group .tab-label {
+  background-color: #f3f3f3;
+  padding: 0.5em 1.5em;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  margin: 0;
+  cursor: pointer;
+}
+.admin-settings .demo .tab-label-group .tab-label.is-active {
+  background-color: #333;
+  color: #fff;
+}
+.admin-settings .demo .tab-content-group {
+  border: 1px solid #ddd;
+  padding: 1.2em;
+  border-radius: 2px;
+}
+.admin-settings .demo .tab-content-group .tab-content {
+  display: none;
+}
+.admin-settings .demo .tab-content-group .tab-content.is-active {
+  display: block;
+}
 .admin-settings .demo .column-wrap {
   display: flex;
   justify-content: space-between;
@@ -6956,6 +6993,9 @@ body.wp-admin {
 .admin-settings .demo .shoplinkyahoo a {
   background: #e60033;
   position: relative;
+}
+.admin-settings .demo .shoplinkmercari a {
+  background: #4dc9ff;
 }
 .admin-settings .demo .shoplinkdmm a {
   background: #00bcd4;
@@ -11803,6 +11843,7 @@ body.wp-admin {
 .admin-settings .demo .body .secondary-box :last-child,
 .admin-settings .demo .body .light-box :last-child,
 .admin-settings .demo .body .dark-box :last-child,
+.admin-settings .demo .body .tab-content :last-child,
 .admin-settings .demo .body .toc :last-child {
   margin-bottom: 0;
 }
@@ -14262,6 +14303,42 @@ body.wp-admin {
 .admin-settings .demo .wp-block-code code {
   white-space: pre;
 }
+.admin-settings .demo .tab-block .tab-label-group {
+  padding-left: 0;
+}
+.admin-settings .demo .tab-label-group {
+  list-style: none !important;
+  display: flex;
+  gap: 2px;
+  padding: 0;
+  margin: 0 !important;
+  font-size: 13px;
+  overflow: auto;
+  white-space: nowrap;
+}
+.admin-settings .demo .tab-label-group .tab-label {
+  background-color: #f3f3f3;
+  padding: 0.5em 1.5em;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  margin: 0;
+  cursor: pointer;
+}
+.admin-settings .demo .tab-label-group .tab-label.is-active {
+  background-color: #333;
+  color: #fff;
+}
+.admin-settings .demo .tab-content-group {
+  border: 1px solid #ddd;
+  padding: 1.2em;
+  border-radius: 2px;
+}
+.admin-settings .demo .tab-content-group .tab-content {
+  display: none;
+}
+.admin-settings .demo .tab-content-group .tab-content.is-active {
+  display: block;
+}
 .admin-settings .demo .column-wrap {
   display: flex;
   justify-content: space-between;
@@ -15391,6 +15468,9 @@ body.wp-admin {
 .admin-settings .demo .shoplinkyahoo a {
   background: #e60033;
   position: relative;
+}
+.admin-settings .demo .shoplinkmercari a {
+  background: #4dc9ff;
 }
 .admin-settings .demo .shoplinkdmm a {
   background: #00bcd4;
@@ -20951,6 +21031,7 @@ textarea[name=the_page_memo] {
 .components-popover__content .body .secondary-box :last-child,
 .components-popover__content .body .light-box :last-child,
 .components-popover__content .body .dark-box :last-child,
+.components-popover__content .body .tab-content :last-child,
 .components-popover__content .body .toc :last-child {
   margin-bottom: 0;
 }
@@ -23410,6 +23491,42 @@ textarea[name=the_page_memo] {
 }
 .components-popover__content .wp-block-code code {
   white-space: pre;
+}
+.components-popover__content .tab-block .tab-label-group {
+  padding-left: 0;
+}
+.components-popover__content .tab-label-group {
+  list-style: none !important;
+  display: flex;
+  gap: 2px;
+  padding: 0;
+  margin: 0 !important;
+  font-size: 13px;
+  overflow: auto;
+  white-space: nowrap;
+}
+.components-popover__content .tab-label-group .tab-label {
+  background-color: #f3f3f3;
+  padding: 0.5em 1.5em;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  margin: 0;
+  cursor: pointer;
+}
+.components-popover__content .tab-label-group .tab-label.is-active {
+  background-color: #333;
+  color: #fff;
+}
+.components-popover__content .tab-content-group {
+  border: 1px solid #ddd;
+  padding: 1.2em;
+  border-radius: 2px;
+}
+.components-popover__content .tab-content-group .tab-content {
+  display: none;
+}
+.components-popover__content .tab-content-group .tab-content.is-active {
+  display: block;
 }
 .components-popover__content .red {
   margin: 0;
