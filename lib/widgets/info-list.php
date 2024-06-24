@@ -1,6 +1,6 @@
 <?php
 ///////////////////////////////////////////////////
-//新着情報ウイジェットの追加
+//新着情報ウィジェットの追加
 ///////////////////////////////////////////////////
 /**
  * Cocoon WordPress Theme
@@ -19,7 +19,7 @@ class InfoListWidgetItem extends WP_Widget {
       WIDGET_NAME_PREFIX.__( '新着情報', THEME_NAME ),
       array('description' => __( '最近書かれた記事のタイトルリストを表示します。', THEME_NAME )),
       array( 'width' => 400, 'height' => 350 )
-    );//ウイジェット名
+    );//ウィジェット名
   }
   function widget($args, $instance) {
     extract( $args );
@@ -36,7 +36,7 @@ class InfoListWidgetItem extends WP_Widget {
     $is_frame = apply_filters( 'info_list_widget_is_frame', empty($instance['is_frame']) ? 0 : 1 );
     $is_divider = apply_filters( 'info_list_widget_is_divider', empty($instance['is_divider']) ? 0 : 1 );
     //更新日順
-    $modified = apply_filters( 'info_list_widget_mo$modified', empty($instance['modified']) ? 0 : 1 );
+    $modified = apply_filters( 'info_list_widget_modified', empty($instance['modified']) ? 0 : 1 );
     //カテゴリーID
     $cat_ids = empty($instance['cat_ids']) ? array() : $instance['cat_ids'];
     $cat_ids = apply_filters( 'info_list_widget_cat_ids', $cat_ids, $instance, $this->id_base );

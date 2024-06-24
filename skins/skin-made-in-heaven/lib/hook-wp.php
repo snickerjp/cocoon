@@ -9,7 +9,7 @@ add_action('customize_register', function($wp_customize) {
   $wp_customize->add_panel(
     'hvn_cocoon',
     array(
-      'title'     => 'Cocoon拡張設定',
+      'title'     => 'メイド・イン・ヘブン設定',
       'priority'  => 300,
     )
   );
@@ -18,6 +18,10 @@ add_action('customize_register', function($wp_customize) {
   hvn_color($wp_customize);
   hvn_main($wp_customize);
   hvn_header($wp_customize);
+  hvn_editor($wp_customize);
+  if (defined('HVN_OPTION') && HVN_OPTION) {
+    hvn_option($wp_customize);
+  }
 });
 
 
@@ -257,19 +261,15 @@ add_filter('posts_search_orderby', function($search_orderby, $wp_query) {
 
 
 //******************************************************************************
-//  ウィジェットでショートコード実行許可
-//******************************************************************************
-add_filter('widget_text', 'do_shortcode');
-
-
-//******************************************************************************
 //  ウィジェットタイトルHTML入力
 //******************************************************************************
 add_filter('widget_title', function($title) {
   $title = str_replace('[', '<', $title);
   $title = str_replace(']', '>', $title);
-  $title = str_replace('&#039;', "'", $title);
-  $title = str_replace('&quot;', '"', $title);
+  $title = str_replace('&#8216;', "'", $title);
+  $title = str_replace('&#8217;', "'", $title);
+  $title = str_replace('&#8221;', '"', $title);
+  $title = str_replace('&#8220;', '"', $title);
 
   return $title;
 });
@@ -287,12 +287,9 @@ add_action('enqueue_block_editor_assets', function() {
 //  CSS、ライブラリ追加
 //******************************************************************************
 add_action('wp_enqueue_scripts', function() {
-  if (get_theme_mod('hvn_like_setting')) {
-    wp_enqueue_script('cookie', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js', ['jquery-migrate'], false, true);
-  }
-
   hvn_h2_h4_css();
   hvn_color_css();
+  hvn_editor_css();
   hvn_custom_css();
   wp_dequeue_style('scrollhint-style');
 }, 999);
@@ -307,6 +304,7 @@ add_action('admin_footer', function() {
   // エディター画面
   if (is_gutenberg_editor_enable() && ($pagenow == 'post.php' || $pagenow == 'post-new.php')) {
     hvn_h2_h4_css();
+    hvn_editor_css();
   }
   wp_enqueue_style('hvn-admin', HVN_SKIN_URL . 'assets/css/admin.css');
 }, 999);
@@ -352,32 +350,54 @@ add_action('wp_body_open', function() {
 add_action('wp_head', function() {
   global $_THEME_OPTIONS;
 
+  // サイト開設年
   $yymmdd = get_theme_mod('hvn_site_date_setting');
   if ($yymmdd) {
     list($yy, $mm, $dd) = explode('-', $yymmdd);
     $_THEME_OPTIONS['site_initiation_year'] = $yy;
   }
+
   $_THEME_OPTIONS['front_page_type'] = get_theme_mod('front_page_type', 'index');
   $_THEME_OPTIONS['entry_card_type'] = get_theme_mod('entry_card_type', 'entry_card');
 
-  // タイルカード除外
-  if ((get_theme_mod('entry_card_type') == 'tile_card_2')
-   || (get_theme_mod('entry_card_type') == 'tile_card_3')) {
-    remove_theme_mod('entry_card_type');
-  }
-
   // サイドバー変更
-  if ((get_theme_mod('entry_card_type') == 'vertical_card_3')
-   || (get_theme_mod('front_page_type') == 'category_3_columns')) {
+  if ((get_entry_card_type() == 'vertical_card_3')
+   || (get_front_page_type() == 'category_3_columns')) {
       $_THEME_OPTIONS['sidebar_display_type'] = 'no_display_index_pages';
   } else {
     // 3列解除
-    if (get_theme_mod('entry_card_type') == 'vertical_card_3') {
+    if (get_entry_card_type() == 'vertical_card_3') {
       remove_theme_mod('entry_card_type');
     }
-    if (get_theme_mod('front_page_type') == 'category_3_columns') {
+    if (get_front_page_type() == 'category_3_columns') {
       remove_theme_mod('front_page_type');
     }
+  }
+
+  switch(get_entry_card_type()) {
+    case 'title_card_2':
+    case 'tile_card_3':
+      remove_theme_mod('entry_card_type');
+      break;
+
+    case 'big_card':
+      if (get_theme_mod('hvn_card_expansion_setting')) {
+        $_THEME_OPTIONS['entry_card_snippet_visible'] = 1;
+      }
+      break;
+
+    case 'big_card_first':
+    case 'vertical_card_2':
+      if (get_theme_mod('hvn_card_expansion_setting')) {
+        if (strpos(get_front_page_type(), 'category') !== false) {
+          // 新着記事数変更
+          $_THEME_OPTIONS['index_new_entry_card_count'] = 5;
+
+          // カテゴリーごと記事数変更
+          $_THEME_OPTIONS['index_category_entry_card_count'] = 5;
+        }
+      }
+      break;
   }
 }, 999);
 
@@ -481,3 +501,240 @@ add_filter('wp_nav_menu', function($nav_menu, $args) {
 
   return $nav_menu;
 }, 10,2);
+
+
+//******************************************************************************
+//  インラインボタン変更
+//******************************************************************************
+add_filter('render_block', function($block_content) {
+  $btn_circle = null;
+  $btn_shine  = null;
+
+  if (get_theme_mod('hvn_inline_button_set1_setting')) {
+    $btn_circle = 'btn-circle';
+  }
+
+  if (get_theme_mod('hvn_inline_button_set2_setting')) {
+    $btn_shine = 'btn-shine';
+  }
+
+  $block_content = preg_replace('/class="(inline-button)/', "class=\"$btn_circle $btn_shine $1", $block_content);
+  return $block_content;
+});
+
+
+//******************************************************************************
+//  コメントフォーム追加
+//******************************************************************************
+
+// コメントフォーム追加
+add_action('comment_form_field_comment', function($content) {
+  $icon = 3;
+  $html = null;
+
+  if (get_theme_mod('hvn_comment_setting') && is_user_logged_in()){
+    for ($i=1; $i<=$icon; $i++) {
+      $checked = null;
+      if ($i == 1) {
+        $checked = 'checked';
+      }
+      $img = get_theme_mod("hvn_comment_img{$i}_setting");
+      if ($img) {
+        $url = wp_get_attachment_url($img);
+        $html  .= <<< EOF
+<div class="hvn-comment-icon">
+  <figure><img src="{$url}"></figure>
+  <input type="radio" name="post-icon" value="{$i}" {$checked}>
+</div>
+EOF;
+      }
+    }
+    if ($html) {
+      $html = "<label>アイコン</label><div class=hvn-comment>{$html}</div>";
+    }
+  }
+
+  return $html . $content;
+});
+
+
+// カスタムフィールド出力
+add_action('comment_post', function($comment_id) {
+  if (get_theme_mod('hvn_comment_setting') && is_user_logged_in()) {
+    $post_icon = esc_attr($_POST['post-icon']);
+    add_comment_meta($comment_id, 'post-icon', $post_icon, true);
+  }
+});
+
+
+// コメントメタカスタムフィールド追加
+add_action('add_meta_boxes_comment', function() {
+ add_meta_box('hvn-comment-title', 'カスタムフィールド' , 'comment_meta_post_icon', 'comment', 'normal', 'high');
+});
+
+
+function comment_meta_post_icon($comment) {
+  $post_icon = get_comment_meta($comment->comment_ID, 'post-icon', true);
+
+  $html = <<<EOF
+<p>
+  <label for="post-icon">アイコン番号:</label>
+  <input type="text" name="post-icon" value="{$post_icon}"  class="widefat" />
+</p>
+EOF;
+
+  echo $html;
+}
+
+
+// コメントを編集カスタムフィールド更新
+add_action('edit_comment', function($comment_id) {
+  if (isset($_POST['post-icon'])) {
+    update_comment_meta($comment_id, 'post-icon', esc_attr($_POST['post-icon']));
+  }
+});
+
+
+// コメント一覧にカスタムフィールド追加
+add_filter('manage_edit-comments_columns', function($columns) {
+  $columns['post-icon'] = "アイコン番号";
+
+  return $columns;
+});
+
+
+add_action('manage_comments_custom_column', function($column_name, $comment_id) {
+  if ($column_name == 'post-icon') {
+    $post_icon = get_comment_meta($comment_id, 'post-icon', true);
+    echo esc_attr($post_icon);
+  }
+},10, 2);
+
+
+// アバター変更
+add_filter('get_avatar' , function($avatar, $comment) {
+  if (defined('HVN_OPTION') && HVN_OPTION) {
+    if (get_theme_mod('hvn_comment_setting')) {
+      if (!is_admin() && isset($comment->comment_ID)) {
+        $no = get_comment_meta($comment->comment_ID, 'post-icon',true);
+        if ($no) {
+          $img = wp_get_attachment_url(get_theme_mod("hvn_comment_img{$no}_setting"));
+          if ($img) {
+            $avatar = "<img src={$img} class=avatar>";
+          }
+        }
+      }
+    }
+  }
+
+  return $avatar;
+}, 100001, 2);
+
+
+//******************************************************************************
+//  独自パターン追加
+//******************************************************************************
+add_action('init',function() {
+  $path = url_to_local(HVN_SKIN_URL) . "assets/pattern/*.json";
+  $files = glob($path);
+
+  foreach ($files as $i => $file) {
+    $json =  json_decode(file_get_contents($file), true);
+    register_block_pattern(
+      "heaven/pattern{$i}",
+      $json,
+    );
+  }
+  register_block_pattern_category('heaven', ['label' => 'メイド・イン・ヘブン']);
+});
+
+
+//******************************************************************************
+//  タグクラウドにパラメータ追加
+//******************************************************************************
+add_filter('in_widget_form', function($widget, $return, $instance) {
+  if ($widget->id_base == 'tag_cloud') {
+    $f_id   = $widget->get_field_id('drop');
+    $f_name = $widget->get_field_name('drop');
+    echo "<p><input type=checkbox class=widefat name={$f_name}" .  checked(isset($instance['drop']), true, false) . "><label for={$f_id}>ドロップダウンで表示</label></p>";
+  }
+}, 10, 3);
+
+
+//******************************************************************************
+//  設定フォーム更新
+//******************************************************************************
+add_filter('widget_update_callback', function($instance, $new_instance, $old_instance, $this_widget) {
+  $instance['drop'] = $new_instance['drop'];
+
+  return $instance;
+}, 10, 4);
+
+
+//******************************************************************************
+//  設定値を追加
+//******************************************************************************
+add_filter('widget_tag_cloud_args', function($args, $instance) {
+  $args['drop'] = isset($instance['drop']) ? $instance['drop'] : '';
+
+  return $args;
+},2,10);
+
+
+//******************************************************************************
+//  タグクラウド独自表示
+//******************************************************************************
+add_filter('wp_tag_cloud', function($return, $args) {
+  if (isset($args['drop']) && $args['drop'] == 'on'){
+    $id = get_query_var('tag_id');
+    $tags = get_tags(array('orderby'=> 'count', 'order' => 'DESC'));
+
+    ob_start();
+    echo '<select aria-label="選択" onchange="document.location.href=this.options[this.selectedIndex].value;"><option value="" selected="selected">タグを選択</option>';
+
+    if ($tags) {
+      foreach($tags as $tag) {
+        $count = $args["show_count"] ? " &nbsp;({$tag->count})" : '';
+?>
+<option value="<?php echo get_tag_link($tag->term_id); ?>" <?php selected($tag->term_id, $id); ?>><?php echo $tag->name; ?><?php echo $count; ?></option>
+<?php
+      }
+    }
+    echo '</select>';
+    $return = ob_get_clean();
+  }
+
+  return $return;
+},2,10);
+
+
+//******************************************************************************
+//  タイムラインのタイトルHTMLタグ変更
+//******************************************************************************
+add_filter('render_block_cocoon-blocks/timeline', function($content, $block) {
+  if (preg_match('/hvn-h[2-6]/', $content, $matches)) {
+    $h = str_replace('hvn-', '', $matches[0]);
+    $before = '/<div class="timeline-item-title">(.*)<\/div><div class="timeline-item-snippet/';
+    $after = '<' . $h . ' class="timeline-item-title">$1</' . $h . '><div class="timeline-item-snippet';
+
+    $content = preg_replace($before, $after, $content);
+  }
+
+  return $content;
+}, 10, 2);
+
+
+//******************************************************************************
+//  FAQの質問HTMLタグ変更
+//******************************************************************************
+add_filter('render_block_cocoon-blocks/faq', function($content, $block) {
+  if (preg_match('/hvn-h[2-6]/', $content, $matches)) {
+    $h = str_replace('hvn-', '', $matches[0]);
+    $before = ['/<div class="faq-question-content faq-item-content">(.*)<\/div><\/dt>/s', '/<dl(.*?)\/dl>/s', '/<dt(.*?)\/dt>/s', '/<dd(.*?)\/dd>/s'];
+    $after  = ['<' . $h . ' class="faq-question-content faq-item-content">$1</' . $h . '></dt>', '<div$1/div>', '<div$1/div>', '<div$1/div>'];
+
+    $content = preg_replace($before, $after, $content);
+}
+
+  return $content;
+}, 10, 2);

@@ -70,6 +70,8 @@
   --cocoon-xxx-thin-color: #fafbfc;
   --cocoon-current-background-color: #eee;
   --cocoon-select-background-color: #d8eaf2;
+  --cocoon-tab-label-color: #f2f2f2;
+  --cocoon-tab-label-active-color: #404453;
   --cocoon-basic-border-radius: 4px;
   --cocoon-badge-border-radius: 2px;
   --cocoon-middle-border-radius: 8px;
@@ -139,6 +141,10 @@
 .edit-post-visual-editor__post-title-wrapper > :where(:not(.alignleft):not(.alignright):not(.alignfull)),
 .block-editor-block-list__layout.is-root-container > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
   max-width: 840px;
+}
+
+.wp-site-blocks .wp-block {
+  max-width: none !important;
 }
 
 .article dd {
@@ -4077,41 +4083,6 @@ figcaption {
   padding-left: 0;
 }
 
-.tab-label-group {
-  list-style: none !important;
-  display: flex;
-  gap: 2px;
-  padding: 0;
-  margin: 0 !important;
-  font-size: 13px;
-  overflow: auto;
-  white-space: nowrap;
-}
-.tab-label-group .tab-label {
-  background-color: #f3f3f3;
-  padding: 0.5em 1.5em;
-  border-top-left-radius: 2px;
-  border-top-right-radius: 2px;
-  margin: 0;
-  cursor: pointer;
-}
-.tab-label-group .tab-label.is-active {
-  background-color: #333;
-  color: #fff;
-}
-
-.tab-content-group {
-  border: 1px solid #ddd;
-  padding: 1.2em;
-  border-radius: 2px;
-}
-.tab-content-group .tab-content {
-  display: none;
-}
-.tab-content-group .tab-content.is-active {
-  display: block;
-}
-
 .column-wrap {
   display: flex;
   justify-content: space-between;
@@ -5258,7 +5229,7 @@ ul{
 }
 
 .wp-block .wp-block-table__cell-content {
-  min-width: 50px;
+  min-width: 60px;
 }
 
 .wp-block-quote__citation {
@@ -6087,4 +6058,17 @@ div.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper {
 .timeline-item-label .rich-text {
   overflow: auto;
   white-space: nowrap !important;
+}
+
+.article {
+  margin-bottom: 0 !important;
+}
+
+.cta-btn-group {
+  display: flex;
+  gap: 6px;
+}
+.cta-btn-group .cta-btn {
+  width: 100%;
+  justify-content: center;
 }

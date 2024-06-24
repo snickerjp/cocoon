@@ -48,10 +48,12 @@ add_filter('pagination_next_link_caption', function($caption) {
 
 add_filter('breadcrumbs_single_root_text', 'breadcrumbs_root_text_custom');
 add_filter('breadcrumbs_page_root_text', 'breadcrumbs_root_text_custom');
+
+if (!function_exists('breadcrumbs_root_text_custom')):
 function breadcrumbs_root_text_custom(){
   return get_theme_mod('hvn_breadcrumbs_setting', 'ホーム');
 }
-
+endif;
 
 //******************************************************************************
 //  bodyクラス追加
@@ -200,9 +202,11 @@ add_filter('cocoon_part__tmp/body-top', function($content) {
 //******************************************************************************
 add_action('cocoon_part_after__tmp/footer-javascript', function() {
   global $_IS_SWIPER_ENABLE;
+  global $_HVN_NOTICE;
 
   if ((!$_IS_SWIPER_ENABLE)
-   && (hvn_image_count() > 1  && get_theme_mod('hvn_header_setting') == 'image' && is_front_top_page())) {
+   && (($_HVN_NOTICE)
+    || (hvn_image_count() > 1  && get_theme_mod('hvn_header_setting') == 'image' && is_front_top_page()))) {
     echo <<< EOF
     <link rel='stylesheet' id='swiper-style-css' href='https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css' />
     <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
@@ -221,11 +225,13 @@ EOF;
 //  オリジナルレイアウト変更
 //******************************************************************************
 add_filter('cocoon_part__tmp/list-category-columns', function($content) {
-  if (is_entry_card_type_vertical_card_2()
-   || is_entry_card_type_vertical_card_3()) {
-    ob_start();
-    cocoon_template_part(HVN_SKIN . 'tmp/list-category-columns');
-    $content = ob_get_clean();
+  if (get_theme_mod('hvn_card_expansion_setting')) {
+    if (is_entry_card_type_vertical_card_2()
+     || is_entry_card_type_vertical_card_3()) {
+      ob_start();
+      cocoon_template_part(HVN_SKIN . 'tmp/list-category-columns');
+      $content = ob_get_clean();
+    }
   }
 
   return $content;
@@ -245,4 +251,170 @@ add_filter('cocoon_part__tmp/list', function($content) {
     $content = str_replace('<div id="list-columns"', $html . '<div id="list-columns"', $content);
   }
   return $content;
+});
+
+
+//******************************************************************************
+//  カテゴリーごと(2、3カード)縦型カード
+//******************************************************************************
+add_filter('index_widget_entry_card_type', function($type, $cat_id) {
+  if (get_theme_mod('hvn_categoties_card_setting')) {
+    $type = 'large_thumb';
+  }
+  return $type;
+}, 2, 10);
+
+
+//******************************************************************************
+//  プロフィールのSNSフォローを非表示
+//******************************************************************************
+add_filter('cocoon_part__tmp/sns-follow-buttons', function($content) {
+  if (get_theme_mod('hvn_profile_follows_setting')) {
+    if (get_query_var('option') == 'sf-profile') {
+      $content = null;
+    }
+  }
+  return $content;
+});
+
+
+//******************************************************************************
+//  ダークモード
+//******************************************************************************
+add_filter('cocoon_part__tmp/footer-bottom', function($content) {
+  $html = <<<EOF
+<span class="hvn-dark-switch">
+  <input type="checkbox" name="hvn-dark" id="hvn-dark">
+  <label for="hvn-dark"></label>
+</span>
+EOF;
+  $content =  preg_replace('/(class="source-org copyright">.*)<\/div>/', "$1$html</div>", $content);
+  return $content; 
+});
+
+
+//******************************************************************************
+//  タイトルとURLをコピー
+//******************************************************************************
+add_filter('cocoon_part__tmp/sns-share-buttons', function($content) {
+  $before ='/data-clipboard-text=".*" title/';
+  $after = 'data-clipboard-text="&lt;a href=' . get_the_permalink() . '&gt;' . get_share_page_title() . '&lt;/a&gt;" title';
+  $content = preg_replace($before, $after, $content);
+
+  return $content;
+});
+
+
+//******************************************************************************
+//  エントリーカードにリボンを追加
+//******************************************************************************
+add_action('entry_card_snippet_after',function($post_ID) {
+  $memo = get_post_meta($post_ID, 'the_page_memo', true);
+  preg_match('/ribbon-color-[1-5]/', $memo,$class);
+  if ($class) {
+    echo '<div class="ribbon ribbon-top-left ' . $class[0] . '"></div>';
+  }
+});
+
+
+//******************************************************************************
+//  SNSシェアコメントボタン表示
+//******************************************************************************
+add_filter('is_comment_share_button_visible', function($res, $option) {
+  if (!is_single_comment_visible()) {
+    $res = false;
+  }
+  return $res;
+}, 10, 2);
+
+
+//******************************************************************************
+//  一覧ページに表示順フォームを追加
+//******************************************************************************
+add_action('cocoon_part_before__tmp/list-index', function() {
+  if (defined('HVN_OPTION') && HVN_OPTION) {
+    if (!is_home() || !get_theme_mod('hvn_orderby_option_setting')) return;
+
+    $orderby = isset($_GET['orderby-switch']) ? esc_html($_GET['orderby-switch']) : null;
+    if (isset($_COOKIE['orderby-switch'])) {
+      $orderby = $_COOKIE['orderby-switch'];
+    }
+
+    ob_start();
+?>
+<div class="orderby">
+  <span class="sort-title"><i class="fas fa-sort-amount-down"></i>並び替え</span>
+  <span class="sort-select">
+    <select id="orderby-switch" class="orderby-switch-dropdown" onchange="document.cookie = this.options[this.selectedIndex].value+';path=/';window.document.location.href =location.href;">
+      <option value="orderby-switch="         <?php the_option_selected($orderby, '');          ?>>新着順</option>
+      <option value="orderby-switch=modified" <?php the_option_selected($orderby, 'modified');  ?>>更新順</option>
+      <option value="orderby-switch=popular"  <?php the_option_selected($orderby, 'popular');   ?>>人気順</option>
+    </select>
+  </span>
+</div>
+<?php
+    echo  ob_get_clean();
+  }
+});
+
+
+//******************************************************************************
+//  表示順を設定
+//******************************************************************************
+add_action('pre_get_posts',function($query) {
+  // 一覧ページのみ並び替え
+  if (is_admin() || !is_home() || !$query->is_main_query()) {
+    return;
+  }
+
+  // cooki更新
+  $ck = isset($_COOKIE['orderby-switch']) ? $_COOKIE['orderby-switch'] : null;
+  if (isset($_GET['orderby-switch'])) {
+    setcookie('orderby-switch', esc_html($_GET['orderby-switch']), time() + 60 * 60 * 24,'/');
+  }
+
+  // 順序設定
+  $gt = isset($_GET['orderby-switch']) ? $_GET['orderby-switch'] : null;
+  $st = empty($ck) ? $gt : $ck;
+
+  switch($st) {
+    // 人気順
+    case 'popular':
+      $records = get_access_ranking_records('all', 3000, 'post');
+      $post_ids = array();
+      foreach ($records as $post) {
+        $post_ids[] = $post->ID;
+      }
+      $query->set('post__in', $post_ids);
+      $query->set('orderby', 'post__in');
+      break;
+
+    default:
+      $query->set('orderby', $st);
+  }
+});
+
+
+//******************************************************************************
+//  目次ボタン追加
+//******************************************************************************
+add_action('cocoon_part_after__tmp/button-go-to-top', function() {
+  if (get_theme_mod('hvn_toc_fix_setting')) {
+    $html = do_shortcode('[toc]');
+    echo <<< EOF
+<div id="hvn-toc">
+  <label for="hvn-open" class="hvn-open-btn"><i class="fas fa-list"></i></label>
+  <input type="radio" id="hvn-close" class="display-none" name="hvn-trigger">
+  <input type="radio" id="hvn-open"  class="display-none" name="hvn-trigger">
+  <div class="hvn-modal">
+    <div class="hvn-content-wrap">
+      <div class="hvn-title">目次</div>
+      {$html}
+    </div>
+    <label for="hvn-close"><div class="hvn-background"></div></label>
+  </div>
+</div>
+
+EOF;
+  }
 });

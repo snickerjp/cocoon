@@ -21,6 +21,10 @@
   padding: 0px 20px 5px;
 }
 
+.hvn-dark .article h2 {
+  --hover-color: var(--main-color);
+}
+
 .article h2::before {
   font-family: Arial;
   bottom: -28px;

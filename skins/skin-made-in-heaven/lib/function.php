@@ -47,6 +47,14 @@ function hvn_sanitize_text($text, $setting) {
 endif;
 
 
+// パレット
+if (!function_exists('hvn_sanitize_color')):
+function hvn_sanitize_color($color, $setting) {
+  return (sanitize_hex_color($color) ? $color : $setting->default);
+}
+endif;
+
+
 //******************************************************************************
 //  カラーコードを%薄いRBG、HEXコード変換
 //******************************************************************************
@@ -206,6 +214,25 @@ endif;
 
 
 //******************************************************************************
+//  エディターCSS追加
+//******************************************************************************
+if (!function_exists('hvn_editor_css')):
+function hvn_editor_css() {
+  ob_start();
+  cocoon_template_part(HVN_SKIN . 'tmp/css-editor');
+
+  $css = ob_get_clean();
+  if ($css) {
+    $handle = 'hvn-editor';
+    wp_register_style($handle, false, array());
+    wp_enqueue_style($handle);
+    wp_add_inline_style($handle, $css);
+  }
+}
+endif;
+
+
+//******************************************************************************
 //  メインビジュアル追加
 //******************************************************************************
 if (!function_exists('hvn_add_header')):
@@ -251,6 +278,7 @@ function hvn_add_header() {
   // タイトルテキスト
   $msg = get_theme_mod('hvn_header_message_setting');
   if ($msg) {
+    $msg = do_shortcode($msg);
     $msg = "<div class=message><div>{$msg}</div></div>";
   }
 
@@ -376,13 +404,58 @@ endif;
 //******************************************************************************
 if (!function_exists('get_notice_area_message')):
 function get_notice_area_message() {
+  global $_HVN_NOTICE;
+  global $_THEME_OPTIONS;
+
+  $_HVN_NOTICE = false;
+
   $msg = stripslashes_deep(get_theme_option(OP_NOTICE_AREA_MESSAGE));
+
   if (!is_admin()) {
-    $msg = str_replace('[', '<', $msg);
-    $msg = str_replace(']', '>', $msg);
+    if (strpos($msg, '[pattern ') !== false) {
+      $msg = do_shortcode($msg);
+
+      if (strpos($msg, 'href=') !== false) {
+        $_THEME_OPTIONS['notice_area_url'] = '';
+      }
+    }
+
+    $msg_array =  explode(',' ,$msg);
+
+    if (count($msg_array) > 1) {
+      $_HVN_NOTICE = true;
+      $html = null;
+
+      for ($i=0;$i<count($msg_array); $i++) {
+        $html .= "<div class=swiper-slide>{$msg_array[$i]}</div>";
+      }
+      $msg = "<div class=swiper><div class=swiper-wrapper>{$html}</div></div>";
+    }
   }
 
   return $msg;
+}
+endif;
+
+
+//******************************************************************************
+//  カスタマイザーラベル出力
+//******************************************************************************
+if (!function_exists('hvn_panel_label')):
+function hvn_panel_label($wp_customize, $section, $label, $no) {
+  $wp_customize->add_setting("hvn_label{$no}_{$section}_section");
+  $wp_customize->add_control(
+    new WP_Customize_Control(
+      $wp_customize,
+      "hvn_label{$no}_{$section}_section",
+      array(
+        'label'       => "■ {$label}",
+        'section'     => "hvn_{$section}_section",
+        'settings'    => "hvn_label{$no}_{$section}_section",
+        'type'        => 'hidden',
+      )
+    )
+  );
 }
 endif;
 

@@ -38,6 +38,7 @@ import * as infolist from './block/info-list';
 import * as navicard from './block/navicard';
 import * as tab from './block/tab';
 import * as tabItem from './block/tab-item';
+import * as cta from './block/cta';
 
 import * as captionBox from './block-universal/caption-box';
 import * as labelBox from './block-universal/label-box';
@@ -73,6 +74,7 @@ const cocoonBlocks = [
   navicard,
   tab,
   tabItem,
+  cta,
 
   captionBox,
   tabCaptionBox,
@@ -146,6 +148,7 @@ import './toolbutton/bold-blue.js';
 import './toolbutton/green.js';
 import './toolbutton/bold-green.js';
 import './toolbutton/keyboard-key.js';
+import './toolbutton/custom.js';
 import './toolbutton/ruby.js';
 import './toolbutton/clear-format.js';
 import './toolbutton/html.js';

@@ -2,6 +2,10 @@
 if (!defined('ABSPATH')) exit;
 
 global $_IS_SWIPER_ENABLE;
+global $_HVN_NOTICE;
+
+$n = HVN_COUNT;
+$button = '<button class="sub-item" aria-label="もっと見る"></button>';
 
 
 //******************************************************************************
@@ -160,6 +164,7 @@ if (get_theme_mod('hvn_toc_setting')) {
   // 見出し判定位置調整(font-size)
   const val = 50;
   let footerTop;
+  let lastBodyHeight = 0;
 
   // 表示対象の目次取得
   const Tocs = $('.sidebar-scroll .toc-widget-box li:not(.display-none) > a');
@@ -184,10 +189,15 @@ if (get_theme_mod('hvn_toc_setting')) {
     // 最後の章の下位置を設定
     footerTop = $('.article').offset().top;
     Pos[i - 1].bottom = footerTop + $('.article').height();
+    lastBodyHeight = $('body').height();
   }
 
   // ハイライト表示
   function currentCheck() {
+    if ($('body').height() != lastBodyHeight) {
+      init();
+    }
+
     let windowScrollTop = $(window).scrollTop();
     Tocs.parent().removeClass('current');
 
@@ -298,7 +308,7 @@ if (get_theme_mod('hvn_like_setting')) {
 
       // Cookie更新
       var cookArry = JSON.stringify(cook);
-      $.cookie('like_page', cookArry, { expires: 365, path: '/' });
+      localStorage.setItem('like_page', cookArry);
       check_cookie(this, id);
 
       // カスタムフィールド更新
@@ -322,7 +332,7 @@ if (get_theme_mod('hvn_like_setting')) {
   // Cookieチェック処理
   function check_cookie(elm, id) {
     // cookie取得
-    cook = $.cookie('like_page') ? JSON.parse( $.cookie('like_page')) : [];
+    cook = localStorage.getItem('like_page') ? JSON.parse(localStorage.getItem('like_page')) : [];
 
     // 投稿ID登録済?
     if (cook.indexOf(id) > -1) {
@@ -390,7 +400,7 @@ echo <<< EOF
   const size_835 = window.matchMedia("(min-width: ${size_835}px)");
   const size_481 = window.matchMedia("(min-width: ${size_481}px)");
 
-  // 835以上
+  // 835px以上?
   const size_835Listener = (event) => {
     if (event.matches) {
       $(".footer").addClass('nwa');
@@ -461,4 +471,232 @@ EOF;
 })(jQuery);
 
 EOF;
+}
+
+
+//******************************************************************************
+//  アコーディオン化
+//******************************************************************************
+if (get_theme_mod('hvn_accordion_setting')) {
+  echo <<< EOF
+// アーカイブ
+(function($) {
+  var html;
+  var li;
+  var pcount;
+  var year;
+  var byear;
+
+  $(".widget_archive").each(function() {
+    html = '';
+    li = '';
+    pcount = 0;
+    year   = 0;
+    byear  = 0;
+
+    $('li', this).each(function() {
+      var y = $(this).text().match(/(\d+)-/);
+      year = y[1];
+      if (byear == '') {
+        byear = y[1];
+      }
+
+      if (year != byear) {
+        out_html();
+        byear = y[1];
+        li = '';
+        pcount = 0;
+      }
+      li += '<li>' + $(this).html().replace(/(\d+)-/, '') + '</li>';
+      pcount += Number($('.post-count', this).text());
+    });
+
+    out_html();
+    $('ul', this).html(html);
+  });
+
+  function out_html() {
+    var p = '';
+    if (pcount != 0) {
+      p = '<span class="post-count">' + pcount + '</span>';
+    }
+    html += '<li><a><span class="list-item-caption">' + byear + '</span>' + p + '</a><ul class="children">' + li + '</ul></li>';
+  }
+})(jQuery);
+
+
+// カテゴリー、固定ページ
+(function($) {
+  $(".widget").each(function() {
+    $('.children', this).hide();
+　  $('.children', this).before('{$button}');
+
+    $('.sub-item', this).click(function() {
+      $(this).next('ul').slideToggle(300);
+      $(this).toggleClass('active');
+    });
+  });
+})(jQuery);
+
+
+// タグクラウド
+(function($) {
+  var n = {$n};
+
+  $('.sidebar .widget_tag_cloud').each(function() {
+    var elm = $('.tagcloud a', this);
+    var c   = elm.length;
+    if (c > n) {
+      elm.slice(${n}).hide();
+      $(this).append('{$button}');
+    }
+
+    $('button', this).click(function() {
+      elm.slice(${n}).slideToggle(300);
+      $(this).toggleClass('active');
+    });
+  });
+})(jQuery);
+
+EOF;
+}
+
+
+//******************************************************************************
+//  ダークモード
+//******************************************************************************
+echo <<< EOF
+(function($) {
+  const btn = $('#hvn-dark');
+  btn.click(function() {
+   $('body').toggleClass('hvn-dark');
+   if (btn.prop('checked')) {
+      localStorage.setItem('hvn-dark', 'dark');
+    } else {
+      localStorage.removeItem('hvn-dark');
+    }
+  });
+
+  //ローカルストレージ判定
+  if (localStorage.getItem('hvn-dark') ==='dark') {
+    $('body').addClass('hvn-dark');
+    btn.prop("checked", true);
+  } else {
+    $('body').removeClass('hvn-dark');
+  }
+  $('body').css('visibility', 'visible');
+})(jQuery);
+EOF;
+
+
+//******************************************************************************
+//  通知エリア
+//******************************************************************************
+if ($_HVN_NOTICE) {
+  echo <<< EOF
+const noticeSwiper = new Swiper(".notice-area-message .swiper",{
+  loop: true,
+  direction: "vertical",
+  autoplay: {
+    delay: 8000,
+  },
+  speed: 2000, 
+});
+
+EOF;
+}
+
+
+//******************************************************************************
+//  目次ボタン
+//******************************************************************************
+if (get_theme_mod('hvn_toc_fix_setting')) {
+  $html = do_shortcode('[toc]');
+  echo <<< EOF
+(function($) {
+  if (!($('.main .toc').length)) {
+    return;
+  }
+  $('.hvn-open-btn').addClass('active');
+  $('#hvn-toc a').click(function() {
+    $('#hvn-close').prop('checked',true);
+  });
+})(jQuery);
+
+EOF;
+}
+
+
+//******************************************************************************
+//  ブログスタイル
+//******************************************************************************
+echo <<< EOF
+(function($) {
+  $('.is-style-hvn-text').each(function(){
+    $('.blogcard-wrap', this).html($('.blogcard-title', this));
+    
+  });
+})(jQuery);
+
+EOF;
+
+
+//******************************************************************************
+//  見出しボックスアコーディオン
+//******************************************************************************
+echo <<< EOF
+(function($) {
+  $('.is-style-accordion.cocoon-block-caption-box > .caption-box-content').hide();
+  $('.is-style-accordion.cocoon-block-caption-box > .caption-box-label').click(function() {
+    $(this).next('.caption-box-content').toggle();
+    $(this).toggleClass('active');
+  });
+})(jQuery);
+
+EOF;
+
+
+//******************************************************************************
+//  目次省略表示
+//******************************************************************************
+switch(get_theme_mod('hvn_toc_hidden_setting')) {
+  case '1':
+    echo <<< EOF
+(function($) {
+  var n = ${n}
+
+  var elm = $('.main .toc-content li');
+  var c = elm.length;
+  if (c > n) {
+    elm.slice({$n}).hide();
+    $('.main .toc-content').append('{$button}');
+  }
+
+  $('.toc button').click(function() {
+    elm.slice({$n}).slideToggle(300);
+    $(this).toggleClass('active');
+  });
+})(jQuery);
+
+EOF;
+    break;
+
+  case '2':
+    echo <<< EOF
+(function($) {
+  var elm = $('.main .toc-content ul ul');
+  var c = elm.length;
+  if (c > 0) {
+    elm.hide();
+    $('.main .toc-content').append('{$button}');
+  }
+
+  $('.toc button').click(function() {
+    elm.slideToggle(300);
+    $(this).toggleClass('active');
+  });
+})(jQuery);
+
+EOF;
+    break;
 }
