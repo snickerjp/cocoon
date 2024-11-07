@@ -27,6 +27,8 @@
   --cocoon-codepen-color: #333;
   --cocoon-feedly-color: #2bb24c;
   --cocoon-rss-color: #f26522;
+  --cocoon-copy-color: #333333;
+  --cocoon-comment-color: #333333;
   --cocoon-red-color: #e60033;
   --cocoon-pink-color: #e95295;
   --cocoon-purple-color: #884898;
@@ -44,7 +46,9 @@
   --cocoon-orange-color: #f39800;
   --cocoon-deep-orange-color: #ea5506;
   --cocoon-brown-color: #954e2a;
+  --cocoon-light-grey-color: #cccccc;
   --cocoon-grey-color: #949495;
+  --cocoon-dark-grey-color: #666666;
   --cocoon-blue-gray-color: #607d8b;
   --cocoon-black-color: #333333;
   --cocoon-white-color: #ffffff;
@@ -168,6 +172,22 @@
   border-radius: var(--cocoon-basic-border-radius);
   font-size: inherit;
   width: 100%;
+}
+
+.line-follow-button, .twitter-follow-button, .facebook-follow-button {
+  text-decoration: none;
+  text-align: center;
+  margin: 0 auto;
+  padding: 3px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--cocoon-white-color);
+  position: relative;
+  border-radius: var(--cocoon-basic-border-radius);
+}
+.line-follow-button:hover, .twitter-follow-button:hover, .facebook-follow-button:hover {
+  color: var(--cocoon-white-color);
+  opacity: 0.7;
 }
 
 .fz-12px {
@@ -450,6 +470,18 @@
   font-family: "Sawarabi Mincho", sans-serif;
 }
 
+.ff-noto-sans-korean,
+.wf-active .ff-noto-sans-korean,
+.wp-admin-ff-noto-sans-korean .editor-styles-wrapper {
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.ff-pretendard,
+.wf-active .ff-pretendard,
+.wp-admin-ff-pretendard .editor-styles-wrapper {
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
+
 .sub-caption {
   font-family: Tunga, "Trebuchet MS", Tahoma, Verdana, "Segoe UI", var(--cocoon-default-font);
   font-weight: 400;
@@ -693,6 +725,16 @@ p.has-background {
 
 :where(.wp-block-columns.is-layout-flex) {
   gap: 1em;
+}
+
+:is(.is-layout-flow, .is-layout-constrained) > * {
+  margin-block-start: 0;
+}
+
+.has-drop-cap:not(:focus)::first-letter {
+  font-size: 3em;
+  font-weight: normal;
+  float: none;
 }
 
 /************************************
@@ -1556,6 +1598,14 @@ img.emoji {
 
 [class*=bc-brand-color] .rss-button {
   --cocoon-sns-color: var(--cocoon-rss-color);
+}
+
+[class*=bc-brand-color] .copy-button {
+  --cocoon-sns-color: var(--cocoon-copy-color);
+}
+
+[class*=bc-brand-color] .comment-button {
+  --cocoon-sns-color: var(--cocoon-comment-color);
 }
 
 .ss-top {
@@ -2582,6 +2632,10 @@ label.screen-reader-text {
   margin: 20px 0;
 }
 
+.wp-block-calendar .wp-calendar-table {
+  max-width: 400px;
+}
+
 .wp-calendar-table {
   border-collapse: collapse;
   border-top-width: 1px;
@@ -2825,6 +2879,9 @@ label.screen-reader-text {
 ************************************/
 .recent-comments {
   line-height: 1.3;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .recent-comment-avatar {
@@ -2920,6 +2977,12 @@ label.screen-reader-text {
 }
 .widget_search .wp-block-search__input {
   line-height: normal;
+}
+
+.wp-block-categories-list,
+.wp-block-archives-list {
+  list-style: none;
+  padding-left: 0;
 }
 
 .has-box-style {
@@ -3243,7 +3306,7 @@ label.screen-reader-text {
 .body .wp-block-cover :last-child,
 .body .blogcard-type :last-child,
 .body .btn-wrap :last-child,
-.body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between) :last-child,
+.body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between, .is-layout-flex) :last-child,
 .body .wp-block-gallery :last-child,
 .body .block-box :last-child,
 .body .blank-box :last-child,
@@ -3619,14 +3682,10 @@ label.screen-reader-text {
 }
 
 [class*=is-style-blank-box-] {
-  --cocoon-custom-border-color: var(--cocoon-grey-color);
-  padding: var(--cocoon-box-padding);
   border-radius: var(--cocoon-basic-border-radius);
-  background-color: var(--cocoon-custom-background-color);
-  color: var(--cocoon-custom-text-color);
   border-style: solid;
   border-width: 3px;
-  border-color: var(--cocoon-custom-border-color);
+  border-color: var(--cocoon-grey-color);
 }
 [class*=is-style-blank-box-] ol, [class*=is-style-blank-box-] ul {
   margin: 0;
@@ -4091,6 +4150,7 @@ div.search-form {
 .btn-shine,
 .btn-wrap-shine > a {
   overflow: hidden;
+  vertical-align: middle;
 }
 
 .btn-shine:before,
@@ -5433,7 +5493,7 @@ html .body .label-box.has-white-background-color .box-content {
   opacity: 0.7;
 }
 
-.toggle-checkbox {
+input.toggle-checkbox {
   display: none;
 }
 
@@ -6363,14 +6423,10 @@ figcaption {
 }
 
 .comment-page-link {
-  text-align: center;
   margin: 24px 0;
-}
-.comment-page-link .page-numbers {
-  width: auto;
-  height: auto;
-  padding: 6px 12px;
-  line-height: normal;
+  display: inline-flex;
+  justify-content: center;
+  width: 100%;
 }
 .comment-page-link .current {
   background-color: #eee;
@@ -6404,9 +6460,10 @@ figcaption {
   width: 46px;
   border: 1px solid var(--cocoon-thin-color);
   margin: 0 4px;
-  line-height: 46px;
+  line-height: 40px;
   text-align: center;
   border-radius: var(--cocoon-basic-border-radius);
+  font-size: 16px;
 }
 .page-numbers span {
   line-height: inherit;
@@ -6440,6 +6497,14 @@ figcaption {
   background-color: #f5f8fa;
   transition: all 0.3s ease-in-out;
   color: var(--cocoon-text-color);
+}
+
+.five-digits-or-more {
+  font-size: 13px;
+}
+
+.six-digits-or-more {
+  font-size: 11px;
 }
 
 /************************************
@@ -7585,13 +7650,30 @@ div.sbs-think:not(.not-nested-style) .speech-balloon::after {
   margin-bottom: -7px;
 }
 
+.facebook-follow-button {
+  background-color: var(--cocoon-facebook-color);
+  margin-bottom: 0.6em;
+}
+.facebook-follow-button::before {
+  content: "\f087";
+  font-family: FontAwesome;
+  margin: 0 3px;
+  font-weight: normal;
+}
+
+.font-awesome-5 .facebook-follow-button::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 400;
+  content: "\f164";
+}
+
 .sidebar .fb-like-box {
   max-width: 640px;
   flex-direction: column;
 }
 
 /************************************
-** Facebookページを「いいね！」するエリアのスタイル
+** Facebookページを「フォロー」するエリアのスタイル
 ************************************/
 div.fb-like-mobile {
   display: none;
@@ -7647,14 +7729,8 @@ div.fb-like-mobile {
   height: 100px;
   text-align: center;
   float: right;
-  padding-top: 27px;
+  padding-top: 31px;
   box-sizing: border-box;
-  /*  display: -webkit-flex;
-    display:         flex;
-    -webkit-align-items: center;
-            align-items: center;
-    -webkit-justify-content: center;
-            justify-content: center;*/
 }
 
 .fb-like-balloon-button iframe {
@@ -7702,7 +7778,7 @@ div.fb-like-mobile {
 }
 
 /************************************
-** Facebookページを「いいね！」するエリアのスタイル（サイドバーの時）
+** Facebookページを「フォロー」するエリアのスタイル（サイドバーの時）
 ************************************/
 .sidebar .fb-like-balloon-body::after {
   display: none;
@@ -8329,7 +8405,10 @@ div.fb-like-mobile {
 .btn .anchor-icon,
 .ranking-item-link-buttons a .anchor-icon,
 .btn-wrap a .anchor-icon,
-.no-icon .anchor-icon {
+.no-icon .anchor-icon,
+.wp-block-categories-list a .anchor-icon,
+.wp-block-archives-list a .anchor-icon,
+.wp-block-calendar a .anchor-icon {
   display: none !important;
 }
 
@@ -8520,6 +8599,9 @@ ul.timeline ul ul ul {
 }
 .iconlist-box ul li::before {
   display: initial;
+}
+.iconlist-box ul ul {
+  list-style: none;
 }
 .iconlist-box ol:not(.has-list-style) > li::before {
   display: none;
@@ -10171,7 +10253,7 @@ pre {
 .is-code-row-number-enable pre.hljs#highlight-demo {
   border: none;
   position: relative;
-  padding: 0.4em 1em 0.4em 3em;
+  padding: 0.4em 1em 0.4em 3em !important;
 }
 
 .is-code-row-number-enable pre.hljs::before {
@@ -10578,7 +10660,7 @@ pre {
     margin-right: 10px;
   }
   /************************************
-  ** Facebookページを「いいね！」するエリアのスタイル
+  ** Facebookページを「フォロー」するエリアのスタイル
   ************************************/
   .fb-like-balloon-body {
     margin-right: 100px;
@@ -10666,11 +10748,6 @@ pre {
   .cat-label {
     font-size: 10px;
     padding: 1px 3px;
-  }
-  .page-numbers {
-    width: 34px;
-    height: 34px;
-    line-height: 34px;
   }
   .pagination-next-link, .comment-btn {
     font-size: 1em;
@@ -11130,6 +11207,9 @@ pre {
   .appeal .appeal-in {
     min-height: 200px;
   }
+  .page-numbers.dots {
+    display: none;
+  }
   .booklink-image, .kaerebalink-image, .tomarebalink-image, .product-item-thumb {
     width: 80px;
     min-width: 80px;
@@ -11205,43 +11285,27 @@ amp-img[src*="ad.jp.ap.valuecommerce.com"] {
   display: none;
 }
 
-.line-follow-button, .twitter-follow-button, .facebook-follow-button {
-  text-decoration: none;
-  text-align: center;
-  margin: 0 auto;
-  padding: 3px 12px;
-  top: 8px;
-  font-size: 14px;
-  font-weight: bold;
-  color: var(--cocoon-white-color);
-  position: relative;
-  border-radius: var(--cocoon-basic-border-radius);
-}
-.line-follow-button:hover, .twitter-follow-button:hover, .facebook-follow-button:hover {
-  color: var(--cocoon-white-color);
-  opacity: 0.7;
-}
-
-.facebook-follow-button {
-  background-color: var(--cocoon-facebook-color);
-}
-.facebook-follow-button::before {
-  font-weight: normal;
-}
-
 .twitter-follow-button {
   font-weight: normal;
   background-color: var(--cocoon-twitter-color);
+  margin-bottom: 0.6em;
 }
 .twitter-follow-button::before {
+  content: "\f099";
+  font-family: FontAwesome;
+  margin: 0 3px;
   font-weight: normal;
 }
 
 .line-follow-button {
   font-weight: normal;
   background-color: var(--cocoon-line-color);
+  margin-bottom: 0.6em;
 }
 .line-follow-button::before {
+  content: "\f075";
+  font-family: FontAwesome;
+  margin: 0 3px;
   font-weight: normal;
 }
 

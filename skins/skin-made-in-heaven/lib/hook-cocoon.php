@@ -55,6 +55,7 @@ function breadcrumbs_root_text_custom(){
 }
 endif;
 
+
 //******************************************************************************
 //  bodyクラス追加
 //******************************************************************************
@@ -62,6 +63,18 @@ add_filter('body_class_additional', function($classes) {
   $classes[] = 'hvn';
   if (get_theme_mod('hvn_toc_setting')) {
     $classes[] = 'hvn-scroll-toc';
+  }
+
+  if (get_theme_mod('hvn_border_setting', true)) {
+    $classes[] = 'hvn-card-border';
+  }
+
+  if (get_theme_mod('hvn_content_setting', true)) {
+    $classes[] = 'hvn-content-border';
+  }
+
+  if (!get_theme_mod('hvn_border_radius_setting', false)) {
+    $classes[] = 'hvn-radius';
   }
 
   return $classes;
@@ -96,6 +109,13 @@ add_filter('the_author_box_description', function($description, $user_id) {
   if ($date  && get_theme_mod('hvn_site_date_onoff_setting')) {
     $day = number_format(ceil(date_i18n('U') - strtotime($date)) / (24 * 60 * 60));
     $description .= "<p class=hvn_site_date>{$date}開設から{$day}日目です。</p>";
+  }
+
+  if (get_theme_mod('hvn_profile_btn_setting')) {
+    $url = get_the_author_profile_page_url($user_id);
+    if ($url) {
+      $description .= "<div class=hnv-profile-btn><a href=\"{$url}\">プロフィール</a></div>";
+    }
   }
 
   return $description;
@@ -258,7 +278,7 @@ add_filter('cocoon_part__tmp/list', function($content) {
 //  カテゴリーごと(2、3カード)縦型カード
 //******************************************************************************
 add_filter('index_widget_entry_card_type', function($type, $cat_id) {
-  if (get_theme_mod('hvn_categoties_card_setting')) {
+  if (get_theme_mod('hvn_categories_card_setting')) {
     $type = 'large_thumb';
   }
   return $type;
@@ -266,10 +286,10 @@ add_filter('index_widget_entry_card_type', function($type, $cat_id) {
 
 
 //******************************************************************************
-//  プロフィールのSNSフォローを非表示
+//  SNSフォロー表示
 //******************************************************************************
 add_filter('cocoon_part__tmp/sns-follow-buttons', function($content) {
-  if (get_theme_mod('hvn_profile_follows_setting')) {
+  if (!get_theme_mod('hvn_profile_follows_setting', true)) {
     if (get_query_var('option') == 'sf-profile') {
       $content = null;
     }
@@ -401,6 +421,7 @@ add_action('pre_get_posts',function($query) {
 add_action('cocoon_part_after__tmp/button-go-to-top', function() {
   if (get_theme_mod('hvn_toc_fix_setting')) {
     $html = do_shortcode('[toc]');
+    $title = __('目次', THEME_NAME);
     echo <<< EOF
 <div id="hvn-toc">
   <label for="hvn-open" class="hvn-open-btn"><i class="fas fa-list"></i></label>
@@ -408,7 +429,7 @@ add_action('cocoon_part_after__tmp/button-go-to-top', function() {
   <input type="radio" id="hvn-open"  class="display-none" name="hvn-trigger">
   <div class="hvn-modal">
     <div class="hvn-content-wrap">
-      <div class="hvn-title">目次</div>
+      <div class="hvn-title">{$title}</div>
       {$html}
     </div>
     <label for="hvn-close"><div class="hvn-background"></div></label>
@@ -417,4 +438,43 @@ add_action('cocoon_part_after__tmp/button-go-to-top', function() {
 
 EOF;
   }
+});
+
+
+//******************************************************************************
+//  通知エリア更新
+//******************************************************************************
+add_filter('get_notice_area_message', function($msg) {
+  global $_HVN_NOTICE;
+  global $_THEME_OPTIONS;
+
+  $_HVN_NOTICE = false;
+
+  $msg = stripslashes_deep(get_theme_option(OP_NOTICE_AREA_MESSAGE));
+
+  if (!is_admin()) {
+    if (strpos($msg, '[pattern ') !== false) {
+      $msg = do_shortcode($msg);
+
+      if (strpos($msg, 'href=') !== false) {
+        $_THEME_OPTIONS['notice_area_url'] = '';
+      }
+    }
+
+    $msg_array =  explode(',' ,$msg);
+
+    if (count($msg_array) > 1) {
+      if (is_notice_area_visible()) {
+        $_HVN_NOTICE = true;
+      }
+      $html = null;
+
+      for ($i=0;$i<count($msg_array); $i++) {
+        $html .= "<div class=swiper-slide>{$msg_array[$i]}</div>";
+      }
+      $msg = "<div class=swiper><div class=swiper-wrapper>{$html}</div></div>";
+    }
+  }
+
+  return $msg;
 });

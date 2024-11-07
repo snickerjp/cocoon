@@ -1,7 +1,7 @@
 <?php //スキンから親テーマの定義済み関数等をオーバーライドして設定の書き換えが可能
 if ( !defined( 'ABSPATH' ) ) exit;
 
-// ベーススキン・・・スタイルを適応するスキン。実際に表示されるスキン（当スキンはフェイドインを追加するのみ）
+// ベーススキン・・・スタイルを適用するスキン。実際に表示されるスキン（当スキンはフェイドインを追加するのみ）
 class SkinRaku {
     // DBに保存するためのオプション名
     const BASE_SKIN_OPTION_NAME   = 'raku_base_skin_url';
@@ -17,6 +17,7 @@ class SkinRaku {
     private $skin_base_json      = '';
     private $skin_base_amp       = '';
 
+    public $fadein_type;
     // コンストラクタ
     function __construct() {
         /*----------------------------------------------------
@@ -269,16 +270,16 @@ class SkinRaku {
         tr_fadein += '<td><ul>';
         <?php
         $fadein_type = [
-            self::FADEIN_TYPE_OPTION_NAME.'1' => '１．ふわっと',
-            self::FADEIN_TYPE_OPTION_NAME.'2' => '２．下からふわっと',
-            self::FADEIN_TYPE_OPTION_NAME.'3' => '３．メインは左から、サイドは右からふわっと',
-            self::FADEIN_TYPE_OPTION_NAME.'4' => '４．ヘッダー部分は上から、メインは左から、サイドは右からふわっと',
+            self::FADEIN_TYPE_OPTION_NAME.'1' => __('１．ふわっと' , THEME_NAME),
+            self::FADEIN_TYPE_OPTION_NAME.'2' => __('２．下からふわっと' , THEME_NAME),
+            self::FADEIN_TYPE_OPTION_NAME.'3' => __('３．メインは左から、サイドは右からふわっと' , THEME_NAME),
+            self::FADEIN_TYPE_OPTION_NAME.'4' => __('４．ヘッダー部分は上から、メインは左から、サイドは右からふわっと' , THEME_NAME),
         ];
         foreach ($fadein_type as $id => $type) : ?>
         tr_fadein += '<li><input type="radio" name="<?=self::FADEIN_TYPE_OPTION_NAME?>" id="<?=$id?>" value="<?=$id?>" <?php the_checkbox_checked($id, $this->fadein_type); ?>><label for="<?=$id?>"><?=$type?></label></li>';
         <?php endforeach; ?>
         tr_fadein += '</ul>';
-        tr_fadein += '<p class="tips"><span class="fa fa-info-circle" aria-hidden="true"></span> ふわっとのタイプを選択してください。<br>（詳しくは実際にご確認ください）</p>';
+        tr_fadein += '<p class="tips"><span class="fa fa-info-circle" aria-hidden="true"></span> <?php _e('ふわっとのタイプを選択してください。', THEME_NAME); ?><br><?php _e('（詳しくは実際にご確認ください）', THEME_NAME); ?></p>';
         tr_fadein += '</td></tr>';
         // 追加
         skin_url_list.closest('tr').after(tr_fadein);
@@ -302,7 +303,7 @@ class SkinRaku {
             } else {
                 // その他のスキン
                 if (skin_url === '') {
-                    tr_base_skin += '<option value="">なし</option>';
+                    tr_base_skin += '<option value=""><?php _e('なし', THEME_NAME); ?></option>';
                 } else {
                     let selected = '';
                     if (skin_url === '<?=$this->skin_base?>') {
@@ -313,8 +314,8 @@ class SkinRaku {
             }
         });
         tr_base_skin += '</select>';
-        tr_base_skin += '<p class="tips"><span class="fa fa-info-circle" aria-hidden="true"></span> スキンを選択してください。こちらで選択したスキンが表示されます。';
-        tr_base_skin += '<br>※現在選択中の【'+myskin_name+'】は動作を追加するものです</p>';
+        tr_base_skin += '<p class="tips"><span class="fa fa-info-circle" aria-hidden="true"></span>'+'<?php _e('スキンを選択してください。', THEME_NAME); ?>'+'<?php _e('こちらで選択したスキンが表示されます。', THEME_NAME); ?>';
+        tr_base_skin += '<br><?php echo sprintf(__('※現在選択中の【%s】は動作を追加するものです', THEME_NAME), "'+myskin_name+'"); ?></p>';
         tr_base_skin += '</td></tr>';
         // 追加
         skin_url_list.closest('tr').after(tr_base_skin);

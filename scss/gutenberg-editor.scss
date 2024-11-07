@@ -319,26 +319,7 @@ div.mce-content-body {
   }
 }
 
-/* cocoon/style.css
-textarea{
-  min-height: 260px;
-}
- */
-
-/* wp-admin/css/common.css
-ul{
-    list-style:none;
-}
- */
-
 .wp-block {
-  ul {
-    list-style-type: disc;
-  }
-  li {
-    display: list-item;
-    text-align: -webkit-match-parent;
-  }
   ul ul {
     list-style-type: circle;
   }
@@ -1287,6 +1268,11 @@ div.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper {
     box-shadow: 0 0 0 1px #e5e8eb;
     display: block;
     padding: 4px;
+    &::after{
+      content: initial !important;
+      display: initial !important;
+      height: initial !important;
+    }
   }
   //プレビュー画面
   .__prev {
@@ -1487,6 +1473,27 @@ div.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper {
 }
 
 //ブロックエディターの余白をクリックしても「+」ボタンが表示されない不具合修正
-.editor-styles-wrapper{
-  padding-bottom: 10vh;
+// .editor-styles-wrapper{
+//   padding-bottom: 10vh;
+// }
+
+.radar-chart-block.is-selected {
+  border: 2px solid #007cba; /* 選択時の強調表示 */
+}
+
+// グループのグリッドレイアウト
+body .is-layout-grid {
+  display: grid;
+}
+
+.body .is-layout-grid > :is(*, div) {
+  margin: 0;
+}
+
+:root :where(.is-layout-grid) {
+  gap: 1.2rem;
+}
+
+.wp-block-pullquote{
+  font-size: 1.5em;
 }

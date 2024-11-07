@@ -30,7 +30,7 @@ endif;
 
 if ( !function_exists( 'replace_value_to_class' ) ):
 function replace_value_to_class($value){
-  return str_replace('_', '-', $value);;
+  return strtolower(str_replace('_', '-', $value));
 }
 endif;
 
@@ -324,6 +324,11 @@ function body_class_additional($classes) {
   //ページ設定でタイトルを非表示としたとき
   if (!is_page_title_visible()) {
     $classes[] = 'no-page-title';
+  }
+
+  //ClassicPressの場合
+  if (is_classicpress()) {
+    $classes[] = 'classicpress';
   }
 
   return apply_filters('body_class_additional', $classes);

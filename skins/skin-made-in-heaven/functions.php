@@ -106,7 +106,7 @@ $_THEME_OPTIONS = array(
   'category_tag_display_position' => 'content_bottom',
   'related_entries_visible' => 1,
   'related_association_type' => 'category',
-  'related_entry_heading' => '関連記事',
+  'related_entry_heading' => __('関連記事', THEME_NAME),
   'related_entry_sub_heading' => '',
   'related_entry_type' => 'mini_card',
   'related_entry_count' => 4,
@@ -228,6 +228,9 @@ $_THEME_OPTIONS = array(
   'fixed_mobile_buttons_enable' => 0,
   'mobile_header_logo_visible' => 1,
   'slide_in_content_bottom_sidebar_visible' => 0,
+
+// 管理者画面
+  'admin_list_memo_visible' => 1,
 
 // ウィジェット
   'exclude_widget_classes' => [

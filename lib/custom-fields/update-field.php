@@ -84,7 +84,7 @@ function time_mod_form_view() {
 
   $year = '<label for="aa_mod" class="screen-reader-text">' . __( '年', THEME_NAME ) .
     '</label><input type="text" id="aa_mod" name="aa_mod" value="' .
-    $aa_mod . '" size="4" maxlength="4"' . $tab_index_attribute . ' autocomplete="off" />' . __( '年', THEME_NAME );
+    $aa_mod . '" size="4" maxlength="4"' . $tab_index_attribute . ' />' . __( '年', THEME_NAME );
 
   $month = '<label for="mm_mod" class="screen-reader-text">' . __( '月', THEME_NAME )  .
     '</label><select id="mm_mod" name="mm_mod"' . $tab_index_attribute . ">\n";
@@ -98,13 +98,13 @@ function time_mod_form_view() {
 
   $day = '<label for="jj_mod" class="screen-reader-text">' . __( '日', THEME_NAME )  .
     '</label><input type="text" id="jj_mod" name="jj_mod" value="' .
-    $jj_mod . '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off" />' . __( '日', THEME_NAME );
+    $jj_mod . '" size="2" maxlength="2"' . $tab_index_attribute . ' />' . __( '日', THEME_NAME );
   $hour = '<label for="hh_mod" class="screen-reader-text">時' .
     '</label><input type="text" id="hh_mod" name="hh_mod" value="' . $hh_mod .
-    '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off" />';
+    '" size="2" maxlength="2"' . $tab_index_attribute . ' />';
   $minute = '<label for="mn_mod" class="screen-reader-text">分' .
     '</label><input type="text" id="mn_mod" name="mn_mod" value="' . $mn_mod .
-    '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off" />';
+    '" size="2" maxlength="2"' . $tab_index_attribute . ' />';
 
   printf( '%1$s %2$s %3$s @ %4$s : %5$s', $year, $month, $day, $hour, $minute );
   echo '<input type="hidden" id="ss_mod" name="ss_mod" value="' . $ss_mod . '" />';
@@ -118,46 +118,20 @@ if (isset( $_POST['update_level'] )) {
 if( !function_exists( 'update_custom_insert_post_data' ) ):
 function update_custom_insert_post_data( $data, $postarr ){
   $mydata = isset( $_POST['update_level'] ) ? $_POST['update_level'] : null;
-  // _v($data);
-  // _v($postarr);
-  // _v($mydata);
-  // _v($_POST);
-  // _v("data['post_date']");
-  // _v($data['post_date']);
-  // _v("data['post_date_gmt']");
-  // _v($data['post_date_gmt']);
-  // _v("data['post_modified']");
-  // _v($data['post_modified']);
-  // _v("data['post_modified_gmt']");
-  // _v($data['post_modified_gmt']);
 
-
-  // _v("postarr['post_date']");
-  // _v($postarr['post_date']);
-  // _v("postarr['post_date_gmt']");
-  // _v($postarr['post_date_gmt']);
-  // _v("postarr['post_modified']");
-  // _v($postarr['post_modified']);
-  // _v("postarr['post_modified_gmt']");
-  // _v($postarr['post_modified_gmt']);
-  if( $mydata === 'low' ){
+  if( ($mydata === 'del') || ($data['post_status'] == 'future') ) {
+    $data['post_modified'] = $data['post_date'];
+    $data['post_modified_gmt'] = get_gmt_from_date( $data['post_date'] );
+  }
+  elseif( $mydata === 'low' ){
     unset( $data['post_modified'] );
     unset( $data['post_modified_gmt'] );
 
-    // $post_modified = isset($postarr['post_modified']) ? $data['post_modified'] : $data['post_date'];
-    // $post_modified_gmt = get_gmt_from_date($post_modified);
-    // _v($post_modified);
-    // _v($post_modified_gmt);
-    // $data['post_modified'] = $post_modified;
-    // $data['post_modified_gmt'] = $post_modified_gmt;
-
     $last_modified = get_post_meta( $postarr['ID'], 'last_modified', true );
-    // _v($last_modified);
     if ( isset($last_modified) ) {
       $data['post_modified'] = $last_modified;
       $data['post_modified_gmt'] = get_gmt_from_date( $last_modified );
     }
-
   }
   elseif( $mydata === 'edit' ) {
     $aa_mod = $_POST['aa_mod'] <= 0 ? date_i18n('Y') : $_POST['aa_mod'];
@@ -176,12 +150,6 @@ function update_custom_insert_post_data( $data, $postarr ){
     $data['post_modified'] = $modified_date;
     $data['post_modified_gmt'] = get_gmt_from_date( $modified_date );
   }
-  elseif( $mydata === 'del' ) {
-    $data['post_modified'] = $data['post_date'];
-    $data['post_modified_gmt'] = get_gmt_from_date( $data['post_date'] );
-  }
-  // _v($data);
-
 
   add_post_meta( $postarr['ID'], 'last_modified', $data['post_modified'], true);
   update_post_meta( $postarr['ID'], 'last_modified', $data['post_modified']);

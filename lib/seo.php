@@ -418,7 +418,7 @@ function get_category_meta_description($category = null){
   }
 
   //カテゴリー本文から抜粋文を作成
-  $cat_desc = get_content_excerpt(get_the_category_content(), 160);
+  $cat_desc = get_content_excerpt(get_the_category_content(null, true), 160);
   if ( $cat_desc ) {
     $cat_desc = trim( strip_tags( $cat_desc ) );
     //カテゴリー設定に説明がある場合はそれを返す
@@ -475,8 +475,8 @@ endif;
 //メタディスクリプション文の取得
 if ( !function_exists( 'get_meta_description_text' ) ):
 function get_meta_description_text(){
-  $description = '';
-  if (is_front_page() && get_front_page_meta_description()) {
+  $description = get_bloginfo('description');
+  if (is_front_top_page() && get_front_page_meta_description()) {
     $description = get_front_page_meta_description();
   } elseif (is_singular() && is_meta_description_to_singular()) {
     if (!post_password_required()) {
@@ -563,7 +563,7 @@ function get_tag_meta_description($tag = null){
   }
 
   //タグ本文から抜粋文を作成
-  $tag_content = get_content_excerpt(get_the_tag_content(), 160);
+  $tag_content = get_content_excerpt(get_the_tag_content(null, true), 160);
   if ($tag_content) {
     $tag_desc = trim( strip_tags( $tag_content ) );
   }

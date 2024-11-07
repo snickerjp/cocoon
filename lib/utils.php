@@ -586,7 +586,7 @@ function wp_enqueue_highlight_js(){
     $url = apply_filters( 'code_highlight_js_url', $url );
     wp_enqueue_script( 'code-highlight-js', $url, array( 'jquery' ), false, true );
     if (is_admin_php_page()) {
-      $selector = '.entry-content pre';
+      $selector = CODE_HIGHLIGHT_CSS_SELECTOR;
     } else {
       $selector = get_code_highlight_css_selector();
     }
@@ -932,13 +932,13 @@ EOM;
 endif;
 
 
-//Google Fontsの読み込み
+//Google Fontsの読み込み（Googleフォント以外のサイトフォント含む）
 if ( !function_exists( 'wp_enqueue_google_fonts' ) ):
 function wp_enqueue_google_fonts(){
   if (!is_site_font_family_local() && !is_google_font_lazy_load_enable()) {
-    wp_enqueue_style( 'google-fonts-'.get_site_font_source(), get_site_font_source_url() );
+    wp_enqueue_style( 'site-font-'.get_site_font_source(), get_site_font_source_url() );
   }
-  if (!is_site_font_family_local() && is_google_font_lazy_load_enable()) {
+  if (!is_site_font_family_local() && is_google_font_lazy_load_enable() && !get_site_font_family_pretendard()) {
     $code = "window.WebFontConfig = {
       google: { families: ['".get_site_font_source_family().get_site_font_source_weight()."'] },
       active: function() {
@@ -1147,11 +1147,19 @@ function local_to_home_url($local){
 }
 endif;
 
-
 //テーマのリソースディレクトリ
 if ( !function_exists( 'get_theme_resources_path' ) ):
 function get_theme_resources_path(){
   $dir = WP_CONTENT_DIR.'/uploads/'.THEME_NAME.'-resources/';
+  if (!file_exists($dir)) mkdir($dir, 0777, true);
+  return $dir;
+}
+endif;
+
+//生成アイキャッチディレクトリ
+if ( !function_exists( 'get_theme_featured_images_path' ) ):
+function get_theme_featured_images_path(){
+  $dir = WP_CONTENT_DIR.'/uploads/'.THEME_NAME.'-featured-images/';
   if (!file_exists($dir)) mkdir($dir, 0777, true);
   return $dir;
 }
@@ -1348,6 +1356,27 @@ function get_image_width_and_height($image_url){
 }
 endif;
 
+//エディターページか
+if ( !function_exists( 'is_screen_editor_page' ) ):
+function is_screen_editor_page(){
+  // 管理画面内でのみ実行
+  if (is_admin()) {
+    // 現在の画面オブジェクトを取得
+    $current_screen = get_current_screen();
+
+    // 画面オブジェクトが取得できた場合
+    if ($current_screen) {
+      // エディター画面である場合に true を返す
+      if (($current_screen->base === 'post') || ($current_screen->base === 'site-editor')) {
+          return true;
+      }
+    }
+  }
+  // エディター画面ではない場合は false を返す
+  return false;
+}
+endif;
+
 //テーマ設定ページか
 if ( !function_exists( 'is_admin_php_page' ) ):
 function is_admin_php_page(){
@@ -1442,6 +1471,7 @@ endif;
 //URLからドメインを取得
 if ( !function_exists( 'get_domain_name' ) ):
 function get_domain_name($url){
+  if (empty($url)) return;
   return parse_url($url, PHP_URL_HOST);
 }
 endif;
@@ -1728,6 +1758,9 @@ function get_site_font_source_family(){
     case 'sawarabi_mincho':
       $font_source_family = 'Sawarabi+Mincho';
       break;
+    case 'noto_sans_korean':
+      $font_source_family = 'Noto+Sans+KR';
+      break;
     default:
     $font_source_family = null;
       break;
@@ -1741,16 +1774,16 @@ if ( !function_exists( 'get_site_font_source_weight' ) ):
 function get_site_font_source_weight(){
   switch (get_site_font_family()) {
     case 'noto_sans_jp':
-      $font_source_weight = ':100,300,400,500,700,900';
+      $font_source_weight = ':wght@100..900';
       break;
     case 'noto_serif_jp':
-      $font_source_weight = ':200,300,400,500,600,700,900';
+      $font_source_weight = ':wght@200..900';
       break;
     case 'mplus_1p':
-      $font_source_weight = ':100,300,400,500,700,800,900';
+      $font_source_weight = ':wght@100;300;400;500;700;800;900';
       break;
     case 'rounded_mplus_1c':
-      $font_source_weight = ':100,300,400,500,700,800,900';
+      $font_source_weight = ':wght@100;300;400;500;700;800;900';
       break;
     case 'kosugi':
       $font_source_weight = '';
@@ -1764,6 +1797,9 @@ function get_site_font_source_weight(){
     case 'sawarabi_mincho':
       $font_source_weight = '';
       break;
+    case 'noto_sans_korean':
+      $font_source_weight = ':wght@100..900';
+      break;
     default:
     $font_source_weight = null;
       break;
@@ -1776,7 +1812,12 @@ endif;
 //サイトフォントソースコードURLの取得
 if ( !function_exists( 'get_site_font_source_url' ) ):
 function get_site_font_source_url(){
-  return 'https://fonts.googleapis.com/css?family='.get_site_font_source_family().get_site_font_source_weight().'&display=swap';
+  $url = 'https://fonts.googleapis.com/css2?family='.get_site_font_source_family().get_site_font_source_weight().'&display=swap';
+  //Pretendardフォント
+  if (get_site_font_family_pretendard()) {
+    $url = 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css';
+  }
+  return $url;
 }
 endif;
 
@@ -3642,6 +3683,18 @@ function is_block_editor_page() {
 }
 endif;
 
+//クラシックエディター画面かどうか
+if ( !function_exists( 'is_classic_editor' ) ):
+function is_classic_editor() {
+  // クラシックエディターが設定されているかどうかを確認
+  if (class_exists('Classic_Editor') || !is_gutenberg_editor_enable() || is_classicpress()) {
+      return true;
+  }
+
+  return false;
+}
+endif;
+
 //HTMLで使用するヘックスカラーが暗い色かどうか（）
 if ( !function_exists( 'is_dark_hexcolor' ) ):
 function is_dark_hexcolor($hexcolor) {
@@ -3668,8 +3721,36 @@ function is_dark_hexcolor($hexcolor) {
 }
 endif;
 
+//使用言語が韓国語かどうか
+if ( !function_exists( 'is_wp_language_korean' ) ):
+function is_wp_language_korean() {
+  // WordPressの現在の言語を取得
+  $current_language = get_locale();
 
+  // 言語が韓国語（`ko_KR`）であるかどうかを判別
+  if ($current_language === 'ko_KR') {
+      return true;
+  } else {
+      return false;
+  }
+}
+endif;
 
+//文章内にtocショートコードが使われているか
+if ( !function_exists( 'is_toc_shortcode_includes' ) ):
+function is_toc_shortcode_includes($content) {
+  return preg_match(TOC_SHORTCODE_REG, $content, $m);
+}
+endif;
+
+//カレントページのURLを取得する
+if ( !function_exists( 'get_current_page_url' ) ):
+function get_current_page_url() {
+  global $wp;
+
+  return home_url(add_query_arg(array(), $wp->request));
+}
+endif;
 
 
 ////////////////////////////////////////////////////

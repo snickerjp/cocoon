@@ -13,15 +13,12 @@ add_action('customize_register', function($wp_customize) {
       'priority'  => 300,
     )
   );
-  wp_enqueue_style('hvn-admin', HVN_SKIN_URL . 'assets/css/admin.css');
 
   hvn_color($wp_customize);
   hvn_main($wp_customize);
   hvn_header($wp_customize);
+  hvn_option($wp_customize);
   hvn_editor($wp_customize);
-  if (defined('HVN_OPTION') && HVN_OPTION) {
-    hvn_option($wp_customize);
-  }
 });
 
 
@@ -37,7 +34,7 @@ add_action('admin_bar_menu', function($wp_admin_bar) {
     $wp_admin_bar->add_menu(array(
       'parent'  => 'dashboard_menu',
       'id'      => 'dashboard_menu-logout',
-      'title'   => __('ログアウト'),
+      'title'   => __('ログアウト', THEME_NAME),
       'href'    => wp_logout_url()
     ));
   }
@@ -53,7 +50,7 @@ add_filter('post_date_column_time', function($h_time, $post) {
 
 
 add_filter('manage_pages_columns', function($columns) {
-  $columns['slug'] = 'スラッグ';
+  $columns['slug'] = __('Slug');
   return $columns;
 });
 
@@ -73,9 +70,9 @@ add_action('manage_pages_custom_column', function($column_name, $post_id) {
 //　ダッシュボード投稿一覧に追加
 //******************************************************************************
 add_filter('manage_post_posts_columns', function($columns) {
-  $columns['last_modified'] = '更新日';
-  $columns['the_page_meta_description'] = 'メタディスクリプション';
-  $columns['slug'] = 'スラッグ';
+  $columns['last_modified'] = __('更新日', THEME_NAME);
+  $columns['the_page_meta_description'] = __('メタディスクリプション', THEME_NAME);
+  $columns['slug'] = __('Slug');
 
   return $columns;
 });
@@ -94,13 +91,13 @@ add_action('manage_posts_custom_column', function($column_name, $post_id) {
       $u_date = get_the_modified_date('Y年n月j日 H:i');
       if ($p_date != $u_date) {
         $url = admin_url() . "admin-post.php?action=delete_date&id={$post_id}";
-        $button = " <a class=\"button\" href=\"{$url}\">クリア</a>";
+        $button = " <a class=\"button\" href=\"{$url}\">". __('クリア', THEME_NAME) . "</a>";
         echo $u_date . $button;
       }
       break;
 
     case 'the_page_meta_description':
-      $post_meta = get_post_meta( $post_id, 'the_page_meta_description', true );
+      $post_meta = get_post_meta($post_id, 'the_page_meta_description', true);
       if ($post_meta) {
         echo $post_meta;
       } else {
@@ -149,20 +146,20 @@ add_action('quick_edit_custom_box', function($column_name, $post_type) {
 <fieldset class="inline-edit-col-right inline-custom-meta">
   <div class="inline-edit-col column-column-memo">
     <label class="inline-edit-group">
-      <span class="title">メモ</span>
+      <span class="title"><?php echo __('メモ', THEME_NAME) ?></span>
       <textarea name="the_page_memo"></textarea>
     </label>
   </div>
-  <div class="inline-edit-col column-the_page_meta_descriptio">
+  <div class="inline-edit-col column-the_page_meta_description">
     <label class="inline-edit-group">
-      <span class="title">メタディスクリプション</span><span class="str-count">文字数:<span class="meta-description-count">0</span></span>
+      <span class="title"><?php echo __('メタディスクリプション', THEME_NAME) ?></span><span class="str-count"><?php echo __('文字数', THEME_NAME) ?>:<span class="meta-description-count">0</span></span>
       <textarea name="the_page_meta_description"></textarea>
     </label>
   </div>
 </fieldset>
     <?php
-          break;
-      }
+    break;
+  }
 }, 10, 2);
 
 
@@ -191,11 +188,11 @@ add_action('admin_footer-edit.php', function() {
       var $post_row = $('#post-' + $post_id);
 
       // メモ
-      var $memo = $('.column-memo', $post_row ).html();
-      $(':input[name="the_page_memo"]', $edit_row ).val($memo)
+      var $memo = $('.column-memo', $post_row).html();
+      $(':input[name="the_page_memo"]', $edit_row).val($memo)
 
       // ディスクリプション
-      $elm = $(':input[name="the_page_meta_description"]',$edit_row);
+      $elm = $(':input[name="the_page_meta_description"]', $edit_row);
 
       var $the_page_meta_description = $('.column-the_page_meta_description', $post_row).html();
       $elm.val($the_page_meta_description);
@@ -203,7 +200,7 @@ add_action('admin_footer-edit.php', function() {
       // 文字数表示
       $count = $elm.val().length;
       $('.meta-description-count', $edit_row).text($count);
-      $elm.bind("keydown keyup keypress change",function(){
+      $elm.bind("keydown keyup keypress change", function() {
         var $count = $(this).val().length;
         $('.meta-description-count', $edit_row).text($count);
       });
@@ -235,11 +232,11 @@ add_action('save_post', function($post_id) {
     return;
   }
 
-  if ( isset( $_REQUEST['the_page_memo'] ) ) {
+  if (isset($_REQUEST['the_page_memo'])) {
     update_post_meta( $post_id, 'the_page_memo', $_REQUEST['the_page_memo']);
   }
 
-  if ( isset( $_REQUEST['the_page_meta_description'] ) ) {
+  if (isset($_REQUEST['the_page_meta_description'])) {
     update_post_meta( $post_id, 'the_page_meta_description', $_REQUEST['the_page_meta_description']);
   }
 });
@@ -296,7 +293,7 @@ add_action('enqueue_block_editor_assets', function() {
 
 
 //******************************************************************************
-//  CSS、ライブラリ追加
+//  CSS追加
 //******************************************************************************
 add_action('wp_enqueue_scripts', function() {
   hvn_h2_h4_css();
@@ -304,6 +301,7 @@ add_action('wp_enqueue_scripts', function() {
   hvn_editor_css();
   hvn_custom_css();
   wp_dequeue_style('scrollhint-style');
+  wp_enqueue_script('scrollhint-js', get_template_directory_uri() . '/plugins/scroll-hint-master/js/scroll-hint.min.js', array('jquery'), false, true);
 }, 999);
 
 
@@ -320,6 +318,14 @@ add_action('admin_footer', function() {
   }
   wp_enqueue_style('hvn-admin', HVN_SKIN_URL . 'assets/css/admin.css');
 }, 999);
+
+
+//******************************************************************************
+//  カスタマイザーCSS追加
+//******************************************************************************
+add_action('customize_controls_enqueue_scripts', function() {
+  wp_enqueue_style('hnv-custom', HVN_SKIN_URL . '/assets/css/customize.css' );
+});
 
 
 //******************************************************************************
@@ -473,22 +479,15 @@ add_filter('option_time_format', function($option){
 //  NEWマーク追加
 //******************************************************************************
 add_filter('post_class', function($classes, $class, $post_id) {
-  // 表示期間3日
   $days = get_theme_mod('hvn_index_new_setting');
   if ($days == 0) {
     return $classes;
   }
 
-  // 現在の時刻取得
   $now = date_i18n('U');
-
-  // 最終更新日取得
   $mod_time  = get_update_time('U', $post_id);
-
-  // 投稿日取得
   $post_time = get_the_time('U', $post_id);
 
-  // 表示期間
   $last = $now - ($days * 24 * 60 * 60);
   if ($post_time > $last) {
     $classes[] = 'new-post';
@@ -749,4 +748,16 @@ add_filter('render_block_cocoon-blocks/faq', function($content, $block) {
 }
 
   return $content;
+}, 10, 2);
+
+
+//******************************************************************************
+//  プロフィールリンク変更
+//******************************************************************************
+add_filter('the_author_box_name', function($name, $id) {
+  $url = get_the_author_profile_page_url($id);
+  if (!$url) {
+    $name = strip_tags($name);
+  }
+  return $name;
 }, 10, 2);

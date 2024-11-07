@@ -358,35 +358,10 @@ form.admin-settings{
   padding-left: 30px;
 }
 
-/************************************
-** トグル詳細設定
-************************************/
-.toggle{
-
-  .toggle-link{
-    font-size: 0.8em;
-    cursor: pointer;
-
-    margin-left: 6px;
-
-    text-decoration: underline;
-    color: #0073aa;
-    transition-duration: 0.05s;
-    transition-property: border, background, color;
-    transition-timing-function: ease-in-out;
-
-    &:hover{
-      color: #00a0d2;
-    }
-
-
-  }
-
-  .toggle-content{
-    display: none;
-    width: 100%;
-  }
-}
+/////////////////////////////////////
+// トグル詳細設定
+/////////////////////////////////////
+@include toggle;
 
 /*文字数カウントエリア*/
 .str-count{
@@ -562,13 +537,6 @@ select option.fa{
 .red{
   color: red;
   margin-left: 1em;
-}
-
-//ビジュアルエディター
-.postbox-container input[type="text"],
-//ブロックエディター
-.components-panel input[type="text"]{
-  width: 100%;
 }
 
 .components-panel {
@@ -933,10 +901,6 @@ select option.fa{
   color: #285294;
 }
 
-textarea[name="the_page_memo"]{
-  width: 100%;
-}
-
 .mce-text{
   color: #333 !important;
 
@@ -1114,5 +1078,24 @@ textarea[name="the_page_memo"]{
 @media screen and (max-width: 480px) {
   div.widget {
     margin: 0 !important;
+  }
+}
+
+//ClassicPressのレンジバーの対応
+.classicpress{
+  .admin-settings input[type="range"]:not(.iris-slider-offset){
+    position: relative;
+    display: inline-block;
+    margin: 0 8px;
+    width: 220px;
+  }
+
+  .range-wrap output {
+    margin-bottom: 12px;
+  }
+
+  .iris-picker .iris-slider-offset{
+    top: 6px;
+    bottom: 6px;
   }
 }

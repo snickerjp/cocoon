@@ -245,8 +245,11 @@ function function_text_shortcode($atts) {
   if ($id) {
     if ($recode = get_function_text($id)) {
       //無限ループ要素の除去
-      //$shortcode = get_function_text_shortcode($id);
+      //テンプレートショートコード
       $template = preg_replace('{\['.TEMPLATE_SHORTCODE.'[^\]]*?id=[\'"]?'.$id.'[\'"]?[^\]]*?\]}i', '', $recode->text);
+      //目次ショートコード
+      $template = preg_replace(TOC_SHORTCODE_REG, '', $recode->text);
+
       //余計な改行を取り除く
       $template = shortcode_unautop($template);
 
@@ -462,14 +465,13 @@ if ( !function_exists( 'toc_shortcode' ) ):
 function toc_shortcode( $atts, $content = null ) {
   extract(shortcode_atts(array(
     'depth' => 0,
-  ), $atts, 'toc_box'));
+  ), $atts, 'toc'));
   if (is_singular() || is_category() || is_tag()) {
     global $_TOC_WIDGET_OR_SHORTCODE_USED;
     $_TOC_WIDGET_OR_SHORTCODE_USED = true;
     $harray = array();
     $the_content = get_toc_expanded_content();
     return get_toc_tag($the_content, $harray, false, $depth);
-
   }
 }
 endif;
@@ -990,7 +992,6 @@ function ad_shortcode( $atts ) {
   if (is_ad_shortcode_enable()) {
     ob_start();//バッファリング
     get_template_part_with_ad_format(get_ad_shortcode_format(), 'ad-shortcode', is_ad_shortcode_label_visible());
-
     return ob_get_clean();
   }
 }
@@ -1007,6 +1008,8 @@ function get_info_list_shortcode($atts){
     'frame' => 1,
     'divider' => 1,
     'modified' => 0,
+    'offset' => 0,
+    'action' => null,
   ), $atts, 'info_list'));
 
   //countオプションに異常値が入っていた場合
@@ -1027,6 +1030,8 @@ function get_info_list_shortcode($atts){
     'frame' => $frame,
     'divider' => $divider,
     'modified' => $modified,
+    'offset' => $offset,
+    'action' => $action,
   );
   ob_start();
   generate_info_list_tag($atts);
@@ -1054,9 +1059,55 @@ function get_block_pattern_shortcode($atts) {
     if (isset($reuse)) {
       $content = $reuse->post_content;
     }
+    //無限ループ回避
+    //パターンショートコード
+    $content = preg_replace('{\[pattern[^\]]*?id=[\'"]?'.$id.'[\'"]?[^\]]*?\]}i', '', $content);
+    //目次ショートコード
+    $content = preg_replace(TOC_SHORTCODE_REG, '', $content);
+  }
+  if (!is_classicpress()) {
+    $content = do_blocks($content);
+  }
+  return do_shortcode($content);
+}
+endif;
+
+//パターンの保存時にtocショートコードが使われていたら警告
+add_action('save_post', 'pattern_editor_save_post');
+if ( !function_exists( 'pattern_editor_save_post' ) ):
+function pattern_editor_save_post($post_id) {
+  // 自動保存や別の処理でないことを確認
+  if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+    return;
   }
 
-  return do_shortcode(do_blocks($content));
+  $content = get_post_field('post_content', $post_id);
+  // tocショートコードが含まれている場合、もしくは投稿タイプが wp_block の場合に処理
+  if (is_toc_shortcode_includes($content) && (get_post_type($post_id) === 'wp_block')) {
+    if (!is_classic_editor()) {
+      // ブロックエディターのケース
+
+      // 保存処理をキャンセル
+      wp_die(TOC_SHORTCODE_ERROR_MESSAGE, __('保存エラー' , THEME_NAME), array('response' => 400));
+      return false;
+    } else {
+      // クラシックエディターのケース
+      add_filter('redirect_post_location', function($location) {
+        return add_query_arg('toc_error', 1, $location);
+      });
+      // 保存をキャンセルするため false を返す
+      return false;
+    }
+  }
+}
+endif;
+
+add_action('admin_notices', 'toc_error_admin_notices');
+if ( !function_exists( 'toc_error_admin_notices' ) ):
+function toc_error_admin_notices() {
+  if (isset($_GET['toc_error'])) {
+    echo '<div class="notice notice-error is-dismissible"><p><strong>'.__( 'エラー：', THEME_NAME ).'</strong>'.TOC_SHORTCODE_ERROR_MESSAGE.'</p></div>';
+  }
 }
 endif;
 
@@ -1092,5 +1143,19 @@ function get_cta_tag($atts, $content = null ){
   $tag = ob_get_clean();
 
   return apply_filters('get_cta_tag', $tag);
+}
+endif;
+
+add_shortcode('icon', 'get_font_awesome_icon_tag');
+if ( !function_exists( 'get_font_awesome_icon_tag' ) ):
+function get_font_awesome_icon_tag($atts){
+  $atts = shortcode_atts(
+    array(
+      'class' => '',
+    ),
+    $atts
+  );
+
+  return '<span class="' . esc_attr($atts['class']) . '"></span>';
 }
 endif;

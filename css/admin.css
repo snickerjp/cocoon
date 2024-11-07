@@ -35,6 +35,8 @@ body.wp-admin {
   --cocoon-codepen-color: #333;
   --cocoon-feedly-color: #2bb24c;
   --cocoon-rss-color: #f26522;
+  --cocoon-copy-color: #333333;
+  --cocoon-comment-color: #333333;
   --cocoon-red-color: #e60033;
   --cocoon-pink-color: #e95295;
   --cocoon-purple-color: #884898;
@@ -52,7 +54,9 @@ body.wp-admin {
   --cocoon-orange-color: #f39800;
   --cocoon-deep-orange-color: #ea5506;
   --cocoon-brown-color: #954e2a;
+  --cocoon-light-grey-color: #cccccc;
   --cocoon-grey-color: #949495;
+  --cocoon-dark-grey-color: #666666;
   --cocoon-blue-gray-color: #607d8b;
   --cocoon-black-color: #333333;
   --cocoon-white-color: #ffffff;
@@ -187,6 +191,22 @@ body.wp-admin {
   border-radius: var(--cocoon-basic-border-radius);
   font-size: inherit;
   width: 100%;
+}
+
+.admin-settings .demo .facebook-follow-button {
+  text-decoration: none;
+  text-align: center;
+  margin: 0 auto;
+  padding: 3px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--cocoon-white-color);
+  position: relative;
+  border-radius: var(--cocoon-basic-border-radius);
+}
+.admin-settings .demo .facebook-follow-button:hover {
+  color: var(--cocoon-white-color);
+  opacity: 0.7;
 }
 
 .snippet-list {
@@ -493,10 +513,10 @@ body.wp-admin {
   ************************************/
   /* アイコンを左に表示 */
   /************************************
-  ** Facebookページを「いいね！」するエリアのスタイル
+  ** Facebookページを「フォロー」するエリアのスタイル
   ************************************/
   /************************************
-  ** Facebookページを「いいね！」するエリアのスタイル（サイドバーの時）
+  ** Facebookページを「フォロー」するエリアのスタイル（サイドバーの時）
   ************************************/
   /*閉じる用の薄黒カバー*/
   /*中身*/
@@ -746,10 +766,10 @@ body.wp-admin {
   ************************************/
   /* アイコンを左に表示 */
   /************************************
-  ** Facebookページを「いいね！」するエリアのスタイル
+  ** Facebookページを「フォロー」するエリアのスタイル
   ************************************/
   /************************************
-  ** Facebookページを「いいね！」するエリアのスタイル（サイドバーの時）
+  ** Facebookページを「フォロー」するエリアのスタイル（サイドバーの時）
   ************************************/
   /*閉じる用の薄黒カバー*/
   /*中身*/
@@ -1050,6 +1070,16 @@ body.wp-admin {
 .admin-settings .demo .wp-admin-ff-sawarabi-mincho .editor-styles-wrapper {
   font-family: "Sawarabi Mincho", sans-serif;
 }
+.admin-settings .demo .ff-noto-sans-korean,
+.admin-settings .demo .wf-active .ff-noto-sans-korean,
+.admin-settings .demo .wp-admin-ff-noto-sans-korean .editor-styles-wrapper {
+  font-family: "Noto Sans KR", sans-serif;
+}
+.admin-settings .demo .ff-pretendard,
+.admin-settings .demo .wf-active .ff-pretendard,
+.admin-settings .demo .wp-admin-ff-pretendard .editor-styles-wrapper {
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
 .admin-settings .demo .sub-caption {
   font-family: Tunga, "Trebuchet MS", Tahoma, Verdana, "Segoe UI", var(--cocoon-default-font);
   font-weight: 400;
@@ -1244,6 +1274,14 @@ body.wp-admin {
 }
 .admin-settings .demo :where(.wp-block-columns.is-layout-flex) {
   gap: 1em;
+}
+.admin-settings .demo :is(.is-layout-flow, .is-layout-constrained) > * {
+  margin-block-start: 0;
+}
+.admin-settings .demo .has-drop-cap:not(:focus)::first-letter {
+  font-size: 3em;
+  font-weight: normal;
+  float: none;
 }
 .admin-settings .demo figure {
   margin: 0;
@@ -1966,6 +2004,12 @@ body.wp-admin {
 }
 .admin-settings .demo [class*=bc-brand-color] .rss-button {
   --cocoon-sns-color: var(--cocoon-rss-color);
+}
+.admin-settings .demo [class*=bc-brand-color] .copy-button {
+  --cocoon-sns-color: var(--cocoon-copy-color);
+}
+.admin-settings .demo [class*=bc-brand-color] .comment-button {
+  --cocoon-sns-color: var(--cocoon-comment-color);
 }
 .admin-settings .demo .ss-top {
   margin-top: 0;
@@ -2832,6 +2876,9 @@ body.wp-admin {
 .admin-settings .demo .calendar_wrap {
   margin: 20px 0;
 }
+.admin-settings .demo .wp-block-calendar .wp-calendar-table {
+  max-width: 400px;
+}
 .admin-settings .demo .wp-calendar-table {
   border-collapse: collapse;
   border-top-width: 1px;
@@ -3041,6 +3088,9 @@ body.wp-admin {
 }
 .admin-settings .demo .recent-comments {
   line-height: 1.3;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 .admin-settings .demo .recent-comment-avatar {
   float: left;
@@ -3121,6 +3171,11 @@ body.wp-admin {
 }
 .admin-settings .demo .widget_search .wp-block-search__input {
   line-height: normal;
+}
+.admin-settings .demo .wp-block-categories-list,
+.admin-settings .demo .wp-block-archives-list {
+  list-style: none;
+  padding-left: 0;
 }
 .admin-settings .demo .has-box-style {
   padding: var(--cocoon-box-padding);
@@ -3380,7 +3435,7 @@ body.wp-admin {
 .admin-settings .demo .body .wp-block-cover :last-child,
 .admin-settings .demo .body .blogcard-type :last-child,
 .admin-settings .demo .body .btn-wrap :last-child,
-.admin-settings .demo .body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between) :last-child,
+.admin-settings .demo .body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between, .is-layout-flex) :last-child,
 .admin-settings .demo .body .wp-block-gallery :last-child,
 .admin-settings .demo .body .block-box :last-child,
 .admin-settings .demo .body .blank-box :last-child,
@@ -3732,14 +3787,10 @@ body.wp-admin {
   background-color: #CBEFE4;
 }
 .admin-settings .demo [class*=is-style-blank-box-] {
-  --cocoon-custom-border-color: var(--cocoon-grey-color);
-  padding: var(--cocoon-box-padding);
   border-radius: var(--cocoon-basic-border-radius);
-  background-color: var(--cocoon-custom-background-color);
-  color: var(--cocoon-custom-text-color);
   border-style: solid;
   border-width: 3px;
-  border-color: var(--cocoon-custom-border-color);
+  border-color: var(--cocoon-grey-color);
 }
 .admin-settings .demo [class*=is-style-blank-box-] ol, .admin-settings .demo [class*=is-style-blank-box-] ul {
   margin: 0;
@@ -4122,6 +4173,7 @@ body.wp-admin {
 .admin-settings .demo .btn-shine,
 .admin-settings .demo .btn-wrap-shine > a {
   overflow: hidden;
+  vertical-align: middle;
 }
 .admin-settings .demo .btn-shine:before,
 .admin-settings .demo .btn-wrap-shine > a:before {
@@ -5282,7 +5334,7 @@ body.wp-admin {
 .admin-settings .demo .toggle-button:hover {
   opacity: 0.7;
 }
-.admin-settings .demo .toggle-checkbox {
+.admin-settings .demo input.toggle-checkbox {
   display: none;
 }
 .admin-settings .demo .toggle-checkbox:checked ~ .toggle-button {
@@ -6077,14 +6129,10 @@ body.wp-admin {
   margin-right: 3px;
 }
 .admin-settings .demo .comment-page-link {
-  text-align: center;
   margin: 24px 0;
-}
-.admin-settings .demo .comment-page-link .page-numbers {
-  width: auto;
-  height: auto;
-  padding: 6px 12px;
-  line-height: normal;
+  display: inline-flex;
+  justify-content: center;
+  width: 100%;
 }
 .admin-settings .demo .comment-page-link .current {
   background-color: #eee;
@@ -6113,9 +6161,10 @@ body.wp-admin {
   width: 46px;
   border: 1px solid var(--cocoon-thin-color);
   margin: 0 4px;
-  line-height: 46px;
+  line-height: 40px;
   text-align: center;
   border-radius: var(--cocoon-basic-border-radius);
+  font-size: 16px;
 }
 .admin-settings .demo .page-numbers span {
   line-height: inherit;
@@ -6143,6 +6192,12 @@ body.wp-admin {
   background-color: #f5f8fa;
   transition: all 0.3s ease-in-out;
   color: var(--cocoon-text-color);
+}
+.admin-settings .demo .five-digits-or-more {
+  font-size: 13px;
+}
+.admin-settings .demo .six-digits-or-more {
+  font-size: 11px;
 }
 .admin-settings .demo .pager-links {
   margin: 24px 0;
@@ -7166,6 +7221,21 @@ body.wp-admin {
 .admin-settings .demo .fb-like-facebook {
   margin-bottom: -7px;
 }
+.admin-settings .demo .facebook-follow-button {
+  background-color: var(--cocoon-facebook-color);
+  margin-bottom: 0.6em;
+}
+.admin-settings .demo .facebook-follow-button::before {
+  content: "\f087";
+  font-family: FontAwesome;
+  margin: 0 3px;
+  font-weight: normal;
+}
+.admin-settings .demo .font-awesome-5 .facebook-follow-button::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 400;
+  content: "\f164";
+}
 .admin-settings .demo .sidebar .fb-like-box {
   max-width: 640px;
   flex-direction: column;
@@ -7217,14 +7287,8 @@ body.wp-admin {
   height: 100px;
   text-align: center;
   float: right;
-  padding-top: 27px;
+  padding-top: 31px;
   box-sizing: border-box;
-  /*  display: -webkit-flex;
-    display:         flex;
-    -webkit-align-items: center;
-            align-items: center;
-    -webkit-justify-content: center;
-            justify-content: center;*/
 }
 .admin-settings .demo .fb-like-balloon-button iframe {
   background-color: #fff;
@@ -7805,7 +7869,10 @@ body.wp-admin {
 .admin-settings .demo .btn .anchor-icon,
 .admin-settings .demo .ranking-item-link-buttons a .anchor-icon,
 .admin-settings .demo .btn-wrap a .anchor-icon,
-.admin-settings .demo .no-icon .anchor-icon {
+.admin-settings .demo .no-icon .anchor-icon,
+.admin-settings .demo .wp-block-categories-list a .anchor-icon,
+.admin-settings .demo .wp-block-archives-list a .anchor-icon,
+.admin-settings .demo .wp-block-calendar a .anchor-icon {
   display: none !important;
 }
 .admin-settings .demo .gallery {
@@ -7962,6 +8029,9 @@ body.wp-admin {
 }
 .admin-settings .demo .iconlist-box ul li::before {
   display: initial;
+}
+.admin-settings .demo .iconlist-box ul ul {
+  list-style: none;
 }
 .admin-settings .demo .iconlist-box ol:not(.has-list-style) > li::before {
   display: none;
@@ -9549,6 +9619,16 @@ body.wp-admin {
 .admin-settings .demo .wp-admin-ff-sawarabi-mincho .editor-styles-wrapper {
   font-family: "Sawarabi Mincho", sans-serif;
 }
+.admin-settings .demo .ff-noto-sans-korean,
+.admin-settings .demo .wf-active .ff-noto-sans-korean,
+.admin-settings .demo .wp-admin-ff-noto-sans-korean .editor-styles-wrapper {
+  font-family: "Noto Sans KR", sans-serif;
+}
+.admin-settings .demo .ff-pretendard,
+.admin-settings .demo .wf-active .ff-pretendard,
+.admin-settings .demo .wp-admin-ff-pretendard .editor-styles-wrapper {
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
 .admin-settings .demo .sub-caption {
   font-family: Tunga, "Trebuchet MS", Tahoma, Verdana, "Segoe UI", var(--cocoon-default-font);
   font-weight: 400;
@@ -9743,6 +9823,14 @@ body.wp-admin {
 }
 .admin-settings .demo :where(.wp-block-columns.is-layout-flex) {
   gap: 1em;
+}
+.admin-settings .demo :is(.is-layout-flow, .is-layout-constrained) > * {
+  margin-block-start: 0;
+}
+.admin-settings .demo .has-drop-cap:not(:focus)::first-letter {
+  font-size: 3em;
+  font-weight: normal;
+  float: none;
 }
 .admin-settings .demo figure {
   margin: 0;
@@ -10465,6 +10553,12 @@ body.wp-admin {
 }
 .admin-settings .demo [class*=bc-brand-color] .rss-button {
   --cocoon-sns-color: var(--cocoon-rss-color);
+}
+.admin-settings .demo [class*=bc-brand-color] .copy-button {
+  --cocoon-sns-color: var(--cocoon-copy-color);
+}
+.admin-settings .demo [class*=bc-brand-color] .comment-button {
+  --cocoon-sns-color: var(--cocoon-comment-color);
 }
 .admin-settings .demo .ss-top {
   margin-top: 0;
@@ -11331,6 +11425,9 @@ body.wp-admin {
 .admin-settings .demo .calendar_wrap {
   margin: 20px 0;
 }
+.admin-settings .demo .wp-block-calendar .wp-calendar-table {
+  max-width: 400px;
+}
 .admin-settings .demo .wp-calendar-table {
   border-collapse: collapse;
   border-top-width: 1px;
@@ -11540,6 +11637,9 @@ body.wp-admin {
 }
 .admin-settings .demo .recent-comments {
   line-height: 1.3;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 .admin-settings .demo .recent-comment-avatar {
   float: left;
@@ -11620,6 +11720,11 @@ body.wp-admin {
 }
 .admin-settings .demo .widget_search .wp-block-search__input {
   line-height: normal;
+}
+.admin-settings .demo .wp-block-categories-list,
+.admin-settings .demo .wp-block-archives-list {
+  list-style: none;
+  padding-left: 0;
 }
 .admin-settings .demo .has-box-style {
   padding: var(--cocoon-box-padding);
@@ -11879,7 +11984,7 @@ body.wp-admin {
 .admin-settings .demo .body .wp-block-cover :last-child,
 .admin-settings .demo .body .blogcard-type :last-child,
 .admin-settings .demo .body .btn-wrap :last-child,
-.admin-settings .demo .body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between) :last-child,
+.admin-settings .demo .body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between, .is-layout-flex) :last-child,
 .admin-settings .demo .body .wp-block-gallery :last-child,
 .admin-settings .demo .body .block-box :last-child,
 .admin-settings .demo .body .blank-box :last-child,
@@ -12231,14 +12336,10 @@ body.wp-admin {
   background-color: #CBEFE4;
 }
 .admin-settings .demo [class*=is-style-blank-box-] {
-  --cocoon-custom-border-color: var(--cocoon-grey-color);
-  padding: var(--cocoon-box-padding);
   border-radius: var(--cocoon-basic-border-radius);
-  background-color: var(--cocoon-custom-background-color);
-  color: var(--cocoon-custom-text-color);
   border-style: solid;
   border-width: 3px;
-  border-color: var(--cocoon-custom-border-color);
+  border-color: var(--cocoon-grey-color);
 }
 .admin-settings .demo [class*=is-style-blank-box-] ol, .admin-settings .demo [class*=is-style-blank-box-] ul {
   margin: 0;
@@ -12621,6 +12722,7 @@ body.wp-admin {
 .admin-settings .demo .btn-shine,
 .admin-settings .demo .btn-wrap-shine > a {
   overflow: hidden;
+  vertical-align: middle;
 }
 .admin-settings .demo .btn-shine:before,
 .admin-settings .demo .btn-wrap-shine > a:before {
@@ -13781,7 +13883,7 @@ body.wp-admin {
 .admin-settings .demo .toggle-button:hover {
   opacity: 0.7;
 }
-.admin-settings .demo .toggle-checkbox {
+.admin-settings .demo input.toggle-checkbox {
   display: none;
 }
 .admin-settings .demo .toggle-checkbox:checked ~ .toggle-button {
@@ -14576,14 +14678,10 @@ body.wp-admin {
   margin-right: 3px;
 }
 .admin-settings .demo .comment-page-link {
-  text-align: center;
   margin: 24px 0;
-}
-.admin-settings .demo .comment-page-link .page-numbers {
-  width: auto;
-  height: auto;
-  padding: 6px 12px;
-  line-height: normal;
+  display: inline-flex;
+  justify-content: center;
+  width: 100%;
 }
 .admin-settings .demo .comment-page-link .current {
   background-color: #eee;
@@ -14612,9 +14710,10 @@ body.wp-admin {
   width: 46px;
   border: 1px solid var(--cocoon-thin-color);
   margin: 0 4px;
-  line-height: 46px;
+  line-height: 40px;
   text-align: center;
   border-radius: var(--cocoon-basic-border-radius);
+  font-size: 16px;
 }
 .admin-settings .demo .page-numbers span {
   line-height: inherit;
@@ -14642,6 +14741,12 @@ body.wp-admin {
   background-color: #f5f8fa;
   transition: all 0.3s ease-in-out;
   color: var(--cocoon-text-color);
+}
+.admin-settings .demo .five-digits-or-more {
+  font-size: 13px;
+}
+.admin-settings .demo .six-digits-or-more {
+  font-size: 11px;
 }
 .admin-settings .demo .pager-links {
   margin: 24px 0;
@@ -15665,6 +15770,21 @@ body.wp-admin {
 .admin-settings .demo .fb-like-facebook {
   margin-bottom: -7px;
 }
+.admin-settings .demo .facebook-follow-button {
+  background-color: var(--cocoon-facebook-color);
+  margin-bottom: 0.6em;
+}
+.admin-settings .demo .facebook-follow-button::before {
+  content: "\f087";
+  font-family: FontAwesome;
+  margin: 0 3px;
+  font-weight: normal;
+}
+.admin-settings .demo .font-awesome-5 .facebook-follow-button::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 400;
+  content: "\f164";
+}
 .admin-settings .demo .sidebar .fb-like-box {
   max-width: 640px;
   flex-direction: column;
@@ -15716,14 +15836,8 @@ body.wp-admin {
   height: 100px;
   text-align: center;
   float: right;
-  padding-top: 27px;
+  padding-top: 31px;
   box-sizing: border-box;
-  /*  display: -webkit-flex;
-    display:         flex;
-    -webkit-align-items: center;
-            align-items: center;
-    -webkit-justify-content: center;
-            justify-content: center;*/
 }
 .admin-settings .demo .fb-like-balloon-button iframe {
   background-color: #fff;
@@ -16304,7 +16418,10 @@ body.wp-admin {
 .admin-settings .demo .btn .anchor-icon,
 .admin-settings .demo .ranking-item-link-buttons a .anchor-icon,
 .admin-settings .demo .btn-wrap a .anchor-icon,
-.admin-settings .demo .no-icon .anchor-icon {
+.admin-settings .demo .no-icon .anchor-icon,
+.admin-settings .demo .wp-block-categories-list a .anchor-icon,
+.admin-settings .demo .wp-block-archives-list a .anchor-icon,
+.admin-settings .demo .wp-block-calendar a .anchor-icon {
   display: none !important;
 }
 .admin-settings .demo .gallery {
@@ -16461,6 +16578,9 @@ body.wp-admin {
 }
 .admin-settings .demo .iconlist-box ul li::before {
   display: initial;
+}
+.admin-settings .demo .iconlist-box ul ul {
+  list-style: none;
 }
 .admin-settings .demo .iconlist-box ol:not(.has-list-style) > li::before {
   display: none;
@@ -18751,11 +18871,8 @@ body.wp-admin {
   min-height: 1px;
   min-width: 1px;
 }
-.admin-settings .demo .is-header-fixed .header-container {
+.admin-settings .demo .header-container.fixed-header {
   z-index: 3;
-}
-.admin-settings .demo .is-header-fixed .header-container .logo {
-  transition: 0.3s;
 }
 .admin-settings .demo .fixed-header {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.25);
@@ -18938,7 +19055,7 @@ body.wp-admin {
     ** 関連記事
     ************************************/
     /************************************
-    ** Facebookページを「いいね！」するエリアのスタイル
+    ** Facebookページを「フォロー」するエリアのスタイル
     ************************************/
   }
   .admin-settings .demo .navi-in > .menu-header {
@@ -19274,11 +19391,6 @@ body.wp-admin {
   .admin-settings .demo .cat-label {
     font-size: 10px;
     padding: 1px 3px;
-  }
-  .admin-settings .demo .page-numbers {
-    width: 34px;
-    height: 34px;
-    line-height: 34px;
   }
   .admin-settings .demo .pagination-next-link, .admin-settings .demo .comment-btn {
     font-size: 1em;
@@ -19737,6 +19849,9 @@ body.wp-admin {
   .admin-settings .demo .appeal .appeal-in {
     min-height: 200px;
   }
+  .admin-settings .demo .page-numbers.dots {
+    display: none;
+  }
   .admin-settings .demo .booklink-image, .admin-settings .demo .kaerebalink-image, .admin-settings .demo .tomarebalink-image, .admin-settings .demo .product-item-thumb {
     width: 80px;
     min-width: 80px;
@@ -19953,7 +20068,7 @@ pre {
 .is-code-row-number-enable pre.hljs#highlight-demo {
   border: none;
   position: relative;
-  padding: 0.4em 1em 0.4em 3em;
+  padding: 0.4em 1em 0.4em 3em !important;
 }
 
 .is-code-row-number-enable pre.hljs::before {
@@ -20163,9 +20278,6 @@ form.admin-settings .postbox {
   padding-left: 30px;
 }
 
-/************************************
-** トグル詳細設定
-************************************/
 .toggle .toggle-link {
   font-size: 0.8em;
   cursor: pointer;
@@ -20351,11 +20463,6 @@ select option.fa:before {
 .red {
   color: red;
   margin-left: 1em;
-}
-
-.postbox-container input[type=text],
-.components-panel input[type=text] {
-  width: 100%;
 }
 
 .components-panel input[type=range] {
@@ -20633,10 +20740,6 @@ select option.fa:before {
 .tooltip .fa-image,
 .tooltip .fa-picture-o {
   color: #285294;
-}
-
-textarea[name=the_page_memo] {
-  width: 100%;
 }
 
 .mce-text {
@@ -21064,7 +21167,7 @@ textarea[name=the_page_memo] {
 .components-popover__content .body .wp-block-cover :last-child,
 .components-popover__content .body .blogcard-type :last-child,
 .components-popover__content .body .btn-wrap :last-child,
-.components-popover__content .body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between) :last-child,
+.components-popover__content .body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between, .is-layout-flex) :last-child,
 .components-popover__content .body .wp-block-gallery :last-child,
 .components-popover__content .body .block-box :last-child,
 .components-popover__content .body .blank-box :last-child,
@@ -21416,14 +21519,10 @@ textarea[name=the_page_memo] {
   background-color: #CBEFE4;
 }
 .components-popover__content [class*=is-style-blank-box-] {
-  --cocoon-custom-border-color: var(--cocoon-grey-color);
-  padding: var(--cocoon-box-padding);
   border-radius: var(--cocoon-basic-border-radius);
-  background-color: var(--cocoon-custom-background-color);
-  color: var(--cocoon-custom-text-color);
   border-style: solid;
   border-width: 3px;
-  border-color: var(--cocoon-custom-border-color);
+  border-color: var(--cocoon-grey-color);
 }
 .components-popover__content [class*=is-style-blank-box-] ol, .components-popover__content [class*=is-style-blank-box-] ul {
   margin: 0;
@@ -21807,6 +21906,7 @@ textarea[name=the_page_memo] {
 .components-popover__content .btn-shine,
 .components-popover__content .btn-wrap-shine > a {
   overflow: hidden;
+  vertical-align: middle;
 }
 .components-popover__content .btn-shine:before,
 .components-popover__content .btn-wrap-shine > a:before {
@@ -22967,7 +23067,7 @@ textarea[name=the_page_memo] {
 .components-popover__content .toggle-button:hover {
   opacity: 0.7;
 }
-.components-popover__content .toggle-checkbox {
+.components-popover__content input.toggle-checkbox {
   display: none;
 }
 .components-popover__content .toggle-checkbox:checked ~ .toggle-button {
@@ -23759,6 +23859,16 @@ textarea[name=the_page_memo] {
 .components-popover__content .wp-admin-ff-sawarabi-mincho .editor-styles-wrapper {
   font-family: "Sawarabi Mincho", sans-serif;
 }
+.components-popover__content .ff-noto-sans-korean,
+.components-popover__content .wf-active .ff-noto-sans-korean,
+.components-popover__content .wp-admin-ff-noto-sans-korean .editor-styles-wrapper {
+  font-family: "Noto Sans KR", sans-serif;
+}
+.components-popover__content .ff-pretendard,
+.components-popover__content .wf-active .ff-pretendard,
+.components-popover__content .wp-admin-ff-pretendard .editor-styles-wrapper {
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
 .components-popover__content .sub-caption {
   font-family: Tunga, "Trebuchet MS", Tahoma, Verdana, "Segoe UI", var(--cocoon-default-font);
   font-weight: 400;
@@ -23844,4 +23954,17 @@ textarea[name=the_page_memo] {
   div.widget {
     margin: 0 !important;
   }
+}
+.classicpress .admin-settings input[type=range]:not(.iris-slider-offset) {
+  position: relative;
+  display: inline-block;
+  margin: 0 8px;
+  width: 220px;
+}
+.classicpress .range-wrap output {
+  margin-bottom: 12px;
+}
+.classicpress .iris-picker .iris-slider-offset {
+  top: 6px;
+  bottom: 6px;
 }

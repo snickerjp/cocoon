@@ -209,7 +209,7 @@ function cocoon_blocks_cgb_editor_assets()
 	);
 
 	//プロフィール情報を渡す
-	$users = get_users(['fields' => ['ID', 'user_nicename']]);
+	$users = get_users(['fields' => ['ID', 'display_name']]);
 	wp_localize_script(
 		'cocoon-blocks-js', //値を渡すjsファイルのハンドル名
 		'gbUsers', //任意のオブジェクト名
@@ -378,6 +378,7 @@ require_once abspath(__FILE__) . 'block/navicard/index.php';
 require_once abspath(__FILE__) . 'block/tab/index.php';
 require_once abspath(__FILE__) . 'block/tab-item/index.php';
 require_once abspath(__FILE__) . 'block/cta/index.php';
+require_once abspath(__FILE__) . 'block/radar/index.php';
 
 require_once abspath(__FILE__) . 'block-universal/caption-box/index.php';
 require_once abspath(__FILE__) . 'block-universal/tab-caption-box/index.php';
