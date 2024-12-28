@@ -329,7 +329,7 @@ function add_wp_block_columns($columns){
 
   return array_merge(
     array_slice($columns, 0, $index),
-    array('shortcode' => 'ショートコード'),
+    array('shortcode' => __( 'ショートコード', THEME_NAME )),
     array_slice($columns, $index)
   );
 }
@@ -450,7 +450,7 @@ function customize_admin_bar_menu($wp_admin_bar){
       'parent' => 'dashboard_menu', // 親メニューID
       'id'   => 'dashboard_menu-theme-settings', // 子メニューID
       'meta'   => array(),
-      'title'  => __( SETTING_NAME_TOP, THEME_NAME ), // ラベル
+      'title'  => __( 'Cocoon 設定', THEME_NAME ), // ラベル
       'href'   => admin_url('admin.php?page=theme-settings') // ページURL
     ));
     $wp_admin_bar->add_menu(array(
@@ -478,7 +478,7 @@ function customize_admin_bar_menu($wp_admin_bar){
       'parent' => 'dashboard_menu', // 親メニューID
       'id'   => 'dashboard_menu-theme-ranking', // 子メニューID
       'meta'   => array(),
-      'title'  => __( 'ランキング作成', THEME_NAME ), // ラベル
+      'title'  => __( 'ランキング', THEME_NAME ), // ラベル
       'href'   => admin_url('admin.php?page=theme-ranking') // ページURL
     ));
     $wp_admin_bar->add_menu(array(

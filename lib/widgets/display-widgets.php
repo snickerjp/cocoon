@@ -124,8 +124,8 @@ function display_widgets_in_widget_form( $widget, $return, $instance ){
       </label>
       <?php
         $options = array(
-          'hide' => __( 'チェック・入力したページで非表示', THEME_NAME ),
-          'show' => __( 'チェック・入力したページで表示', THEME_NAME ),
+          'hide' => __( 'チェック・入力したページで非表示にする', THEME_NAME ),
+          'show' => __( 'チェック・入力したページで表示する', THEME_NAME ),
         );
         generate_selectbox_tag($widget->get_field_name('widget_action'), $options, $widget_action);
         $dw =get_dropped_widget($widget);
@@ -160,7 +160,7 @@ function display_widgets_in_widget_form( $widget, $return, $instance ){
 
         <?php if (is_widget_authors_tab_visible()): ?>
         <input id="<?php echo $author_tab_id; ?>" type="radio" name="tab_item">
-        <label id="author-<?php echo $widget_id; ?>" class="author-tab tab-item" for="<?php echo $author_tab_id; ?>"><?php _e( '著者', THEME_NAME ) ?></label>
+        <label id="author-<?php echo $widget_id; ?>" class="author-tab tab-item" for="<?php echo $author_tab_id; ?>"><?php _e( '投稿者', THEME_NAME ) ?></label>
         <?php endif ?>
 
         <input id="<?php echo $post_tab_id; ?>" type="radio" name="tab_item">

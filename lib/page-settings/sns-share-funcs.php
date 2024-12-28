@@ -28,7 +28,8 @@ endif;
 define('OP_TWITTER_RELATED_FOLLOW_ENABLE', 'twitter_related_follow_enable');
 if ( !function_exists( 'is_twitter_related_follow_enable' ) ):
 function is_twitter_related_follow_enable(){
-  return get_theme_option(OP_TWITTER_RELATED_FOLLOW_ENABLE, 1);
+  return false;
+  // return get_theme_option(OP_TWITTER_RELATED_FOLLOW_ENABLE, 1);
 }
 endif;
 
@@ -36,7 +37,7 @@ endif;
 define('OP_TWITTER_HASH_TAG', 'twitter_hash_tag');
 if ( !function_exists( 'get_twitter_hash_tag' ) ):
 function get_twitter_hash_tag(){
-  return get_theme_option(OP_TWITTER_HASH_TAG);
+  return get_theme_option(OP_TWITTER_HASH_TAG, '');
 }
 endif;
 
@@ -44,7 +45,7 @@ endif;
 define('OP_FACEBOOK_ACCESS_TOKEN', 'facebook_access_token');
 if ( !function_exists( 'get_facebook_access_token' ) ):
 function get_facebook_access_token(){
-  return get_theme_option(OP_FACEBOOK_ACCESS_TOKEN);
+  return get_theme_option(OP_FACEBOOK_ACCESS_TOKEN, '');
 }
 endif;
 

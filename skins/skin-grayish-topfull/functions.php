@@ -155,14 +155,51 @@ endif;
 if (!function_exists('enqueue_skin_grayish_google_fonts')) :
   function enqueue_skin_grayish_google_fonts()
   {
-    if (get_theme_mod('font_pat_control_radio', 'font_Montserrat') !== 'font_none') {
-      wp_enqueue_style('skin_grayish-google-fonts', 'https://fonts.googleapis.com/css?family=Roboto+Slab:200,400|Spectral:200,400|Inknut+Antiqua:300,400|Jost:300,400|Lato:300,400|Lora|Montserrat:200,400&display=swap');
+    // 手書きノートの修正方法に合わせる
+    $font_family = get_theme_mod('font_pat_control_radio', 'font_Montserrat');
+    $font_url = generate_font_url($font_family);
+    if ($font_family !== 'font_none') {
+      // 参考:https://www.tak-dcxi.com/article/optimization-of-google-font-loading/
+      echo '<link href="' . esc_url($font_url) . '" rel="preload" as="style" fetchpriority="high">' . "\n";
+      echo '<link href="' . esc_url($font_url) . '" rel="stylesheet" media="print" onload="this.media=\'all\'">' . "\n";
+    }
+  }
+endif;
+// editor
+if (!function_exists('enqueue_skin_grayish_google_fonts_editor')) :
+  function enqueue_skin_grayish_google_fonts_editor()
+  {
+    $font_family = get_theme_mod('font_pat_control_radio', 'font_Montserrat');
+    $font_url = generate_font_url($font_family);
+    if ($font_family !== 'font_none') {
+      wp_enqueue_style('skin_grayish-google-fonts-editor', esc_url($font_url));
     }
   }
 endif;
 
+// フォントのURLを生成する関数()
+if (!function_exists('generate_font_url')) :
+  function generate_font_url($font_family)
+  {
+    $font_families = array(
+      'font_Montserrat' => 'Montserrat:ital,wght@0,100..900;1,100..900&display=swap',
+      'font_Lato' => 'Lato:wght@300;400;700;900&display=swap',
+      'font_InknutAntiqua' => 'Inknut+Antiqua:wght@400;700;900&display=swap',
+      'font_Spectral' => 'Spectral:wght@200;400;600;800&display=swap',
+      'font_Lora' => 'Lora:ital,wght@0,400..700;1,400..700&display=swap',
+      'font_Jost' => 'Jost:ital,wght@0,100..900;1,100..900&display=swap',
+      'font_RobotoSlab' => 'Roboto+Slab:wght@100..900&display=swap',
+      'font_none' => '', // 読み込むフォントがない場合は空文字にする
+    );
+    if (isset($font_families[$font_family]) && $font_family !== 'font_none') {
+      return 'https://fonts.googleapis.com/css2?family=' . $font_families[$font_family];
+    }
+    return ''; // 該当するフォントが見つからない場合も空文字にする
+  }
+endif;
+
 add_action('wp_enqueue_scripts', 'enqueue_skin_grayish_google_fonts');
-add_action('enqueue_block_editor_assets', 'enqueue_skin_grayish_google_fonts');
+add_action('enqueue_block_editor_assets', 'enqueue_skin_grayish_google_fonts_editor');
 
 // -----------------------------------------------------------------------------
 // テーマカスタマイザー　タイトル：見出しのGoogleFontの選択を可能に：
@@ -275,7 +312,8 @@ if (!function_exists('skin_grayish_font_css')) :
     } elseif (get_theme_mod('font_pat_control_radio', 'font_Montserrat') === 'font_RobotoSlab') {
       $style_font = '"Roboto Slab", ' . $cocoon_site_font . ', var(--skin-grayish-default-font),sans-serif';
     } else {
-      $style_font = 'inherit';
+      // $style_font = 'inherit';
+      $style_font = $cocoon_site_font . ', var(--skin-grayish-default-font),sans-serif';
     }
     echo sprintf($style_template, $style_font);
     // CSS変数で出力
@@ -316,7 +354,8 @@ if (!function_exists('skin_grayish_font_blkeditor')) :
     } elseif (get_theme_mod('font_pat_control_radio', 'font_Montserrat') === 'font_RobotoSlab') {
       $style_font = '"Roboto Slab", ' . $cocoon_site_font . ', var(--skin-grayish-default-font),sans-serif';
     } else {
-      $style_font = 'inherit';
+      // $style_font = 'inherit';
+      $style_font = $cocoon_site_font . ', var(--skin-grayish-default-font),sans-serif';
     }
     // echo sprintf($style_template, $style_font);
     $style_fontfamily = sprintf($style_template, $style_font);
@@ -350,7 +389,11 @@ if (!function_exists('skin_grayish_titlefont_weight')) :
 	';
     $style_font_weight = '';
     if (get_theme_mod('title_font_weight_radio', 'font_weight_Thin') === 'font_weight_Thin') {
-      $style_font_weight = '200';
+      if (get_theme_mod('font_pat_control_radio', 'font_Montserrat') === 'font_Jost' || get_theme_mod('font_pat_control_radio', 'font_Montserrat') === 'font_Lato') {
+        $style_font_weight = '300';
+      } else {
+        $style_font_weight = '200';
+      }
     } elseif (get_theme_mod('title_font_weight_radio', 'font_weight_Thin') === 'font_weight_Normal') {
       $style_font_weight = '400';
     }
@@ -2294,3 +2337,79 @@ add_filter("cocoon_part__tmp/mobile-logo-button", function ($content) {
   }
   return $content;
 });
+
+// Cocoonのブロックなどのスタイル追加　silk参照
+class grayish_Custom_Functions
+{
+  // インスタンス保持
+  public static $instance = false;
+
+  // カスタムブロックスタイル（タブブロック）
+
+  public static function get_grayish_tab_block_styles()
+  {
+    $styles = [
+      // 各スタイルを定義
+      ['name' => 'grytab-up-line', 'label' => __('上線', THEME_NAME)],
+      ['name' => 'grytab-tablabel', 'label' => __('カラーラベル', THEME_NAME)],
+      ['name' => 'grytab-line', 'label' => __('ライン', THEME_NAME)],
+      ['name' => 'grytab-cir', 'label' => __('円', THEME_NAME)],
+      // 均等配置
+      ['name' => 'grytab-low-line-equal', 'label' => __('均等デフォルト', THEME_NAME)],
+      ['name' => 'grytab-up-line-equal', 'label' => __('均等上線', THEME_NAME)],
+      ['name' => 'grytab-tablabel-equal', 'label' => __('均等カラーラベル', THEME_NAME)],
+      ['name' => 'grytab-line-equal', 'label' => __('均等ライン', THEME_NAME)],
+      ['name' => 'grytab-cir-equal', 'label' => __('均等円', THEME_NAME)],
+      // PC均等配置
+      ['name' => 'grytab-low-line-equal-pc', 'label' => __('PC均等デフォルト', THEME_NAME)],
+      ['name' => 'grytab-up-line-equal-pc', 'label' => __('PC均等上線', THEME_NAME)],
+      ['name' => 'grytab-tablabel-equal-pc', 'label' => __('PC均等カラーラベル', THEME_NAME)],
+      ['name' => 'grytab-line-equal-pc', 'label' => __('PC均等ライン', THEME_NAME)],
+      ['name' => 'grytab-cir-equal-pc', 'label' => __('PC均等円', THEME_NAME)],
+      // 3の倍数均等配置
+      ['name' => 'grytab-low-line-equal-odd', 'label' => __('3-均等デフォルト', THEME_NAME)],
+      ['name' => 'grytab-up-line-equal-odd', 'label' => __('3-均等上線', THEME_NAME)],
+      ['name' => 'grytab-tablabel-equal-odd', 'label' => __('3-均等カラーラベル', THEME_NAME)],
+      ['name' => 'grytab-line-equal-odd', 'label' => __('3-均等ライン', THEME_NAME)],
+      ['name' => 'grytab-cir-equal-odd', 'label' => __('3-均等円', THEME_NAME)],
+    ];
+
+    // 'cocoon-blocks/tab' のプロパティを付与
+    return array_map(function ($style) {
+      return [
+        'name' => 'cocoon-blocks/tab',
+        'properties' => $style
+      ];
+    }, $styles);
+  }
+
+
+  private function __construct()
+  {
+    add_action('after_setup_theme', [$this, 'setup_skin']);
+  }
+
+  public function setup_skin()
+  {
+    if (is_gutenberg_editor_enable()) {
+
+      // カスタムブロックスタイルの登録　
+      // フックcustom_grayish_block_stylesで別のブロックのスタイル追加も可能にする
+      $blockstyles = apply_filters('custom_grayish_block_styles', self::get_grayish_tab_block_styles());
+      foreach ($blockstyles as $blockstyle) {
+        register_block_style($blockstyle['name'], $blockstyle['properties']);
+      }
+    }
+  }
+
+  // インスタンス生成
+  public static function instance()
+  {
+    if (!self::$instance) {
+      self::$instance = new self;
+    }
+    return self::$instance;
+  }
+}
+
+grayish_Custom_Functions::instance();

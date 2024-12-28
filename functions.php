@@ -69,6 +69,8 @@ function get_content_excerpt($content, $length = 120){
   $content = str_replace('&nbsp;', '', $content);//特殊文字の削除（今回はスペースのみ）
   $content = preg_replace('/\[.+?\]/i', '', $content); //ショートコードを取り除く
   $content = preg_replace(URL_REG, '', $content); //URLを取り除く
+  $content = $content ?? '';
+  $content = str_replace(array("\r\n", "\r", "\n"), '', $content); //改行部分を取り除く
   $content = preg_replace('/\s+/', ' ', $content); // 連続するスペースを1つにまとめる
   $content = preg_replace('/\A[\x00\s]++|[\x00\s]++\z/u', '', $content); // 先頭と末尾から空白文字を取り除く
   $content = html_entity_decode($content); //HTML エンティティを対応する文字に変換する
@@ -134,23 +136,21 @@ if ( !function_exists( 'get_archive_chapter_title' ) ):
 function get_archive_chapter_title(){
   $chapter_title = null;
   if( is_category() ) {//カテゴリーページの場合
-    $cat_id = get_query_var('cat');
     $icon_font = '<span class="fa fa-folder-open" aria-hidden="true"></span>';
-    if ($cat_id && get_the_category_title($cat_id)) {
-      $chapter_title .= $icon_font.get_the_category_title($cat_id);
+    $category = get_queried_object();
+    if ( $category ) {
+      $chapter_title .= $icon_font.$category->name;
     } else {
       $chapter_title .= single_cat_title( $icon_font, false );
     }
-  } elseif( is_tag() ) {//タグページの場合
-    $tag_id = get_queried_object_id();
+  } elseif( is_tag() || is_tax()) {//タグ・タクソノミページの場合（タクソノミページでもタグアイコンを表示するように変更）
     $icon_font = '<span class="fa fa-tags" aria-hidden="true"></span>';
-    if ($tag_id && get_the_tag_title($tag_id)) {
-      $chapter_title .= $icon_font.get_the_tag_title($tag_id);
+    $tag = get_queried_object();
+    if ( $tag ) {
+      $chapter_title .= $icon_font.$tag->name;
     } else {
       $chapter_title .= single_tag_title( $icon_font, false );
     }
-  } elseif( is_tax() ) {//タクソノミページの場合
-    $chapter_title .= single_term_title( '', false );
   } elseif( is_search() ) {//検索結果
     $search_query = trim(strip_tags(get_search_query()));
     if (empty($search_query)) {
@@ -517,3 +517,6 @@ function add_reuse_block_menu_page() {
   }
 }
 endif;
+
+//sizes="auto"対策
+add_filter ( 'wp_img_tag_add_auto_sizes' ,  '__return_false' );

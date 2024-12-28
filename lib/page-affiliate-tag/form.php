@@ -27,18 +27,18 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
     $visible = 1;
   }
 
-  echo '<h2>'.__( 'タイトル', THEME_NAME ).'</h2>';
+  echo '<h2>'.__( 'タイトル', THEME_NAME ).' '.__( '（※必須）', THEME_NAME ).'</h2>';
   generate_textbox_tag('title', $title, __( 'タイトルの入力（126文字まで）', THEME_NAME ));
   generate_tips_tag(__( '表示ラベルとなるタイトルを入力してください。タイトルは一覧表示用です。', THEME_NAME ));
 
-  echo '<h2>'.__( '内容', THEME_NAME ).'</h2>';
+  echo '<h2>'.__( '内容', THEME_NAME ).' '.__( '（※必須）', THEME_NAME ).'</h2>';
   //_v($_POST);
   generate_textarea_tag('text', $text,  __( 'アフィリエイトタグを入力', THEME_NAME ));
 
   generate_tips_tag(__( 'アフィリエイトタグを入力してください。', THEME_NAME ));
 
   //TinyMCE表示
-  generate_checkbox_tag('visible' , $visible, __( 'エディターのリストに表示', THEME_NAME ));
+  generate_checkbox_tag('visible' , $visible, __( 'エディターのリストに表示する', THEME_NAME ));
   generate_tips_tag(__( 'エディターのドロップダウンリストに表示しなくて良い場合は、無効にしてください。', THEME_NAME )); ?>
   <input type="hidden" name="action" value="<?php echo $action; ?>">
   <input type="hidden" name="id" value="<?php echo $id; ?>">

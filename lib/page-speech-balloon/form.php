@@ -46,7 +46,7 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
 
       <tr>
         <th scope="row">
-          <?php generate_label_tag('title', __( 'タイトル', THEME_NAME )); ?>
+          <?php generate_label_tag('title', __( 'タイトル', THEME_NAME ).' '.__( '（※必須）', THEME_NAME )); ?>
         </th>
         <td>
           <?php
@@ -70,7 +70,7 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
 
       <tr>
         <th scope="row">
-          <?php generate_label_tag('icon', __( 'アイコン画像', THEME_NAME )); ?>
+          <?php generate_label_tag('icon', __( 'アイコン画像', THEME_NAME ).' '.__( '（※必須）', THEME_NAME )); ?>
         </th>
         <td>
           <?php
@@ -138,7 +138,7 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
         </th>
         <td>
           <?php
-          generate_checkbox_tag('visible' , $visible, __( 'エディターのリストに表示', THEME_NAME ));
+          generate_checkbox_tag('visible' , $visible, __( 'エディターのリストに表示する', THEME_NAME ));
           generate_tips_tag(__( 'エディターのドロップダウンリストに表示しなくて良い場合は、無効にしてください。', THEME_NAME ));
           ?>
         </td>

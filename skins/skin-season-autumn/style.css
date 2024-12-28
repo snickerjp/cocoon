@@ -126,7 +126,6 @@ a {
 .navi-in > ul li {
 		font-weight: bold;
 		height: 64px;
-		line-height: 64px;
 }
 .navi-in > ul .menu-item-has-description > a > .caption-wrap{
 	line-height: 28px;
@@ -950,7 +949,7 @@ input[type='submit']:hover {
 	opacity: 0.8;
 }
 /************************************
-** スマホ　メニュー関連
+** スマートフォン　メニュー関連
 ************************************/
 .slicknav_btn {
 	background: #9b7b6c;

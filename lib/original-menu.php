@@ -17,7 +17,7 @@ function add_original_menu_in_admin_page() {
   //セパレーターの挿入
   add_admin_menu_separator(apply_filters('cocoon_add_theme_settings_page_separator_position', 29));
   //トップレベルメニューを追加する
-  add_menu_page(SETTING_NAME_TOP, SETTING_NAME_TOP, 'manage_options', THEME_SETTINGS_PAFE, 'add_theme_settings_page', get_template_directory_uri().'/images/admin-menu-logo.png', apply_filters('cocoon_add_theme_settings_page_position', 29) );
+  add_menu_page(__( 'Cocoon 設定', THEME_NAME ), __( 'Cocoon 設定', THEME_NAME ), 'manage_options', THEME_SETTINGS_PAFE, 'add_theme_settings_page', get_template_directory_uri().'/images/admin-menu-logo.png', apply_filters('cocoon_add_theme_settings_page_position', 29) );
 
 
   //add_menu_page();
@@ -32,8 +32,8 @@ function add_original_menu_in_admin_page() {
   //アフィリエイトタグサブメニューを追加
   add_submenu_page(THEME_SETTINGS_PAFE, __('アフィリエイトタグ', THEME_NAME), __('アフィリエイトタグ', THEME_NAME), 'manage_options', 'theme-affiliate-tag', 'add_theme_affiliate_tag_page');
 
-  //ランキング作成サブメニューを追加
-  add_submenu_page(THEME_SETTINGS_PAFE, __('ランキング作成', THEME_NAME), __('ランキング作成', THEME_NAME), 'manage_options', 'theme-ranking', 'add_theme_item_ranking_page');
+  //ランキングサブメニューを追加
+  add_submenu_page(THEME_SETTINGS_PAFE, __('ランキング', THEME_NAME), __('ランキング', THEME_NAME), 'manage_options', 'theme-ranking', 'add_theme_item_ranking_page');
 
   //アクセス集計サブメニューを追加
   add_submenu_page(THEME_SETTINGS_PAFE, __('アクセス集計', THEME_NAME), __('アクセス集計', THEME_NAME), 'manage_options', 'theme-access', 'add_theme_access_page');

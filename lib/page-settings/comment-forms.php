@@ -57,9 +57,9 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
           </th>
           <td>
             <?php
-            generate_textbox_tag(OP_COMMENT_HEADING, get_comment_heading(), __( '見出し', THEME_NAME ));
+            generate_textbox_tag(OP_COMMENT_HEADING, get_comment_heading(), COMMENT_HEADING);
             generate_tips_tag(__( 'コメント一覧の見出しを入力してください。', THEME_NAME ));
-            generate_textbox_tag(OP_COMMENT_SUB_HEADING, get_comment_sub_heading(), __( 'サブ見出し', THEME_NAME ));
+            generate_textbox_tag(OP_COMMENT_SUB_HEADING, get_comment_sub_heading(), '');
             generate_tips_tag(__( 'コメント一覧の補助となる見出しを入力してください。', THEME_NAME ));
             ?>
           </td>
@@ -76,8 +76,8 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
           <td>
             <?php
             $options = array(
-              'always' => __( '常に表示', THEME_NAME ),
-              'toggle_button' => __( 'ボタンで表示切り替え', THEME_NAME ),
+              'always' => __( '常に表示する', THEME_NAME ),
+              'toggle_button' => __( 'ボタンで表示を切り替える', THEME_NAME ),
             );
             generate_radiobox_tag(OP_COMMENT_FORM_DISPLAY_TYPE, $options, get_comment_form_display_type());
             generate_tips_tag(__( 'コメント入力欄の表示状態を設定します。', THEME_NAME ).get_help_page_tag('https://wp-cocoon.com/toggle-comment-button/'));
@@ -92,7 +92,7 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
           </th>
           <td>
             <?php
-            generate_textbox_tag(OP_COMMENT_FORM_HEADING, get_comment_form_heading(), __( '見出し', THEME_NAME ));
+            generate_textbox_tag(OP_COMMENT_FORM_HEADING, get_comment_form_heading(), COMMENT_FORM_HEADING);
             generate_tips_tag(__( 'コメント入力欄の見出しを入力してください。', THEME_NAME ));
             ?>
           </td>
@@ -131,7 +131,7 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
           </th>
           <td>
             <?php
-            generate_textbox_tag(OP_COMMENT_SUBMIT_LABEL, get_comment_submit_label(), __( 'コメントを送信', THEME_NAME ));
+            generate_textbox_tag(OP_COMMENT_SUBMIT_LABEL, get_comment_submit_label(), COMMENT_SUBMIT_LABEL);
             generate_tips_tag(__( 'コメントの送信ボタンのラベルテキストを入力してください。', THEME_NAME ));
             ?>
           </td>

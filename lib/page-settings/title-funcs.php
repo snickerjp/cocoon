@@ -19,10 +19,10 @@ if ( !function_exists( 'get_title_separator_caption' ) ):
 function get_title_separator_caption(){
   switch (get_title_separator()) {
     case 'hyphen':
-      $separator = __( ' - ', THEME_NAME );
+      $separator = __( '-', THEME_NAME );
       break;
     default:
-      $separator = __( ' | ', THEME_NAME );
+      $separator = __( '|', THEME_NAME );
       break;
   }
   return $separator;
@@ -41,7 +41,7 @@ endif;
 define('OP_FREE_FRONT_PAGE_TITLE', 'free_front_page_title');
 if ( !function_exists( 'get_free_front_page_title' ) ):
 function get_free_front_page_title(){
-  return stripslashes_deep(get_theme_option(OP_FREE_FRONT_PAGE_TITLE, trim( get_bloginfo('name') )));
+  return stripslashes_deep(get_theme_option(OP_FREE_FRONT_PAGE_TITLE, get_bloginfo('name') ));
 }
 endif;
 
@@ -75,19 +75,35 @@ function is_free_front_page_title(){
 }
 endif;
 
-//フロントページのメタディスクリプション
-define('OP_FRONT_PAGE_META_DESCRIPTION', 'front_page_meta_description');
-if ( !function_exists( 'get_front_page_meta_description' ) ):
-function get_front_page_meta_description(){
-  return get_theme_option(OP_FRONT_PAGE_META_DESCRIPTION);
+//フロントページにメタディスクリプションを含める
+define('OP_META_DESCRIPTION_TO_FRONT_PAGE', 'meta_description_to_front_page');
+if ( !function_exists( 'is_meta_description_to_front_page' ) ):
+function is_meta_description_to_front_page(){
+  return get_theme_option(OP_META_DESCRIPTION_TO_FRONT_PAGE, 1);
 }
 endif;
 
 //フロントページのメタディスクリプション
+define('OP_FRONT_PAGE_META_DESCRIPTION', 'front_page_meta_description');
+if ( !function_exists( 'get_front_page_meta_description' ) ):
+function get_front_page_meta_description(){
+  return get_theme_option(OP_FRONT_PAGE_META_DESCRIPTION, '');
+}
+endif;
+
+//フロントページにメタキーワードを含める
+define('OP_META_KEYWORDS_TO_FRONT_PAGE', 'meta_keywords_to_front_page');
+if ( !function_exists( 'is_meta_keywords_to_front_page' ) ):
+function is_meta_keywords_to_front_page(){
+  return get_theme_option(OP_META_KEYWORDS_TO_FRONT_PAGE, 1);
+}
+endif;
+
+//フロントページのメタキーワード
 define('OP_FRONT_PAGE_META_KEYWORDS', 'front_page_meta_keywords');
 if ( !function_exists( 'get_front_page_meta_keywords' ) ):
 function get_front_page_meta_keywords(){
-  return get_theme_option(OP_FRONT_PAGE_META_KEYWORDS);
+  return get_theme_option(OP_FRONT_PAGE_META_KEYWORDS, '');
 }
 endif;
 
@@ -180,7 +196,7 @@ endif;
 define('OP_SIMPLIFIED_SITE_NAME', 'simplified_site_name');
 if ( !function_exists( 'get_simplified_site_name' ) ):
 function get_simplified_site_name(){
-  return stripslashes_deep(trim(get_theme_option(OP_SIMPLIFIED_SITE_NAME)));
+  return stripslashes_deep(get_theme_option(OP_SIMPLIFIED_SITE_NAME, ''));
 }
 endif;
 
