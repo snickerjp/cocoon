@@ -6,7 +6,7 @@
   Author: Na2factory
   Author URI: https://na2-factory.com/
   Screenshot URI: https://im-cocoon.net/wp-content/uploads/skin-grayish-topfull.webp
-  Version: 2.0.5
+  Version: 2.0.6
   Priority: 7000001000
   License: GNU General Public License
   License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -4338,7 +4338,7 @@ blockquote cite {
   text-align: left;
 }
 
-/* プロフィールボックス　エディタでカラム、インデックスミドルウィジェット時など縦表示にする */
+/* プロフィール　エディタでカラム、インデックスミドルウィジェット時など縦表示にする */
 .skin-grayish :where(.front-page-type-index, .front-page-type-tab-index) .widget-index-middle .author-box,
 .skin-grayish:not(.front-top-page).blog .widget-index-middle .author-box,
 .skin-grayish:where(.archive, .search) .ect-vertical-card .widget-index-middle .author-box,
@@ -4770,17 +4770,17 @@ blockquote cite {
   grid-column: 2;
 }
 
-/* content-bottomのプロフィールボックスの直後のウィジェットにのみ余白 */
+/* content-bottomのプロフィールの直後のウィジェットにのみ余白 */
 .skin-grayish .content-bottom .widget_author_box+.widget-content-bottom {
   padding-top: 2.5rem;
 }
 
-/* content-bottomのプロフィールボックスの直後のウィジェットが人気記事の場合は多めの余白 */
+/* content-bottomのプロフィールの直後のウィジェットが人気記事の場合は多めの余白 */
 .skin-grayish .content-bottom .widget_author_box+.widget-content-bottom.widget_popular_entries {
   padding-top: 4.5rem;
 }
 
-/* Front content-bottomの最初がプロフィールボックス以外のときは上に余白が必要 */
+/* Front content-bottomの最初がプロフィール以外のときは上に余白が必要 */
 .skin-grayish.front-top-page .content-bottom .content-bottom-in .widget-content-bottom:first-child:not(.widget_author_box) {
   padding-top: 2.5rem;
 }
@@ -4790,6 +4790,12 @@ blockquote cite {
   padding-top: 4.5rem;
 }
 
+/* v2.0.6 コンテンツ下部のテキストor広告ウィジェット不具合修正 */
+/* テキストor広告（モバイル用）を非表示に */
+.skin-grayish .content-bottom .widget-content-bottom.widget_mobile_text,
+.skin-grayish .content-bottom .widget-content-bottom.widget_mobile_ad {
+  display: none;
+}
 
 /*============== Widget Footer : LargeSize ==============*/
 
@@ -5200,7 +5206,7 @@ body:has(#spotlight.show) .header {
   }
 
 
-  /* content-bottomのプロフィールボックスの直後のウィジェットが人気記事の場合は多めの余白 */
+  /* content-bottomのプロフィールの直後のウィジェットが人気記事の場合は多めの余白 */
   .skin-grayish .content-bottom .widget_author_box+.widget-content-bottom.widget_popular_entries {
     padding-top: 3.5rem;
   }
@@ -5916,7 +5922,7 @@ body:has(#spotlight.show) .header {
     margin-top: 0;
   }
 
-  /* プロフィールボックス main,content-bottom, content-top 縦表示 */
+  /* プロフィール main,content-bottom, content-top 縦表示 */
   :where(.main, .content-bottom, .content-top) .author-box {
     grid-template-rows: 100px auto auto auto auto;
     grid-template-columns: 1fr;
@@ -5998,6 +6004,21 @@ body:has(#spotlight.show) .header {
     display: block;
     width: 100%;
   }
+
+  /* v2.0.6 コンテンツ下部のテキスト・広告ウィジェット不具合修正 */
+  /* テキスト（PC用）,テキスト（モバイル用） */
+  /* テキストor広告（モバイル用）を表示に */
+  .skin-grayish .content-bottom .widget-content-bottom.widget_mobile_text,
+  .skin-grayish .content-bottom .widget-content-bottom.widget_mobile_ad {
+    display: flex;
+  }
+
+  /* テキストor広告（PC用）を非表示に */
+  .skin-grayish .content-bottom .widget-content-bottom.widget_pc_text,
+  .skin-grayish .content-bottom .widget-content-bottom.widget_pc_ad {
+    display: none;
+  }
+
 
   /* 投稿下関連記事 */
   .skin-grayish .under-entry-content .related-list .related-entry-card-wrap {

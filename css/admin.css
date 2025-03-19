@@ -525,7 +525,7 @@ body.wp-admin {
   /*!動画を囲んでいるdiv目一杯に広げる*/
   /*!Twitterビデオの最小幅を上書き変更*/
   /************************************
-  ** プロフィールボックス
+  ** プロフィール
   ************************************/
   /************************************
   ** Call to Action
@@ -778,7 +778,7 @@ body.wp-admin {
   /*!動画を囲んでいるdiv目一杯に広げる*/
   /*!Twitterビデオの最小幅を上書き変更*/
   /************************************
-  ** プロフィールボックス
+  ** プロフィール
   ************************************/
   /************************************
   ** Call to Action
@@ -1460,6 +1460,15 @@ body.wp-admin {
 .admin-settings .demo .logo-image {
   padding: 10px 0;
   font-size: inherit;
+}
+.admin-settings .demo .site-fixed-logo-image {
+  display: none;
+}
+.admin-settings .demo .fixed-header .site-fixed-logo-image {
+  display: block;
+}
+.admin-settings .demo .fixed-header:has(.site-fixed-logo-image) .site-logo-image {
+  display: none;
 }
 .admin-settings .demo .header-container-in.hlt-top-menu {
   display: flex;
@@ -10003,6 +10012,15 @@ body.wp-admin {
 .admin-settings .demo .logo-image {
   padding: 10px 0;
   font-size: inherit;
+}
+.admin-settings .demo .site-fixed-logo-image {
+  display: none;
+}
+.admin-settings .demo .fixed-header .site-fixed-logo-image {
+  display: block;
+}
+.admin-settings .demo .fixed-header:has(.site-fixed-logo-image) .site-logo-image {
+  display: none;
 }
 .admin-settings .demo .header-container-in.hlt-top-menu {
   display: flex;
