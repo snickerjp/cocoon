@@ -16,6 +16,19 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 //固定値
 @import "defins";
-//importファイル
-@import "imports";
-@import "pre";
+//本文パーツ
+@import "extension";
+@import "extension-layout";
+@import "speech-balloon";
+@import "iconlist-box";
+@import "tab";
+@import "item-ranking";
+@import "timeline";
+@import "tab";
+@import "faq";
+@import "blogcard";
+@import "widget";
+@import "fontawesome-before";
+@import "fontawesome5";
+@import "./animation/keyframes";
+// @import "amp-exclusions";

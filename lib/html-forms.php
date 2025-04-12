@@ -1348,7 +1348,6 @@ function generate_widget_entries_tag($atts){
   <?php if ( $horizontal ) : ?>
     <div class="swiper-wrapper">
   <?php endif; ?>
-  <?php //if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
   <?php if ( $query -> have_posts() ) : while ( $query -> have_posts() ) : $query -> the_post(); ?>
     <?php //エントリーカードリンクタグの生成
     $atts = array(
@@ -1367,13 +1366,15 @@ function generate_widget_entries_tag($atts){
       );
     }
 
-    echo get_widget_entry_card_link_tag($atts); ?>
+    echo get_widget_entry_card_link_tag($atts);
+    ?>
   <?php endwhile;
+    set_query_var('count', 1); // 記事がある場合は 1 を設定
   else :
     echo '<p>'.__( '記事は見つかりませんでした。', THEME_NAME ).'</p>';//見つからない時のメッセージ
+    set_query_var('count', 0); // 記事がない場合は 0 を設定
   endif; ?>
   <?php wp_reset_postdata(); ?>
-  <?php //wp_reset_query(); ?>
   <?php if ( $horizontal ) : ?>
     </div>
       <div class="swiper-button-prev"></div>
