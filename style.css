@@ -6,7 +6,7 @@ Theme URI: https://wp-cocoon.com/
 Author: わいひら
 Author URI: https://nelog.jp/
 Text Domain: cocoon
-Version: 2.8.5.3
+Version: 2.8.5.4
 Requires at least: 6.1.0
 Requires PHP: 7.4.0
 Tags: two-columns, left-sidebar, right-sidebar
@@ -607,6 +607,10 @@ ol, ul {
 
 ul {
   list-style-type: disc;
+}
+
+ul ul {
+  list-style-type: revert;
 }
 
 hr {
@@ -8645,13 +8649,10 @@ ul.timeline ul ul ul {
   color: var(--cocoon-custom-icon-color);
 }
 .iconlist-box ul {
-  list-style: none;
+  list-style: none !important;
 }
 .iconlist-box ul li::before {
   display: initial;
-}
-.iconlist-box ul ul {
-  list-style: none;
 }
 .iconlist-box ol:not(.has-list-style) > li::before {
   display: none;
@@ -10083,7 +10084,7 @@ https://codepen.io/nxworld/pen/oLdoWb
 
 [class*=is-style-numeric-list-] {
   counter-reset: list;
-  list-style-type: none !important;
+  list-style-type: none;
 }
 [class*=is-style-numeric-list-] > li {
   position: relative;

@@ -876,7 +876,7 @@ endif;
 //Swiper
 if ( !function_exists( 'wp_enqueue_swiper' ) ):
 function wp_enqueue_swiper(){
-  wp_enqueue_style( 'swiper-style', 'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css');
+  wp_enqueue_style( 'swiper-style', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css');
 }
 endif;
 
@@ -3943,6 +3943,17 @@ function cocoon_skin_settings() {
 }
 endif;
 
+//ショートコードのエスケープ
+if ( !function_exists( 'escape_shortcodes' ) ):
+function escape_shortcodes($content) {
+  // ショートコードのエスケープに必要な書類を追加する（※現在は何もしていない）
+  return $content;
+  // // [shortcode] → [[shortcode]] に置換（全ショートコード対象）
+  // return preg_replace_callback('/\[([a-zA-Z0-9_]+)([^\]]*)\]/', function($matches) {
+  //     return '[[' . $matches[1] . $matches[2] . ']]';
+  // }, $content);
+}
+endif;
 
 ////////////////////////////////////////////////////
 // 以下子テーマカスタマイズ時にエラーがないようにするためのエイリアス

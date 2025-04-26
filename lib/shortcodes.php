@@ -388,7 +388,6 @@ function timeline_item_shortcode( $atts, $content = null ){
 }
 endif;
 
-define('TIME_ERROR_MESSAGE', '<span class="time-error">'.__( '日付未入力', THEME_NAME ).'</span>');
 //相対的な時間経過を取得するショートコード
 if (!shortcode_exists('ago')) {
   add_shortcode('ago', 'ago_shortcode');
@@ -398,11 +397,11 @@ function ago_shortcode( $atts ){
   extract( shortcode_atts( array(
     'from' => null,
   ), $atts, 'ago' ) );
-  if (!$from) {
+  if (empty($from)) {
     return TIME_ERROR_MESSAGE;
   }
   $from = sanitize_shortcode_value($from);
-  $from = strtotime($from);
+  $from = strtotime((string)$from);
   return get_human_time_diff_advance($from);
 }
 endif;
@@ -420,10 +419,11 @@ function age_shortcode( $atts ){
     $from = $birth;
   }
   //入力エラー出力
-  if (!$from) {
+  if (empty($from)) {
     return TIME_ERROR_MESSAGE;
   }
-  $from = strtotime($from);
+  $from = sanitize_shortcode_value($from);
+  $from = strtotime((string)$from);
   return get_human_years_ago($from, $unit);
 }
 endif;
@@ -441,6 +441,7 @@ function yago_shortcode( $atts ){
   if (!$from) {
     return TIME_ERROR_MESSAGE;
   }
+  $from = sanitize_shortcode_value($from);
   $from = strtotime($from);
   return get_human_years_ago($from, $unit);
 }
@@ -571,10 +572,11 @@ function countdown_shortcode( $atts ){
     'unit' => null,
   ), $atts, 'countdown' ) );
   //入力エラー出力
-  if (!$to) {
+  if (empty($to)) {
     return TIME_ERROR_MESSAGE;
   }
-  $to = strtotime($to);
+  $to = sanitize_shortcode_value($to);
+  $to = strtotime((string)$to);
   $count = get_countdown_days($to);
   if($count === "0") {
     return "-";
@@ -638,8 +640,8 @@ function get_navi_card_list_tag($atts){
     $image_attributes = get_navi_card_image_attributes($menu, $type);
 
     $url = $menu->url;
-    $title = $menu->title;
-    $snippet = $menu->description;
+    $title = escape_shortcodes($menu->title);
+    $snippet = strip_shortcodes($menu->description);
     $classes = $menu->classes;
     $object = $menu->object;
     $object_id = $menu->object_id;
@@ -773,10 +775,10 @@ function get_box_menu_tag($atts){
     $target = !empty($menu->target) ? $menu->target : $atts['target'];
 
     $url = $menu->url;
-    $title = $menu->title;
+    $title = escape_shortcodes($menu->title);
     $title_tag = '<div class="box-menu-label">'.$title.'</div>';
-    $description_tag = '<div class="box-menu-description">'.$menu->description.'</div>';
-    $attr_title = $menu->attr_title;
+    $description_tag = '<div class="box-menu-description">'.strip_shortcodes($menu->description).'</div>';
+    $attr_title = escape_shortcodes($menu->attr_title);
     $classes = implode(' ', $menu->classes);
     $icon_tag = '<div class="fa fa-star" aria-hidden="true"></div>';
     //画像URLの場合
@@ -915,16 +917,12 @@ function campaign_shortcode( $atts, $content = null ) {
   $now = date_i18n('U');
 
   //いつから（開始日時）
-  $from_time = strtotime($from);
-  if (!$from_time) {
-    $from_time = strtotime('-1 day');
-  };
+  $from = sanitize_shortcode_value($from);
+  $from_time = !empty($from) ? strtotime($from) : strtotime('-1 day');
 
   //いつまで（終了日時）
-  $to_time = strtotime($to);
-  if (!$to_time) {
-    $to_time = strtotime('+1 day');
-  };
+  $to = sanitize_shortcode_value($to);
+  $to_time = !empty($to) ? strtotime($to) : strtotime('+1 day');
 
   //拡張クラス
   if ($class) {
@@ -935,8 +933,6 @@ function campaign_shortcode( $atts, $content = null ) {
   $content = apply_filters('campaign_shortcode_content', $content);
   if (($from_time < $now) && ($to_time > $now)) {
     $tag = '<div class="campaign'.esc_attr($class).'">'.
-      // date_i18n('開始日時：Y年m月d日 H時i分s秒', $from_time).'<br>'.
-      // date_i18n('終了日時：Y年m月d日 H時i分s秒', $to_time).'<br>'.
       $content.
     '</div>';
   }
