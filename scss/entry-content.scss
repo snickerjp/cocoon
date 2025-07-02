@@ -17,6 +17,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 //固定値
 @import "defins";
 //本文パーツ
+@import "font";
 @import "extension";
 @import "extension-layout";
 @import "speech-balloon";
@@ -34,11 +35,19 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 @import "toc";
 @import "author-box";
 @import "cta-box";
+@import "kaereba";
+@import "box-border";
+@import "box-menus";
+@import "box-style";
+@import "swiper";
 @import "fontawesome-before";
 @import "fontawesome5";
+@import "icomoon";
 @import "./animation/keyframes";
-// @import "amp-exclusions";
+// @import "amp-exclusions";/
 
+// メディアクエリ
+@import "breakpoints/breakpoints";
 
 // 以下調整用CSS
 
@@ -49,17 +58,10 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
   display: block;
 }
 
+/* 後で消す */
 .block-box p:first-of-type,
 .tab-block p:first-of-type{
   margin-top: 0;
-}
-
-.micro-top{
-  margin-bottom: inherit;
-}
-
-.micro-bottom.micro-balloon {
-  margin-top: inherit;
 }
 
 .a-wrap {
@@ -103,8 +105,13 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 .widget-entry-card-post-date.post-date,
 .widget-entry-card-update-date.post-update{
   color: var(--cocoon-text-color);
-  font-size: 13px;
-  margin-left: 8px;
+  font-size: 11px;
+  margin-right: 8px;
+}
+
+.large-thumb-on .widget-entry-card-post-date.post-date,
+.large-thumb-on .widget-entry-card-update-date.post-update{
+  color: var(--cocoon-white-color);
 }
 
 .widget-entry-card-date .entry-date{
@@ -115,8 +122,39 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
   color: #f6a068;
 }
 
-
 /*プロフィールの円形画像用*/
 .circle-image img{
   border-radius: 50%;
+}
+
+.toc-checkbox{
+  display: none;
+}
+
+// ブログカードラッパー内にiframe.wp-embedded-contentがあると画面が横揺れするのを修正
+.blogcard-type iframe.wp-embedded-content{
+  width: auto !important;
+}
+
+///////////////////////////////////////
+// iOS対応
+///////////////////////////////////////
+.author-thumb,
+.blogcard-thumbnail,
+.related-entry-card-thumb,
+.popular-entry-card-thumb,
+.new-entry-card-thumb{
+  margin-right: $thumb_content_margin;
+}
+
+///////////////////////////////////////
+// 非表示のものは非表示にする
+///////////////////////////////////////
+.display-none {
+  display: none;
+}
+
+.is-list-horizontal .swiper-button-next,
+.is-list-horizontal .swiper-button-prev{
+  margin: auto !important;
 }

@@ -213,7 +213,7 @@
   font-size: 12px;
 }
 
-.wp-admin-fz-12px .editor-styles-wrapper {
+.wp-admin-fz-12px .cocoon-block-wrap {
   font-size: 12px;
 }
 
@@ -221,7 +221,7 @@
   font-size: 13px;
 }
 
-.wp-admin-fz-13px .editor-styles-wrapper {
+.wp-admin-fz-13px .cocoon-block-wrap {
   font-size: 13px;
 }
 
@@ -229,7 +229,7 @@
   font-size: 14px;
 }
 
-.wp-admin-fz-14px .editor-styles-wrapper {
+.wp-admin-fz-14px .cocoon-block-wrap {
   font-size: 14px;
 }
 
@@ -237,7 +237,7 @@
   font-size: 15px;
 }
 
-.wp-admin-fz-15px .editor-styles-wrapper {
+.wp-admin-fz-15px .cocoon-block-wrap {
   font-size: 15px;
 }
 
@@ -245,7 +245,7 @@
   font-size: 16px;
 }
 
-.wp-admin-fz-16px .editor-styles-wrapper {
+.wp-admin-fz-16px .cocoon-block-wrap {
   font-size: 16px;
 }
 
@@ -253,7 +253,7 @@
   font-size: 17px;
 }
 
-.wp-admin-fz-17px .editor-styles-wrapper {
+.wp-admin-fz-17px .cocoon-block-wrap {
   font-size: 17px;
 }
 
@@ -261,7 +261,7 @@
   font-size: 18px;
 }
 
-.wp-admin-fz-18px .editor-styles-wrapper {
+.wp-admin-fz-18px .cocoon-block-wrap {
   font-size: 18px;
 }
 
@@ -269,7 +269,7 @@
   font-size: 19px;
 }
 
-.wp-admin-fz-19px .editor-styles-wrapper {
+.wp-admin-fz-19px .cocoon-block-wrap {
   font-size: 19px;
 }
 
@@ -277,7 +277,7 @@
   font-size: 20px;
 }
 
-.wp-admin-fz-20px .editor-styles-wrapper {
+.wp-admin-fz-20px .cocoon-block-wrap {
   font-size: 20px;
 }
 
@@ -285,7 +285,7 @@
   font-size: 21px;
 }
 
-.wp-admin-fz-21px .editor-styles-wrapper {
+.wp-admin-fz-21px .cocoon-block-wrap {
   font-size: 21px;
 }
 
@@ -293,7 +293,7 @@
   font-size: 22px;
 }
 
-.wp-admin-fz-22px .editor-styles-wrapper {
+.wp-admin-fz-22px .cocoon-block-wrap {
   font-size: 22px;
 }
 
@@ -301,7 +301,7 @@
   font-size: 24px;
 }
 
-.wp-admin-fz-24px .editor-styles-wrapper {
+.wp-admin-fz-24px .cocoon-block-wrap {
   font-size: 24px;
 }
 
@@ -309,7 +309,7 @@
   font-size: 28px;
 }
 
-.wp-admin-fz-28px .editor-styles-wrapper {
+.wp-admin-fz-28px .cocoon-block-wrap {
   font-size: 28px;
 }
 
@@ -317,7 +317,7 @@
   font-size: 32px;
 }
 
-.wp-admin-fz-32px .editor-styles-wrapper {
+.wp-admin-fz-32px .cocoon-block-wrap {
   font-size: 32px;
 }
 
@@ -325,7 +325,7 @@
   font-size: 36px;
 }
 
-.wp-admin-fz-36px .editor-styles-wrapper {
+.wp-admin-fz-36px .cocoon-block-wrap {
   font-size: 36px;
 }
 
@@ -333,7 +333,7 @@
   font-size: 40px;
 }
 
-.wp-admin-fz-40px .editor-styles-wrapper {
+.wp-admin-fz-40px .cocoon-block-wrap {
   font-size: 40px;
 }
 
@@ -341,7 +341,7 @@
   font-size: 44px;
 }
 
-.wp-admin-fz-44px .editor-styles-wrapper {
+.wp-admin-fz-44px .cocoon-block-wrap {
   font-size: 44px;
 }
 
@@ -349,7 +349,7 @@
   font-size: 48px;
 }
 
-.wp-admin-fz-48px .editor-styles-wrapper {
+.wp-admin-fz-48px .cocoon-block-wrap {
   font-size: 48px;
 }
 
@@ -357,7 +357,7 @@
   font-weight: 100;
 }
 
-.wp-admin-fw-100 .editor-styles-wrapper {
+.wp-admin-fw-100 .cocoon-block-wrap {
   font-weight: 100;
 }
 
@@ -365,7 +365,7 @@
   font-weight: 200;
 }
 
-.wp-admin-fw-200 .editor-styles-wrapper {
+.wp-admin-fw-200 .cocoon-block-wrap {
   font-weight: 200;
 }
 
@@ -373,7 +373,7 @@
   font-weight: 300;
 }
 
-.wp-admin-fw-300 .editor-styles-wrapper {
+.wp-admin-fw-300 .cocoon-block-wrap {
   font-weight: 300;
 }
 
@@ -381,7 +381,7 @@
   font-weight: 400;
 }
 
-.wp-admin-fw-400 .editor-styles-wrapper {
+.wp-admin-fw-400 .cocoon-block-wrap {
   font-weight: 400;
 }
 
@@ -389,7 +389,7 @@
   font-weight: 500;
 }
 
-.wp-admin-fw-500 .editor-styles-wrapper {
+.wp-admin-fw-500 .cocoon-block-wrap {
   font-weight: 500;
 }
 
@@ -397,7 +397,7 @@
   font-weight: 600;
 }
 
-.wp-admin-fw-600 .editor-styles-wrapper {
+.wp-admin-fw-600 .cocoon-block-wrap {
   font-weight: 600;
 }
 
@@ -405,7 +405,7 @@
   font-weight: 700;
 }
 
-.wp-admin-fw-700 .editor-styles-wrapper {
+.wp-admin-fw-700 .cocoon-block-wrap {
   font-weight: 700;
 }
 
@@ -413,7 +413,7 @@
   font-weight: 800;
 }
 
-.wp-admin-fw-800 .editor-styles-wrapper {
+.wp-admin-fw-800 .cocoon-block-wrap {
   font-weight: 800;
 }
 
@@ -421,84 +421,96 @@
   font-weight: 900;
 }
 
-.wp-admin-fw-900 .editor-styles-wrapper {
+.wp-admin-fw-900 .cocoon-block-wrap {
   font-weight: 900;
 }
 
 .ff-meiryo,
 .wf-loading body,
-.wp-admin-ff-meiryo .editor-styles-wrapper {
+.wp-admin-ff-meiryo .cocoon-block-wrap {
   font-family: Meiryo, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
 }
 
 .ff-yu-gothic,
-.wp-admin-ff-yu-gothic .editor-styles-wrapper {
+.wp-admin-ff-yu-gothic .cocoon-block-wrap {
   font-family: YuGothic, "Yu Gothic", Meiryo, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
 }
 
 .ff-ms-pgothic,
-.wp-admin-ff-ms-pgothic .editor-styles-wrapper {
+.wp-admin-ff-ms-pgothic .cocoon-block-wrap {
   font-family: "MS PGothic", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
 }
 
 .ff-noto-sans-jp,
 .wf-active .ff-noto-sans-jp,
-.wp-admin-ff-noto-sans-jp .editor-styles-wrapper {
+.wp-admin-ff-noto-sans-jp .cocoon-block-wrap {
   font-family: "Noto Sans JP", sans-serif;
 }
 
 .ff-noto-serif-jp,
 .wf-active .ff-noto-serif-jp,
-.wp-admin-ff-noto-serif-jp .editor-styles-wrapper {
+.wp-admin-ff-noto-serif-jp .cocoon-block-wrap {
   font-family: "Noto Serif JP", sans-serif;
 }
 
 .ff-mplus-1p,
 .wf-active .ff-mplus-1p,
-.wp-admin-ff-mplus-1p .editor-styles-wrapper {
+.wp-admin-ff-mplus-1p .cocoon-block-wrap {
   font-family: "M PLUS 1p", sans-serif;
 }
 
 .ff-rounded-mplus-1c,
 .wf-active .ff-rounded-mplus-1c,
-.wp-admin-ff-rounded-mplus-1c .editor-styles-wrapper {
+.wp-admin-ff-rounded-mplus-1c .cocoon-block-wrap {
   font-family: "M PLUS Rounded 1c", sans-serif;
 }
 
 .ff-kosugi,
 .wf-active .ff-kosugi,
-.wp-admin-ff-kosugi .editor-styles-wrapper {
+.wp-admin-ff-kosugi .cocoon-block-wrap {
   font-family: "Kosugi", sans-serif;
 }
 
 .ff-kosugi-maru,
 .wf-active .ff-kosugi-maru,
-.wp-admin-ff-kosugi-maru .editor-styles-wrapper {
+.wp-admin-ff-kosugi-maru .cocoon-block-wrap {
   font-family: "Kosugi Maru", sans-serif;
 }
 
 .ff-sawarabi-gothic,
 .wf-active .ff-sawarabi-gothic,
-.wp-admin-ff-sawarabi-gothic .editor-styles-wrapper {
+.wp-admin-ff-sawarabi-gothic .cocoon-block-wrap {
   font-family: "Sawarabi Gothic", sans-serif;
 }
 
 .ff-sawarabi-mincho,
 .wf-active .ff-sawarabi-mincho,
-.wp-admin-ff-sawarabi-mincho .editor-styles-wrapper {
+.wp-admin-ff-sawarabi-mincho .cocoon-block-wrap {
   font-family: "Sawarabi Mincho", sans-serif;
 }
 
 .ff-noto-sans-korean,
 .wf-active .ff-noto-sans-korean,
-.wp-admin-ff-noto-sans-korean .editor-styles-wrapper {
+.wp-admin-ff-noto-sans-korean .cocoon-block-wrap {
   font-family: "Noto Sans KR", sans-serif;
 }
 
 .ff-pretendard,
 .wf-active .ff-pretendard,
-.wp-admin-ff-pretendard .editor-styles-wrapper {
+.wp-admin-ff-pretendard .cocoon-block-wrap {
   font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
+
+.ff-microsoft-jhenghei,
+.wf-active .ff-microsoft-jhenghei,
+.wp-admin-ff-microsoft-jhenghei .cocoon-block-wrap {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.ff-noto-sans-tc,
+.wf-active .ff-noto-sans-tc,
+.wp-admin-ff-noto-sans-tc .cocoon-block-wrap {
+  font-family: "Noto Sans TC", sans-serif;
 }
 
 .sub-caption {
@@ -1853,65 +1865,6 @@ table:not(.has-border-color) :where(th, td) {
   border: 1px solid var(--cocoon-x-thin-color);
 }
 
-th:has(.s-circle), th:has(.d-circle), th:has(.triangle), th:has(.cross), th:has(.b-question), th:has(.b-check), td:has(.s-circle), td:has(.d-circle), td:has(.triangle), td:has(.cross), td:has(.b-question), td:has(.b-check) {
-  height: 60px;
-  min-width: 80px;
-}
-
-.s-circle:before,
-.d-circle:before,
-.triangle:before,
-.cross:before,
-.b-check:before,
-.b-question:before,
-.b-none:before {
-  content: "";
-  display: block;
-  height: 40px;
-  left: 50%;
-  opacity: 0.3;
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 40px;
-  pointer-events: none;
-}
-
-.s-circle:before {
-  background-color: #00bcd4;
-  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16 32q-3.313 0-6.219-1.25-2.906-1.281-5.078-3.453t-3.453-5.078q-1.25-2.906-1.25-6.219t1.25-6.219q1.281-2.906 3.453-5.078t5.078-3.453q2.906-1.25 6.219-1.25t6.219 1.25q2.906 1.281 5.078 3.453t3.453 5.078q1.25 2.906 1.25 6.219t-1.25 6.219q-1.281 2.906-3.453 5.078t-5.078 3.453q-2.906 1.25-6.219 1.25zM16 2.906q-2.719 0-5.094 1.031t-4.156 2.813-2.813 4.156-1.031 5.094 1.031 5.094 2.813 4.156 4.156 2.813 5.094 1.031 5.094-1.031 4.156-2.813 2.813-4.156 1.031-5.094-1.031-5.094-2.813-4.156-4.156-2.813-5.094-1.031z"></path></svg>');
-}
-
-.d-circle:before {
-  background-color: #8bc34a;
-  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16 32q-3.313 0-6.219-1.25-2.906-1.281-5.078-3.453t-3.453-5.078q-1.25-2.906-1.25-6.219t1.25-6.219q1.281-2.906 3.453-5.078t5.078-3.453q2.906-1.25 6.219-1.25t6.219 1.25q2.906 1.281 5.078 3.453t3.453 5.078q1.25 2.906 1.25 6.219t-1.25 6.219q-1.281 2.906-3.453 5.078t-5.078 3.453q-2.906 1.25-6.219 1.25zM16 2.906q-2.719 0-5.094 1.031t-4.156 2.813-2.813 4.156-1.031 5.094 1.031 5.094 2.813 4.156 4.156 2.813 5.094 1.031 5.094-1.031 4.156-2.813 2.813-4.156 1.031-5.094-1.031-5.094-2.813-4.156-4.156-2.813-5.094-1.031zM16 26.875q-2.25 0-4.219-0.875-1.969-0.844-3.453-2.328t-2.328-3.453q-0.875-1.969-0.875-4.219t0.875-4.219q0.844-1.969 2.328-3.453t3.453-2.328q1.969-0.875 4.219-0.875t4.219 0.875q1.969 0.844 3.453 2.328t2.328 3.453q0.875 1.969 0.875 4.219t-0.875 4.219q-0.844 1.969-2.328 3.453t-3.453 2.328q-1.969 0.875-4.219 0.875zM16 8.063q-1.656 0-3.094 0.625t-2.516 1.703-1.703 2.516-0.625 3.094 0.625 3.094 1.703 2.516 2.516 1.703 3.094 0.625 3.094-0.625 2.516-1.703 1.703-2.516 0.625-3.094v0q0-1.656-0.625-3.094t-1.703-2.516-2.516-1.703-3.094-0.625v0 0z"></path></svg>');
-}
-
-.triangle:before {
-  background-color: #ffc107;
-  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M31.719 29.281h-31.313l15.656-27.094zM4.625 26.844h22.875l-11.438-19.813z"></path></svg>');
-}
-
-.cross:before {
-  background-color: #f44336;
-  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16 18.125l-11.938 11.938-2.094-2.125 11.906-11.938-11.906-11.938 2.094-2.094 11.938 11.906 11.938-11.906 2.125 2.094-11.938 11.938 11.938 11.938-2.125 2.125-11.938-11.938z"></path></svg>');
-}
-
-.b-check:before {
-  background-color: #8bc34a;
-  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="m 28.824393,3.176485 a 1.7150643,1.7150643 0 0 1 2.696082,2.1198195 L 13.301347,28.473683 a 2.5725964,2.5725964 0 0 1 -3.9858105,0.07203 L 0.56184852,18.200448 A 1.7150643,1.7150643 0 1 1 3.1790365,15.984585 l 8.0745235,9.542617 z"></path></svg>');
-}
-
-.b-question:before {
-  background-color: #ffc107;
-  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="m 10.104966,7.8117416 c 0.66516,-1.9555889 2.863256,-3.6160779 5.730897,-3.6160779 3.545604,0 5.953994,2.4620552 5.953994,4.9616606 0,2.4996047 -2.40839,4.9616597 -5.953994,4.9616597 -1.09613,0 -1.984664,0.888534 -1.984664,1.984664 v 3.96933 c 0,1.09613 0.888534,1.984664 1.984664,1.984664 1.096131,0 1.984665,-0.888534 1.984665,-1.984664 V 17.90612 c 4.372217,-0.809942 7.938658,-4.242418 7.938658,-8.7487957 0,-5.173087 -4.699883,-8.93098904 -9.923323,-8.93098904 -4.324644,0 -8.2020622,2.52419514 -9.4887993,6.30724294 C 5.994111,7.5712796 6.5492216,8.6986483 7.5869231,9.0516013 8.6246444,9.4045734 9.752013,8.8494632 10.104966,7.8117416 Z m 5.730897,24.1692214 c 1.644295,0 2.976997,-1.3329 2.976997,-2.976996 0,-1.644096 -1.332702,-2.976996 -2.976997,-2.976996 -1.644096,0 -2.976996,1.3329 -2.976996,2.976996 0,1.644096 1.3329,2.976996 2.976996,2.976996 z"></path></svg>');
-}
-
-.b-none:before {
-  background-color: #777;
-  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M 4,12 H 20"></path></svg>');
-}
-
 .scrollable-table {
   -webkit-overflow-scrolling: touch;
   margin: 0;
@@ -2989,10 +2942,6 @@ label.screen-reader-text {
   padding-left: 0;
 }
 
-.widget_search .wp-block-search__button {
-  padding: 0.375em 0.1em;
-  font-size: 14px;
-}
 .widget_search .wp-block-search__input {
   line-height: normal;
 }
@@ -6174,6 +6123,65 @@ figcaption {
   padding-left: 0;
 }
 
+th:has(.s-circle), th:has(.d-circle), th:has(.triangle), th:has(.cross), th:has(.b-question), th:has(.b-check), td:has(.s-circle), td:has(.d-circle), td:has(.triangle), td:has(.cross), td:has(.b-question), td:has(.b-check) {
+  height: 60px;
+  min-width: 80px;
+}
+
+.s-circle:before,
+.d-circle:before,
+.triangle:before,
+.cross:before,
+.b-check:before,
+.b-question:before,
+.b-none:before {
+  content: "";
+  display: block;
+  height: 40px;
+  left: 50%;
+  opacity: 0.3;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  pointer-events: none;
+}
+
+.s-circle:before {
+  background-color: #00bcd4;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16 32q-3.313 0-6.219-1.25-2.906-1.281-5.078-3.453t-3.453-5.078q-1.25-2.906-1.25-6.219t1.25-6.219q1.281-2.906 3.453-5.078t5.078-3.453q2.906-1.25 6.219-1.25t6.219 1.25q2.906 1.281 5.078 3.453t3.453 5.078q1.25 2.906 1.25 6.219t-1.25 6.219q-1.281 2.906-3.453 5.078t-5.078 3.453q-2.906 1.25-6.219 1.25zM16 2.906q-2.719 0-5.094 1.031t-4.156 2.813-2.813 4.156-1.031 5.094 1.031 5.094 2.813 4.156 4.156 2.813 5.094 1.031 5.094-1.031 4.156-2.813 2.813-4.156 1.031-5.094-1.031-5.094-2.813-4.156-4.156-2.813-5.094-1.031z"></path></svg>');
+}
+
+.d-circle:before {
+  background-color: #8bc34a;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16 32q-3.313 0-6.219-1.25-2.906-1.281-5.078-3.453t-3.453-5.078q-1.25-2.906-1.25-6.219t1.25-6.219q1.281-2.906 3.453-5.078t5.078-3.453q2.906-1.25 6.219-1.25t6.219 1.25q2.906 1.281 5.078 3.453t3.453 5.078q1.25 2.906 1.25 6.219t-1.25 6.219q-1.281 2.906-3.453 5.078t-5.078 3.453q-2.906 1.25-6.219 1.25zM16 2.906q-2.719 0-5.094 1.031t-4.156 2.813-2.813 4.156-1.031 5.094 1.031 5.094 2.813 4.156 4.156 2.813 5.094 1.031 5.094-1.031 4.156-2.813 2.813-4.156 1.031-5.094-1.031-5.094-2.813-4.156-4.156-2.813-5.094-1.031zM16 26.875q-2.25 0-4.219-0.875-1.969-0.844-3.453-2.328t-2.328-3.453q-0.875-1.969-0.875-4.219t0.875-4.219q0.844-1.969 2.328-3.453t3.453-2.328q1.969-0.875 4.219-0.875t4.219 0.875q1.969 0.844 3.453 2.328t2.328 3.453q0.875 1.969 0.875 4.219t-0.875 4.219q-0.844 1.969-2.328 3.453t-3.453 2.328q-1.969 0.875-4.219 0.875zM16 8.063q-1.656 0-3.094 0.625t-2.516 1.703-1.703 2.516-0.625 3.094 0.625 3.094 1.703 2.516 2.516 1.703 3.094 0.625 3.094-0.625 2.516-1.703 1.703-2.516 0.625-3.094v0q0-1.656-0.625-3.094t-1.703-2.516-2.516-1.703-3.094-0.625v0 0z"></path></svg>');
+}
+
+.triangle:before {
+  background-color: #ffc107;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M31.719 29.281h-31.313l15.656-27.094zM4.625 26.844h22.875l-11.438-19.813z"></path></svg>');
+}
+
+.cross:before {
+  background-color: #f44336;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16 18.125l-11.938 11.938-2.094-2.125 11.906-11.938-11.906-11.938 2.094-2.094 11.938 11.906 11.938-11.906 2.125 2.094-11.938 11.938 11.938 11.938-2.125 2.125-11.938-11.938z"></path></svg>');
+}
+
+.b-check:before {
+  background-color: #8bc34a;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="m 28.824393,3.176485 a 1.7150643,1.7150643 0 0 1 2.696082,2.1198195 L 13.301347,28.473683 a 2.5725964,2.5725964 0 0 1 -3.9858105,0.07203 L 0.56184852,18.200448 A 1.7150643,1.7150643 0 1 1 3.1790365,15.984585 l 8.0745235,9.542617 z"></path></svg>');
+}
+
+.b-question:before {
+  background-color: #ffc107;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="m 10.104966,7.8117416 c 0.66516,-1.9555889 2.863256,-3.6160779 5.730897,-3.6160779 3.545604,0 5.953994,2.4620552 5.953994,4.9616606 0,2.4996047 -2.40839,4.9616597 -5.953994,4.9616597 -1.09613,0 -1.984664,0.888534 -1.984664,1.984664 v 3.96933 c 0,1.09613 0.888534,1.984664 1.984664,1.984664 1.096131,0 1.984665,-0.888534 1.984665,-1.984664 V 17.90612 c 4.372217,-0.809942 7.938658,-4.242418 7.938658,-8.7487957 0,-5.173087 -4.699883,-8.93098904 -9.923323,-8.93098904 -4.324644,0 -8.2020622,2.52419514 -9.4887993,6.30724294 C 5.994111,7.5712796 6.5492216,8.6986483 7.5869231,9.0516013 8.6246444,9.4045734 9.752013,8.8494632 10.104966,7.8117416 Z m 5.730897,24.1692214 c 1.644295,0 2.976997,-1.3329 2.976997,-2.976996 0,-1.644096 -1.332702,-2.976996 -2.976997,-2.976996 -1.644096,0 -2.976996,1.3329 -2.976996,2.976996 0,1.644096 1.3329,2.976996 2.976996,2.976996 z"></path></svg>');
+}
+
+.b-none:before {
+  background-color: #777;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M 4,12 H 20"></path></svg>');
+}
+
 .column-wrap {
   display: flex;
   justify-content: space-between;
@@ -8289,7 +8297,7 @@ div.fb-like-mobile {
 ************************************/
 .footer {
   margin-top: 20px;
-  padding: 8px;
+  padding: 8px 0;
 }
 
 .copyright {
@@ -9424,7 +9432,6 @@ https://codepen.io/nxworld/pen/oLdoWb
   align-items: center;
 }
 .box-menu-icon * {
-  margin: 10px 0;
   max-width: 60px;
   max-height: 60px;
   height: auto;
@@ -9434,6 +9441,10 @@ https://codepen.io/nxworld/pen/oLdoWb
   font-size: 16px;
   border: none;
   box-shadow: none;
+}
+
+.body .box-menus .box-menu-icon * {
+  margin: 10px 0;
 }
 
 .box-menu-label {

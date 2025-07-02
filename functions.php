@@ -15,7 +15,10 @@ if ( !function_exists( 'abspath' ) ):
 function abspath($file){return dirname($file).'/';}
 endif;
 
-require_once abspath(__FILE__).'lib/_defins.php'; //定数を定義
+//定数を定義
+require_once abspath(__FILE__).'lib/_defins.php';
+//インポートファイルの読み込み
+require_once abspath(__FILE__).'lib/_imports.php';
 
 /**
  * ダウンロード配信サーバーの参照先を取得する関数
@@ -24,7 +27,7 @@ require_once abspath(__FILE__).'lib/_defins.php'; //定数を定義
  * @return string $url アップデートサーバーのURL
  */
 function fetch_updater_url( $new_sv_weight ) {
-  $uri = get_template_directory_uri();
+  $uri = get_cocoon_template_directory_uri();
 
   // サイトURLをベースに符号化（数値化）
   $crc = abs( crc32( $uri ) ) ;
@@ -113,7 +116,7 @@ function get_post_navi_thumbnail_tag($id, $width = THUMB120WIDTH, $height = THUM
   $thumbnail_size = apply_filters('get_post_navi_thumbnail_size', $thumbnail_size);
   $thumb = get_the_post_thumbnail( $id, $thumbnail_size, array('alt' => '') );
   if ( !$thumb ) {
-    $image = get_template_directory_uri().'/images/no-image-%s.png';
+    $image = get_cocoon_template_directory_uri().'/images/no-image-%s.png';
 
     //表示タイプ＝デフォルト
     if ($width == THUMB120WIDTH) {
@@ -209,7 +212,7 @@ endif;
 add_action('admin_enqueue_scripts', 'admin_enqueue_scripts_custom');
 if ( !function_exists( 'admin_enqueue_scripts_custom' ) ):
 function admin_enqueue_scripts_custom($hook) {
-  wp_enqueue_script('colorpicker-script', get_template_directory_uri() . '/js/color-picker.js', array( 'wp-color-picker' ), false, true);
+  wp_enqueue_script('colorpicker-script', get_cocoon_template_directory_uri() . '/js/color-picker.js', array( 'wp-color-picker' ), false, true);
 }
 endif;
 
@@ -586,3 +589,115 @@ add_filter('cocoon_part__tmp/categories-tags', function($content) {
 
   return $content;
 });
+
+// bbPressが非アクティブな場合、特定のページテンプレートを非表示にする
+add_filter( 'theme_page_templates', 'hide_bbpress_templates_if_inactive' );
+function hide_bbpress_templates_if_inactive( $page_templates ) {
+  // bbPressがインストールされている場合は何もしない
+  if ( is_bbpress_exist() ) {
+    return $page_templates;
+  }
+
+  // 非アクティブな場合、非表示にしたいbbPressテンプレートのファイル名またはパスを定義
+  $bbpress_templates_to_remove = [
+    'templates/page-create-topic.php',
+    'templates/page-front-forums.php',
+  ];
+
+  // 現在のテンプレートから、上記で定義したbbPressテンプレートを非表示
+  foreach ( $bbpress_templates_to_remove as $template ) {
+    unset( $page_templates[ $template ] );
+  }
+
+  return $page_templates;
+}
+
+// bbPressが非アクティブな場合に、特定のbbPressテンプレートをpage.phpで上書きする
+add_filter( 'template_include', 'override_bbpress_templates_if_inactive' );
+function override_bbpress_templates_if_inactive( $template ) {
+  // bbPressがインストールされている場合は何もしない
+  if ( is_bbpress_exist() ) {
+    return $template;
+  }
+
+  // 非アクティブな場合、上書きしたいbbPressテンプレートのファイル名またはパスを定義
+  // ここで定義されたテンプレートがもし現在読み込まれている場合、page.phpに切り替えます。
+  $bbpress_templates_to_override = [
+    'templates/page-create-topic.php',
+    'templates/page-front-forums.php',
+  ];
+
+  // 現在のテンプレートが、上書き対象のbbPressテンプレートのいずれかと一致するか確認
+  foreach ( $bbpress_templates_to_override as $bbpress_template ) {
+    if ( basename( $template ) === basename( $bbpress_template ) ) {
+      // WordPressのテンプレート階層に従い、page.phpを探して返す
+      $new_template = locate_template( 'page.php' );
+      if ( !empty( $new_template ) ) {
+          return $new_template; // page.phpが見つかったら、それを読み込む
+      }
+    }
+  }
+
+  return $template;
+}
+
+// 2. サイトエディター（パターンエディター）のiframe内用
+add_action('admin_footer', 'add_site_editor_body_class_script');
+function add_site_editor_body_class_script() {
+  // サイトエディターの場合のみ実行
+  if (use_gutenberg_editor()) {
+    echo "
+      <script>
+        (function() {
+          // DOM読み込み完了後に実行
+          function addBodyClass() {
+            // iframe内のdocumentを取得
+            const iframe = document.querySelector('iframe[name=\"editor-canvas\"]');
+            if (iframe && iframe.contentWindow && iframe.contentWindow.document) {
+              const iframeBody = iframe.contentWindow.document.body;
+              if (iframeBody) {
+                // フォントを追加
+                if (!iframeBody.classList.contains('custom-editor-class')) {
+                  iframeBody.classList.add('wp-admin-".get_site_font_family_class()."');
+                }
+                // フォントサイズを追加
+                if (!iframeBody.classList.contains('custom-editor-class')) {
+                  iframeBody.classList.add('wp-admin-".get_site_font_size_class()."');
+                }
+                // フォントウェイトを追加
+                if (!iframeBody.classList.contains('custom-editor-class')) {
+                  iframeBody.classList.add('wp-admin-".get_site_font_weight_class()."');
+                }
+              }
+            }
+          }
+
+          // 初回実行
+          setTimeout(addBodyClass, 1000);
+
+          // iframe の読み込みを監視
+          const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+              if (mutation.type === 'childList') {
+                const iframe = document.querySelector('iframe[name=\"editor-canvas\"]');
+                if (iframe) {
+                  console.log(iframe);
+                  iframe.addEventListener('load', addBodyClass);
+                  addBodyClass();
+                }
+              }
+            });
+          });
+
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true
+          });
+
+          // 定期的にチェック（フォールバック）
+          setInterval(addBodyClass, 2000);
+        })();
+      </script>
+    ";
+  }
+}

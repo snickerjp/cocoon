@@ -313,7 +313,7 @@ endif;
 
 //テキストボックスの生成
 if ( !function_exists( 'generate_textbox_tag' ) ):
-function generate_textbox_tag($name, $value = '', $placeholder = '', $cols = DEFAULT_INPUT_COLS){
+function generate_textbox_tag($name, $value = '', $placeholder = '', $cols = DEFAULT_INPUT_COLS, $class = ''){
   $value = isset($value) ? $value : '';
   ob_start();?>
   <input type="text"
@@ -321,7 +321,11 @@ function generate_textbox_tag($name, $value = '', $placeholder = '', $cols = DEF
     name="<?php echo esc_attr($name); ?>"
     size="<?php echo esc_attr($cols); ?>"
     value="<?php echo esc_attr(stripslashes_deep(strip_tags($value))); ?>"
-    placeholder="<?php echo esc_attr($placeholder); ?>">
+    placeholder="<?php echo esc_attr($placeholder); ?>"
+    <?php if ($class): ?>
+    class="<?php echo esc_attr($class); ?>"
+    <?php endif; ?>
+    >
   <?php
   $res = ob_get_clean();
   echo apply_filters('admin_input_form_tag', $res, $name);
@@ -925,7 +929,7 @@ function generate_post_check_list( $name, $value, $width = 0 ) {
   echo '<div class="tab-content post-check-list '.$name.'-list" style="width: '.$width.';">';
 
   echo '<p>'.__( '投稿ID入力', THEME_NAME ).'</p>';
-  generate_textbox_tag($name, $value, __( '例：111,222,333', THEME_NAME ));
+  generate_textbox_tag($name, $value, __( '例：111,222,333', THEME_NAME ), DEFAULT_INPUT_COLS, 'widget-text');
   echo '<p>'.__( '投稿IDをカンマ区切りで入力してください。', THEME_NAME ).'</p>';
 
   echo '</div>';
@@ -945,7 +949,7 @@ function generate_fixed_page_check_list( $name, $value, $width = 0 ) {
   echo '<div class="tab-content fixed-page-check-list '.$name.'-list" style="width: '.$width.';">';
 
   echo '<p>'.__( '固定ページID入力', THEME_NAME ).'</p>';
-  generate_textbox_tag($name, $value, __( '例：111,222,333', THEME_NAME ));
+  generate_textbox_tag($name, $value, __( '例：111,222,333', THEME_NAME ), DEFAULT_INPUT_COLS, 'widget-text');
   echo '<p>'.__( '固定ページIDをカンマ区切りで入力してください。', THEME_NAME ).'</p>';
 
   echo '</div>';
@@ -965,7 +969,7 @@ function generate_tag_check_list( $name, $value, $width = 0 ) {
   echo '<div class="tab-content tag-check-list '.$name.'-list" style="width: '.$width.';">';
 
   echo '<p>'.__( 'タグID入力', THEME_NAME ).'</p>';
-  generate_textbox_tag($name, $value, __( '例：111,222,333', THEME_NAME ));
+  generate_textbox_tag($name, $value, __( '例：111,222,333', THEME_NAME ), DEFAULT_INPUT_COLS, 'widget-text');
   echo '<p>'.__( 'タグIDをカンマ区切りで入力してください。', THEME_NAME ).'</p>';
 
   echo '</div>';
@@ -986,27 +990,29 @@ function generate_custom_post_type_check_list( $name, $checks, $width = 0 ) {
     $checks = array();
   }
 
-  echo '<div class="tab-content custom-post-type-check-list '.$name.'-list cocoon-donation-privilege" style="width: '.$width.';"><ul>';
-
   $custom_post_types = get_custum_post_types();
 
-  foreach($custom_post_types as $custom_post_type) {
-    $post_type_object = get_post_type_object($custom_post_type);
-    $label = ($post_type_object->label) ? $post_type_object->label : $custom_post_type;
-    $id = $id = $name.'_'.$custom_post_type;
+  echo '<div class="tab-content custom-post-type-check-list '.$name.'-list cocoon-donation-privilege" style="width: '.$width.';">';
 
-    echo '<li><input type="checkbox" name="'.esc_attr($name).'[]" value="'.esc_attr($custom_post_type).'" id="'.esc_attr($id).'"';
-    checked(in_array($custom_post_type, $checks));
-    echo '><label for="'.$id.'">' . esc_html($label) . '</label></li>';
-  } //foreach
+  if ($custom_post_types) {
+    echo '<ul>';
+    foreach($custom_post_types as $custom_post_type) {
+      $post_type_object = get_post_type_object($custom_post_type);
+      $label = ($post_type_object->label) ? $post_type_object->label : $custom_post_type;
+      $id = $id = $name.'_'.$custom_post_type;
 
-  echo '</ul></div>';
+      echo '<li><input type="checkbox" name="'.esc_attr($name).'[]" value="'.esc_attr($custom_post_type).'" id="'.esc_attr($id).'"';
+      checked(in_array($custom_post_type, $checks));
+      echo '><label for="'.$id.'">' . esc_html($label) . '</label></li>';
+    } //foreach
+     echo '</ul>';
+  } else {
+    echo '<p>';
+    _e( '現在、「カスタム投稿タイプ」は存在しません。', THEME_NAME );
+    echo '</p>';
+  }
 
-  // echo '<div class="tab-content tag-check-list '.$name.'-list" style="width: '.$width.';">';
-
-  // echo '<p>'.__( 'タグID入力', THEME_NAME ).'</p>';
-  // generate_textbox_tag($name, $value, __( '例：111,222,333', THEME_NAME ));
-  // echo '<p>'.__( 'タグIDをカンマ区切りで入力してください。', THEME_NAME ).'</p>';
+  echo '</div>';
 
   // echo '</div>';
 }
@@ -1110,7 +1116,7 @@ function generate_popular_entries_tag($atts){
         $pv_tag = '<span class="popular-entry-card-pv widget-entry-card-pv">'.$pv_text.'</span>';
       }
       ?>
-  <a href="<?php echo $permalink; ?>" class="popular-entry-card-link widget-entry-card-link a-wrap no-<?php echo $i; ?><?php echo $swiper_slide; ?>" title="<?php echo esc_attr($title); ?>">
+  <a href="<?php echo $permalink; ?>" class="popular-entry-card-link widget-entry-card-link a-wrap no-<?php echo $i; ?><?php echo $swiper_slide; ?>" title="<?php echo esc_attr(escape_shortcodes($title)); ?>">
     <div <?php post_class( array('post-'.$post->ID, 'popular-entry-card', 'widget-entry-card', 'e-card', 'cf'), $post->ID ); ?>>
       <figure class="popular-entry-card-thumb widget-entry-card-thumb card-thumb">
         <?php echo $post_thumbnail_img; ?>
@@ -1309,7 +1315,6 @@ function generate_widget_entries_tag($atts){
   }
   //順序付きポスト
   if ($ordered_posts) {
-    $post_type = 'post,page';// デフォルトでpost_typeは投稿と固定ページ
     $args = array(
       'ignore_sticky_posts' => true, // 固定記事は表示しない
       'posts_per_page'      => -1,   // 表示数を設定した記事を全件表示
@@ -1636,7 +1641,7 @@ function get_widget_entry_card_link_tag($atts){
   $target_attr = $target ? ' target="' . esc_attr($target) . '"' : '';
 
   ob_start(); ?>
-  <a href="<?php echo esc_url($url); ?>" class="<?php echo $prefix; ?>-entry-card-link widget-entry-card-link a-wrap<?php echo $class_text; ?><?php echo $swiper_slide; ?>" title="<?php echo esc_attr($title); ?>"<?php echo $target_attr; ?>>
+  <a href="<?php echo esc_url($url); ?>" class="<?php echo $prefix; ?>-entry-card-link widget-entry-card-link a-wrap<?php echo $class_text; ?><?php echo $swiper_slide; ?>" title="<?php echo esc_attr(escape_shortcodes($title)); ?>"<?php echo $target_attr; ?>>
     <div <?php echo $div_class; ?>>
       <?php echo $ribbon_tag; ?>
       <figure class="<?php echo $prefix; ?>-entry-card-thumb widget-entry-card-thumb card-thumb">
@@ -1935,8 +1940,8 @@ function generate_info_list_tag($atts){
           $date = $update_date;
         }
       ?>
-        <div class="info-list-item">
-          <div class="info-list-item-content"><a href="<?php the_permalink(); ?>" class="info-list-item-content-link"><?php the_title();?></a></div>
+        <div <?php post_class('info-list-item'); ?>>
+          <div class="info-list-item-content"><a href="<?php the_permalink(); ?>" class="info-list-item-content-link"><?php echo escape_shortcodes(get_the_title());?></a></div>
           <?php do_action('info_list_item_meta_before'); ?>
           <div class="info-list-item-meta">
             <span class="info-list-item-date"><?php echo $date; ?></span>
