@@ -20,11 +20,11 @@ const ALLOWED_BLOCKS = [
 ];
 
 registerBlockType( 'cocoon-blocks/column-3', {
-  apiVersion: 2,
+  apiVersion: 3,
   title: __( '3カラム', THEME_NAME ),
   icon: (
     <svg
-      enable-background="new 0 0 24 24"
+      enableBackground="new 0 0 24 24"
       height="512"
       viewBox="0 0 24 24"
       width="512"
@@ -39,10 +39,14 @@ registerBlockType( 'cocoon-blocks/column-3', {
   description: __( '本文を左・中央・右カラムに分けます。', THEME_NAME ),
   keywords: [ 'column', '3' ],
 
+  supports: {
+    html: false,
+  },
+
   edit( { className } ) {
     const classes = classnames( className, {
-      [ 'column-wrap' ]: true,
-      [ 'column-3' ]: true,
+      'column-wrap': true,
+      'column-3': true,
       [ LAYOUT_BLOCK_CLASS ]: true,
     } );
 
@@ -78,8 +82,8 @@ registerBlockType( 'cocoon-blocks/column-3', {
 
   save( { className } ) {
     const classes = classnames( className, {
-      [ 'column-wrap' ]: true,
-      [ 'column-3' ]: true,
+      'column-wrap': true,
+      'column-3': true,
       [ LAYOUT_BLOCK_CLASS ]: true,
     } );
 

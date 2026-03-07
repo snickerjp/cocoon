@@ -16,7 +16,13 @@ import classnames from 'classnames';
 
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { RichText, InspectorControls, PanelColorSettings, ContrastChecker } from '@wordpress/block-editor';
+import {
+  RichText,
+  InspectorControls,
+  PanelColorSettings,
+  ContrastChecker,
+  useBlockProps,
+} from '@wordpress/block-editor';
 const {
   PanelBody,
   SelectControl,
@@ -29,17 +35,18 @@ import { Fragment } from '@wordpress/element';
 //classの取得
 function getClasses( color, size, isCircle, isShine ) {
   const classes = classnames( {
-    [ 'btn-wrap' ]: true,
+    'btn-wrap': true,
     [ `btn-wrap-${ colorValueToSlug( color ) }` ]: !! colorValueToSlug( color ),
     [ size ]: size,
     [ BUTTON_BLOCK ]: true,
-    [ 'btn-wrap-circle' ]: !! isCircle,
-    [ 'btn-wrap-shine' ]: !! isShine,
+    'btn-wrap-circle': !! isCircle,
+    'btn-wrap-shine': !! isShine,
   } );
   return classes;
 }
 
 registerBlockType( 'cocoon-blocks/button-wrap-1', {
+  apiVersion: 3,
   title: __( '囲みボタン', THEME_NAME ),
   icon: 'dismiss',
   category: THEME_NAME + '-old',
@@ -78,7 +85,7 @@ registerBlockType( 'cocoon-blocks/button-wrap-1', {
       default: false,
     },
   },
-  supports: {
+  supports: { html: false,
     align: [ 'left', 'center', 'right' ],
   },
 
@@ -90,6 +97,7 @@ registerBlockType( 'cocoon-blocks/button-wrap-1', {
         <InspectorControls>
           <PanelBody title={ __( '囲みボタン設定', THEME_NAME ) }>
             <TextareaControl
+              __nextHasNoMarginBottom={ true }
               label={ __( 'リンクタグ・ショートコード', THEME_NAME ) }
               value={ tag }
               onChange={ ( value ) => setAttributes( { tag: value } ) }
@@ -114,7 +122,7 @@ registerBlockType( 'cocoon-blocks/button-wrap-1', {
                 },
               ] }
               __nextHasNoMarginBottom={ true }
-              __next40pxDefaultSize={ true }  // 新しいデフォルトサイズに対応
+              __next40pxDefaultSize={ true } // 新しいデフォルトサイズに対応
             />
 
             <ToggleControl
@@ -157,10 +165,14 @@ registerBlockType( 'cocoon-blocks/button-wrap-1', {
 
   save( { attributes } ) {
     const { content, color, size, tag, isCircle, isShine } = attributes;
+    const blockProps = useBlockProps.save( {
+      className: getClasses( color, size, isCircle, isShine ),
+    } );
     return (
-      <div className={ getClasses( color, size, isCircle, isShine ) }>
+      <div { ...blockProps }>
         <RichText.Content value={ tag } />
       </div>
     );
   },
 } );
+

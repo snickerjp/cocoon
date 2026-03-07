@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "cocoon-blocks/button-wrap-1",
   "category": "cocoon-block",
   "keywords": [
@@ -67,6 +67,7 @@
       "right"
     ],
     "customClassName": true,
-    "anchor": true
+    "anchor": true,
+    "html": false
   }
 }

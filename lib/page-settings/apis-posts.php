@@ -16,6 +16,12 @@ update_theme_option(OP_AMAZON_API_SECRET_KEY);
 //AmazonトラッキングID
 update_theme_option(OP_AMAZON_ASSOCIATE_TRACKING_ID);
 
+//Creators API認証情報ID
+update_theme_option(OP_AMAZON_CREATORS_API_CREDENTIAL_ID);
+
+//Creators APIシークレット
+update_theme_option(OP_AMAZON_CREATORS_API_SECRET);
+
 //Amazon検索ボタンを表示する
 update_theme_option(OP_AMAZON_SEARCH_BUTTON_VISIBLE);
 
@@ -61,6 +67,9 @@ update_theme_option(OP_GET_RAKUTEN_API_SORT);
 
 //楽天商品リンク価格表示
 update_theme_option(OP_RAKUTEN_ITEM_PRICE_VISIBLE);
+
+//楽天商品リンク説明文表示
+update_theme_option(OP_RAKUTEN_ITEM_DESCRIPTION_VISIBLE);
 
 //楽天ロゴ表示
 update_theme_option(OP_RAKUTEN_ITEM_LOGO_VISIBLE);

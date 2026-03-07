@@ -164,7 +164,7 @@ endif;
 
 //H2見出しを判別する正規表現を定数にする
 if ( !defined('H2_REG') )
-  define('H2_REG', apply_filters('insertion_heading_regexp', '/<h2/i'));//H2見出しのパターン
+  define('H2_REG', apply_filters('insertion_heading_regexp', '/<div[^>]*class="[^"]*\\bwp-block-accordion\\b[^"]*"[\s\S]*?<\\/div>(*SKIP)(*F)|<h2\\b/i'));//H2見出しのパターン
 
 //本文中にH2見出しが最初に含まれている箇所を返す（含まれない場合はnullを返す）
 //H3-H6しか使っていない場合は、h2部分を変更してください
@@ -233,7 +233,7 @@ endif;
 if ( !function_exists( 'get_all_post_count_in_publish' ) ):
 function get_all_post_count_in_publish(){
   global $wpdb;
-  return intval($wpdb->get_var("SELECT count(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post'"));
+  return intval($wpdb->get_var("SELECT count(*) FROM `{$wpdb->posts}` WHERE post_status = 'publish' AND post_type = 'post'"));
 }
 endif;
 
@@ -353,3 +353,4 @@ if ( !function_exists( 'is_pr_labels_visible' ) ):
 
   }
   endif;
+

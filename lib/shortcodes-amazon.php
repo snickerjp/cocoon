@@ -7,6 +7,8 @@
  */
 if ( !defined( 'ABSPATH' ) ) exit;
 
+require_once __DIR__.'/creators-api.php';
+
 
 if ( !class_exists( 'CocoonAwsV4' ) ):
 class CocoonAwsV4 {
@@ -145,6 +147,9 @@ endif;
 //JSONがエラーを出力しているか
 if ( !function_exists( 'is_paapi_json_error' ) ):
 function is_paapi_json_error($json){
+  if (is_null($json) || !is_object($json)) {
+    return false;
+  }
   return property_exists($json, 'Errors');
 }
 endif;
@@ -152,10 +157,16 @@ endif;
 //PA-APIの返り値のJSONにアイテムが存在するか
 if ( !function_exists( 'is_paapi_json_item_exist' ) ):
 function is_paapi_json_item_exist($json){
+  if (is_null($json) || !is_object($json)) {
+    return false;
+  }
   if (isset($json->{'ItemsResult'})) {
     $ItemsResult = $json->{'ItemsResult'};
-    return property_exists($ItemsResult, 'Items');
+    if (is_object($ItemsResult)) {
+      return property_exists($ItemsResult, 'Items');
+    }
   }
+  return false;
 }
 endif;
 
@@ -164,6 +175,12 @@ endif;
 if ( !function_exists( 'get_amazon_itemlookup_json' ) ):
 function get_amazon_itemlookup_json($asin, $tracking_id = null){
   $asin = trim($asin);
+  if (is_amazon_creators_api_credentials_available()) {
+    $creators_res = get_amazon_creators_itemlookup_json($asin, $tracking_id);
+    if ($creators_res) {
+      return $creators_res;
+    }
+  }
 
   //トラッキングIDが存在する場合
   $tracking_id = trim($tracking_id);
@@ -180,8 +197,20 @@ function get_amazon_itemlookup_json($asin, $tracking_id = null){
   // $json_error_code    = isset($json->{'Errors'}[0]->{'Code'}) ? $json->{'Errors'}[0]->{'Code'} : null;
   //_v($json_cache);
   if ($json_cache /* && ($json_error_code != 'TooManyRequests')*/ && DEBUG_CACHE_ENABLE) {
-    //_v($json_cache);
-    return $json_cache;
+    $cache_json = json_decode( $json_cache );
+    if (json_last_error() === JSON_ERROR_NONE && $cache_json) {
+      // PA-APIエラーのキャッシュはそのまま返す
+      if (is_paapi_json_error($cache_json)) {
+        return $json_cache;
+      }
+      // アイテム情報が欠落しているキャッシュは破棄して再取得する
+      $ItemsResult = isset($cache_json->{'ItemsResult'}) ? $cache_json->{'ItemsResult'} : null;
+      if ($ItemsResult && isset($ItemsResult->{'Items'}) && is_array($ItemsResult->{'Items'}) && !empty($ItemsResult->{'Items'}[0])) {
+        return $json_cache;
+      }
+    }
+    delete_transient($transient_id);
+    delete_transient($transient_bk_id);
   }
 
   $serviceName = 'ProductAdvertisingAPI';
@@ -344,6 +373,12 @@ function get_amazon_itemlookup_json($asin, $tracking_id = null){
     //_v(is_paapi_json_item_exist($json));
     //_v(is_paapi_json_error($json));
 
+    // JSONデコードエラーのチェック
+    if (json_last_error() !== JSON_ERROR_NONE) {
+      // JSONデコードに失敗した場合はfalseを返す
+      return false;
+    }
+
     if ($json) {
       //エラーだった場合
       if (is_paapi_json_error($json)) {
@@ -465,11 +500,21 @@ function amazon_product_link_shortcode($atts){
   $moshimo_rakuten_id = trim(get_moshimo_rakuten_id());
   $moshimo_yahoo_id   = trim(get_moshimo_yahoo_id());
 
-  //アクセスキーもしくはシークレットキーがない場合
-  if (empty($access_key_id) || empty($secret_access_key) || empty($associate_tracking_id)) {
-    $error_message = __( 'Amazon APIのアクセスキーもしくはシークレットキーもしくはトラッキングIDが設定されていません。「Cocoon設定」の「API」タブから入力してください。', THEME_NAME );
-    return wrap_product_item_box($error_message);
+  // Creators APIが利用可能な場合
+  if (is_amazon_creators_api_credentials_available()) {
+    if (empty($associate_tracking_id)) {
+      $error_message = __( 'Creators APIの「認証情報ID」もしくは「シークレット」もしくは「トラッキングID」が入力されていません。「Cocoon設定」の「API」タブから入力してください。', THEME_NAME );
+      return wrap_product_item_box($error_message);
+    }
+  } else { // PA-APIの場合
+    //アクセスキーもしくはシークレットキーがない場合
+    if (empty($access_key_id) || empty($secret_access_key) || empty($associate_tracking_id)) {
+      $error_message = __( 'Amazon APIの「アクセスキーID」もしくは「シークレットキー」もしくは「トラッキングID」が設定されていません。「Cocoon設定」の「API」タブから入力してください。', THEME_NAME );
+      return wrap_product_item_box($error_message);
+    }
   }
+
+
 
   //ASINがない場合
   if (empty($asin)) {
@@ -480,25 +525,69 @@ function amazon_product_link_shortcode($atts){
   //アソシエイトurlの取得
   $associate_url = get_amazon_associate_url($asin, $associate_tracking_id);
 
+  ///////////////////////////////////////////
+  // 検索ボタンの作成（エラー時にも表示するため先に作成）
+  ///////////////////////////////////////////
+  $args = array(
+    'keyword' => $keyword,
+    'associate_tracking_id' => $associate_tracking_id,
+    'rakuten_affiliate_id' => $rakuten_affiliate_id,
+    'sid' => $sid,
+    'pid' => $pid,
+    'mercari_affiliate_id' => $mercari_affiliate_id,
+    'dmm_affiliate_id' => $dmm_affiliate_id,
+    'moshimo_amazon_id' => $moshimo_amazon_id,
+    'moshimo_rakuten_id' => $moshimo_rakuten_id,
+    'moshimo_yahoo_id' => $moshimo_yahoo_id,
+    'amazon' => $amazon,
+    'rakuten' => $rakuten,
+    'yahoo' => $yahoo,
+    'mercari' => $mercari,
+    'dmm' => $dmm,
+    'amazon_page_url' => $associate_url,
+    'rakuten_page_url' => null,
+    'btn1_url' => $btn1_url,
+    'btn1_text' => $btn1_text,
+    'btn1_tag' => $btn1_tag,
+    'btn2_url' => $btn2_url,
+    'btn2_text' => $btn2_text,
+    'btn2_tag' => $btn2_tag,
+    'btn3_url' => $btn3_url,
+    'btn3_text' => $btn3_text,
+    'btn3_tag' => $btn3_tag,
+  );
+  $buttons_tag = get_search_buttons_tag($args);
+
   //商品情報の取得
   $res = get_amazon_itemlookup_json($asin, $associate_tracking_id);
 
   if ($res === false) {//503エラーの場合
-    return get_amazon_admin_error_message_tag($associate_url, __( '503エラー。このエラーは、PA-APIのアクセス制限を超えた場合や、メンテナンス中などにより、リクエストに応答できない場合に出力されるエラーコードです。サーバーの「php.ini設定」の「allow_url_fopen」項目が「ON」になっているかを確認してください。このエラーが頻出する場合は「API」設定項目にある「キャッシュの保存期間」を長めに設定することをおすすめします。', THEME_NAME ));
+    return get_amazon_admin_error_message_tag($associate_url, __( '503エラー。このエラーは、PA-APIのアクセス制限を超えた場合や、メンテナンス中などにより、リクエストに応答できない場合に出力されるエラーコードです。サーバーの「php.ini設定」の「allow_url_fopen」項目が「ON」になっているかを確認してください。', THEME_NAME ), null, null, $buttons_tag, $title, $keyword);
   }
 
-  //_v($res);
   if ($res) {
     // xml取得
     $json = json_decode( $res );
 
+    // JSONデコードエラーのチェック
+    if (json_last_error() !== JSON_ERROR_NONE) {
+      // JSONデコードに失敗した場合
+      // キャッシュ削除リンクを取得（エラー時でもキャッシュを削除できるように）
+      $cache_delete_tag = get_cache_delete_tag('amazon', $asin);
+      return get_amazon_admin_error_message_tag($associate_url, AMAZON_ASIN_ERROR_MESSAGE, $cache_delete_tag, $asin, $buttons_tag, $title, $keyword);
+    }
+
     if (is_paapi_json_error($json)) {
 
-      $json_error_code    = $json->{'Errors'}[0]->{'Code'};
-      $json_error_message = $json->{'Errors'}[0]->{'Message'};
+      // 安全にエラー情報を抽出
+      $errors = isset($json->{'Errors'}) ? $json->{'Errors'} : null;
+      $first_error = (is_array($errors) && isset($errors[0])) ? $errors[0] : null;
+      $json_error_code = ($first_error && isset($first_error->{'Code'})) ? $first_error->{'Code'} : '';
+      $json_error_message = ($first_error && isset($first_error->{'Message'})) ? $first_error->{'Message'} : '';
+      $json_error_message_str = is_string($json_error_message) ? $json_error_message : '';
 
       $admin_message = __( 'アイテムを取得できませんでした。', THEME_NAME ).'<br>';
-      $admin_message .= '<pre class="nohighlight"><b>'.$json_error_code.'</b><br>'.preg_replace('/AWS Access Key ID: .+?\. /', '', $json_error_message).'</pre>';
+      $admin_message .= '<pre class="nohighlight"><b>'.$json_error_code.'</b><br>'.preg_replace('/AWS Access Key ID: .+?\. /', '', $json_error_message_str).'</pre>';
       $admin_message .= '<span class="red">'.__( 'このエラーメッセージは"サイト管理者のみ"に表示されています。', THEME_NAME ).'</span>';
 
       //キャッシュ名の取得
@@ -521,7 +610,7 @@ function amazon_product_link_shortcode($atts){
         }
       }
 
-      return get_amazon_admin_error_message_tag($associate_url, $admin_message);
+      return get_amazon_admin_error_message_tag($associate_url, $admin_message, null, null, $buttons_tag, $title, $keyword);
     }
 
     //var_dump($item);
@@ -531,18 +620,23 @@ function amazon_product_link_shortcode($atts){
     $cache_delete_tag = get_cache_delete_tag('amazon', $asin);
 
     if (!is_paapi_json_item_exist($json)) {
-      return get_amazon_admin_error_message_tag($associate_url, AMAZON_ASIN_ERROR_MESSAGE, $cache_delete_tag, $asin);
+      return get_amazon_admin_error_message_tag($associate_url, get_amazon_asin_error_message(), $cache_delete_tag, $asin, $buttons_tag, $title, $keyword);
     }
 
     if (is_paapi_json_item_exist($json)) {
-      $item = $json->{'ItemsResult'}->{'Items'}[0];
+      // 安全にアイテムを取得
+      $ItemsResult = isset($json->{'ItemsResult'}) ? $json->{'ItemsResult'} : null;
+      if (!$ItemsResult || !isset($ItemsResult->{'Items'}) || !is_array($ItemsResult->{'Items'}) || empty($ItemsResult->{'Items'}[0])) {
+        return get_amazon_admin_error_message_tag($associate_url, get_amazon_asin_error_message(), $cache_delete_tag, $asin, $buttons_tag, $title, $keyword);
+      }
+      $item = $ItemsResult->{'Items'}[0];
       //_v($item);
 
       ///////////////////////////////////////
       // アマゾンURL
       ///////////////////////////////////////
       $moshimo_amazon_base_url = 'https://af.moshimo.com/af/c/click?a_id='.$moshimo_amazon_id.'&p_id=170&pc_id=185&pl_id=4062&url=';
-      $DetailPageURL = esc_url($item->DetailPageURL);
+      $DetailPageURL = isset($item->DetailPageURL) ? esc_url($item->DetailPageURL) : null;
       if ($DetailPageURL) {
         $associate_url = $DetailPageURL;
       }
@@ -557,18 +651,25 @@ function amazon_product_link_shortcode($atts){
 
 
       //イメージセットを取得する
-      $Images = $item->{'Images'};
+      $Images = isset($item->{'Images'}) ? $item->{'Images'} : null;
+      if (!$Images || !isset($Images->{'Primary'})) {
+        return get_amazon_admin_error_message_tag($associate_url, get_amazon_asin_error_message(), $cache_delete_tag, $asin, $buttons_tag, $title, $keyword);
+      }
       $ImageItem = $Images->{'Primary'};
       //メイン画像以外の画像
       $Variants = isset($Images->{'Variants'}) ? $Images->{'Variants'} : array();
+      // 配列でない場合は空配列にする
+      if (!is_array($Variants)) {
+        $Variants = array();
+      }
 
       //画像インデックスが設定されている場合
-      if (!is_null($image_index) && $Variants) {
+      if (!is_null($image_index) && is_array($Variants) && !empty($Variants)) {
         //インデックスを整数型にする
         $image_index = intval($image_index);
 
         //有効なインデックスの場合
-        if (!empty($Variants[$image_index])) {
+        if (isset($Variants[$image_index]) && !empty($Variants[$image_index])) {
           //インデックスが有効な場合は画像アイテムを入れ替える
           $ImageItem = $Variants[$image_index];
         }
@@ -576,21 +677,22 @@ function amazon_product_link_shortcode($atts){
       //_v($ImageItem);
 
       //$Primary = $ImageItem->{'Primary'};
-      $SmallImage = $ImageItem->{'Small'};
-      $SmallImageUrl = $SmallImage->URL;
-      $SmallImageWidth = $SmallImage->Width;
-      $SmallImageHeight = $SmallImage->Height;
-      $MediumImage = $ImageItem->{'Medium'};
-      $MediumImageUrl = $MediumImage->URL;
-      $MediumImageWidth = $MediumImage->Width;
-      $MediumImageHeight = $MediumImage->Height;
-      $LargeImage = $ImageItem->{'Large'};
-      $LargeImageUrl = $LargeImage->URL;
-      $LargeImageWidth = $LargeImage->Width;
-      $LargeImageHeight = $LargeImage->Height;
-      // _v($SmallImage);
-      // _v($MediumImage);
-      // _v($LargeImage);
+      // 安全に画像情報を取得
+      $SmallImage = isset($ImageItem->{'Small'}) ? $ImageItem->{'Small'} : null;
+      $SmallImageUrl = ($SmallImage && isset($SmallImage->URL)) ? $SmallImage->URL : null;
+      $SmallImageWidth = ($SmallImage && isset($SmallImage->Width)) ? $SmallImage->Width : null;
+      $SmallImageHeight = ($SmallImage && isset($SmallImage->Height)) ? $SmallImage->Height : null;
+
+      $MediumImage = isset($ImageItem->{'Medium'}) ? $ImageItem->{'Medium'} : null;
+      $MediumImageUrl = ($MediumImage && isset($MediumImage->URL)) ? $MediumImage->URL : null;
+      $MediumImageWidth = ($MediumImage && isset($MediumImage->Width)) ? $MediumImage->Width : null;
+      $MediumImageHeight = ($MediumImage && isset($MediumImage->Height)) ? $MediumImage->Height : null;
+
+      $LargeImage = isset($ImageItem->{'Large'}) ? $ImageItem->{'Large'} : null;
+      $LargeImageUrl = ($LargeImage && isset($LargeImage->URL)) ? $LargeImage->URL : null;
+      $LargeImageWidth = ($LargeImage && isset($LargeImage->Width)) ? $LargeImage->Width : null;
+      $LargeImageHeight = ($LargeImage && isset($LargeImage->Height)) ? $LargeImage->Height : null;
+
 
       //サイズ設定
       $size = strtolower($size);
@@ -641,7 +743,7 @@ function amazon_product_link_shortcode($atts){
         if (is_null($description)) {
           if (is_amazon_item_description_visible()) {
             $Features = isset($ItemInfo->{'Features'}) ? $ItemInfo->{'Features'} : null;
-            $description = isset($Features->{'DisplayValues'}[0]) ? $Features->{'DisplayValues'}[0] : null;
+            $description = ($Features && isset($Features->{'DisplayValues'}) && isset($Features->{'DisplayValues'}[0])) ? $Features->{'DisplayValues'}[0] : null;
           }
         }
       }
@@ -653,28 +755,37 @@ function amazon_product_link_shortcode($atts){
       if ($title) {
         $Title = $title;
       } else {
-        $Title = $ItemInfo->{'Title'}->{'DisplayValue'};
+        if ($ItemInfo && isset($ItemInfo->{'Title'}) && isset($ItemInfo->{'Title'}->{'DisplayValue'})) {
+          $Title = $ItemInfo->{'Title'}->{'DisplayValue'};
+        } else {
+          $Title = '';
+        }
       }
       //_v($Title);
       $TitleAttr = esc_attr($Title);
       $TitleHtml = esc_html($Title);
 
       //商品グレープ
-      $Classifications = $ItemInfo->{'Classifications'};
-      $ProductGroup = esc_html($Classifications->{'ProductGroup'}->{'DisplayValue'});
+      $Classifications = ($ItemInfo && isset($ItemInfo->{'Classifications'})) ? $ItemInfo->{'Classifications'} : null;
+      $ProductGroup = '';
+      if ($Classifications && isset($Classifications->{'ProductGroup'}) && isset($Classifications->{'ProductGroup'}->{'DisplayValue'})) {
+        $ProductGroup = esc_html($Classifications->{'ProductGroup'}->{'DisplayValue'});
+      }
       $ProductGroupClass = strtolower($ProductGroup);
       $ProductGroupClass = str_replace(' ', '-', $ProductGroupClass);
 
       $ByLineInfo = isset($ItemInfo->{'ByLineInfo'}) ? $ItemInfo->{'ByLineInfo'} : null;
-      $Publisher = esc_html(isset($ByLineInfo->{'Publisher'}->{'DisplayValue'}) ? $ByLineInfo->{'Publisher'}->{'DisplayValue'} : null);
-      $Manufacturer = esc_html(isset($ByLineInfo->{'Manufacturer'}->{'DisplayValue'}) ? $ByLineInfo->{'Manufacturer'}->{'DisplayValue'} : null);
-      $Brand = esc_html(isset($ByLineInfo->{'Brand'}->{'DisplayValue'}) ? $ByLineInfo->{'Brand'}->{'DisplayValue'} : null);
-      $Binding = esc_html(isset($ByLineInfo->{'Binding'}->{'DisplayValue'}) ? $ByLineInfo->{'Binding'}->{'DisplayValue'} : null);
-      $Author = esc_html(isset($ByLineInfo->{'Author'}->{'DisplayValue'}) ? $ByLineInfo->{'Author'}->{'DisplayValue'} : null);
-      $Artist = esc_html(isset($ByLineInfo->{'Artist'}->{'DisplayValue'}) ? $ByLineInfo->{'Artist'}->{'DisplayValue'} : null);
-      $Actor = esc_html(isset($ByLineInfo->{'Actor'}->{'DisplayValue'}) ? $ByLineInfo->{'Actor'}->{'DisplayValue'} : null);
-      $Creator = esc_html(isset($ByLineInfo->{'Creator'}->{'DisplayValue'}) ? $ByLineInfo->{'Creator'}->{'DisplayValue'} : null);
-      $Director = esc_html(isset($ByLineInfo->{'Director'}->{'DisplayValue'}) ? $ByLineInfo->{'Director'}->{'DisplayValue'} : null);
+      $Publisher = ($ByLineInfo && isset($ByLineInfo->{'Publisher'}) && isset($ByLineInfo->{'Publisher'}->{'DisplayValue'})) ? esc_html($ByLineInfo->{'Publisher'}->{'DisplayValue'}) : null;
+      $Manufacturer = ($ByLineInfo && isset($ByLineInfo->{'Manufacturer'}) && isset($ByLineInfo->{'Manufacturer'}->{'DisplayValue'})) ? esc_html($ByLineInfo->{'Manufacturer'}->{'DisplayValue'}) : null;
+      $Brand = ($ByLineInfo && isset($ByLineInfo->{'Brand'}) && isset($ByLineInfo->{'Brand'}->{'DisplayValue'})) ? esc_html($ByLineInfo->{'Brand'}->{'DisplayValue'}) : null;
+      $Binding = ($ByLineInfo && isset($ByLineInfo->{'Binding'}) && isset($ByLineInfo->{'Binding'}->{'DisplayValue'})) ? esc_html($ByLineInfo->{'Binding'}->{'DisplayValue'}) : null;
+      $Author = ($ByLineInfo && isset($ByLineInfo->{'Author'}) && isset($ByLineInfo->{'Author'}->{'DisplayValue'})) ? esc_html($ByLineInfo->{'Author'}->{'DisplayValue'}) : null;
+      $Artist = ($ByLineInfo && isset($ByLineInfo->{'Artist'}) && isset($ByLineInfo->{'Artist'}->{'DisplayValue'})) ? esc_html($ByLineInfo->{'Artist'}->{'DisplayValue'}) : null;
+      $Actor = ($ByLineInfo && isset($ByLineInfo->{'Actor'}) && isset($ByLineInfo->{'Actor'}->{'DisplayValue'})) ? esc_html($ByLineInfo->{'Actor'}->{'DisplayValue'}) : null;
+      $Creator = ($ByLineInfo && isset($ByLineInfo->{'Creator'}) && isset($ByLineInfo->{'Creator'}->{'DisplayValue'})) ? esc_html($ByLineInfo->{'Creator'}->{'DisplayValue'}) : null;
+      $Director = ($ByLineInfo && isset($ByLineInfo->{'Director'}) && isset($ByLineInfo->{'Director'}->{'DisplayValue'})) ? esc_html($ByLineInfo->{'Director'}->{'DisplayValue'}) : null;
+
+      $maker = ''; // 初期化
       if ($Author) {
         $maker = $Author;
       } elseif ($Artist) {
@@ -703,14 +814,14 @@ function amazon_product_link_shortcode($atts){
 
       if (isset($item->{'Offers'})) {
         $Offers = $item->{'Offers'};
-        $HighestPrice = isset($Offers->{'Summaries'}[0]->{'HighestPrice'}->{'DisplayAmount'}) ? $Offers->{'Summaries'}[0]->{'HighestPrice'}->{'DisplayAmount'} : null;
-        $LowestPrice = isset($Offers->{'Summaries'}[0]->{'LowestPrice'}->{'DisplayAmount'}) ? $Offers->{'Summaries'}[0]->{'LowestPrice'}->{'DisplayAmount'} : null;
+        // 安全に価格情報を取得
+        $Summaries = (isset($Offers->{'Summaries'}) && is_array($Offers->{'Summaries'}) && isset($Offers->{'Summaries'}[0])) ? $Offers->{'Summaries'}[0] : null;
+        $HighestPrice = ($Summaries && isset($Summaries->{'HighestPrice'}) && isset($Summaries->{'HighestPrice'}->{'DisplayAmount'})) ? $Summaries->{'HighestPrice'}->{'DisplayAmount'} : null;
+        $LowestPrice = ($Summaries && isset($Summaries->{'LowestPrice'}) && isset($Summaries->{'LowestPrice'}->{'DisplayAmount'})) ? $Summaries->{'LowestPrice'}->{'DisplayAmount'} : null;
 
-        $SavingBasisPrice = isset($Offers->{'Listings'}[0]->{'SavingBasis'}->{'DisplayAmount'}) ? $Offers->{'Listings'}[0]->{'SavingBasis'}->{'DisplayAmount'} : null;
-        $Price = isset($Offers->{'Listings'}[0]->{'Price'}->{'DisplayAmount'}) ? $Offers->{'Listings'}[0]->{'Price'}->{'DisplayAmount'} : null;
-
-        //$ListPrice = $item->ItemAttributes->ListPrice;
-        //_v($FormattedPrice);
+        $Listings = (isset($Offers->{'Listings'}) && is_array($Offers->{'Listings'}) && isset($Offers->{'Listings'}[0])) ? $Offers->{'Listings'}[0] : null;
+        $SavingBasisPrice = ($Listings && isset($Listings->{'SavingBasis'}) && isset($Listings->{'SavingBasis'}->{'DisplayAmount'})) ? $Listings->{'SavingBasis'}->{'DisplayAmount'} : null;
+        $Price = ($Listings && isset($Listings->{'Price'}) && isset($Listings->{'Price'}->{'DisplayAmount'})) ? $Listings->{'Price'}->{'DisplayAmount'} : null;
       }
 
 
@@ -743,13 +854,7 @@ function amazon_product_link_shortcode($atts){
           $FormattedPrice = $HighestPrice ? $HighestPrice : $FormattedPrice;
           break;
       }
-      // if (is_amazon_item_lowest_price_visible()) {
-      //   $FormattedPrice = $LowestPrice ? $LowestPrice : $FormattedPrice;
-      // }
 
-
-
-      //$associate_url = esc_url($base_url.$ASIN.'/'.$associate_tracking_id.'/');
 
       ///////////////////////////////////////////
       // 値段表記
@@ -779,7 +884,6 @@ function amazon_product_link_shortcode($atts){
               get_amazon_item_customer_reviews_text().
             '</a>'.
           '</div>';
-          //_v($review_tag);
       }
 
 
@@ -858,7 +962,12 @@ function amazon_product_link_shortcode($atts){
       if ($Images && !$image_only && $is_catalog_image_visible) {
 
         $tmp_tag = null;
-        for ($i=0; $i < count($Variants)-1; $i++) {
+        // $Variantsが配列でない場合は処理をスキップ
+        if (!is_array($Variants)) {
+          $Variants = array();
+        }
+        $variants_count = count($Variants);
+        for ($i=0; $i < $variants_count-1; $i++) {
           $display_none_class = null;
           if (($size != 'l') && ($i >= 3)) {
             $display_none_class .= ' sp-display-none';
@@ -867,18 +976,26 @@ function amazon_product_link_shortcode($atts){
             $display_none_class .= ' display-none';
           }
 
-          $Variant = $Variants[$i];
+          $Variant = isset($Variants[$i]) ? $Variants[$i] : null;
+          if (!$Variant || !is_object($Variant)) {
+            continue;
+          }
           //SwatchImage
-          $SwatchImage = $Variant->{'Small'};
-          $SwatchImageURL = $SwatchImage->URL;
-          $SwatchImageWidth = $SwatchImage->Width;
-          $SwatchImageHeight = $SwatchImage->Height;
+          $SwatchImage = isset($Variant->{'Small'}) ? $Variant->{'Small'} : null;
+          $SwatchImageURL = ($SwatchImage && isset($SwatchImage->URL)) ? $SwatchImage->URL : null;
+          $SwatchImageWidth = ($SwatchImage && isset($SwatchImage->Width)) ? $SwatchImage->Width : null;
+          $SwatchImageHeight = ($SwatchImage && isset($SwatchImage->Height)) ? $SwatchImage->Height : null;
 
           //LargeImage
-          $LargeImage = $Variant->{'Large'};
-          $LargeImageURL = $LargeImage->URL;
-          $LargeImageWidth = $LargeImage->Width;
-          $LargeImageHeight = $LargeImage->Height;
+          $LargeImage = isset($Variant->{'Large'}) ? $Variant->{'Large'} : null;
+          $LargeImageURL = ($LargeImage && isset($LargeImage->URL)) ? $LargeImage->URL : null;
+          $LargeImageWidth = ($LargeImage && isset($LargeImage->Width)) ? $LargeImage->Width : null;
+          $LargeImageHeight = ($LargeImage && isset($LargeImage->Height)) ? $LargeImage->Height : null;
+
+          // 画像情報が取得できない場合はスキップ
+          if (!$SwatchImageURL || !$LargeImageURL) {
+            continue;
+          }
 
           $tmp_tag .=
             '<div class="image-thumb swatch-image-thumb si-thumb'.esc_attr($display_none_class).'">'.
@@ -951,7 +1068,7 @@ function amazon_product_link_shortcode($atts){
           $product_item_admin_tag.
         '</div>';
     } else {
-      $tag = get_amazon_admin_error_message_tag($associate_url, AMAZON_ASIN_ERROR_MESSAGE, $cache_delete_tag, $asin);
+      $tag = get_amazon_admin_error_message_tag($associate_url, get_amazon_asin_error_message(), $cache_delete_tag, $asin, $buttons_tag, $title, $keyword);
     }
 
     return apply_filters('amazon_product_link_tag', $tag);
@@ -989,22 +1106,59 @@ endif;
 
 //Amazonエラーの際に出力するリンクを
 if ( !function_exists( 'get_amazon_error_product_link' ) ):
-function get_amazon_error_product_link($url){
-  return '<a href="'.esc_url($url).'" target="_blank" rel="nofollow noopener">'.__( 'Amazonで詳細を見る', THEME_NAME ).'</a>';
+function get_amazon_error_product_link($associate_url, $title = '', $keyword = ''){
+  // null を渡さないように防御的に文字列化
+  $safe_url = is_string($associate_url) ? $associate_url : '';
+  $text = __( 'Amazonで商品の詳細を見る', THEME_NAME );
+  if ($title) {
+    $text = $title;
+  } else if ($keyword) {
+    $text = sprintf(__( 'Amazonで「%s」に関する詳細を見る', THEME_NAME ), $keyword);
+  }
+  return '<a href="'.esc_url($safe_url).'" target="_blank" rel="nofollow noopener">'.$text.'</a>';
 }
 endif;
 
 //AmazonのASINエラータグ取得
 if ( !function_exists( 'get_amazon_admin_error_message_tag' ) ):
-function get_amazon_admin_error_message_tag($url, $message, $cache_delete_tag = null, $asin = null){
-  $error_message = get_amazon_error_product_link($url);
+function get_amazon_admin_error_message_tag($url, $message, $cache_delete_tag = '', $asin = '', $buttons_tag = '', $title = '', $keyword = ''){
+  $error_message = '';
   if (is_user_administrator()) {
-    $asin_msg = null;
+    $asin_msg = '';
     if ($asin) {
       $asin_msg = '(ASIN:'.$asin.')';
     }
-    $error_message .= '<br><br>'.get_admin_errormessage_box_tag($message.$asin_msg);
+    $error_message .= get_admin_errormessage_box_tag($message.$asin_msg);
+  }
+  $link = get_amazon_error_product_link($url, $title, $keyword);
+  if ($link) {
+    $error_message .= '<p class="amazon-search-message">'.$link.'</p>';
+  }
+  if ($buttons_tag) {
+    $error_message .= $buttons_tag;
   }
   return wrap_product_item_box($error_message, 'amazon', $cache_delete_tag);
 }
 endif;
+
+// Creators API利用時の詳細なASINエラーメッセージを取得
+if ( !function_exists( 'get_amazon_asin_error_message' ) ):
+function get_amazon_asin_error_message(){
+  // Creators APIを使っている場合は詳細なヒントを返す
+  if (function_exists('is_amazon_creators_api_credentials_available')
+    && is_amazon_creators_api_credentials_available()) {
+    return __( '商品を取得できませんでした。Creators APIは正常に応答しましたが、商品情報が含まれていません。', THEME_NAME )
+      .'<br>'.__( '考えられる原因：', THEME_NAME )
+      .'<ul>'
+      .'<li>'.__( '存在しないASINを指定している', THEME_NAME ).'</li>'
+      .'<li>'.__( 'ASINが正しくない（半角英数字10文字）', THEME_NAME ).'</li>'
+      .'<li>'.__( '商品が販売終了・取り下げされている', THEME_NAME ).'</li>'
+      .'<li>'.__( 'トラッキングIDが正しくない', THEME_NAME ).'</li>'
+      .'<li>'.__( 'Creators APIの認証情報が正しくない', THEME_NAME ).'</li>'
+      .'</ul>';
+  }
+  // PA-APIの場合は従来通り
+  return AMAZON_ASIN_ERROR_MESSAGE;
+}
+endif;
+

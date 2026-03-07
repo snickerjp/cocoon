@@ -22,6 +22,11 @@ endif;
 //見出し内容取得関数
 if ( !function_exists( 'get_h_inner_content' ) ):
 function get_h_inner_content($h_content){
+  // アコーディオンボタンの場合はそのまま返す
+  if (preg_match('/<button\b[^>]*\baria-expanded="(?:true|false)"/i', $h_content)) {
+    return $h_content;
+  }
+  // 見出し内のHTMLタグを有効にするかどうかの処理
   if (is_toc_heading_inner_html_tag_enable()) {
     return $h_content;
   } else {
@@ -33,12 +38,46 @@ endif;
 //目次部分の取得（$expanded_contentには、ショートコードが展開された本文を入れる）
 if ( !function_exists( 'get_toc_tag' ) ):
 function get_toc_tag($expanded_content, &$harray, $is_widget = false, $depth_option = 0){
+  global $post;
+  // 投稿情報がない場合でも、カテゴリ/タグページは処理を続行する
+  if ((empty($post) || !isset($post->post_content)) && !is_category() && !is_tag()) return '';
+
+  // 分割ページ目次は投稿/固定ページのときだけ有効にする
+  $is_multi_page_toc_visible = is_multi_page_toc_visible() && is_singular();
+
   //フォーラムページだと表示しない
   if (is_plugin_fourm_page()) {
     return;
   }
 
+  // 目次生成には展開済み本文を使用する
   $content     = $expanded_content;
+
+  // 分割ページ目次の場合
+  if ($is_multi_page_toc_visible) {
+    // 分割ページを抽出（ブロックエディター/クラシックの両方に対応）
+    if (function_exists('has_block') && has_block('core/nextpage', $post->post_content)) {
+      // ブロックエディター
+      $raw_pages = preg_split('/<!--\s*wp:nextpage\s*-->.*?<!--\s*\/wp:nextpage\s*-->/is', $post->post_content);
+    } else {
+      // クラシックエディター
+      $raw_pages = preg_split('/<!--\s*nextpage\s*-->/', $post->post_content);
+    }
+    $pages = [];
+
+    // 分割ページ単位にブロック・パターン・ショートコードを展開
+    foreach ($raw_pages as $page_content) {
+      $page_content = get_shortcode_removed_content($page_content);
+      if (function_exists('do_blocks')) {
+        $page_content = do_blocks($page_content);
+      }
+      // パターン展開（同期パターン）
+      $page_content = expand_synced_patterns($page_content);
+      $page_content = do_shortcode($page_content);
+      $pages[] = $page_content;
+    }
+  }
+
   $headers     = array();
   $html        = '';
   $toc_list    = '';
@@ -75,8 +114,42 @@ function get_toc_tag($expanded_content, &$harray, $is_widget = false, $depth_opt
   if($targetclass===''){$targetclass = get_post_type();}
   for($h = $top_level; $h <= 6; $h++){$harray[] = 'h' . $h . '';}
 
-  preg_match_all('/<([hH][1-6]).*?>(.*?)<\/[hH][1-6].*?>/us', $content, $headers);
-  $header_count = count($headers[0]);
+  if ($is_multi_page_toc_visible) {
+    // 分割ページごとに見出しを取得
+    $toc_counter = 0;
+    $page_num = 1;
+    $past_page_num = 1;
+    foreach ($pages as $page_content) {
+      if (preg_match_all('/<([hH][1-6]).*?>(.*?)<\/[hH][1-6]>/us', $page_content, $matches, PREG_SET_ORDER)) {
+        foreach ($matches as $m) {
+          // 違うページになったらカウンターをリセットする
+          if ($page_num !== $past_page_num) {
+            $past_page_num = $page_num;
+            $toc_counter = 0;
+          }
+
+          // 目次の深さ取得
+          $now_depth = intval(substr(strtolower($m[1]), 1, 1));
+
+          // $set_depth より深い見出しは目次に追加しない
+          if ($now_depth <= $set_depth) {
+            $toc_counter++;
+            $headers[] = array(
+              'tag'  => $m[1],
+              'text' => $m[2],
+              'id'   => 'toc' . $toc_counter,
+              'page' => $page_num,
+            );
+          }
+        }
+      }
+      $page_num++;
+    }
+    $header_count = count($headers);
+  }else {
+    preg_match_all('/<([hH][1-6]).*?>(.*?)<\/[hH][1-6].*?>/us', $content, $headers);
+    $header_count = count($headers[0]);
+  }
 
   if($top_level < 1){$top_level = 1;}
   if($top_level > 6){$top_level = 6;}
@@ -91,7 +164,9 @@ function get_toc_tag($expanded_content, &$harray, $is_widget = false, $depth_opt
   }
   for($i=0;$i < $header_count;$i++){
     $depth = 0;
-    switch(strtolower($headers[1][$i])){
+    $h_actual = $is_multi_page_toc_visible ? strtolower($headers[$i]['tag']) : strtolower($headers[1][$i]);
+
+    switch($h_actual) {
       case 'h1': $depth = 1 - $top_level + 1; break;
       case 'h2': $depth = 2 - $top_level + 1; break;
       case 'h3': $depth = 3 - $top_level + 1; break;
@@ -127,12 +202,30 @@ function get_toc_tag($expanded_content, &$harray, $is_widget = false, $depth_opt
         $hide_class = ' class="display-none"';
       }
       $counter++;
-      $text = strip_tags($headers[2][$i]);
-      if (is_toc_heading_inner_html_tag_enable()) {
-        $text = $headers[2][$i];
-        $text = preg_replace('{<a.*?>(.*?)</a>}', "$1", $text);
+
+      // 見出しテキストを取得
+      $text = $is_multi_page_toc_visible ? $headers[$i]['text'] : $headers[2][$i];
+      // アコーディオンボタンのアイコンを削除
+      $text = str_replace(
+        '<span class="wp-block-accordion-heading__toggle-icon" aria-hidden="true">+</span>',
+        '',
+        $text
+      );
+      $text = strip_tags($text);
+      if ($is_multi_page_toc_visible) {
+        global $page; // 現在のページ番号（未定義なら 0）
+        $current = $page ?: 1;
+        $link = '';
+        // 現在のページでは、ページ遷移しないようにURLを出力しない
+        if ($current !== intval($headers[$i]['page'])) {
+          $link = get_permalink($post);
+          if ($headers[$i]['page'] > 1) $link = trailingslashit($link).$headers[$i]['page'].'/';
+        }
+
+        $toc_list .= '<li'.$hide_class.'><a href="'.$link.'#'.$headers[$i]['id'].'" tabindex="0">' . $text . '</a>';
+      } else {
+        $toc_list .= '<li'.$hide_class.'><a href="#toc' . $counter . '" tabindex="0">' . $text . '</a>';
       }
-      $toc_list .= '<li'.$hide_class.'><a href="#toc' . $counter . '" tabindex="0">' . $text . '</a>';
       $prev_depth = $depth;
     }
   }
@@ -392,21 +485,62 @@ function is_toc_display_count_available($h_count){
 }
 endif;
 
-//
+// 投稿・固定ページやウィジェットなどに目次が使われているか
 if ( !function_exists( 'is_toc_widget_used_in_singular_content_widget_area' ) ):
-  function is_toc_widget_used_in_singular_content_widget_area($widget_id) {
-     $widget_areas = wp_get_sidebars_widgets();
-     foreach ($widget_areas as $key => $widget_area) {
-        // _v($key);
-        if (isset($key) && (($key === 'single-content-middle') || ($key === 'page-content-middle'))) {
-           $widgets = $widget_area;
-           foreach ($widgets as $keyw => $widget) {
-              if ($widget === $widget_id) {
-                 return true;
-              }
-           }
+function is_toc_widget_used_in_singular_content_widget_area($widget_id) {
+  $widget_areas = wp_get_sidebars_widgets();
+  foreach ($widget_areas as $key => $widget_area) {
+    if (isset($key) && (($key === 'single-content-middle') || ($key === 'page-content-middle'))) {
+      $widgets = $widget_area;
+      foreach ($widgets as $keyw => $widget) {
+        if ($widget === $widget_id) {
+          return true;
         }
-     }
-     return false;
+      }
+    }
   }
-  endif;
+  return false;
+}
+endif;
+
+/**
+ * 投稿のソースコードから同期パターンブロックを展開する
+ *
+ * @param string $content 投稿のソースコード（HTML形式のブロックコンテンツ）
+ * @return string 同期パターンが展開されたコンテンツ
+ */
+if ( !function_exists( 'expand_synced_patterns' ) ):
+function expand_synced_patterns($content) {
+  // ブロックエディタが有効な場合のみ同期パターンを展開
+  if (!function_exists('do_blocks')) {
+    // ブロックエディタが無効な場合はそのまま返す
+    return $content;
+  }
+
+  // 同期パターンブロックの正規表現パターン
+  $pattern = '/<!-- wp:block \{"ref":(\d+)\} \/-->/';
+
+  // パターンマッチして置換を実行
+  $expanded_content = preg_replace_callback($pattern, function($matches) {
+    $pattern_id = intval($matches[1]);
+
+    // パターンブロックの投稿を取得
+    $pattern_post = get_post($pattern_id);
+
+    // パターンが存在し、正しいタイプかチェック
+    if ($pattern_post &&
+      $pattern_post->post_type === 'wp_block' &&
+      $pattern_post->post_status === 'publish') {
+
+      // パターンのコンテンツを再帰的に処理（入れ子の同期パターンにも対応）
+      return expand_synced_patterns($pattern_post->post_content);
+    }
+
+    // パターンが見つからない場合は元のブロックをそのまま返す
+    return $matches[0];
+
+  }, $content);
+
+  return $expanded_content;
+}
+endif;

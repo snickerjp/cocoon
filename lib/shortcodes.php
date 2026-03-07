@@ -56,7 +56,7 @@ function new_entries_shortcode($atts) {
     'ex_posts' => null,
     'ex_cats' => null,
     'ordered_posts' => null,
-    'date' => 0,
+    'comment' => 0,
   ), $atts, 'new_list'));
 
   //countオプションに異常値が入っていた場合
@@ -114,7 +114,7 @@ function new_entries_shortcode($atts) {
     'ex_posts' => $exclude_post_ids,
     'ex_cats' => $exclude_cat_ids,
     'ordered_posts' => $ordered_post_ids,
-    'author' => $author,
+    'comment' => $comment,
   );
   ob_start();
   generate_widget_entries_tag($atts);
@@ -147,6 +147,8 @@ function popular_entries_shortcode($atts) {
     'author' => null,
     'post_type' => 'post',
     'horizontal' => 0,
+    'action' => null,
+    'comment' => 0,
   ), $atts, 'popular_list'));
 
   //countオプションに異常値が入っていた場合
@@ -188,6 +190,8 @@ function popular_entries_shortcode($atts) {
     'author' => $author,
     'post_type' => $post_type,
     'horizontal' => $horizontal,
+    'action' => $action,
+    'comment' => $comment,
   );
   ob_start();
   generate_popular_entries_tag($atts);
@@ -196,7 +200,9 @@ function popular_entries_shortcode($atts) {
 }
 endif;
 
-define('AFFI_SHORTCODE', 'affi');
+if (!defined('AFFI_SHORTCODE')) {
+  define('AFFI_SHORTCODE', 'affi');
+}
 //アフィリエイトタグショートコード関数
 if (!shortcode_exists(AFFI_SHORTCODE)) {
   add_shortcode(AFFI_SHORTCODE, 'affiliate_tag_shortcode');
@@ -237,7 +243,9 @@ function get_affiliate_tag_shortcode($id) {
 }
 endif;
 
-define('TEMPLATE_SHORTCODE', 'temp');
+if (!defined('TEMPLATE_SHORTCODE')) {
+  define('TEMPLATE_SHORTCODE', 'temp');
+}
 //関数テキストショートコード関数
 if (!shortcode_exists(TEMPLATE_SHORTCODE)) {
   add_shortcode(TEMPLATE_SHORTCODE, 'function_text_shortcode');
@@ -271,7 +279,9 @@ function get_function_text_shortcode($id) {
 }
 endif;
 
-define('RANKING_SHORTCODE', 'rank');
+if (!defined('RANKING_SHORTCODE')) {
+  define('RANKING_SHORTCODE', 'rank');
+}
 //ランキングショートコード関数
 if (!shortcode_exists(RANKING_SHORTCODE)) {
   add_shortcode(RANKING_SHORTCODE, 'item_ranking_shortcode');
@@ -720,31 +730,6 @@ function get_recommend_cards_tag($atts){
 }
 endif;
 
-//ナビメニューショートコード
-//参考：https://www.orank.net/1972
-add_shortcode('navi', 'get_ord_navi_card_list_tag');
-if ( !function_exists( 'get_ord_navi_card_list_tag' ) ):
-function get_ord_navi_card_list_tag($atts){
-  extract(shortcode_atts(array(
-    'name' => '', // メニュー名
-    'type' => '',
-    'bold' => 1,
-    'arrow' => 1,
-    'class' => null,
-  ), $atts, 'navi'));
-  $atts = array(
-    'name' => $name,
-    'type' => $type,
-    'bold' => $bold,
-    'arrow' => $arrow,
-    'class' => $class,
-  );
-  $tag = get_navi_card_list_tag($atts);
-
-  return apply_filters('get_ord_navi_card_list_tag', $tag);
-}
-endif;
-
 //ボックスメニューショートコード
 add_shortcode('box_menu', 'get_box_menu_tag');
 if ( !function_exists( 'get_box_menu_tag' ) ):
@@ -827,6 +812,7 @@ function get_rss_feed_tag( $atts ) {
       'bold' => 0, //タイトルを太字にするか
       'arrow' => 0, //矢印を出すか
       'class' => null, //拡張クラス
+      'site' => 0, //サイト名を表示するか
     ),
     $atts,
     'rss'
@@ -839,18 +825,46 @@ function get_rss_feed_tag( $atts ) {
   $feed_contents = '';
 
   //Cache処理（かなり簡易的なもの）
-  $transient_id = 'ree_feed_'.md5($feed_url.'_'.$count.'_'.$img_url.'_'.$target.'_'.$desc.'_'.$date.'_'.$type.'_'.$bold.'_'.$arrow.'_'.$class);
+  $transient_id = 'ree_feed_'.md5($feed_url.'_'.$count.'_'.$img_url.'_'.$target.'_'.$desc.'_'.$date.'_'.$type.'_'.$bold.'_'.$arrow.'_'.$class.'_'.$site);
   $feed_contents = get_transient( $transient_id );
 
   //キャッシュが存在しない場合URLから取得
   if (!$feed_contents) {
+    // WordPress 6.9対応: SimplePieの内部キャッシュを無効化するためのコールバック関数
+    $feed_options_callback = function($feed) {
+      // SimplePieの内部キャッシュを無効化（独自のtransientキャッシュを使用するため）
+      $feed->enable_cache(false);
+      // 日付順ソートを無効化（RSS配信側の順序を尊重するため）
+      $feed->enable_order_by_date(false);
+    };
+    // フィード取得前にアクションを追加
+    add_action('wp_feed_options', $feed_options_callback);
+
     $rss = fetch_feed( $feed_url );
+
+    // フィード取得後にアクションを削除（他のフィード取得に影響しないようにする）
+    remove_action('wp_feed_options', $feed_options_callback);
+
     if ( !is_wp_error( $rss ) ) {
+
+      // サイト名取得（無条件）
+      $site_title = trim( (string) $rss->get_title() );
+      if ( empty($site_title) ) {
+        $site_title = parse_url($feed_url, PHP_URL_HOST);
+      }
+
       $maxitems = $rss->get_item_quantity( $feed_count );
       $rss_items = $rss->get_items( 0, $maxitems );
       foreach ( $rss_items as $item ) :
         $first_img = '';
-        if ( preg_match( '/<img.+?src=[\'"]([^\'"]+?)[\'"].*?>/msi', $item->get_content(), $matches )) $first_img = $matches[1];
+        // get_content() が null を返す場合があるため、確実に文字列にしてから利用
+        $item_content = $item->get_content();
+        if ( !is_string( $item_content ) ) {
+          $item_content = '';
+        }
+        if ( preg_match( '/<img.+?src=[\'"]([^\'"]+?)[\'"].*?>/msi', $item_content, $matches )) {
+          $first_img = $matches[1];
+        }
         if ( !empty( $first_img ) ) :
           $feed_img = esc_attr( $first_img );
         else:
@@ -860,7 +874,8 @@ function get_rss_feed_tag( $atts ) {
         $feed_title = $item->get_title() ?? '';
         $feed_title = str_replace(["\r\n", "\r", "\n"], '', $feed_title);
         $feed_date = $item->get_date(get_site_date_format());
-        $feed_text = get_content_excerpt(strip_tags($item->get_content()), get_entry_card_excerpt_max_length());
+        // 上で文字列化した $item_content を再利用
+        $feed_text = get_content_excerpt(strip_tags($item_content), get_entry_card_excerpt_max_length());
 
         $feed_content .= '<a href="' . esc_url($feed_url) . '" title="' . esc_attr($feed_title) . '" class="rss-entry-card-link widget-entry-card-link a-wrap" target="'.esc_attr($target).'"'.get_rel_by_target($target).'>';
         $feed_content .= '<div class="rss-entry-card widget-entry-card e-card cf">';
@@ -868,7 +883,15 @@ function get_rss_feed_tag( $atts ) {
         $feed_content .= '<img src="' . esc_url($feed_img) . '" class="rss-entry-card-thumb-image widget-entry-card-thumb-image card-thumb-image" alt="">';
         $feed_content .= '</figure>';
         $feed_content .= '<div class="rss-entry-card-content widget-entry-card-content card-content">';
-        $feed_content .= '<div class="rss-entry-card-title widget-entry-card-title card-title">' . esc_html($feed_title) . '</div>';
+
+        // タイトルの後ろにサイト名（site=1なら出力）
+        $feed_content .= '<div class="rss-entry-card-title widget-entry-card-title card-title">';
+        $feed_content .= esc_html($feed_title);
+        if ($site == 1 && !empty($site_title)) {
+          $feed_content .= ' <span class="rss-entry-card-site">' . get_title_separator_caption() . ' ' . esc_html($site_title) . '</span>';
+        }
+        $feed_content .= '</div>';
+
         if ($desc) {
           $feed_content .= '<div class="rss-entry-card-snippet widget-entry-card-snippet card-snippet">' . esc_html($feed_text) . '</div>';
         }
@@ -882,7 +905,7 @@ function get_rss_feed_tag( $atts ) {
         $feed_content .= '</a>';
       endforeach;
     } else {
-      $feed_content = '<p>RSSフィードを取得できません</p>';
+      $feed_content = '<p>' . __( 'RSSフィードを取得できません', THEME_NAME ) . '</p>';
     }
 
     $atts = array(
@@ -947,7 +970,8 @@ if (!shortcode_exists('html')) {
 }
 if ( !function_exists( 'html_shortcode' ) ):
 function html_shortcode( $atts, $content = null ) {
-  return html_entity_decode($content, ENT_NOQUOTES);
+  // $content が null の場合は空文字に変換してから処理する
+  return html_entity_decode($content ?? '', ENT_NOQUOTES);
 }
 endif;
 
@@ -1023,6 +1047,7 @@ function get_info_list_shortcode($atts){
     'action' => null,
     'post_type' => 'post',
     'taxonomy' => null,
+    'comment' => 0,
   ), $atts, 'info_list'));
 
   //countオプションに異常値が入っていた場合
@@ -1047,6 +1072,7 @@ function get_info_list_shortcode($atts){
     'action' => $action,
     'post_type' => $post_type,
     'taxonomy' => $taxonomy,
+    'comment' => $comment,
   );
   ob_start();
   generate_info_list_tag($atts);

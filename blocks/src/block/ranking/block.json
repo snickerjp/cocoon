@@ -1,9 +1,10 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "cocoon-blocks/ranking",
   "category": "cocoon-block",
-  "keywords": ["ranking"],
-
+  "keywords": [
+    "ranking"
+  ],
   "attributes": {
     "id": {
       "type": "string",
@@ -17,6 +18,7 @@
   "example": {},
   "supports": {
     "customClassName": true,
-    "anchor": true
+    "anchor": true,
+    "html": false
   }
 }

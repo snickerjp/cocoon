@@ -47,6 +47,13 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
             generate_checkbox_tag(OP_TOC_VISIBLE , is_toc_visible(), __( '目次を表示する', THEME_NAME ));
             generate_tips_tag(__( '投稿・固定ページの内容から目次を自動付加します。※[toc]ショートコードで目次を表示させている場合は一貫して表示されます。', THEME_NAME ));
             ?>
+
+            <div class="indent">
+              <?php
+              generate_checkbox_tag(OP_MULTI_PAGE_TOC_VISIBLE , is_multi_page_toc_visible(), __( '本文全ての目次を表示する', THEME_NAME ));
+              generate_tips_tag(__( '分割ページの内容も含め、本文全文から目次を作成し表示します。', THEME_NAME ));
+              ?>
+            </div>
           </td>
         </tr>
 
@@ -83,7 +90,7 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
           </td>
         </tr>
 
-        <!-- 生地の切り替え -->
+        <!-- 目次の切り替え -->
         <tr>
           <th scope="row">
             <?php generate_label_tag(OP_TOC_TOGGLE_SWITCH_ENABLE, __('目次切り替え', THEME_NAME) ); ?>

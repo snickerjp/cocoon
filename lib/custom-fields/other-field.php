@@ -26,6 +26,8 @@ endif;
 ///////////////////////////////////////
 if ( !function_exists( 'view_other_custom_box' ) ):
 function view_other_custom_box(){
+  // CSRF対策用のnonceフィールドを出力
+  wp_nonce_field('cocoon_other_custom_box', 'cocoon_other_custom_box_nonce');
   //アーカイブ除外
   generate_checkbox_tag('the_page_no_archive' , is_the_page_no_archive(), __( 'アーカイブに出力しない', THEME_NAME ));
   generate_howto_tag(__( 'チェックを入れると、この記事はインデックスページ等のアーカイブに表示されなくなります。', THEME_NAME ).get_help_page_tag('https://wp-cocoon.com/do-not-output-to-archives/'), 'the_page_no_archive');
@@ -39,8 +41,14 @@ endif;
 
 add_action('save_post', 'other_custom_box_save_data');
 if ( !function_exists( 'other_custom_box_save_data' ) ):
-function other_custom_box_save_data(){
-  $id = get_the_ID();
+function other_custom_box_save_data($post_id){
+  // nonce検証（CSRF対策）
+  if (!isset($_POST['cocoon_other_custom_box_nonce']) || !wp_verify_nonce($_POST['cocoon_other_custom_box_nonce'], 'cocoon_other_custom_box')) return;
+  // 自動保存時はスキップ
+  if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+  // 投稿の編集権限をチェック
+  if (!current_user_can('edit_post', $post_id)) return;
+  $id = $post_id;
 
   //アーカイブページから除外
   $the_page_no_archive = !empty($_POST['the_page_no_archive']) ? 1 : 0;
@@ -77,7 +85,8 @@ endif;
 if ( !function_exists( 'get_archive_exclude_post_ids' ) ):
 function get_archive_exclude_post_ids(){
   global $wpdb;
-  $res = $wpdb->get_results("SELECT DISTINCT GROUP_CONCAT(post_id) AS ids FROM {$wpdb->prefix}postmeta WHERE (meta_key = 'the_page_no_archive') AND (meta_value = 1)");
+  $query = $wpdb->prepare("SELECT DISTINCT GROUP_CONCAT(post_id) AS ids FROM `{$wpdb->prefix}postmeta` WHERE (meta_key = %s) AND (meta_value = 1)", 'the_page_no_archive');
+  $res = $wpdb->get_results($query);
   $result = (isset($res[0]) && $res[0]->ids) ? explode(',', $res[0]->ids) : array();
   return $result;
 }

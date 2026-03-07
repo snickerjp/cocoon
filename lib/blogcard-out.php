@@ -48,10 +48,15 @@ function url_to_external_blog_card($the_content) {
 
     //ブログカード化しないURLで除外
     $exclude_urls = apply_filters('exclusion_external_blog_card_urls', array());
+    $is_excluded = false;
     foreach ($exclude_urls as $exclude_url) {
       if (includes_string($url, $exclude_url)) {
-        return $match;
+        $is_excluded = true;
+        break;
       }
+    }
+    if ($is_excluded) {
+      continue;
     }
 
     $tag = url_to_external_blog_card_tag($url);
@@ -85,57 +90,34 @@ if ( is_external_blogcard_enable() ) {//外部リンクブログカードが有�
 //外部サイトからブログカードサムネイルを取得する
 if ( !function_exists( 'fetch_card_image' ) ):
 function fetch_card_image($image, $url = null){
-  //var_dump($image);
-  //URLの？以降のクエリを削除
+  // URLのクエリを除去（?以降を削除）
   $image = preg_replace('/\?.*$/i', '', $image);
-  $filename = substr($image, (strrpos($image, '/'))+1);
-  $allow_exts = array('png', 'jpg', 'jpeg', 'gif' );
 
-  //拡張子取得
-  $ext = 'png';
-  $temp_ext = get_extention($filename);
-  if ( !in_array($temp_ext, $allow_exts) ) {
-    return ;
-  }
+  // ファイル名・拡張子をそのまま使用
+  $filename = basename($image);
+  $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
-  if ( $temp_ext ) {
-    $ext = $temp_ext;
-  }
-
-  //キャッシュディレクトリ
+  // キャッシュディレクトリを取得・存在しなければ作成
   $dir = get_theme_blog_card_cache_path();
-  //画像の読み込み
-  if ( $file_data = @wp_filesystem_get_contents($image, true) ) {
-
-    //ディレクトリがないときには作成する
-    if ( !file_exists($dir) ) {
-      mkdir($dir, 0777);
-    }
-    //ローカル画像ファイルパス
-    $new_file = $dir.md5($image).'.'.$ext;
-    // var_dump($new_file);
-
-    if ( $file_data ) {
-      wp_filesystem_put_contents($new_file, $file_data);
-      //画像編集オブジェクトの作成
-      $image_editor = wp_get_image_editor($new_file);
-      if ( !is_wp_error($image_editor) ){
-        if (is_amazon_site_page($url)) {
-          $width = apply_filters('external_blogcard_amazon_image_width',THUMB160WIDTH );
-          $height = apply_filters('external_blogcard_amazon_image_height',THUMB160WIDTH );
-          $image_editor->resize($width, $height, true);
-        } else {
-          $width = apply_filters('external_blogcard_image_width',THUMB160WIDTH );
-          $height = apply_filters('external_blogcard_image_height',THUMB160HEIGHT );
-          $image_editor->resize($width, $height, true);
-        }
-
-        $image_editor->save( $new_file );
-        return str_replace(WP_CONTENT_DIR, content_url(), $new_file);
-      }
-      wp_filesystem_delete($new_file);
-    }
+  if ( !file_exists($dir) ) {
+    mkdir($dir, 0777);
   }
+
+  // キャッシュ保存先パス
+  $new_file = trailingslashit($dir) . md5($image) . '.' . $ext;
+
+  // WordPress関数を用い一時ダウンロード
+  $tmp = download_url($image);
+  if ( is_wp_error($tmp) ) {
+    return;
+  }
+
+  // キャッシュにコピー
+  copy($tmp, $new_file);
+  @unlink($tmp);
+
+  // 公開URLに変換して返す
+  return str_replace(WP_CONTENT_DIR, content_url(), $new_file);
 }
 endif;
 
@@ -151,8 +133,6 @@ function url_to_external_ogp_blogcard_tag($url){
   $params = get_url_params($url);
   $user_title = !empty($params['title']) ? $params['title'] : null;
   $user_snippet = !empty($params['snippet']) ? $params['snippet'] : null;
-  //$url = add_query_arg(array('title' => null, 'snippet' => null), $url);
-  //_v($url);
 
   $url_hash = TRANSIENT_BLOGCARD_PREFIX.md5( $url );
   $error_title = $url; //エラーの場合はURLを表示
@@ -161,7 +141,6 @@ function url_to_external_ogp_blogcard_tag($url){
 
   $image = $error_image;
   $snippet = '';
-  $error_rel_nofollow = ' rel="nofollow"';
 
 
 
@@ -172,52 +151,48 @@ function url_to_external_ogp_blogcard_tag($url){
     $ogp = get_transient( $url_hash );
   }
 
-  if ( empty($ogp) ) {
-    $ogp = OpenGraphGetter::fetch( $url );
-    // _v($ogp);
-    if ( $ogp == false ) {
+  // キャッシュがない場合
+  if (empty($ogp)) {
+    $ogp_fetched = OpenGraphGetter::fetch($url);
+    if ($ogp_fetched == false) {
       $ogp = 'error';
     } else {
-
-      if (isset($ogp->image) && empty($ogp->image)) {
-        //キャッシュ画像の取得
-        $res = fetch_card_image($ogp->image, $url);
-
-        if ( $res ) {
-          $ogp->image = $res;
+      // 必要な値だけコピーして stdClass に格納
+      $ogp = new stdClass();
+      $ogp->title       = $ogp_fetched->title ?? '';
+      $ogp->description = $ogp_fetched->description ?? '';
+      $ogp->site_name   = $ogp_fetched->site_name ?? '';
+      if (isset($ogp_fetched->image)) {
+        if (apply_filters('is_externa_blogcard_thumbnail_cache', true)) {
+          // キャッシュを取得した場合
+          $ogp->image = fetch_card_image($ogp_fetched->image, $url);
+        } else {
+          // キャッシュを取得しなかった場合
+          $ogp->image = $ogp_fetched->image;
         }
+      } else {
+        // 画像がない場合
+        $ogp->image = '';
       }
 
-      if ( isset( $ogp->title ) && $ogp->title )
-        $title = $ogp->title;//タイトルの取得
-
-      if ( isset( $ogp->description ) && $ogp->description )
-        $snippet = $ogp->description;//ディスクリプションの取得
-
-      if ( isset( $ogp->image ) && $ogp->image )
-        $image = $ogp->image;////画像URLの取得
-
-      $error_rel_nofollow = null;
+      // キャッシュ保存
+      set_transient( $url_hash, $ogp,
+                     DAY_IN_SECONDS * intval(get_external_blogcard_cache_retention_period()) );
     }
+  }
 
-    set_transient( $url_hash, $ogp,
-                   DAY_IN_SECONDS * intval(get_external_blogcard_cache_retention_period()) );
-
-  } elseif ( $ogp == 'error' ) {
-    //前回取得したとき404ページだったら何も出力しない
-  } else {
+  // キャッシュがある場合
+  if ($ogp !== 'error') {
     if ( isset( $ogp->title ) && $ogp->title )
       $title = $ogp->title;//タイトルの取得
 
     if ( isset( $ogp->description ) && $ogp->description )
       $snippet = $ogp->description;//ディスクリプションの取得
 
-    if ( isset( $ogp->image ) && $ogp->image )
-      $image = $ogp->image;//画像URLの取得
-
-    $error_rel_nofollow = null;
+    if ( isset($ogp->image) && $ogp->image ) {
+      $image = $ogp->image;// 画像の取得
+    }
   }
-  //var_dump($image);
 
   //ドメイン名を取得（OGP情報のURLが正しいかのチェック）
   $durl = punycode_decode($url);
@@ -225,6 +200,12 @@ function url_to_external_ogp_blogcard_tag($url){
     $durl = punycode_decode($ogp->url);
   }
   $domain = get_domain_name($durl);
+
+  $domain_style = get_external_blogcard_domain_style(); // "domain" or "name"
+  if ($domain_style === 'name' && !empty($ogp->site_name)) {
+    $domain = $ogp->site_name; // OGPのサイト名を優先
+  }
+
 
   //og:imageが相対パスのとき
   if(!$image || (strpos($image, '//') === false) || (is_ssl() && (strpos($image, 'https:') === false))){    // //OGPのURL情報があるか

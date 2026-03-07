@@ -816,25 +816,25 @@ a.page-numbers {
 }
 
 /* フォーム */
-.search-edit,
-input[type="text"],
-input[type="password"],
-input[type="date"],
-input[type="datetime"],
-input[type="email"],
-input[type="number"],
-input[type="search"],
-input[type="tel"],
-input[type="time"],
-input[type="url"],
-textarea,
-select {
+.public-page .search-edit,
+.public-page input[type="text"],
+.public-page input[type="password"],
+.public-page input[type="date"],
+.public-page input[type="datetime"],
+.public-page input[type="email"],
+.public-page input[type="number"],
+.public-page input[type="search"],
+.public-page input[type="tel"],
+.public-page input[type="time"],
+.public-page input[type="url"],
+.public-page textarea,
+.public-page select {
   border-radius: 2px;
   border-width: 2px;
   border-color: rgba(153, 153, 153, 0.4);
 }
 
-input[type="submit"] {
+.public-page input[type="submit"] {
   padding: 1em;
   color: #fff;
   font-size: 0.85em;
@@ -917,13 +917,14 @@ input[type="submit"] {
   border-radius: 0;
 }
 
-.article h2 > span::after {
+.article h2::after {
   position: absolute;
   content: "";
   width: 20%;
   height: 4px;
   left: 0;
   bottom: -4px;
+  background-color: #e57373;
 }
 
 .article h3 {
@@ -931,6 +932,7 @@ input[type="submit"] {
   font-size: 1.25em;
   border-width: 0 0 0 5px;
   border-style: solid;
+  border-color: #e57373;
 }
 
 .article h4 {
@@ -939,9 +941,15 @@ input[type="submit"] {
   border-width: 0;
 }
 
-.article h4 > span::before {
+.article h4::before {
   content: "\f061";
   margin-right: 0.5em;
+  color: #e57373;
+  font-family: FontAwesome;
+}
+
+.article h5 {
+  color: #e57373;
 }
 
 .article h5,
@@ -949,6 +957,16 @@ input[type="submit"] {
   padding: 0;
   font-size: 1em;
   border-width: 0;
+}
+
+/* 見出しカウント */
+.article {
+  counter-reset: h2;
+}
+
+.article h2::before {
+  content: counter(h2, decimal) ". ";
+  counter-increment: h2;
 }
 
 /* 引用 */

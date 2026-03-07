@@ -85,6 +85,7 @@
   --cocoon-box-border-color: #47585c;
   --cocoon-sns-color: var(--cocoon-text-color);
   --card-ratio: 16/9;
+  --cocoon--header-container--position-offset: 0px;
 }
 
 .faw::before {
@@ -772,6 +773,21 @@ p.has-background {
   float: none;
 }
 
+p[style*=writing-mode][style*=vertical] {
+  align-items: flex-end;
+  display: flex;
+  width: 100%;
+}
+
+p.has-text-align-center[style*=writing-mode][style*=vertical] {
+  align-items: center;
+}
+
+p.has-text-align-right[style*=writing-mode][style*=vertical] {
+  align-items: flex-start !important;
+  rotate: unset !important;
+}
+
 /************************************
 ** 画像関係のスタイル
 ************************************/
@@ -1000,6 +1016,7 @@ img.emoji {
 }
 .header-container-in.hlt-top-menu .header {
   background-image: none;
+  aspect-ratio: unset;
 }
 .header-container-in.hlt-top-menu .logo-text {
   padding: 0;
@@ -2348,6 +2365,7 @@ img.blogcard-favicon-image {
 }
 .toc .toc-list {
   padding-left: 1em;
+  margin-bottom: 0;
 }
 .toc .toc-list ul, .toc .toc-list ol {
   padding-left: 1em;
@@ -2672,6 +2690,17 @@ label.screen-reader-text {
   margin-top: 6px;
   font-size: 12px;
   opacity: 0.8;
+}
+
+.widget-entry-card-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.widget-entry-card-comment {
+  font-size: 0.7em;
+  padding: 4px 2px 2px 2px;
 }
 
 .widget-entry-card-pv {
@@ -3256,32 +3285,33 @@ ul.wp-block-archives {
   padding: 20px 20px 20px 72px;
 }
 
-.body blockquote :last-child,
-.body .wp-block-media-text__content :last-child,
-.body .wp-block-columns :last-child,
-.body .column-left :last-child,
-.body .column-center :last-child,
-.body .column-right :last-child,
-.body .timeline-box :last-child,
-.body .wp-block-cover :last-child,
-.body .blogcard-type :last-child,
-.body .btn-wrap :last-child,
-.body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between, .is-layout-flex) :last-child,
-.body .wp-block-gallery :last-child,
-.body .block-box :last-child,
-.body .blank-box :last-child,
-.body .common-icon-box :last-child,
-.body .info-box :last-child,
-.body .primary-box :last-child,
-.body .success-box :last-child,
-.body .warning-box :last-child,
-.body .danger-box :last-child,
-.body .secondary-box :last-child,
-.body .light-box :last-child,
-.body .dark-box :last-child,
-.body .tab-content :last-child,
-.body .toc :last-child,
-.body .wp-block-social-links :last-child {
+.body blockquote > :last-child,
+.body .wp-block-media-text__content > :last-child,
+.body .wp-block-column > :last-child,
+.body .column-left > :last-child,
+.body .column-center > :last-child,
+.body .column-right > :last-child,
+.body .timeline-item-snippet > :last-child,
+.body .wp-block-cover__inner-container > :last-child,
+.body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between, .is-layout-flex) > :last-child,
+.body .block-box > :last-child,
+.body .blank-box > :last-child,
+.body .toggle-content > :last-child,
+.body .tab-content > :last-child,
+.body .faq-item-content > :last-child,
+.body .block-box-content > :last-child,
+.body .common-icon-box > :last-child,
+.body .info-box > :last-child,
+.body .primary-box > :last-child,
+.body .success-box > :last-child,
+.body .warning-box > :last-child,
+.body .danger-box > :last-child,
+.body .secondary-box > :last-child,
+.body .light-box > :last-child,
+.body .dark-boxs > :last-child {
+  margin-bottom: 0;
+}
+.body .btn-wrap.button-block > * {
   margin-bottom: 0;
 }
 .body div.scrollable-table table,
@@ -7567,6 +7597,11 @@ div.sbs-think:not(.not-nested-style) .speech-balloon::after {
   font-size: 0.9em;
 }
 
+.amazon-search-message {
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+
 .nwa .booklink-box, .nwa .kaerebalink-box, .nwa .tomarebalink-box, .nwa .product-item-box {
   padding: 10px 10px 24px;
   display: block;
@@ -8319,7 +8354,7 @@ div.fb-like-mobile {
 .footer-left,
 .footer-center,
 .footer-right {
-  width: 33.33%;
+  flex: 1;
 }
 
 .footer-widgets-mobile {
@@ -8394,7 +8429,7 @@ div.fb-like-mobile {
   display: block;
   right: 10px;
   bottom: 10px;
-  z-index: 99999;
+  z-index: 999;
   visibility: hidden;
   opacity: 0;
   transition: 0.6s;
@@ -9316,6 +9351,7 @@ https://codepen.io/nxworld/pen/oLdoWb
 .recommended .navi-entry-cards a {
   padding: 0;
   margin: 0;
+  width: 100%;
   border-radius: 0;
 }
 .recommended figure {
@@ -9483,6 +9519,7 @@ https://codepen.io/nxworld/pen/oLdoWb
   flex-direction: row;
   position: relative;
   /* カードのサムネイル幅200px */
+  /* Swiper初期化前はナビゲーションボタンを非表示にする（チラつき防止） */
 }
 .is-list-horizontal .widget-entry-card-link {
   flex-shrink: 0;
@@ -9513,6 +9550,10 @@ https://codepen.io/nxworld/pen/oLdoWb
 }
 .is-list-horizontal .swiper-wrapper {
   height: initial;
+}
+.is-list-horizontal:not(.swiper-initialized) .swiper-button-next,
+.is-list-horizontal:not(.swiper-initialized) .swiper-button-prev {
+  display: none;
 }
 .is-list-horizontal .swiper-button-next,
 .is-list-horizontal .swiper-button-prev {
@@ -9611,6 +9652,11 @@ https://codepen.io/nxworld/pen/oLdoWb
 
 .info-list-item-date {
   margin-right: 18px;
+}
+
+.info-list-item-comment {
+  margin-left: -10px;
+  margin-right: 12px;
 }
 
 .info-list-item-categorys .entry-category {
@@ -10306,7 +10352,7 @@ pre {
   box-sizing: border-box;
   color: #777;
   text-align: center;
-  padding: 0.4em 0;
+  margin: 0.4em 0;
 }
 
 @media screen and (max-width: 1023px) {
@@ -10377,7 +10423,7 @@ pre {
     align-items: stretch;
   }
   .mobile-header-menu-buttons {
-    top: 0;
+    top: var(--wp-admin--admin-bar--height, 0px);
     bottom: auto;
     justify-content: space-between;
     min-width: 46px;

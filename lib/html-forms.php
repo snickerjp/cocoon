@@ -82,7 +82,7 @@ function generate_selectbox_tag($name, $options, $now_value, $label = null, $ico
       //アイコンフォントを利用する場合
       $add_option_class = null;
       ?>
-      <option value="<?php echo $value; ?>"<?php the_option_selected($value, $now_value) ?><?php echo $add_option_class; ?>><?php echo $caption; ?></option>
+      <option value="<?php echo esc_attr($value); ?>"<?php the_option_selected($value, $now_value) ?><?php echo $add_option_class; ?>><?php echo esc_html($caption); ?></option>
     <?php } ?>
   </select>
   <?php
@@ -370,7 +370,7 @@ function generate_sort_options_tag($keyword = null, $order_by = null){?>
   <!-- 抽出フォーム -->
   <div class="sort-options">
     <form method="post" action="">
-    <input type="text" name="s" value="<?php echo $keyword; ?>" placeholder="<?php _e( 'タイトル検索', THEME_NAME ) ?>">
+    <input type="text" name="s" value="<?php echo esc_attr($keyword); ?>" placeholder="<?php _e( 'タイトル検索', THEME_NAME ) ?>">
     <?php
 
       $options = array(
@@ -747,7 +747,7 @@ function hierarchical_category_check_list( $cat, $name, $checks ) {
   }
     // wpse-41548 // alchymyth // a hierarchical list of all categories //
 
-  $next = get_categories('hide_empty=false&orderby=name&order=ASC&parent=' . $cat);
+  $next = get_categories('hide_empty=0&orderby=name&order=ASC&parent=' . $cat);
 
   if( $next ) {
     foreach( $next as $cat ) :
@@ -793,96 +793,49 @@ endif;
 //ページ表示チェックリスト
 if ( !function_exists( 'generate_page_display_check_list' ) ):
 function generate_page_display_check_list( $name, $checks, $width = 0 ) {
-  if ($width == 0) {
-    $width = 'auto';
-  } else {
-    $width = $width.'px';
+  $width = ($width == 0) ? 'auto' : $width . 'px';
+  $checks = (array) $checks;
+
+  // 基本のチェック項目
+  $page_types = array(
+    'is_front_page'  => __( 'フロントページのみ', THEME_NAME ),
+    'is_single'      => __( '投稿', THEME_NAME ),
+    'is_page'        => __( '固定ページ', THEME_NAME ),
+    'is_category'    => __( 'カテゴリー一覧', THEME_NAME ),
+    'is_tag'         => __( 'タグ一覧', THEME_NAME ),
+    'is_author'      => __( '著者一覧', THEME_NAME ),
+    'is_archive'     => __( 'アーカイブ一覧', THEME_NAME ),
+    'is_search'      => __( '検索結果一覧', THEME_NAME ),
+    'is_404'         => __( '404ページ', THEME_NAME ),
+  );
+
+  // 条件付きのチェック項目を動的に追加
+  if ( function_exists('is_amp_enable') && is_amp_enable() ) {
+    $page_types['is_amp'] = __( 'AMPページ', THEME_NAME );
+  }
+  if ( function_exists('is_wpforo_exist') && is_wpforo_exist() ) {
+    $page_types['is_wpforo_plugin_page'] = __( 'wpForoページ', THEME_NAME );
+  }
+  if ( function_exists('is_bbpress_exist') && is_bbpress_exist() ) {
+    $page_types['is_bbpress_page'] = __( 'bbPressページ', THEME_NAME );
+  }
+  if ( function_exists('is_buddypress_exist') && is_buddypress_exist() ) {
+    $page_types['is_buddypress_page'] = __( 'BuddyPressページ', THEME_NAME );
+  }
+  if ( function_exists('is_plugin_fourm_exist') && is_plugin_fourm_exist() ) {
+    $page_types['is_plugin_fourm_page'] = __( 'プラグインフォーラムページ（bbPress、BuddyPress、wpForo）', THEME_NAME );
   }
 
-  if (empty($checks)) {
-    $checks = array();
-  }
+  echo '<div class="tab-content page-display-check-list ' . esc_attr($name) . '-list" style="width: ' . esc_attr($width) . ';">';
+  echo '<ul>';
 
-  echo '<div class="tab-content page-display-check-list '.$name.'-list" style="width: '.$width.';"><ul>';
-
-  $id = $name.'_'.'is_front_page';
-  echo '<li><input type="checkbox" name="'.$name.'[]" value="is_front_page" id="'.$id.'" ';
-  checked(in_array('is_front_page', $checks));
-  echo '><label for="'.$id.'">' . __( 'フロントページのみ', THEME_NAME ) . '</label></li>';
-
-  $id = $name.'_'.'is_single';
-  echo '<li><input type="checkbox" name="'.$name.'[]" value="is_single" id="'.$id.'" ';
-  checked(in_array('is_single', $checks));
-  echo '><label for="'.$id.'">' . __( '投稿', THEME_NAME ) . '</label></li>';
-
-  $id = $name.'_'.'is_page';
-  echo '<li><input type="checkbox" name="'.$name.'[]" value="is_page" id="'.$id.'" ';
-  checked(in_array('is_page', $checks));
-  echo '><label for="'.$id.'">' . __( '固定ページ', THEME_NAME ) . '</label></li>';
-
-  $id = $name.'_'.'is_category';
-  echo '<li><input type="checkbox" name="'.$name.'[]" value="is_category" id="'.$id.'" ';
-  checked(in_array('is_category', $checks));
-  echo '><label for="'.$id.'">' . __( 'カテゴリー一覧', THEME_NAME ) . '</label></li>';
-
-  $id = $name.'_'.'is_tag';
-  echo '<li><input type="checkbox" name="'.$name.'[]" value="is_tag" id="'.$id.'" ';
-  checked(in_array('is_tag', $checks));
-  echo '><label for="'.$id.'">' . __( 'タグ一覧', THEME_NAME ) . '</label></li>';
-
-  $id = $name.'_'.'is_author';
-  echo '<li><input type="checkbox" name="'.$name.'[]" value="is_author" id="'.$id.'" ';
-  checked(in_array('is_author', $checks));
-  echo '><label for="'.$id.'">' . __( '著者一覧', THEME_NAME ) . '</label></li>';
-
-  $id = $name.'_'.'is_archive';
-  echo '<li><input type="checkbox" name="'.$name.'[]" value="is_archive" id="'.$id.'" ';
-  checked(in_array('is_archive', $checks));
-  echo '><label for="'.$id.'">' . __( 'アーカイブ一覧', THEME_NAME ) . '</label></li>';
-
-  $id = $name.'_'.'is_search';
-  echo '<li><input type="checkbox" name="'.$name.'[]" value="is_search" id="'.$id.'" ';
-  checked(in_array('is_search', $checks));
-  echo '><label for="'.$id.'">' . __( '検索結果一覧', THEME_NAME ) . '</label></li>';
-
-  $id = $name.'_'.'is_404';
-  echo '<li><input type="checkbox" name="'.$name.'[]" value="is_404" id="'.$id.'" ';
-  checked(in_array('is_404', $checks));
-  echo '><label for="'.$id.'">' . __( '404ページ', THEME_NAME ) . '</label></li>';
-
-  if (is_amp_enable()) {
-    $id = $name.'_'.'is_amp';
-    echo '<li><input type="checkbox" name="'.$name.'[]" value="is_amp" id="'.$id.'" ';
-    checked(in_array('is_amp', $checks));
-    echo '><label for="'.$id.'">' . __( 'AMPページ', THEME_NAME ) . '</label></li>';
-  }
-
-  if (is_wpforo_exist()) {
-    $id = $name.'_'.'is_wpforo_plugin_page';
-    echo '<li><input type="checkbox" name="'.$name.'[]" value="is_wpforo_plugin_page" id="'.$id.'" ';
-    checked(in_array('is_wpforo_plugin_page', $checks));
-    echo '><label for="'.$id.'">' . __( 'wpForoページ', THEME_NAME ) . '</label></li>';
-  }
-
-  if (is_bbpress_exist()) {
-    $id = $name.'_'.'is_bbpress_page';
-    echo '<li><input type="checkbox" name="'.$name.'[]" value="is_bbpress_page" id="'.$id.'" ';
-    checked(in_array('is_bbpress_page', $checks));
-    echo '><label for="'.$id.'">' . __( 'bbPressページ', THEME_NAME ) . '</label></li>';
-  }
-
-  if (is_buddypress_exist()) {
-    $id = $name.'_'.'is_buddypress_page';
-    echo '<li><input type="checkbox" name="'.$name.'[]" value="is_buddypress_page" id="'.$id.'" ';
-    checked(in_array('is_buddypress_page', $checks));
-    echo '><label for="'.$id.'">' . __( 'BuddyPressページ', THEME_NAME ) . '</label></li>';
-  }
-
-  if (is_plugin_fourm_exist()) {
-    $id = $name.'_'.'is_plugin_fourm_page';
-    echo '<li><input type="checkbox" name="'.$name.'[]" value="is_plugin_fourm_page" id="'.$id.'" ';
-    checked(in_array('is_plugin_fourm_page', $checks));
-    echo '><label for="'.$id.'">' . __( 'プラグインフォーラムページ（bbPress、BuddyPress、wpForo）', THEME_NAME ) . '</label></li>';
+  foreach ( $page_types as $value => $label ) {
+    $id = $name . '_' . $value;
+    echo '<li>';
+    echo '<input type="checkbox" name="' . esc_attr($name) . '[]" value="' . esc_attr($value) . '" id="' . esc_attr($id) . '" ';
+    checked( in_array( $value, $checks, true ) );
+    echo '><label for="' . esc_attr($id) . '">' . esc_html($label) . '</label>';
+    echo '</li>';
   }
 
   echo '</ul></div>';
@@ -1049,7 +1002,8 @@ function generate_popular_entries_tag($atts){
     'author' => null,
     'post_type' => 'post',
     'horizontal' => 0,
-    'date' => 0,
+    'action' => null,
+    'comment' => 0,
   ), $atts, 'generate_popular_entries_tag'));
 
   //Swiperスクリプトコードを呼び出すかどうか
@@ -1099,7 +1053,6 @@ function generate_popular_entries_tag($atts){
       } else {
         $post_thumbnail_img = get_original_image_tag($no_thumbnail_url, $w, $h, 'no-image popular-entry-card-thumb-no-image widget-entry-card-thumb-no-image', '');
       }
-
       //スニペット表示
       $snippet_tag = '';
       //「タイトルを重ねた大きなサムネイル」の時はスニペットを表示させない
@@ -1132,7 +1085,15 @@ function generate_popular_entries_tag($atts){
         <?php if ($entry_type != ET_LARGE_THUMB_ON): ?>
           <?php echo $pv_tag; ?>
         <?php endif ?>
-        <?php generate_widget_entry_card_date('popular', $post->ID, $display = $date); ?>
+        <?php do_action( 'widget_entry_card_date_before', 'popular', $post->ID); ?>
+        <div class="popular-entry-card-meta widget-entry-card-meta card-meta">
+          <div class="popular-entry-card-info widget-entry-card-info card-info">
+        <?php generate_widget_entry_card_date('popular', $post->ID, $display = $date);
+        if ($comment): ?>
+          <span class="popular-entry-card-comment widget-entry-card-comment card-comment post-comment-count"><span class="fa fa-comment-o comment-icon" aria-hidden="true"></span><?php echo get_comments_number( $post->ID ); ?></span>
+        <?php endif; ?>
+          </div>
+        </div>
       </div><!-- /.popular-entry-content -->
       <?php if ($entry_type == ET_LARGE_THUMB_ON): ?>
         <?php echo $pv_tag; ?>
@@ -1192,6 +1153,7 @@ function generate_widget_entries_tag($atts){
     'ex_posts' => null,
     'ex_cats' => null,
     'ordered_posts' => null,
+    'comment' => 0,
   ), $atts, 'generate_widget_entries_tag'));
 
   //Swiperスクリプトコードを呼び出すかどうか
@@ -1309,9 +1271,15 @@ function generate_widget_entries_tag($atts){
   }
   //除外カテゴリーショートコードオプション
   if ($ex_cats) {
-    $args += array(
-      'category__not_in' => $ex_cats,
-    );
+    // 重複排除して結合
+    $prev = isset($args['category__not_in']) ? (array)$args['category__not_in'] : [];
+    // $ex_catsがカンマ区切りの文字列の場合は配列化
+    if (is_string($ex_cats)) {
+      $more = explode(',', $ex_cats);
+    } else {
+      $more = (array)$ex_cats;
+    }
+    $args['category__not_in'] = array_values(array_unique(array_map('intval', array_merge($prev, $more))));
   }
   //順序付きポスト
   if ($ordered_posts) {
@@ -1363,6 +1331,8 @@ function generate_widget_entries_tag($atts){
       'type' => $type,
       'horizontal' => $horizontal,
       'date' => $date,
+      'comment' => $comment,
+      'post_id' => get_the_ID(),
     );
 
     if ($snippet) {
@@ -1447,7 +1417,6 @@ function generate_widget_entry_card_date($prefix, $post_id = null, $display = fa
 // クラスのON/OFFを制御するオプション
 $display_class = $display ? '' : ' display-none';
 ?>
-<?php do_action( 'widget_entry_card_date_before', $prefix, $post_id); ?>
 <div class="<?php echo $prefix; ?>-entry-card-date widget-entry-card-date<?php echo $display_class; ?>">
   <span class="<?php echo $prefix; ?>-entry-card-post-date widget-entry-card-post-date post-date"><span class="fa fa-clock-o" aria-hidden="true"></span><span class="entry-date"><?php echo get_the_time(get_site_date_format(), $post_id); ?></span></span><?php
     //更新日の取得
@@ -1464,7 +1433,7 @@ if ( !function_exists( 'generate_author_box_tag' ) ):
 function generate_author_box_tag($id = null, $label = null, $is_image_circle = 0){
   $description = '';
   $user_id = get_the_author_meta( 'ID' );
-  if (!$user_id || !is_singular()) {
+  if (!$user_id || (!is_singular() && !is_author($user_id))) {
     $user_id = get_sns_default_follow_user();
   }
   if ($id && get_userdata( $id )) {
@@ -1551,7 +1520,7 @@ function generate_author_box_tag($id = null, $label = null, $is_image_circle = 0
             echo wpautop(__( '未登録ユーザーです。ログインして、Cocoon設定の保存ボタンを押してください。', THEME_NAME ));
           }
         } elseif (is_user_logged_in()) {
-          echo wpautop(__( 'プロフィール内容は管理画面から変更可能です→', THEME_NAME ).'<a href="' . esc_url(home_url() . '/wp-admin/user-edit.php?user_id='.get_the_author_meta( 'ID' )).'">'.__( 'プロフィール設定画面', THEME_NAME ).'</a><br>'.__( '※このメッセージは、ログインユーザーにしか表示されません。', THEME_NAME ));
+          echo wpautop(__( 'プロフィール内容は管理画面から変更可能です→', THEME_NAME ).'<a href="' . esc_url(home_url() . '/wp-admin/user-edit.php?user_id='.$user_id).'">'.__( 'プロフィール設定画面', THEME_NAME ).'</a><br>'.__( '※このメッセージは、ログインユーザーにしか表示されません。', THEME_NAME ));
         }
         ?>
 
@@ -1614,8 +1583,10 @@ function get_widget_entry_card_link_tag($atts){
     'classes' => null,
     'object' => 'post',
     'object_id' => null,
+    'post_id' => null,
     'horizontal' => 0,
     'target' => null,
+    'comment' => null,
   ), $atts, 'get_widget_entry_card_link_tag'));
 
   $class_text = null;
@@ -1664,7 +1635,7 @@ function get_widget_entry_card_link_tag($atts){
             if ($thumbnail_tag) {
               echo $thumbnail_tag;
             } else {
-              echo get_widget_entry_card_no_image_tag(ET_DEFAULT, $prefix);
+              echo get_widget_entry_card_no_image_tag(ET_LARGE_THUMB, $prefix);
             }
           } else {
             if ($object === 'category') {
@@ -1688,12 +1659,20 @@ function get_widget_entry_card_link_tag($atts){
         <div class="<?php echo $prefix; ?>-entry-card-title widget-entry-card-title card-title"><?php echo $title;?></div>
         <?php if ($snippet): ?>
         <div class="<?php echo $prefix; ?>-entry-card-snippet widget-entry-card-snippet card-snippet"><?php echo $snippet; ?></div>
-        <?php endif; ?>
-        <?php
-        if (!is_widget_navi_entry_card_prefix($prefix)) {
+        <?php endif;
+        if (!is_widget_navi_entry_card_prefix($prefix)):
+          do_action( 'widget_entry_card_date_before', $prefix, $post_id);
+          ?>
+          <div class="<?php echo $prefix; ?>-entry-card-meta widget-entry-card-meta card-meta">
+            <div class="<?php echo $prefix; ?>-entry-card-info widget-entry-card-info card-info">
+          <?php
           generate_widget_entry_card_date($prefix, null, $display = $date);
-        } ?>
-
+          if ($comment): ?>
+            <span class="<?php echo $prefix; ?>-entry-card-comment widget-entry-card-comment card-comment post-comment-count"><span class="fa fa-comment-o comment-icon" aria-hidden="true"></span><?php echo get_comments_number(); ?></span>
+          <?php endif; ?>
+          </div><!-- /.entry-card-info -->
+        </div><!-- /.entry-card-meta -->
+        <?php endif; ?>
       </div><!-- /.entry-content -->
     </div><!-- /.entry-card -->
   </a><!-- /.entry-card-link -->
@@ -1759,20 +1738,10 @@ function get_navi_card_image_attributes($menu, $type = ET_DEFAULT){
   }
   elseif ($object == 'category'){//カテゴリーアイキャッチの取得
     $image_url = get_the_category_eye_catch_url($object_id);
-    $thumb_id = attachment_url_to_postid( $image_url );
-    $thumb_img = wp_get_attachment_image_src($thumb_id, $thumb_size);
-    if (isset($thumb_img[0]) && $thumb_img[0]) {
-      $image_url = $thumb_img[0];
-    }
     $image_attributes = get_navi_card_image_url_attributes($image_url, $type);
   }
   elseif ($object == 'post_tag'){//タグアイキャッチの取得
     $image_url = get_the_tag_eye_catch_url($object_id);
-    $thumb_id = attachment_url_to_postid( $image_url );
-    $thumb_img = wp_get_attachment_image_src($thumb_id, $thumb_size);
-    if (isset($thumb_img[0]) && $thumb_img[0]) {
-      $image_url = $thumb_img[0];
-    }
     $image_attributes = get_navi_card_image_url_attributes($image_url, $type);
   }
   elseif ($object == 'custom') {//カスタムメニュー
@@ -1879,6 +1848,7 @@ function generate_info_list_tag($atts){
     'action' => null,
     'post_type' => 'post',
     'taxonomy' => 'category',
+    'comment' => 0,
   ), $atts, 'generate_info_list_tag'));
 
   $args = array(
@@ -1945,6 +1915,9 @@ function generate_info_list_tag($atts){
           <?php do_action('info_list_item_meta_before'); ?>
           <div class="info-list-item-meta">
             <span class="info-list-item-date"><?php echo $date; ?></span>
+            <?php if ($comment): ?>
+              <span class="info-list-item-comment post-comment-count"><span class="fa fa-comment-o comment-icon" aria-hidden="true"></span><?php echo get_comments_number(); ?></span>
+            <?php endif; ?>
             <span class="info-list-item-categorys"><?php the_nolink_categories() ?></span>
           </div>
         </div>

@@ -12,7 +12,11 @@ import classnames from 'classnames';
 
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { RichText, InspectorControls } from '@wordpress/block-editor';
+import {
+  RichText,
+  InspectorControls,
+  useBlockProps,
+} from '@wordpress/block-editor';
 const { PanelBody, SelectControl, BaseControl } = wp.components;
 import { Fragment } from '@wordpress/element';
 
@@ -25,7 +29,8 @@ function getClasses( style ) {
   return classes;
 }
 
-registerBlockType( 'cocoon-blocks/blogcard', {
+registerBlockType( 'cocoon-blocks/blogcard', { supports: { html: false },
+  apiVersion: 3,
   title: __( 'ブログカード', THEME_NAME ),
   icon: <FontAwesomeIcon icon={ faAddressCard } />,
   category: THEME_NAME + '-block',
@@ -95,7 +100,7 @@ registerBlockType( 'cocoon-blocks/blogcard', {
                 },
               ] }
               __nextHasNoMarginBottom={ true }
-              __next40pxDefaultSize={ true }  // 新しいデフォルトサイズに対応
+              __next40pxDefaultSize={ true } // 新しいデフォルトサイズに対応
             />
           </PanelBody>
         </InspectorControls>
@@ -113,10 +118,15 @@ registerBlockType( 'cocoon-blocks/blogcard', {
 
   save( { attributes } ) {
     const { content, style } = attributes;
+    const blockProps = useBlockProps.save( {
+      className: getClasses( style ),
+    } );
     return (
-      <div className={ getClasses( style ) }>
+      <div { ...blockProps }>
         <RichText.Content value={ content } multiline={ 'p' } />
       </div>
     );
   },
 } );
+
+

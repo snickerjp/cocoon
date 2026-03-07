@@ -20,7 +20,7 @@
   }
 }
 body {
-  background-color: #FCE4EC !important;
+  background-color: #FCE4EC;
 }
 
 #container {
@@ -61,9 +61,6 @@ body {
   color: white;
 }
 #header-container .hlt-center-logo {
-  background-color: #EC407A;
-}
-#header-container .hlt-center-logo #navi {
   background-color: #EC407A;
 }
 #header-container .hlt-center-logo #navi a:hover {

@@ -4,7 +4,6 @@
   背景画像ソースURL http://www.colourlovers.com/pattern/1301223/One_fish_two_fish
   Skin URI: https://aruru.co.jp/cocoon03/
   Author: がんちゃん
-  Author URI: https://ganchan.info/
   Screenshot URI: https://im-cocoon.net/wp-content/uploads/skin-ganchan01.png
   Version: 0.0.1
   Priority: 9910002000
@@ -20,6 +19,12 @@
 .navi,
 .navi-in > ul .sub-menu {
     background-color: #333;
+}
+.hlt-top-menu-wrap .header-container {
+    background-color: #333333;
+}
+.hlt-top-menu-wrap .site-name-text-link {
+    color: #ffffff;
 }
 
 .navi-in a {

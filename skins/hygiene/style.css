@@ -166,10 +166,14 @@ border-bottom:4px solid #5572ff;
     text-align: center;
     font-style: italic;
 }
-.ect-vertical-card .entry-card-wrap .entry-card-snippet {
+.ect-vertical-card .entry-card-wrap .entry-card-snippet,
+.ect-vertical-card .entry-card-wrap .admin-pv {
     font-size: 12px;
     margin: 10px 15px 0 15px;
     color: #d7d5ef;
+}
+.ect-vertical-card .entry-card-wrap .entry-card-thumb {
+    margin-top: 0;
 }
 .ect-vertical-card .entry-card-wrap .entry-card-thumb img {
     -webkit-clip-path: polygon(0 0, 100% 0, 100% 92%, 0% 100%);
@@ -1836,11 +1840,8 @@ margin-top: 25px;
 .widget-entry-cards .widget-entry-card, .sga-ranking-list a{
   font-size: 16px
 }
-/* HACK: 入力エリア関連 */
-.search-edit, input[type="text"], input[type="password"],
- input[type="date"], input[type="datetime"], input[type="email"],
-  input[type="number"], input[type="search"], input[type="tel"],
-   input[type="time"], input[type="url"], textarea, select{
+/* HACK: 入力エリア関連（管理画面除外） */
+:is(.editor-visual-editor, body:not(.wp-admin)) :is(.search-edit, input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], textarea, select) {
      -webkit-appearance: none;
          -moz-appearance: none;
          -ms-appearance: none;
@@ -1854,13 +1855,13 @@ margin-top: 25px;
          font-size: 15px;
          color: #757575;
    }
-select:hover{
+:is(.editor-visual-editor, body:not(.wp-admin)) select:hover{
   transition: all 0.4s ease;
   transform: skewX(-10deg);
   cursor: pointer;
   background: #ff9de521;
 }
-input[type="checkbox"] {
+:is(.editor-visual-editor, body:not(.wp-admin)) input[type="checkbox"] {
   -webkit-appearance: none;
       -moz-appearance: none;
       -ms-appearance: none;
@@ -2377,3 +2378,4 @@ body{
   top: initial;
   bottom: 12%;
 }
+

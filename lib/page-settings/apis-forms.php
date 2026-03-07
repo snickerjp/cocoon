@@ -31,6 +31,14 @@ $help_text = __( '取得方法', THEME_NAME );
           </th>
           <td>
             <?php
+            echo '<strong class="cocoon-section-title">';
+            _e( 'PA-API', THEME_NAME );
+            echo '</strong>';
+
+            echo '<strong style="display: block; margin-bottom: 6px;">';
+            _e( '※こちらの設定は非推奨です。2026年1月31日以降PA-APIの仕様変更により、一部商品情報（価格等）が取得できなくなります。全機能を利用するには、Creators APIの設定を行ってください。', THEME_NAME );
+            echo '</strong>';
+
             generate_label_tag(OP_AMAZON_API_ACCESS_KEY_ID, __( 'アクセスキーID', THEME_NAME ));
             generate_amazon_badge_tag(__( 'Amazon必須', THEME_NAME ));
             generate_moshimo_badge_tag(__( 'もしも必須', THEME_NAME ));
@@ -45,6 +53,28 @@ $help_text = __( '取得方法', THEME_NAME );
             generate_textbox_tag(OP_AMAZON_API_SECRET_KEY, get_amazon_api_secret_key(), '');
             generate_tips_tag(__( 'Amazon APIを使用するためのシークレットキーを入力してください。', THEME_NAME ).get_help_page_tag('https://wp-cocoon.com/product-advertising-api/', $help_text));
 
+            echo '<hr class="cocoon-section-divider">';
+
+            echo '<strong class="cocoon-section-title">';
+            _e( 'Creators API', THEME_NAME );
+            echo '</strong>';
+            generate_label_tag(OP_AMAZON_CREATORS_API_CREDENTIAL_ID, __( '認証情報ID', THEME_NAME ));
+            generate_amazon_badge_tag(__( 'Amazon必須', THEME_NAME ));
+            generate_moshimo_badge_tag(__( 'もしも必須', THEME_NAME ));
+            echo '<br>';
+            generate_textbox_tag(OP_AMAZON_CREATORS_API_CREDENTIAL_ID, get_amazon_creators_api_credential_id(), '');
+            generate_tips_tag(__( 'Creators APIの認証情報IDを入力してください。', THEME_NAME ).get_help_page_tag('https://wp-cocoon.com/creators-api', $help_text));
+
+            generate_label_tag(OP_AMAZON_CREATORS_API_SECRET, __( 'シークレット', THEME_NAME ));
+            generate_amazon_badge_tag(__( 'Amazon必須', THEME_NAME ));
+            generate_moshimo_badge_tag(__( 'もしも必須', THEME_NAME ));
+            echo '<br>';
+            generate_textbox_tag(OP_AMAZON_CREATORS_API_SECRET, get_amazon_creators_api_secret(), '');
+            generate_tips_tag(__( 'Creators APIのシークレットを入力してください。', THEME_NAME ).get_help_page_tag('https://wp-cocoon.com/creators-api', $help_text));
+            generate_tips_tag(__( 'Creators APIとPA-APIの両方が設定されている場合、Creators APIが優先されます。', THEME_NAME ));
+
+            echo '<hr class="cocoon-section-divider">';
+
             generate_label_tag(OP_AMAZON_ASSOCIATE_TRACKING_ID, __( 'トラッキングID', THEME_NAME ));
             generate_amazon_badge_tag(__( 'Amazon必須', THEME_NAME ));
             generate_moshimo_badge_tag(__( 'もしも必須', THEME_NAME ));
@@ -52,8 +82,7 @@ $help_text = __( '取得方法', THEME_NAME );
             generate_textbox_tag(OP_AMAZON_ASSOCIATE_TRACKING_ID, get_amazon_associate_tracking_id(), __( 'yourid-22', THEME_NAME ));
             generate_tips_tag(__( 'AmazonアソシエイトのトラッキングIDを入力してください。', THEME_NAME ).get_help_page_tag('https://wp-cocoon.com/amazon-tracking-id/', $help_text));
 
-
-            echo '<div'.get_not_allowed_form_class(get_amazon_api_access_key_id() && get_amazon_api_secret_key() && get_amazon_associate_tracking_id()).'>';
+            echo '<div'.get_not_allowed_form_class((is_amazon_api_credentials_available() || is_amazon_creators_api_credentials_available()) && get_amazon_associate_tracking_id()).'>';
 
               generate_checkbox_tag(OP_AMAZON_ITEM_CATALOG_IMAGE_VISIBLE , is_amazon_item_catalog_image_visible(), __( 'カタログ写真を表示する', THEME_NAME ));
               generate_tips_tag(__( 'サムネイルとは別に商品に関連付けられている「カタログ写真（サンプル画像）」をボタン形式で全て表示します。ボタン状にマウスを乗せると大きな写真で表示されます。', THEME_NAME ).get_help_page_tag('https://wp-cocoon.com/amazon-shortcode-catalog-option/').get_image_preview_tag('https://im-cocoon.net/wp-content/uploads/catalog.gif'));
@@ -72,6 +101,7 @@ $help_text = __( '取得方法', THEME_NAME );
 
 
               generate_tips_tag(__( 'データー取得時点のAmazon販売ページでの値段を表示します。ショートコードでpriceオプションが設定されている場合は、そちらが優先されます。', THEME_NAME ).get_help_page_tag('https://wp-cocoon.com/amazon-link-price/').get_image_preview_tag('https://im-cocoon.net/wp-content/uploads/amazon-price.png'));
+              generate_tips_tag(__( '仕様変更によりPA-APIが利用されている場合は、価格は取得できません。価格を表示する場合は、Creators APIを利用してください。', THEME_NAME ));
 
 
               generate_checkbox_tag(OP_AMAZON_ITEM_DESCRIPTION_VISIBLE , is_amazon_item_description_visible(), __( '説明文を表示する', THEME_NAME ));
@@ -139,6 +169,9 @@ $help_text = __( '取得方法', THEME_NAME );
 
               generate_checkbox_tag(OP_RAKUTEN_ITEM_PRICE_VISIBLE , is_rakuten_item_price_visible(), __( '価格を表示する', THEME_NAME ));
               generate_tips_tag(__( 'データー取得時点の楽天市場販売ページでの値段を表示します。ショートコードでpriceオプションが設定されている場合は、そちらが優先されます。', THEME_NAME ).get_help_page_tag('https://wp-cocoon.com/rakuten-link-price/').get_image_preview_tag('https://im-cocoon.net/wp-content/uploads/rakuten-price.png'));
+
+              generate_checkbox_tag(OP_RAKUTEN_ITEM_DESCRIPTION_VISIBLE , is_rakuten_item_description_visible(), __( '説明文を表示する', THEME_NAME ));
+              generate_tips_tag(__( '楽天側に登録されている説明文を表示します（情報がない場合は表示されません）。descオプションが設定されている場合は、オプション値が優先して表示されます。', THEME_NAME ));
 
               generate_checkbox_tag(OP_RAKUTEN_ITEM_LOGO_VISIBLE , is_rakuten_item_logo_visible(), __( 'ロゴを表示する', THEME_NAME ));
               generate_tips_tag(__( '楽天商品リンクのロゴの表示切り替え。', THEME_NAME ).get_image_preview_tag('https://im-cocoon.net/wp-content/uploads/rakuten-logo.png'));
@@ -224,6 +257,7 @@ $help_text = __( '取得方法', THEME_NAME );
 
 
         <!-- DMM -->
+        <?php if (false) : ?>
         <tr>
           <th scope="row">
             <?php
@@ -252,6 +286,7 @@ $help_text = __( '取得方法', THEME_NAME );
             ?>
           </td>
         </tr>
+        <?php endif; ?>
 
 
         <!-- もしもアフィリエイト -->
@@ -305,6 +340,78 @@ $help_text = __( '取得方法', THEME_NAME );
     <a href="<?php _e( 'https://affiliate.amazon.co.jp/help/topic/t32/', THEME_NAME ) ?>" target="_blank" rel="noopener"><?php _e( 'Product Advertising API (PA-API) の利用ガイドライン', THEME_NAME ) ?></a><br>
     <a href="<?php _e( 'https://webservice.rakuten.co.jp/guide/rule', THEME_NAME ) ?>" target="_blank" rel="noopener"><?php _e( '楽天ウェブサービス規約', THEME_NAME ) ?></a>
   </p>
+
+  </div>
+</div>
+
+
+<!-- 商品リンクブロックの自動更新 -->
+<div id="product-block-auto-update" class="postbox">
+  <h2 class="hndle"><?php _e( '商品リンクブロックの自動更新', THEME_NAME ) ?></h2>
+  <div class="inside">
+
+    <p><?php _e( 'Amazon・楽天商品リンクブロックの商品情報をWP-Cronで定期的に自動更新する設定です。', THEME_NAME ) ?></p>
+
+    <table class="form-table">
+      <tbody>
+        <!-- 自動更新の有効/無効 -->
+        <tr>
+          <th scope="row">
+            <?php generate_label_tag(OP_PRODUCT_BLOCK_AUTO_UPDATE_ENABLE, __( '自動更新', THEME_NAME ) ); ?>
+          </th>
+          <td>
+            <?php
+            generate_checkbox_tag(
+              OP_PRODUCT_BLOCK_AUTO_UPDATE_ENABLE,
+              is_product_block_auto_update_enable(),
+              __( '商品リンクブロックの情報を自動的に定期更新する', THEME_NAME )
+            );
+            generate_tips_tag(__( 'ONにすると、下記の更新間隔で全投稿・固定ページのAmazon・楽天商品リンクブロックを自動更新します。OFFにするとスケジュールが解除されます。', THEME_NAME ));
+            ?>
+
+            <?php
+            // 自動更新がONのときのみ更新間隔を表示
+            echo '<div' . get_not_allowed_form_class(is_product_block_auto_update_enable(), true) . '>';
+              $interval_options = array(
+                'weekly'            => __( '毎週', THEME_NAME ),
+                'cocoon_biweekly'   => __( '2週間ごと（推奨）', THEME_NAME ),
+                'cocoon_monthly'    => __( '1ヶ月ごと', THEME_NAME ),
+                'cocoon_quarterly'  => __( '3ヶ月ごと', THEME_NAME ),
+              );
+              generate_radiobox_tag(
+                OP_PRODUCT_BLOCK_AUTO_UPDATE_INTERVAL,
+                $interval_options,
+                get_product_block_auto_update_interval(),
+                __( '更新間隔', THEME_NAME )
+              );
+              generate_tips_tag(__( '更新間隔が短いほどAPIのリクエスト数が増えます。Amazon Creators APIのリクエスト制限にご注意ください。', THEME_NAME ));
+
+              // 1回のCronで処理する投稿数
+              $batch_size_options = array(
+                '10'  => __( '10投稿', THEME_NAME ),
+                '20'  => __( '20投稿', THEME_NAME ),
+                '30'  => __( '30投稿', THEME_NAME ),
+                '40'  => __( '40投稿', THEME_NAME ),
+                '50'  => __( '50投稿', THEME_NAME ),
+                '60'  => __( '60投稿', THEME_NAME ),
+                '70'  => __( '70投稿', THEME_NAME ),
+                '80'  => __( '80投稿', THEME_NAME ),
+                '90'  => __( '90投稿', THEME_NAME ),
+                '100' => __( '100投稿', THEME_NAME ),
+              );
+              generate_selectbox_tag(
+                OP_PRODUCT_BLOCK_AUTO_UPDATE_BATCH_SIZE,
+                $batch_size_options,
+                (string)get_product_block_auto_update_batch_size(),
+                __( '1回あたりの処理投稿数', THEME_NAME )
+              );
+              generate_tips_tag(__( '1回のCron実行で処理する投稿数です。投稿数が多いサイトでは大きめの値にしてください。ただし、1投稿あたりのブロック数が多いほどAPIリクエストも増えます。', THEME_NAME ));
+            echo '</div>';
+            ?>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
   </div>
 </div>

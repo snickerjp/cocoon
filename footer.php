@@ -36,6 +36,9 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
       cocoon_template_part('tmp/breadcrumbs-page');
     } ?>
 
+    <?php //フッター前アクションフック
+    do_action('cocoon_footer_before'); ?>
+
     <footer id="footer" class="footer footer-container nwa" itemscope itemtype="https://schema.org/WPFooter">
 
       <div id="footer-in" class="footer-in wrap cf">
@@ -45,18 +48,9 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
           is_active_sidebar('footer-center') ||
           is_active_sidebar('footer-right') )  ): ?>
           <div class="footer-widgets cf">
-             <div class="footer-left">
-             <?php if ( function_exists('dynamic_sidebar') && dynamic_sidebar('footer-left') ) : else : ?>
-             <?php endif; ?>
-             </div>
-             <div class="footer-center">
-             <?php if ( function_exists('dynamic_sidebar') && dynamic_sidebar('footer-center') ) : else : ?>
-             <?php endif; ?>
-             </div>
-             <div class="footer-right">
-             <?php if ( function_exists('dynamic_sidebar') && dynamic_sidebar('footer-right') ) : else : ?>
-             <?php endif; ?>
-             </div>
+             <div class="footer-left"><?php   if ( function_exists('dynamic_sidebar') && dynamic_sidebar('footer-left') )   : else : ?><?php endif; ?></div>
+             <div class="footer-center"><?php if ( function_exists('dynamic_sidebar') && dynamic_sidebar('footer-center') ) : else : ?><?php endif; ?></div>
+             <div class="footer-right"><?php  if ( function_exists('dynamic_sidebar') && dynamic_sidebar('footer-right') )  : else : ?><?php endif; ?></div>
           </div>
         <?php endif; ?>
 
@@ -75,6 +69,9 @@ if ( !defined( 'ABSPATH' ) ) exit; ?>
       </div>
 
     </footer>
+
+    <?php //フッター後アクションフック
+    do_action('cocoon_footer_after'); ?>
 
     <?php //管理者用パネル
     cocoon_template_part('tmp/admin-panel'); ?>

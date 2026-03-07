@@ -9,7 +9,11 @@ import { THEME_NAME, BLOCK_CLASS } from '../../helpers';
 
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { RichText, InspectorControls } from '@wordpress/block-editor';
+import {
+  RichText,
+  InspectorControls,
+  useBlockProps,
+} from '@wordpress/block-editor';
 const { PanelBody, SelectControl, BaseControl, ToggleControl } = wp.components;
 import { Fragment } from '@wordpress/element';
 const DEFAULT_MSG = __( 'マイクロコピーバルーン', THEME_NAME );
@@ -21,6 +25,7 @@ function getCircleClass( isCircle ) {
 }
 
 registerBlockType( 'cocoon-blocks/micro-balloon-1', {
+  apiVersion: 3,
   title: __( 'マイクロバルーン', THEME_NAME ),
   icon: 'dismiss',
   category: THEME_NAME + '-old',
@@ -48,7 +53,7 @@ registerBlockType( 'cocoon-blocks/micro-balloon-1', {
       default: false,
     },
   },
-  supports: {
+  supports: { html: false,
     align: [ 'left', 'center', 'right' ],
     customClassName: true,
     inserter: false,
@@ -76,7 +81,7 @@ registerBlockType( 'cocoon-blocks/micro-balloon-1', {
                 },
               ] }
               __nextHasNoMarginBottom={ true }
-              __next40pxDefaultSize={ true }  // 新しいデフォルトサイズに対応
+              __next40pxDefaultSize={ true } // 新しいデフォルトサイズに対応
             />
 
             <SelectControl
@@ -106,10 +111,11 @@ registerBlockType( 'cocoon-blocks/micro-balloon-1', {
                 },
               ] }
               __nextHasNoMarginBottom={ true }
-              __next40pxDefaultSize={ true }  // 新しいデフォルトサイズに対応
+              __next40pxDefaultSize={ true } // 新しいデフォルトサイズに対応
             />
 
             <ToggleControl
+              __nextHasNoMarginBottom={ true }
               label={ __( '円形にする', THEME_NAME ) }
               checked={ isCircle }
               onChange={ ( value ) => setAttributes( { isCircle: value } ) }
@@ -139,19 +145,20 @@ registerBlockType( 'cocoon-blocks/micro-balloon-1', {
   save( { attributes } ) {
     const { content, style, isCircle, color } = attributes;
     //let circleClass = isCircle ? ' mc-circle' : '';
+    const blockProps = useBlockProps.save( {
+      className:
+        'micro-balloon' +
+        style +
+        color +
+        getCircleClass( isCircle ) +
+        MICRO_COPY_CLASS +
+        BLOCK_CLASS,
+    } );
     return (
-      <div
-        className={
-          'micro-balloon' +
-          style +
-          color +
-          getCircleClass( isCircle ) +
-          MICRO_COPY_CLASS +
-          BLOCK_CLASS
-        }
-      >
+      <div { ...blockProps }>
         <RichText.Content value={ content } />
       </div>
     );
   },
 } );
+

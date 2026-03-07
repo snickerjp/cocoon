@@ -95,9 +95,12 @@ endif;
 if ( !function_exists( 'get_the_category_links' ) ):
 function get_the_category_links(){
   $categories = null;
-  foreach((get_the_category()) as $category){
-    $style = null;
-    $categories .= '<a class="cat-link cat-link-'.$category->cat_ID.'" href="'.get_category_link( $category->cat_ID ).'"'.$style.'><span class="fa fa-folder cat-icon tax-icon" aria-hidden="true"></span>'.$category->cat_name.'</a>';
+  $category_list = get_the_category();
+  if (is_array($category_list)) {
+    foreach($category_list as $category){
+      $style = null;
+      $categories .= '<a class="cat-link cat-link-'.$category->cat_ID.'" href="'.get_category_link( $category->cat_ID ).'"'.$style.'><span class="fa fa-folder cat-icon tax-icon" aria-hidden="true"></span>'.$category->cat_name.'</a>';
+    }
   }
   return $categories;
 }
@@ -253,11 +256,14 @@ endif;
 //コメントが許可されているか
 if ( !function_exists( 'is_comment_open' ) ):
 function is_comment_open(){
-  global $post;
-  if ( isset($post->comment_status) ) {
-    return $post->comment_status == 'open';
-  }
-  return false;
+  // global $post;
+  // if ( isset($post->comment_status) ) {
+  //   return $post->comment_status == 'open';
+  // }
+  // return false;
+
+  // コードの簡略化
+  return comments_open();
 }
 endif;
 
@@ -381,6 +387,22 @@ if ( !function_exists( 'update_theme_option' ) ):
 function update_theme_option($option_name){
   $opt_val = isset($_POST[$option_name]) ? $_POST[$option_name] : '';
   set_theme_mod($option_name, $opt_val);
+}
+endif;
+
+// テーマオプション用：配列データの各要素を再帰的にサニタイズする
+if ( !function_exists( 'cocoon_sanitize_option_array' ) ):
+function cocoon_sanitize_option_array($array) {
+  $sanitized = array();
+  foreach ($array as $key => $value) {
+    $key = sanitize_text_field($key);
+    if (is_array($value)) {
+      $sanitized[$key] = cocoon_sanitize_option_array($value);
+    } else {
+      $sanitized[$key] = sanitize_text_field($value);
+    }
+  }
+  return $sanitized;
 }
 endif;
 
@@ -512,13 +534,13 @@ function get_jquery_core_url($ver){
   $url = null;
   switch ($ver) {
     case '3':
-      $url = 'https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js';
+      $url = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js';
       break;
     case '2':
-      $url = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js';
+      $url = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js';
       break;
     case '1':
-      $url = 'https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js';
+      $url = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js';
       break;
   }
   return $url;
@@ -723,12 +745,20 @@ endif;
 //Lightboxの読み込み
 if ( !function_exists( 'wp_enqueue_lightbox' ) ):
 function wp_enqueue_lightbox(){
-  //_v(get_image_zoom_effect());
  if ( ((is_lightbox_effect_enable() && is_lightboxable_page()) || is_admin_php_page()) ) {
     //Lightboxスタイルの呼び出し
     wp_enqueue_style( 'lightbox-style', get_cocoon_template_directory_uri() . '/plugins/lightbox2/dist/css/lightbox.min.css' );
     //Lightboxスクリプトの呼び出し
     wp_enqueue_script( 'lightbox-js', get_cocoon_template_directory_uri() . '/plugins/lightbox2/dist/js/lightbox.min.js', array( 'jquery' ), false, true  );
+
+    $data = '
+            (function($){
+              lightbox.option({
+                "disableScrolling": true
+              });
+            })(jQuery);
+          ';
+    wp_add_inline_script('lightbox-js', $data);
   }
 }
 endif;
@@ -937,39 +967,9 @@ function wp_enqueue_scrollhint(){
 }
 endif;
 
-//clingifyの読み込み
+//stickyfillの読み込み（IEのposition:sticky;対応用の関数だったが、IEコート終了により削除。ただ独自カスタマイズでエラーとならないようにするために外枠だけ残す：後で消す）
 if ( !function_exists( 'wp_enqueue_stickyfill' ) ):
 function wp_enqueue_stickyfill(){
-  $browser_info = get_browser_info();
-  $is_ie = $browser_info['browser_name'] == 'IE';
-  $is_edge_version_under_16 = ($browser_info['browser_name'] == 'IE') && (intval($browser_info['browser_version']) < 16);
-  //グローバルナビ追従が有効な時
-  if ( is_scrollable_sidebar_enable() || is_scrollable_main_enable() ) {
-    //stickyfillスクリプトの呼び出し
-    wp_enqueue_script( 'stickyfill-js', get_cocoon_template_directory_uri() . '/plugins/stickyfill/dist/stickyfill.min.js', array( 'jquery' ), false, true  );
-
-    //position: sticky;に対応していないブラウザの場合はstickyfillを実行
-    if (is_scrollable_sidebar_enable() && ($is_ie || $is_edge_version_under_16)) {
-      $data = '
-              (function($){
-                var elements = $(".sidebar-scroll");
-                Stickyfill.add(elements);
-              })(jQuery);
-            ';
-      wp_add_inline_script( 'stickyfill-js', $data, 'after' );
-    }
-
-    if (is_scrollable_main_enable() && ($is_ie || $is_edge_version_under_16)) {
-      $data = '
-              (function($){
-                var elements = $(".main-scroll");
-                Stickyfill.add(elements);
-              })(jQuery);
-            ';
-      wp_add_inline_script( 'stickyfill-js', $data, 'after' );
-    }
-
-  }
 }
 endif;
 
@@ -1050,10 +1050,17 @@ endif;
 //Google Fontsの読み込み（Googleフォント以外のサイトフォント含む）
 if ( !function_exists( 'wp_enqueue_google_fonts' ) ):
 function wp_enqueue_google_fonts(){
-  if (is_admin() || (!is_site_font_family_local() && !is_google_font_lazy_load_enable())) {
+  // ローカルフォントの場合は何もしない
+  if (is_site_font_family_local()) {
+    return ;
+  }
+
+  // 管理ページの時はフォントレイジーロードがいうこんな時もCSSで読み込む
+  if (is_admin() || !is_google_font_lazy_load_enable()) {
     wp_enqueue_style( 'site-font-'.get_site_font_source(), get_site_font_source_url() );
   }
-  if (!is_admin() && !is_site_font_family_local() && is_google_font_lazy_load_enable() && !get_site_font_family_pretendard()) {
+
+  if (!is_admin() && is_google_font_lazy_load_enable() && !get_site_font_family_pretendard()) {
     $code = "window.WebFontConfig = {
       google: { families: ['".get_site_font_source_family().get_site_font_source_weight()."'] },
       active: function() {
@@ -1505,7 +1512,7 @@ endif;
 if ( !function_exists( 'is_admin_php_page' ) ):
 function is_admin_php_page(){
   global $pagenow;
-  $is_theme_settings = isset($_GET['page']) && $_GET['page'] == THEME_SETTINGS_PAFE;
+  $is_theme_settings = isset($_GET['page']) && $_GET['page'] == THEME_SETTINGS_PAGE;
   return $pagenow == 'admin.php' && $is_theme_settings;
 }
 endif;
@@ -1596,7 +1603,8 @@ endif;
 if ( !function_exists( 'get_domain_name' ) ):
 function get_domain_name($url){
   if (empty($url)) return;
-  return parse_url($url, PHP_URL_HOST);
+  $host = wp_parse_url($url, PHP_URL_HOST);
+  return $host ? $host : null;
 }
 endif;
 
@@ -2040,8 +2048,7 @@ endif;
 //リダイレクト
 if ( !function_exists( 'redirect_to_url' ) ):
 function redirect_to_url($url){
-  header( "HTTP/1.1 301 Moved Permanently" );
-  header( "location: " . $url  );
+  wp_redirect($url, 301);
   exit;
 }
 endif;
@@ -2073,10 +2080,21 @@ function get_current_db_date(){
 }
 endif;
 
-//アクセステーブル用の現在の日時文字列（$days日前）
+//アクセステーブル用の現在の日時文字列（$days日分の期間開始日）
 if ( !function_exists( 'get_current_db_date_before' ) ):
 function get_current_db_date_before($days){
-  return date_i18n('Y-m-d', strtotime(current_time('Y-m-d').' -'.$days.' day'));
+  // popular_list などの「days=◯日分」の指定に合わせて、
+  // 「今日を含めて $days 日分」を取得できるようにする。
+  // 例）days=1 → 今日のみ, days=7 → 今日＋過去6日間（7日分）
+  $days = intval($days);
+
+  // 1日以下は「今日」スタート
+  if ( $days <= 1 ) {
+    return get_current_db_date();
+  }
+
+  // 2日以上は「$days - 1 日前」を開始日とする
+  return date_i18n('Y-m-d', strtotime(current_time('Y-m-d').' -'.($days - 1).' day'));
 }
 endif;
 
@@ -2123,7 +2141,12 @@ function get_file_contents($file){
 endif;
 
 if (!defined('FS_CHMOD_FILE')) {
-  define( 'FS_CHMOD_FILE', ( fileperms( ABSPATH . 'index.php' ) & 0777 | 0644 ) );
+  $abspath_index = ABSPATH . 'index.php';
+  if (file_exists($abspath_index)) {
+    define( 'FS_CHMOD_FILE', ( fileperms( $abspath_index ) & 0777 | 0644 ) );
+  } else {
+    define( 'FS_CHMOD_FILE', 0644 );
+  }
 }
 //ファイル内容の出力
 if ( !function_exists( 'wp_filesystem_put_contents' ) ):
@@ -2183,7 +2206,9 @@ endif;
 //現在表示しているページのURL
 if ( !function_exists( 'get_requested_url' ) ):
 function get_requested_url(){
-  return (!is_ssl() ? 'http://' : 'https://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+  $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+  $uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+  return (!is_ssl() ? 'http://' : 'https://') . $host . $uri;
 }
 endif;
 
@@ -2604,7 +2629,7 @@ endif;
 if ( !function_exists( 'get_url_params' ) ):
 function get_url_params($url){
   $url = ampersand_urldecode($url);
-  $parse_url = parse_url($url);//URLを配列に分解
+  $parse_url = wp_parse_url($url);//URLを配列に分解
   if (isset($parse_url['query'])) {
     $query = $parse_url['query'];//URLの中からクエリ部分を取り出す
     parse_str($query, $arr);//クエリを配列にする
@@ -3110,8 +3135,8 @@ endif;
 //本文を読むのにかかる時間
 if ( !function_exists( 'get_time_to_content_read' ) ):
 function get_time_to_content_read($content){
-  $count = mb_strlen(strip_tags($content));
-  if ($count == 0) {
+  $count = get_post_content_word_count($content);
+  if ($count === 0) {
     return 0;
   }
   $minutes = floor($count / 600) + 1;
@@ -3670,7 +3695,8 @@ endif;
 if ( !function_exists( 'get_postmeta_value_enable_post_ids' ) ):
 function get_postmeta_value_enable_post_ids($meta_key){
   global $wpdb;
-  $res = $wpdb->get_results("SELECT DISTINCT GROUP_CONCAT(post_id) AS ids FROM {$wpdb->prefix}postmeta WHERE (meta_key = '{$meta_key}') AND (meta_value = 1)");
+  $query = $wpdb->prepare("SELECT DISTINCT GROUP_CONCAT(post_id) AS ids FROM `{$wpdb->prefix}postmeta` WHERE (meta_key = %s) AND (meta_value = 1)", $meta_key);
+  $res = $wpdb->get_results($query);
   $result = (isset($res[0]) && $res[0]->ids) ? explode(',', $res[0]->ids) : array();
   return $result;
 }
@@ -3680,7 +3706,8 @@ endif;
 if ( !function_exists( 'get_termmeta_value_enable_ids' ) ):
 function get_termmeta_value_enable_ids($meta_key){
   global $wpdb;
-  $res = $wpdb->get_results("SELECT DISTINCT GROUP_CONCAT(term_id) AS ids FROM {$wpdb->prefix}termmeta WHERE (meta_key = '{$meta_key}') AND (meta_value = 1)");
+  $query = $wpdb->prepare("SELECT DISTINCT GROUP_CONCAT(term_id) AS ids FROM `{$wpdb->prefix}termmeta` WHERE (meta_key = %s) AND (meta_value = 1)", $meta_key);
+  $res = $wpdb->get_results($query);
   $ids = (isset($res[0]) && $res[0]->ids) ? explode(',', $res[0]->ids) : array();
   $result = array();
   if ($meta_key === 'the_category_noindex') {
@@ -3764,16 +3791,9 @@ function px_to_int($px){
 }
 endif;
 
-// //デバッグ用の関数
-// if ( !function_exists( '_v' ) ):
-// function _v($v){
-//   do_action( 'qm/debug', $v );
-// }
-// endif;
-
 //著者プロフィールページのURLを取得
-if ( !function_exists( 'get_the_auther_profile_page_url' ) ):
-function get_the_auther_profile_page_url(){
+if ( !function_exists( 'get_author_profile_page_url' ) ):
+function get_author_profile_page_url(){
   if (is_post_author_visible() && get_the_author()) {
     $author_id = get_the_author_meta( 'ID' );
     $profile_page_url = get_the_author_profile_page_url($author_id);
@@ -3788,10 +3808,16 @@ function get_the_auther_profile_page_url(){
   return $url;
 }
 endif;
+//関数のエイリアス（後から削除する可能性あり）
+if ( !function_exists( 'get_the_auther_profile_page_url' ) ):
+function get_the_auther_profile_page_url(){
+  return get_author_profile_page_url();
+}
+endif;
 
 //著者プロフィール名前を取得
-if ( !function_exists( 'get_the_auther_profile_name' ) ):
-function get_the_auther_profile_name(){
+if ( !function_exists( 'get_author_profile_name' ) ):
+function get_author_profile_name(){
   if (is_post_author_visible() && get_the_author()) {
     $name = get_the_author();
   } else {
@@ -3800,6 +3826,13 @@ function get_the_auther_profile_name(){
   return $name;
 }
 endif;
+//関数のエイリアス（後から削除する可能性あり）
+if ( !function_exists( 'get_the_auther_profile_name' ) ):
+function get_the_auther_profile_name(){
+  return get_author_profile_name();
+}
+endif;
+
 
 //フロントページタイプの取得
 if ( !function_exists( 'get_front_page_type_class' ) ):
@@ -4010,4 +4043,21 @@ function get_google_analytics_script(){}
 endif;
 if ( !function_exists( 'is_google_analytics_script_gtag_js' ) ):
 function is_google_analytics_script_gtag_js(){}
+endif;
+
+// 本文の文字数を取得
+if ( !function_exists( 'get_post_content_word_count' ) ):
+function get_post_content_word_count($content) {
+  // HTMLタグを削除
+  $text = strip_tags($content);
+
+  // HTMLエンティティを実体化
+  $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+  // 改行を完全に削除
+  $text = str_replace(["\r", "\n"], '', $text);
+
+  // 文字数を取得
+  return mb_strlen($text);
+}
 endif;

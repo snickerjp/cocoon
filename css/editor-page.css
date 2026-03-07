@@ -84,6 +84,7 @@
   --cocoon-box-border-color: #47585c;
   --cocoon-sns-color: var(--cocoon-text-color);
   --card-ratio: 16/9;
+  --cocoon--header-container--position-offset: 0px;
 }
 
 .faw::before {
@@ -128,4 +129,9 @@ textarea[name=the_page_memo] {
 
 .uploded-thumbnail img {
   max-width: 100%;
+}
+
+.help-page, .help-page:hover {
+  color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+  opacity: 1;
 }

@@ -180,7 +180,8 @@ endif;
 define('OP_RETINA_THUMBNAIL_ENABLE', 'retina_thumbnail_enable');
 if ( !function_exists( 'is_retina_thumbnail_enable' ) ):
 function is_retina_thumbnail_enable(){
-  return get_theme_option(OP_RETINA_THUMBNAIL_ENABLE);
+  // return get_theme_option(OP_RETINA_THUMBNAIL_ENABLE);
+  return get_theme_option(OP_RETINA_THUMBNAIL_ENABLE, 1);
 }
 endif;
 
@@ -200,7 +201,10 @@ if ( !function_exists( 'get_image_sized_url' ) ):
 function get_image_sized_url($url, $w, $h){
   $ext = get_extention($url);
   $sized_url = str_replace('.'.$ext, '-'.$w.'x'.$h.'.'.$ext, $url);
-  return $sized_url;
+  if (!file_exists(url_to_local($sized_url))) {
+    $sized_url = $url;
+  }
+  return apply_filters('get_image_sized_url', $sized_url, $url, $w, $h);
 }
 endif;
 if ( !function_exists( 'get_no_image_large_url' ) ):
@@ -388,7 +392,7 @@ function get_attachment_id_from_url($url) {
   // 添付ファイルURLからIDを取得
   $attachment_id = $wpdb->get_var(
       $wpdb->prepare(
-          "SELECT ID FROM $wpdb->posts WHERE guid = %s AND post_type = 'attachment'",
+          "SELECT ID FROM `{$wpdb->posts}` WHERE guid = %s AND post_type = 'attachment'",
           $url
       )
   );
@@ -412,3 +416,4 @@ function get_caption_from_image_url($image_url) {
   return '';
 }
 endif;
+

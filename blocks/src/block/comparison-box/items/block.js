@@ -24,13 +24,13 @@ const TEMPLATE = [ 'cocoon-blocks/iconlist-box' ];
 
 //左カラム
 registerBlockType( 'cocoon-blocks/comparison-left', {
-  apiVersion: 2,
+  apiVersion: 3,
   title: __( '左側', THEME_NAME ),
   parent: [ 'cocoon-blocks/comparison-box' ],
   icon: <FontAwesomeIcon icon={ faSquare } />,
   category: 'cocoon-block',
   description: __( '比較ボックスの左。', THEME_NAME ),
-  supports: {
+  supports: { html: false,
     inserter: false,
   },
 
@@ -50,13 +50,13 @@ registerBlockType( 'cocoon-blocks/comparison-left', {
 
 //右カラム
 registerBlockType( 'cocoon-blocks/comparison-right', {
-  apiVersion: 2,
+  apiVersion: 3,
   title: __( '右側', THEME_NAME ),
   parent: [ 'cocoon-blocks/comparison-box' ],
   icon: <FontAwesomeIcon icon={ faSquare } />,
   category: 'cocoon-block',
   description: __( '比較ボックスの右。', THEME_NAME ),
-  supports: {
+  supports: { html: false,
     inserter: false,
   },
 
@@ -73,3 +73,4 @@ registerBlockType( 'cocoon-blocks/comparison-right', {
     return <InnerBlocks.Content />;
   },
 } );
+

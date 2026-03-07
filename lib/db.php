@@ -62,18 +62,48 @@ endif;
 
 //汎用的なテーブルからレコードの取得
 if ( !function_exists( 'get_db_table_records' ) ):
-function get_db_table_records( $table_name, $column, $keyword = null, $order_by = null){
+function get_db_table_records( $table_name, $column, $keyword = null, $order_by = null, $limit = null, $offset = null){
   global $wpdb;
   $where = null;
   if ($column && $keyword) {
     $where = $wpdb->prepare(' WHERE '.$column.' LIKE %s', '%'.$keyword.'%');
   }
   if ($order_by) {
-    $order_by = esc_sql(' ORDER BY '.$order_by);
+    // 許可されたORDER BY値のホワイトリスト（SQLインジェクション対策）
+    // generate_sort_options_tag()の選択肢と各ファイルのデフォルト値を網羅
+    $allowed_order = array(
+      'title',                    // タイトル昇順（TinyMCEドロップダウン + ソート選択）
+      'title DESC',               // タイトル降順
+      'title ASC',                // タイトル昇順（明示的）
+      'date',                     // 作成日昇順
+      'date DESC',                // 作成日降順（テンプレート/アフィリエイトのデフォルト）
+      'date DESC, id DESC',       // 作成日降順+ID降順（ランキング/吹き出しのデフォルト）
+      'date ASC, id ASC',         // 作成日昇順+ID昇順
+      'modified',                 // 編集日昇順
+      'modified DESC, id DESC',   // 編集日降順
+      'id DESC',                  // ID降順
+      'id ASC',                   // ID昇順
+    );
+    // ホワイトリストに含まれない場合はデフォルト値を使用
+    if (!in_array($order_by, $allowed_order, true)) {
+      $order_by = 'date DESC, id DESC';
+    }
+    $order_by = ' ORDER BY ' . $order_by;
   }
-  $query = "SELECT * FROM {$table_name}".
+
+  $limit_query = '';
+  if ($limit) {
+    if ($offset) {
+      $limit_query = $wpdb->prepare(' LIMIT %d, %d', $offset, $limit);
+    } else {
+      $limit_query = $wpdb->prepare(' LIMIT %d', $limit);
+    }
+  }
+
+  $query = "SELECT * FROM `{$table_name}`".
               $where.
-              $order_by;
+              $order_by.
+              $limit_query;
 
   $records = $wpdb->get_results( $query );
   //_v($query);
@@ -88,7 +118,7 @@ if ( !function_exists( 'uninstall_db_table' ) ):
 function uninstall_db_table($table_name) {
   global $wpdb;
 
-  $wpdb->query('DROP TABLE IF EXISTS '.$table_name);
+  $wpdb->query('DROP TABLE IF EXISTS `'.$table_name.'`');
 }
 endif;
 
@@ -98,7 +128,7 @@ if ( !function_exists( 'get_db_table_record' ) ):
 function get_db_table_record( $table_name, $id ) {
   global $wpdb;
 
-  $query = $wpdb->prepare("SELECT * FROM {$table_name}  WHERE id = %d", $id);
+  $query = $wpdb->prepare("SELECT * FROM `{$table_name}`  WHERE id = %d", $id);
 
   $record = $wpdb->get_row( $query );
 
@@ -124,7 +154,7 @@ endif;
 if ( !function_exists( 'delete_db_cache_records' ) ):
 function delete_db_cache_records( $option_name_part ) {
   global $wpdb;
-  $query = "DELETE FROM {$wpdb->options} WHERE option_name LIKE '%{$option_name_part}%';";
+  $query = $wpdb->prepare("DELETE FROM `{$wpdb->options}` WHERE option_name LIKE %s", '%' . $wpdb->esc_like($option_name_part) . '%');
   return $wpdb->query($query);
 }
 endif;
@@ -149,9 +179,24 @@ endif;
 if ( !function_exists( 'get_db_table_record_count' ) ):
 function get_db_table_record_count($table){
   global $wpdb;
-  $query = "SELECT COUNT(id) FROM {$table}";
+  $query = "SELECT COUNT(id) FROM `{$table}`";
   $count = $wpdb->get_var( $query );
   //var_dump($count);
+
+  return intval($count);
+}
+endif;
+
+//レコード数（検索条件付き）を取得
+if ( !function_exists( 'get_db_table_record_count_with_keyword' ) ):
+function get_db_table_record_count_with_keyword($table, $column, $keyword = null){
+  global $wpdb;
+  $where = '';
+  if ($column && $keyword) {
+    $where = $wpdb->prepare(' WHERE '.$column.' LIKE %s', '%'.$keyword.'%');
+  }
+  $query = "SELECT COUNT(id) FROM `{$table}`{$where}";
+  $count = $wpdb->get_var( $query );
 
   return intval($count);
 }
@@ -168,7 +213,8 @@ endif;
 if ( !function_exists( 'is_db_table_exist' ) ):
 function is_db_table_exist($table){
   global $wpdb; //グローバル変数「$wpdb」を使うよっていう記述
-  $table_search = $wpdb->get_row("SHOW TABLES FROM " . DB_NAME . " LIKE '" . $table . "'"); //「$wpdb->posts」テーブルがあるかどうか探す
+  $query = $wpdb->prepare("SHOW TABLES FROM `" . DB_NAME . "` LIKE %s", $table); //「$wpdb->posts」テーブルがあるかどうか探す
+  $table_search = $wpdb->get_row($query);
   if( $wpdb->num_rows == 1 ){ //結果を判別して条件分岐
     //テーブルがある場合の処理
     return true;

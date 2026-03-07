@@ -171,11 +171,6 @@ class Skin_Silk_Functions {
       define('SILK_SWITCH', false);
     }
 
-    //見出しナンバリング
-    if (!defined('SILK_COUNTER')) {
-      define('SILK_COUNTER', true);
-    }
-
     //縦型ブログカード
     if (!defined('SILK_BLOGCARD')) {
       define('SILK_BLOGCARD', true);
@@ -195,17 +190,16 @@ class Skin_Silk_Functions {
 
     //ブログカード
     add_filter('get_blogcard_thumbnail_size', [$this, 'blogcard_size']);
-    add_filter('external_blogcard_amazon_image_width', [$this, 'blogcard_width']);
-    add_filter('external_blogcard_image_width', [$this, 'blogcard_width']);
-    add_filter('external_blogcard_amazon_image_height', [$this, 'blogcard_height']);
-    add_filter('external_blogcard_image_height', [$this, 'blogcard_height']);
+    // add_filter('external_blogcard_amazon_image_width', [$this, 'blogcard_width']);
+    // add_filter('external_blogcard_image_width', [$this, 'blogcard_width']);
+    // add_filter('external_blogcard_amazon_image_height', [$this, 'blogcard_height']);
+    // add_filter('external_blogcard_image_height', [$this, 'blogcard_height']);
 
     //ブロックカスタマイズ
     add_action('enqueue_block_editor_assets', [$this, 'editor_assets'], 11);
     add_action('admin_menu', [$this, 'reusable_menu']);
     add_filter('image_size_names_choose', [$this, 'image_size']);
     add_action('init', [$this, 'block_pattern']);
-    add_filter('render_block_core/heading', [$this, 'blocks_heading'], 10, 2);
     add_filter('render_block_core/group', [$this, 'blocks_group'], 10, 2);
     add_filter('render_block_cocoon-blocks/toggle-box-1', [$this, 'blocks_toggle'], 10, 2);
     add_filter('render_block_cocoon-blocks/faq', [$this, 'blocks_faq'], 10, 2);
@@ -294,7 +288,7 @@ class Skin_Silk_Functions {
     #index-tab-4:checked ~ .index-tab-buttons .index-tab-button[for="index-tab-4"],
     .cat-label,
     .pagination .current,
-    .article h2 span::after,
+    .article h2::after,
     blockquote p:first-of-type::before,
     .blogcard-label,
     .timeline-item::before,
@@ -311,7 +305,7 @@ class Skin_Silk_Functions {
     .slick-dots li button:before,
     .slick-dots li.slick-active button:before,
     .archive-title span,
-    .article h4 > span::before,
+    .article h4::before,
     .article h5,
     .sidebar h2,
     .sidebar h3,
@@ -410,23 +404,25 @@ class Skin_Silk_Functions {
     .toc,
     .box-menu {
       background: '.$dark_white.';
-    }
-
-    .search-edit,
-    input[type="text"],
-    input[type="password"],
-    input[type="date"],
-    input[type="datetime"],
-    input[type="email"],
-    input[type="number"],
-    input[type="search"],
-    input[type="tel"],
-    input[type="time"],
-    input[type="url"],
-    textarea,
-    select {
-      background: '.$dark_black.';
     }';
+
+    if (!is_admin()) {
+      echo '.search-edit,
+      input[type="text"],
+      input[type="password"],
+      input[type="date"],
+      input[type="datetime"],
+      input[type="email"],
+      input[type="number"],
+      input[type="search"],
+      input[type="tel"],
+      input[type="time"],
+      input[type="url"],
+      textarea,
+      select {
+        background: '.$dark_black.';
+      }';
+    }
 
     //文字色
     $site_color = get_site_text_color() ?: '#484848';
@@ -665,11 +661,13 @@ class Skin_Silk_Functions {
     .is-style-text .a-wrap,
     .is-style-text .a-wrap:hover {
       color: '.$link_color.';
-    }
-
-    input[type="submit"] {
-      background: '.$link_color.';
     }';
+
+    if (!is_admin()) {
+      echo 'input[type="submit"] {
+        background: '.$link_color.';
+      }';
+    }
 
     //モバイルボタン
     $mobile_background = get_header_background_color() ?: get_header_container_background_color() ?: '#fff';
@@ -706,7 +704,7 @@ class Skin_Silk_Functions {
       $font   = 'font-family: "Font Awesome 5 Free";';
       $weight = 'font-weight: 900;';
     }
-    echo '.article h4 > span::before,
+    echo '.article h4::before,
     blockquote p:first-of-type::before,
     ul.is-style-link li a::before,
     ol.is-style-link li a::before,
@@ -733,18 +731,6 @@ class Skin_Silk_Functions {
       .header-container.fixed-header {
         padding-top: 0;
         border-top: 3px solid '.$color.';
-      }';
-    }
-
-    //見出しカウント
-    if (SILK_COUNTER) {
-      echo '.entry-content {
-        counter-reset: h2;
-      }
-
-      .entry-content h2 > span::before {
-        content: counter(h2, decimal) ". ";
-        counter-increment: h2;
       }';
     }
 
@@ -1086,13 +1072,6 @@ class Skin_Silk_Functions {
     }
   }
 
-  //見出しブロック
-  public function blocks_heading($content, $block) {
-    $level   = array_key_exists('level', $block['attrs']) ? 'h'.strval($block['attrs']['level']) : 'h2';
-    $content = preg_replace('/<'.$level.'(.*?)>(.*?)<\/'.$level.'>/', '<'.$level.'$1><span>$2</span></'.$level.'>', $content);
-    return $content;
-  }
-
   //グループブロック
   public function blocks_group($content, $block) {
     if (array_key_exists('className', $block['attrs'])) {
@@ -1194,16 +1173,16 @@ class Skin_Silk_Functions {
       remove_filter('wp_tag_cloud', [$this, 'tag_cloud'], 11);
       remove_filter('the_author_box_name', [$this, 'author_box']);
       remove_filter('get_blogcard_thumbnail_size', [$this, 'blogcard_size']);
-      remove_filter('external_blogcard_amazon_image_width', [$this, 'blogcard_width']);
-      remove_filter('external_blogcard_image_width', [$this, 'blogcard_width']);
-      remove_filter('external_blogcard_amazon_image_height', [$this, 'blogcard_height']);
-      remove_filter('external_blogcard_image_height', [$this, 'blogcard_height']);
+      // remove_filter('external_blogcard_amazon_image_width', [$this, 'blogcard_width']);
+      // remove_filter('external_blogcard_image_width', [$this, 'blogcard_width']);
+      // remove_filter('external_blogcard_amazon_image_height', [$this, 'blogcard_height']);
+      // remove_filter('external_blogcard_image_height', [$this, 'blogcard_height']);
     }
   }
 
   //設定追加
   public function option_setting() {
-    $hook = get_plugin_page_hook('theme-backup', THEME_SETTINGS_PAFE);
+    $hook = get_plugin_page_hook('theme-backup', THEME_SETTINGS_PAGE);
     if (!is_null($hook)) {
       add_action($hook, [$this, 'option_field']);
     }
@@ -1240,8 +1219,6 @@ class Skin_Silk_Functions {
                       <input type="submit" class="button" value="設定の追加" />
                       <input type="hidden" name="<?php echo self::HIDDEN; ?>" value="<?php echo wp_create_nonce('skin-option'); ?>">
                       <?php generate_tips_tag('スキンのオプション設定が書かれたJSONファイルを選択し、「設定の追加」ボタンを押してください。JSONファイルの作成方法はファイル名を除き、スキン制御に従います。'.get_help_page_tag('https://wp-cocoon.com/option-json/')); ?>
-                      <p><span class="fa fa-arrow-right" aria-hidden="true"></span> <a href="https://dateqa.com/cocoon/#silk" target="_blank" rel="noopener">設定ファイルをダウンロードする</a></p>
-                      <p><span class="fa fa-arrow-right" aria-hidden="true"></span> <a href="https://dateqa.com/cocoon/#option" target="_blank" rel="noopener">オプションの詳しい設定方法を見る</a></p>
                     </form>
                   </td>
                 </tr>

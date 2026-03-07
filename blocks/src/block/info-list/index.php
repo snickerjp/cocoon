@@ -25,6 +25,7 @@ function render_block_cocoon_block_info_list($attributes, $content)
 		'frame' => $attributes['showFrame'] ? 1 : 0,
 		'divider' => $attributes['showDivider'] ? 1 : 0,
 		'modified' => $attributes['modified'] ? 1 : 0,
+		'comment' => $attributes['comment'] ? 1 : 0,
 	];
 
 	ob_start();
@@ -35,6 +36,7 @@ function render_block_cocoon_block_info_list($attributes, $content)
 	if (is_rest()) {
 		$html = replace_a_tags_to_span_tags($html);
 	}
+  $html = change_fa($html);
 	return $html;
 }
 

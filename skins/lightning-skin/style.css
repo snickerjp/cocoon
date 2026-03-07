@@ -19,8 +19,11 @@ body{
 	background-attachment: scroll;
 }
 
-#header-container{
+.header-container{
 	background-color: #faf7ef;
+}
+.hlt-top-menu-wrap .header-container{
+	background-color: #95e7a5;
 }
 
 #main{
@@ -736,3 +739,4 @@ a.prev-post:hover::before,a.next-post:hover::before{
 .menu-drawer li .sub-menu li{
 	margin-right: 0;
 }
+

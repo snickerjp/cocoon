@@ -79,10 +79,10 @@ function insert_custom_fields($post)
 
 
   </label>
-  <input id="fix_link" type="text" name="fix_link" value="<?php echo $fix_link; ?>"placeholder="アフィリエイトタグのショートコードをここへ入力してください">
+  <input id="fix_link" type="text" name="fix_link" value="<?php echo esc_attr($fix_link); ?>"placeholder="アフィリエイトタグのショートコードをここへ入力してください">
   <br>
   <label for="fix_microcopy">マイクロコピー</label>
-  <input id="fix_microcopy" type="text" name="fix_microcopy" value="<?php echo $fix_microcopy; ?>"placeholder="マイクロコピーをここへ入力してください">
+  <input id="fix_microcopy" type="text" name="fix_microcopy" value="<?php echo esc_attr($fix_microcopy); ?>"placeholder="マイクロコピーをここへ入力してください">
   <br><br>
   <p>CTAボタンの色</p>
   <label for="cta_color1">赤系</label>
@@ -255,3 +255,4 @@ function nagi_enqueue_accordion_assets() {
 
 //カルーセル
 add_filter('cocoon_setting_preview_carousel', '__return_false');
+

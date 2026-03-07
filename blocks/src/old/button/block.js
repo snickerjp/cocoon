@@ -10,12 +10,17 @@ import classnames from 'classnames';
 
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { RichText, InspectorControls } from '@wordpress/block-editor';
+import {
+  RichText,
+  InspectorControls,
+  useBlockProps,
+} from '@wordpress/block-editor';
 const { PanelBody, SelectControl, BaseControl, TextControl } = wp.components;
 import { Fragment } from '@wordpress/element';
 const BUTTON_BLOCK = ' button-block';
 
 registerBlockType( 'cocoon-blocks/button', {
+  apiVersion: 3,
   title: __( 'ボタン', THEME_NAME ),
   icon: 'dismiss',
   category: THEME_NAME + '-old',
@@ -43,7 +48,7 @@ registerBlockType( 'cocoon-blocks/button', {
       default: '',
     },
   },
-  supports: {
+  supports: { html: false,
     align: [ 'left', 'center', 'right' ],
     customClassName: true,
     inserter: false,
@@ -65,6 +70,8 @@ registerBlockType( 'cocoon-blocks/button', {
         <InspectorControls>
           <PanelBody title={ __( 'ボタン設定', THEME_NAME ) }>
             <TextControl
+              __nextHasNoMarginBottom={ true }
+              __next40pxDefaultSize={ true }
               label={ __( 'URL', THEME_NAME ) }
               value={ url }
               onChange={ ( value ) => setAttributes( { url: value } ) }
@@ -85,7 +92,7 @@ registerBlockType( 'cocoon-blocks/button', {
                 },
               ] }
               __nextHasNoMarginBottom={ true }
-              __next40pxDefaultSize={ true }  // 新しいデフォルトサイズに対応
+              __next40pxDefaultSize={ true } // 新しいデフォルトサイズに対応
             />
 
             <SelectControl
@@ -167,7 +174,7 @@ registerBlockType( 'cocoon-blocks/button', {
                 },
               ] }
               __nextHasNoMarginBottom={ true }
-              __next40pxDefaultSize={ true }  // 新しいデフォルトサイズに対応
+              __next40pxDefaultSize={ true } // 新しいデフォルトサイズに対応
             />
 
             <SelectControl
@@ -189,7 +196,7 @@ registerBlockType( 'cocoon-blocks/button', {
                 },
               ] }
               __nextHasNoMarginBottom={ true }
-              __next40pxDefaultSize={ true }  // 新しいデフォルトサイズに対応
+              __next40pxDefaultSize={ true } // 新しいデフォルトサイズに対応
             />
           </PanelBody>
         </InspectorControls>
@@ -208,8 +215,11 @@ registerBlockType( 'cocoon-blocks/button', {
 
   save( { attributes } ) {
     const { content, color, size, url, target } = attributes;
+    const blockProps = useBlockProps.save( {
+      className: BUTTON_BLOCK,
+    } );
     return (
-      <div className={ BUTTON_BLOCK }>
+      <div { ...blockProps }>
         <a href={ url } className={ color + size } target={ target }>
           <RichText.Content value={ content } />
         </a>
@@ -217,3 +227,4 @@ registerBlockType( 'cocoon-blocks/button', {
     );
   },
 } );
+

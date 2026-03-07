@@ -45,7 +45,7 @@ function getClasses( ratio ) {
 }
 
 registerBlockType( 'cocoon-blocks/column-2', {
-  apiVersion: 2,
+  apiVersion: 3,
   title: __( '2カラム', THEME_NAME ),
   icon: (
     <svg
@@ -65,6 +65,10 @@ registerBlockType( 'cocoon-blocks/column-2', {
     THEME_NAME
   ),
   keywords: [ 'column', '2' ],
+
+  supports: {
+    html: false,
+  },
 
   attributes: {
     ratio: {

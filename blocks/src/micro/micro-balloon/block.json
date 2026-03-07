@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "cocoon-blocks/micro-balloon-2",
   "category": "cocoon-micro",
   "keywords": [ "micro", "copy", "balloon" ],
@@ -51,8 +51,10 @@
     }
   },
   "supports": {
+    "html": false,
     "align": [ "left", "center", "right" ],
     "customClassName": true,
     "anchor": true
   }
 }
+

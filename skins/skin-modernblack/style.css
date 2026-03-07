@@ -23,6 +23,14 @@ body {
 .header-container {
 	border-top: 3px solid #202020;
 }
+.is-header-fixed  .header-container,
+.hlt-top-menu-wrap .header-container {
+	background-color: #202020;
+}
+.is-header-fixed .site-name-text-link,
+.hlt-top-menu-wrap .site-name-text-link {
+	color: #fff;
+}
 
 /************************************
 ** WordPress Misc
@@ -594,3 +602,4 @@ blockquote::after {
     border-top: 0;
   }
 }
+

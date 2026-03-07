@@ -11,13 +11,18 @@ import classnames from 'classnames';
 
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { RichText, InspectorControls } from '@wordpress/block-editor';
+import {
+  RichText,
+  InspectorControls,
+  useBlockProps,
+} from '@wordpress/block-editor';
 const { PanelBody, SelectControl, BaseControl, TextareaControl } =
   wp.components;
 import { Fragment } from '@wordpress/element';
 const BUTTON_BLOCK = ' button-block';
 
 registerBlockType( 'cocoon-blocks/button-wrap', {
+  apiVersion: 3,
   title: __( '囲みボタン', THEME_NAME ),
   icon: 'dismiss',
   category: THEME_NAME + '-old',
@@ -47,7 +52,7 @@ registerBlockType( 'cocoon-blocks/button-wrap', {
       default: '',
     },
   },
-  supports: {
+  supports: { html: false,
     align: [ 'left', 'center', 'right' ],
     inserter: false,
   },
@@ -66,6 +71,7 @@ registerBlockType( 'cocoon-blocks/button-wrap', {
         <InspectorControls>
           <PanelBody title={ __( '囲みボタン設定', THEME_NAME ) }>
             <TextareaControl
+              __nextHasNoMarginBottom={ true }
               label={ __( 'リンクタグ・ショートコード', THEME_NAME ) }
               value={ tag }
               onChange={ ( value ) => setAttributes( { tag: value } ) }
@@ -150,7 +156,7 @@ registerBlockType( 'cocoon-blocks/button-wrap', {
                 },
               ] }
               __nextHasNoMarginBottom={ true }
-              __next40pxDefaultSize={ true }  // 新しいデフォルトサイズに対応
+              __next40pxDefaultSize={ true } // 新しいデフォルトサイズに対応
             />
 
             <SelectControl
@@ -172,7 +178,7 @@ registerBlockType( 'cocoon-blocks/button-wrap', {
                 },
               ] }
               __nextHasNoMarginBottom={ true }
-              __next40pxDefaultSize={ true }  // 新しいデフォルトサイズに対応
+              __next40pxDefaultSize={ true } // 新しいデフォルトサイズに対応
             />
           </PanelBody>
         </InspectorControls>
@@ -189,10 +195,14 @@ registerBlockType( 'cocoon-blocks/button-wrap', {
 
   save( { attributes } ) {
     const { content, color, size, tag } = attributes;
+    const blockProps = useBlockProps.save( {
+      className: color + size + BUTTON_BLOCK,
+    } );
     return (
-      <div className={ color + size + BUTTON_BLOCK }>
+      <div { ...blockProps }>
         <RichText.Content value={ tag } />
       </div>
     );
   },
 } );
+

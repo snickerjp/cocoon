@@ -10,13 +10,19 @@ import { THEME_NAME, BLOCK_CLASS, ICONS, getIconClass } from '../../helpers';
 const { times } = lodash;
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { InnerBlocks, RichText, InspectorControls } from '@wordpress/block-editor';
+import {
+  InnerBlocks,
+  RichText,
+  InspectorControls,
+  useBlockProps,
+} from '@wordpress/block-editor';
 const { PanelBody, SelectControl, BaseControl, Button } = wp.components;
 import { Fragment } from '@wordpress/element';
 const CAPTION_BOX_CLASS = 'label-box';
 const DEFAULT_MSG = __( '見出し', THEME_NAME );
 
 registerBlockType( 'cocoon-blocks/label-box', {
+  apiVersion: 3,
   title: __( 'ラベルボックス', THEME_NAME ),
   icon: 'dismiss',
   category: THEME_NAME + '-old',
@@ -40,7 +46,7 @@ registerBlockType( 'cocoon-blocks/label-box', {
       default: '',
     },
   },
-  supports: {
+  supports: { html: false,
     inserter: false,
   },
 
@@ -78,10 +84,13 @@ registerBlockType( 'cocoon-blocks/label-box', {
                 },
               ] }
               __nextHasNoMarginBottom={ true }
-              __next40pxDefaultSize={ true }  // 新しいデフォルトサイズに対応
+              __next40pxDefaultSize={ true } // 新しいデフォルトサイズに対応
             />
 
-            <BaseControl label={ __( 'アイコン', THEME_NAME ) }>
+            <BaseControl
+              __nextHasNoMarginBottom={ true }
+              label={ __( 'アイコン', THEME_NAME ) }
+            >
               <div className="icon-setting-buttons">
                 { times( ICONS.length, ( index ) => {
                   return (
@@ -124,8 +133,11 @@ registerBlockType( 'cocoon-blocks/label-box', {
 
   save( { attributes } ) {
     const { content, color, icon } = attributes;
+    const blockProps = useBlockProps.save( {
+      className: CAPTION_BOX_CLASS + color + BLOCK_CLASS,
+    } );
     return (
-      <div className={ CAPTION_BOX_CLASS + color + BLOCK_CLASS }>
+      <div { ...blockProps }>
         <div
           className={ 'label-box-label block-box-label' + getIconClass( icon ) }
         >
@@ -140,3 +152,4 @@ registerBlockType( 'cocoon-blocks/label-box', {
     );
   },
 } );
+

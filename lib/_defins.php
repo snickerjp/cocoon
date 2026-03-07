@@ -53,7 +53,7 @@ define('THEME_PARENT_DIR', THEME_NAME.'-master');
 //子テーマフォルダ
 define('THEME_CHILD_DIR', THEME_NAME.'-child');
 //テーマ設定ページ用のURLクエリ
-define('THEME_SETTINGS_PAFE', 'theme-settings');
+define('THEME_SETTINGS_PAGE', 'theme-settings');
 //ホームバスの取得
 $document_root = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '';
 define('ROOT_PATH', trailingslashit($document_root));
@@ -68,7 +68,8 @@ define('DEBAG_VALUE', ($http_host == THEME_NAME.'.jp') /*|| ($http_host == 'wp-c
 
 //デバッグモード
 define('DEBUG_MODE', DEBAG_VALUE);
-define('DEBUG_CACHE_ENABLE', 1);//キャッシュ機能を有効にするか（def：1）
+// デバッグ時に0(false)にするとキャッシュをバイパスして毎回APIリクエストを送る（通常時は1のまま）
+define('DEBUG_CACHE_ENABLE', 1);
 define('DEBUG_ADMIN_DEMO_ENABLE', apply_filters('cocoon_setting_all_previews', true));//設定ページのプレビューを有効にするか（def：1）
 
 

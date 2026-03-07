@@ -405,3 +405,9 @@ span.btn-wrap {
     display: initial;
   }
 }
+
+body#tinymce {
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}

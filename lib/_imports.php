@@ -41,7 +41,7 @@ require_once abspath(__FILE__).'plugins.php';    //プラグイン関係の関�
 require_once abspath(__FILE__).'eyecatch.php';   //タイトルからアイキャッチ生成関数
 //CSS・JavaScript縮小化ライブラリ
 if (!class_exists('MatthiasMullie\Minify\Minify')) {
-  $path = get_cocoon_template_directory() . '/plugins/minify';
+  $path = get_cocoon_template_directory() . '/lib/minify';
   require_once $path . '/minify-master/src/Minify.php';
   require_once $path . '/minify-master/src/CSS.php';
   require_once $path . '/minify-master/src/JS.php';
@@ -130,7 +130,11 @@ require_once abspath(__FILE__).'ssl.php'; //SSL関係の処理
 require_once abspath(__FILE__).'shortcodes.php'; //ショートコード関係の処理
 require_once abspath(__FILE__).'shortcodes-product-func.php'; //商品リンク関係の処理
 require_once abspath(__FILE__).'shortcodes-amazon.php'; //Amazon商品リンク関係の処理
+require_once abspath(__FILE__).'block-amazon-product-link.php'; //Amazon商品リンクブロック REST API
+require_once abspath(__FILE__).'block-amazon-product-link-cron.php'; //Amazon商品リンクブロック 定期自動更新
 require_once abspath(__FILE__).'shortcodes-rakuten.php'; //楽天商品リンク関係の処理
+require_once abspath(__FILE__).'block-rakuten-product-link.php'; //楽天商品リンクブロック REST API
+require_once abspath(__FILE__).'block-rakuten-product-link-cron.php'; //楽天商品リンクブロック 定期自動更新
 require_once abspath(__FILE__).'html5.php'; //HTML5チェック関係
 //フルパスを指定しないとうまくいかないファイル
 require_once abspath(__FILE__).'profile.php'; //プロフィール関係の処理

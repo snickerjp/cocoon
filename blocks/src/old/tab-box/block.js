@@ -9,7 +9,12 @@ import { THEME_NAME, BLOCK_CLASS } from '../../helpers';
 
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { InnerBlocks, RichText, InspectorControls } from '@wordpress/block-editor';
+import {
+  InnerBlocks,
+  RichText,
+  InspectorControls,
+  useBlockProps,
+} from '@wordpress/block-editor';
 const { PanelBody, SelectControl, BaseControl } = wp.components;
 import { Fragment } from '@wordpress/element';
 const DEFAULT_MSG = __(
@@ -18,6 +23,7 @@ const DEFAULT_MSG = __(
 );
 
 registerBlockType( 'cocoon-blocks/tab-box', {
+  apiVersion: 3,
   title: __( 'タブボックス', THEME_NAME ),
   icon: 'dismiss',
   category: THEME_NAME + '-old',
@@ -42,7 +48,7 @@ registerBlockType( 'cocoon-blocks/tab-box', {
       default: '',
     },
   },
-  supports: {
+  supports: { html: false,
     inserter: false,
   },
 
@@ -136,7 +142,7 @@ registerBlockType( 'cocoon-blocks/tab-box', {
                 },
               ] }
               __nextHasNoMarginBottom={ true }
-              __next40pxDefaultSize={ true }  // 新しいデフォルトサイズに対応
+              __next40pxDefaultSize={ true } // 新しいデフォルトサイズに対応
             />
 
             <SelectControl
@@ -166,7 +172,7 @@ registerBlockType( 'cocoon-blocks/tab-box', {
                 },
               ] }
               __nextHasNoMarginBottom={ true }
-              __next40pxDefaultSize={ true }  // 新しいデフォルトサイズに対応
+              __next40pxDefaultSize={ true } // 新しいデフォルトサイズに対応
             />
           </PanelBody>
         </InspectorControls>
@@ -183,10 +189,14 @@ registerBlockType( 'cocoon-blocks/tab-box', {
 
   save( { attributes } ) {
     const { content } = attributes;
+    const blockProps = useBlockProps.save( {
+      className: attributes.style + attributes.color + BLOCK_CLASS,
+    } );
     return (
-      <div className={ attributes.style + attributes.color + BLOCK_CLASS }>
+      <div { ...blockProps }>
         <InnerBlocks.Content />
       </div>
     );
   },
 } );
+

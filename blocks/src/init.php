@@ -101,6 +101,20 @@ function cocoon_blocks_cgb_editor_assets()
 		// true // Enqueue the script in the footer.
 	);
 
+	// Cocoon設定のカラム幅を適用する
+	if (is_visual_editor_style_enable()) {
+		$default_width = 800;
+		$main_column_contents_width = get_main_column_contents_width() ? get_main_column_contents_width() : $default_width;
+		$css = "
+			div.editor-visual-editor__post-title-wrapper > :where(:not(.alignleft):not(.alignright):not(.alignfull)),
+			div.block-editor-block-list__layout.is-root-container > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+				max-width: ".$main_column_contents_width."px;
+			}";
+
+		// ハンドルは 'wp-block-editor'（新しめ）または 'wp-edit-blocks'（互換）
+		wp_add_inline_style('wp-block-editor', $css);
+	}
+
 	// // テーマ内のCSSファイルのパスを構築
 	// $css_file_path = get_template_directory() . '/css/gutenberg-editor.css';
 	// $css_file_url = get_template_directory_uri() . '/css/gutenberg-editor.css';
@@ -259,6 +273,69 @@ function cocoon_blocks_cgb_editor_assets()
 		'cocoon-blocks-js', //値を渡すjsファイルのハンドル名
 		'gbCodeLanguages', //任意のオブジェクト名
 		get_block_editor_code_languages() //カラーパレット
+	);
+
+	// Amazon商品リンクブロックの初期値をCocoon設定から渡す
+	$amazon_block_defaults = array(
+		// 枠線を表示するか（常に有効）
+		'showBorder'        => 1,
+		// Amazonロゴを表示するかどうか
+		'showLogo'          => is_amazon_item_logo_visible() ? 1 : 0,
+		// カタログ画像（バリエーション画像）を表示するかどうか
+		'showCatalogImages' => is_amazon_item_catalog_image_visible() ? 1 : 0,
+		// 価格を表示するかどうか
+		'showPrice'         => is_amazon_item_price_visible() ? 1 : 0,
+		// 商品説明を表示するかどうか
+		'showDescription'   => is_amazon_item_description_visible() ? 1 : 0,
+		// カスタマーレビューを表示するかどうか
+		'showReview'        => is_amazon_item_customer_reviews_visible() ? 1 : 0,
+		// Amazon検索ボタンを表示するかどうか
+		'showAmazonButton'  => is_amazon_search_button_visible() ? 1 : 0,
+		// 楽天検索ボタンを表示するかどうか
+		'showRakutenButton' => is_rakuten_search_button_visible() ? 1 : 0,
+		// Yahoo!検索ボタンを表示するかどうか
+		'showYahooButton'   => is_yahoo_search_button_visible() ? 1 : 0,
+		// メルカリ検索ボタンを表示するかどうか
+		'showMercariButton' => is_mercari_search_button_visible() ? 1 : 0,
+		// もしもアフィリエイトリンクを使用するかどうか
+		'useMoshimoAffiliate' => is_moshimo_affiliate_link_enable() ? 1 : 0,
+		// もしものAmazon/楽天/Yahoo! IDが設定済みかどうか（設定パネルの表示制御用）
+		'hasMoshimoIds' => (get_moshimo_amazon_id() || get_moshimo_rakuten_id() || get_moshimo_yahoo_id()) ? 1 : 0,
+	);
+	wp_localize_script(
+		'cocoon-blocks-js',
+		'gbAmazonBlockDefaults',
+		$amazon_block_defaults
+	);
+
+	// 楽天商品リンクブロックの初期値をCocoon設定から渡す
+	$rakuten_block_defaults = array(
+		// 枠線を表示するか（常に有効）
+		'showBorder'        => 1,
+		// 楽天ロゴを表示するかどうか
+		'showLogo'          => is_rakuten_item_logo_visible() ? 1 : 0,
+		// 商品説明を表示するかどうか
+		'showDescription'   => is_rakuten_item_description_visible() ? 1 : 0,
+		// 価格を表示するかどうか
+		'showPrice'         => is_rakuten_item_price_visible() ? 1 : 0,
+		// Amazon検索ボタンを表示するかどうか
+		'showAmazonButton'  => is_amazon_search_button_visible() ? 1 : 0,
+		// 楽天検索ボタンを表示するかどうか
+		'showRakutenButton' => is_rakuten_search_button_visible() ? 1 : 0,
+		// Yahoo!検索ボタンを表示するかどうか
+		'showYahooButton'   => is_yahoo_search_button_visible() ? 1 : 0,
+		// メルカリ検索ボタンを表示するかどうか
+		'showMercariButton' => is_mercari_search_button_visible() ? 1 : 0,
+		// もしもアフィリエイトリンクを使用するかどうか
+		'useMoshimoAffiliate' => is_moshimo_affiliate_link_enable() ? 1 : 0,
+		// もしものAmazon/楽天/Yahoo! IDが設定済みかどうか（設定パネルの表示制御用）
+		'hasMoshimoIds' => (get_moshimo_amazon_id() || get_moshimo_rakuten_id() || get_moshimo_yahoo_id()) ? 1 : 0,
+
+	);
+	wp_localize_script(
+		'cocoon-blocks-js',
+		'gbRakutenBlockDefaults',
+		$rakuten_block_defaults
 	);
 }
 endif;

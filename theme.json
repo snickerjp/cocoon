@@ -16,7 +16,8 @@
 			"lineHeight": true,
 			"textDecoration": true,
 			"textTransform": true,
-			"customFontSize": true
+			"customFontSize": true,
+			"writingMode": true
 		},
 		"border": {
 			"color": true,
@@ -32,6 +33,12 @@
 			"defaultPalette": true,
 			"custom": true,
 			"link": true
+		},
+		"position": {
+			"sticky": true
+		},
+		"dimensions": {
+			"minHeight": true
 		}
 	}
 }

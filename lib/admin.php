@@ -110,6 +110,9 @@ add_filter( 'manage_posts_columns', 'customize_admin_manage_posts_columns' );
 add_filter( 'manage_pages_columns', 'customize_admin_manage_posts_columns' );
 if ( !function_exists( 'customize_admin_manage_posts_columns' ) ):
 function customize_admin_manage_posts_columns($columns) {
+  // 現在の画面オブジェクトを取得
+  $current_screen = get_current_screen();
+
   //作成者表示
   if (!is_admin_list_author_visible()) {
     unset($columns['author']);
@@ -145,18 +148,18 @@ function customize_admin_manage_posts_columns($columns) {
     $columns['word-count'] = __( '文字数', THEME_NAME );
   }
 
-  //文字数表示
-  if (is_admin_list_pv_visible()) {
+  //PV表示
+  if (is_admin_list_pv_visible() && (!$current_screen || $current_screen->id !== 'edit-wp_block')) {
     $columns['pv'] = __( 'PV', THEME_NAME );
   }
 
   //アイキャッチ表示
-  if (is_admin_list_eyecatch_visible()) {
+  if (is_admin_list_eyecatch_visible() && (!$current_screen || $current_screen->id !== 'edit-wp_block')) {
     $columns['thumbnail'] = __( 'アイキャッチ', THEME_NAME );
   }
 
   //メモ表示
-  if (is_admin_list_memo_visible()) {
+  if (is_admin_list_memo_visible() && (!$current_screen || $current_screen->id !== 'edit-wp_block')) {
     $columns['memo'] = __( 'メモ', THEME_NAME );
   }
 
@@ -181,11 +184,8 @@ function customize_admin_add_column($column_name, $post_id) {
   if ( is_admin_list_word_count_visible() && ('word-count' === $column_name) ) {
     //テーマで設定されているサムネイルを利用する場合
     $post = get_post($post_id);
-    //_v($post);
     $title_count = mb_strlen(strip_tags($post->post_title));
-    $content_count = mb_strlen(strip_tags($post->post_content));
-    $digit = max(array(strlen($title_count), strlen($content_count)));
-    //var_dump($digit);
+    $content_count = get_post_content_word_count($post->post_content);
     $thum =
     '<div class="word-count-wrap">'.
       '<div class="word-count-title">'.
@@ -209,13 +209,6 @@ function customize_admin_add_column($column_name, $post_id) {
 
   //PV表示
   if ( is_admin_list_pv_visible() && ('pv' === $column_name) ) {
-    //テーマで設定されているサムネイルを利用する場合
-    $post = get_post($post_id);
-    //_v($post);
-    $title_count = mb_strlen(strip_tags($post->post_title));
-    $content_count = mb_strlen(strip_tags($post->post_content));
-    $digit = max(array(strlen($title_count), strlen($content_count)));
-    //var_dump($digit);
     $thum =
     '<div class="pv-wrap">'.
       '<div class="pv-title">'.

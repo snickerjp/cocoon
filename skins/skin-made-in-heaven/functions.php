@@ -34,9 +34,10 @@ foreach ($files as $file) {
 //******************************************************************************
 //  初期値
 //******************************************************************************
-define('HVN_MAIN_COLOR', '#40210f');
-define('HVN_TEXT_COLOR', '#ffffff');
-define('HVN_BODY_COLOR', '#f5f4f1');
+define('HVN_MAIN_COLOR'   , '#40210f');
+define('HVN_TEXT_COLOR'   , '#ffffff');
+define('HVN_BODY_COLOR'   , '#f5f4f1');
+define('HVN_SCROLL_COLOR' , '#ffffff');
 
 define('HVN_GAP' , 30);
 define('HVN_MAIN_WIDTH', 770);

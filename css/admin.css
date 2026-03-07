@@ -93,6 +93,7 @@ body.wp-admin {
   --cocoon-box-border-color: #47585c;
   --cocoon-sns-color: var(--cocoon-text-color);
   --card-ratio: 16/9;
+  --cocoon--header-container--position-offset: 0px;
 }
 
 .faw::before {
@@ -1315,6 +1316,18 @@ body.wp-admin {
   font-weight: normal;
   float: none;
 }
+.admin-settings .demo p[style*=writing-mode][style*=vertical] {
+  align-items: flex-end;
+  display: flex;
+  width: 100%;
+}
+.admin-settings .demo p.has-text-align-center[style*=writing-mode][style*=vertical] {
+  align-items: center;
+}
+.admin-settings .demo p.has-text-align-right[style*=writing-mode][style*=vertical] {
+  align-items: flex-start !important;
+  rotate: unset !important;
+}
 .admin-settings .demo figure {
   margin: 0;
 }
@@ -1494,6 +1507,7 @@ body.wp-admin {
 }
 .admin-settings .demo .header-container-in.hlt-top-menu .header {
   background-image: none;
+  aspect-ratio: unset;
 }
 .admin-settings .demo .header-container-in.hlt-top-menu .logo-text {
   padding: 0;
@@ -2642,6 +2656,7 @@ body.wp-admin {
 }
 .admin-settings .demo .toc .toc-list {
   padding-left: 1em;
+  margin-bottom: 0;
 }
 .admin-settings .demo .toc .toc-list ul, .admin-settings .demo .toc .toc-list ol {
   padding-left: 1em;
@@ -2912,6 +2927,15 @@ body.wp-admin {
   margin-top: 6px;
   font-size: 12px;
   opacity: 0.8;
+}
+.admin-settings .demo .widget-entry-card-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.admin-settings .demo .widget-entry-card-comment {
+  font-size: 0.7em;
+  padding: 4px 2px 2px 2px;
 }
 .admin-settings .demo .widget-entry-card-pv {
   margin-left: 5px;
@@ -3389,32 +3413,33 @@ body.wp-admin {
 .admin-settings .demo .common-icon-box.has-background {
   padding: 20px 20px 20px 72px;
 }
-.admin-settings .demo .body blockquote :last-child,
-.admin-settings .demo .body .wp-block-media-text__content :last-child,
-.admin-settings .demo .body .wp-block-columns :last-child,
-.admin-settings .demo .body .column-left :last-child,
-.admin-settings .demo .body .column-center :last-child,
-.admin-settings .demo .body .column-right :last-child,
-.admin-settings .demo .body .timeline-box :last-child,
-.admin-settings .demo .body .wp-block-cover :last-child,
-.admin-settings .demo .body .blogcard-type :last-child,
-.admin-settings .demo .body .btn-wrap :last-child,
-.admin-settings .demo .body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between, .is-layout-flex) :last-child,
-.admin-settings .demo .body .wp-block-gallery :last-child,
-.admin-settings .demo .body .block-box :last-child,
-.admin-settings .demo .body .blank-box :last-child,
-.admin-settings .demo .body .common-icon-box :last-child,
-.admin-settings .demo .body .info-box :last-child,
-.admin-settings .demo .body .primary-box :last-child,
-.admin-settings .demo .body .success-box :last-child,
-.admin-settings .demo .body .warning-box :last-child,
-.admin-settings .demo .body .danger-box :last-child,
-.admin-settings .demo .body .secondary-box :last-child,
-.admin-settings .demo .body .light-box :last-child,
-.admin-settings .demo .body .dark-box :last-child,
-.admin-settings .demo .body .tab-content :last-child,
-.admin-settings .demo .body .toc :last-child,
-.admin-settings .demo .body .wp-block-social-links :last-child {
+.admin-settings .demo .body blockquote > :last-child,
+.admin-settings .demo .body .wp-block-media-text__content > :last-child,
+.admin-settings .demo .body .wp-block-column > :last-child,
+.admin-settings .demo .body .column-left > :last-child,
+.admin-settings .demo .body .column-center > :last-child,
+.admin-settings .demo .body .column-right > :last-child,
+.admin-settings .demo .body .timeline-item-snippet > :last-child,
+.admin-settings .demo .body .wp-block-cover__inner-container > :last-child,
+.admin-settings .demo .body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between, .is-layout-flex) > :last-child,
+.admin-settings .demo .body .block-box > :last-child,
+.admin-settings .demo .body .blank-box > :last-child,
+.admin-settings .demo .body .toggle-content > :last-child,
+.admin-settings .demo .body .tab-content > :last-child,
+.admin-settings .demo .body .faq-item-content > :last-child,
+.admin-settings .demo .body .block-box-content > :last-child,
+.admin-settings .demo .body .common-icon-box > :last-child,
+.admin-settings .demo .body .info-box > :last-child,
+.admin-settings .demo .body .primary-box > :last-child,
+.admin-settings .demo .body .success-box > :last-child,
+.admin-settings .demo .body .warning-box > :last-child,
+.admin-settings .demo .body .danger-box > :last-child,
+.admin-settings .demo .body .secondary-box > :last-child,
+.admin-settings .demo .body .light-box > :last-child,
+.admin-settings .demo .body .dark-boxs > :last-child {
+  margin-bottom: 0;
+}
+.admin-settings .demo .body .btn-wrap.button-block > * {
   margin-bottom: 0;
 }
 .admin-settings .demo .body div.scrollable-table table,
@@ -7140,6 +7165,10 @@ body.wp-admin {
 .admin-settings .demo .acquired-date {
   font-size: 0.9em;
 }
+.admin-settings .demo .amazon-search-message {
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
 .admin-settings .demo .nwa .booklink-box, .admin-settings .demo .nwa .kaerebalink-box, .admin-settings .demo .nwa .tomarebalink-box, .admin-settings .demo .nwa .product-item-box {
   padding: 10px 10px 24px;
   display: block;
@@ -7792,7 +7821,7 @@ body.wp-admin {
 .admin-settings .demo .footer-left,
 .admin-settings .demo .footer-center,
 .admin-settings .demo .footer-right {
-  width: 33.33%;
+  flex: 1;
 }
 .admin-settings .demo .footer-widgets-mobile {
   display: none;
@@ -7856,7 +7885,7 @@ body.wp-admin {
   display: block;
   right: 10px;
   bottom: 10px;
-  z-index: 99999;
+  z-index: 999;
   visibility: hidden;
   opacity: 0;
   transition: 0.6s;
@@ -8606,6 +8635,7 @@ body.wp-admin {
 .admin-settings .demo .recommended .navi-entry-cards a {
   padding: 0;
   margin: 0;
+  width: 100%;
   border-radius: 0;
 }
 .admin-settings .demo .recommended figure {
@@ -8759,6 +8789,7 @@ body.wp-admin {
   flex-direction: row;
   position: relative;
   /* カードのサムネイル幅200px */
+  /* Swiper初期化前はナビゲーションボタンを非表示にする（チラつき防止） */
 }
 .admin-settings .demo .is-list-horizontal .widget-entry-card-link {
   flex-shrink: 0;
@@ -8789,6 +8820,10 @@ body.wp-admin {
 }
 .admin-settings .demo .is-list-horizontal .swiper-wrapper {
   height: initial;
+}
+.admin-settings .demo .is-list-horizontal:not(.swiper-initialized) .swiper-button-next,
+.admin-settings .demo .is-list-horizontal:not(.swiper-initialized) .swiper-button-prev {
+  display: none;
 }
 .admin-settings .demo .is-list-horizontal .swiper-button-next,
 .admin-settings .demo .is-list-horizontal .swiper-button-prev {
@@ -8880,6 +8915,10 @@ body.wp-admin {
 }
 .admin-settings .demo .info-list-item-date {
   margin-right: 18px;
+}
+.admin-settings .demo .info-list-item-comment {
+  margin-left: -10px;
+  margin-right: 12px;
 }
 .admin-settings .demo .info-list-item-categorys .entry-category {
   padding: 1px 18px;
@@ -9877,6 +9916,18 @@ body.wp-admin {
   font-weight: normal;
   float: none;
 }
+.admin-settings .demo p[style*=writing-mode][style*=vertical] {
+  align-items: flex-end;
+  display: flex;
+  width: 100%;
+}
+.admin-settings .demo p.has-text-align-center[style*=writing-mode][style*=vertical] {
+  align-items: center;
+}
+.admin-settings .demo p.has-text-align-right[style*=writing-mode][style*=vertical] {
+  align-items: flex-start !important;
+  rotate: unset !important;
+}
 .admin-settings .demo figure {
   margin: 0;
 }
@@ -10056,6 +10107,7 @@ body.wp-admin {
 }
 .admin-settings .demo .header-container-in.hlt-top-menu .header {
   background-image: none;
+  aspect-ratio: unset;
 }
 .admin-settings .demo .header-container-in.hlt-top-menu .logo-text {
   padding: 0;
@@ -11204,6 +11256,7 @@ body.wp-admin {
 }
 .admin-settings .demo .toc .toc-list {
   padding-left: 1em;
+  margin-bottom: 0;
 }
 .admin-settings .demo .toc .toc-list ul, .admin-settings .demo .toc .toc-list ol {
   padding-left: 1em;
@@ -11474,6 +11527,15 @@ body.wp-admin {
   margin-top: 6px;
   font-size: 12px;
   opacity: 0.8;
+}
+.admin-settings .demo .widget-entry-card-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.admin-settings .demo .widget-entry-card-comment {
+  font-size: 0.7em;
+  padding: 4px 2px 2px 2px;
 }
 .admin-settings .demo .widget-entry-card-pv {
   margin-left: 5px;
@@ -11951,32 +12013,33 @@ body.wp-admin {
 .admin-settings .demo .common-icon-box.has-background {
   padding: 20px 20px 20px 72px;
 }
-.admin-settings .demo .body blockquote :last-child,
-.admin-settings .demo .body .wp-block-media-text__content :last-child,
-.admin-settings .demo .body .wp-block-columns :last-child,
-.admin-settings .demo .body .column-left :last-child,
-.admin-settings .demo .body .column-center :last-child,
-.admin-settings .demo .body .column-right :last-child,
-.admin-settings .demo .body .timeline-box :last-child,
-.admin-settings .demo .body .wp-block-cover :last-child,
-.admin-settings .demo .body .blogcard-type :last-child,
-.admin-settings .demo .body .btn-wrap :last-child,
-.admin-settings .demo .body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between, .is-layout-flex) :last-child,
-.admin-settings .demo .body .wp-block-gallery :last-child,
-.admin-settings .demo .body .block-box :last-child,
-.admin-settings .demo .body .blank-box :last-child,
-.admin-settings .demo .body .common-icon-box :last-child,
-.admin-settings .demo .body .info-box :last-child,
-.admin-settings .demo .body .primary-box :last-child,
-.admin-settings .demo .body .success-box :last-child,
-.admin-settings .demo .body .warning-box :last-child,
-.admin-settings .demo .body .danger-box :last-child,
-.admin-settings .demo .body .secondary-box :last-child,
-.admin-settings .demo .body .light-box :last-child,
-.admin-settings .demo .body .dark-box :last-child,
-.admin-settings .demo .body .tab-content :last-child,
-.admin-settings .demo .body .toc :last-child,
-.admin-settings .demo .body .wp-block-social-links :last-child {
+.admin-settings .demo .body blockquote > :last-child,
+.admin-settings .demo .body .wp-block-media-text__content > :last-child,
+.admin-settings .demo .body .wp-block-column > :last-child,
+.admin-settings .demo .body .column-left > :last-child,
+.admin-settings .demo .body .column-center > :last-child,
+.admin-settings .demo .body .column-right > :last-child,
+.admin-settings .demo .body .timeline-item-snippet > :last-child,
+.admin-settings .demo .body .wp-block-cover__inner-container > :last-child,
+.admin-settings .demo .body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between, .is-layout-flex) > :last-child,
+.admin-settings .demo .body .block-box > :last-child,
+.admin-settings .demo .body .blank-box > :last-child,
+.admin-settings .demo .body .toggle-content > :last-child,
+.admin-settings .demo .body .tab-content > :last-child,
+.admin-settings .demo .body .faq-item-content > :last-child,
+.admin-settings .demo .body .block-box-content > :last-child,
+.admin-settings .demo .body .common-icon-box > :last-child,
+.admin-settings .demo .body .info-box > :last-child,
+.admin-settings .demo .body .primary-box > :last-child,
+.admin-settings .demo .body .success-box > :last-child,
+.admin-settings .demo .body .warning-box > :last-child,
+.admin-settings .demo .body .danger-box > :last-child,
+.admin-settings .demo .body .secondary-box > :last-child,
+.admin-settings .demo .body .light-box > :last-child,
+.admin-settings .demo .body .dark-boxs > :last-child {
+  margin-bottom: 0;
+}
+.admin-settings .demo .body .btn-wrap.button-block > * {
   margin-bottom: 0;
 }
 .admin-settings .demo .body div.scrollable-table table,
@@ -15702,6 +15765,10 @@ body.wp-admin {
 .admin-settings .demo .acquired-date {
   font-size: 0.9em;
 }
+.admin-settings .demo .amazon-search-message {
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
 .admin-settings .demo .nwa .booklink-box, .admin-settings .demo .nwa .kaerebalink-box, .admin-settings .demo .nwa .tomarebalink-box, .admin-settings .demo .nwa .product-item-box {
   padding: 10px 10px 24px;
   display: block;
@@ -16354,7 +16421,7 @@ body.wp-admin {
 .admin-settings .demo .footer-left,
 .admin-settings .demo .footer-center,
 .admin-settings .demo .footer-right {
-  width: 33.33%;
+  flex: 1;
 }
 .admin-settings .demo .footer-widgets-mobile {
   display: none;
@@ -16418,7 +16485,7 @@ body.wp-admin {
   display: block;
   right: 10px;
   bottom: 10px;
-  z-index: 99999;
+  z-index: 999;
   visibility: hidden;
   opacity: 0;
   transition: 0.6s;
@@ -17168,6 +17235,7 @@ body.wp-admin {
 .admin-settings .demo .recommended .navi-entry-cards a {
   padding: 0;
   margin: 0;
+  width: 100%;
   border-radius: 0;
 }
 .admin-settings .demo .recommended figure {
@@ -17321,6 +17389,7 @@ body.wp-admin {
   flex-direction: row;
   position: relative;
   /* カードのサムネイル幅200px */
+  /* Swiper初期化前はナビゲーションボタンを非表示にする（チラつき防止） */
 }
 .admin-settings .demo .is-list-horizontal .widget-entry-card-link {
   flex-shrink: 0;
@@ -17351,6 +17420,10 @@ body.wp-admin {
 }
 .admin-settings .demo .is-list-horizontal .swiper-wrapper {
   height: initial;
+}
+.admin-settings .demo .is-list-horizontal:not(.swiper-initialized) .swiper-button-next,
+.admin-settings .demo .is-list-horizontal:not(.swiper-initialized) .swiper-button-prev {
+  display: none;
 }
 .admin-settings .demo .is-list-horizontal .swiper-button-next,
 .admin-settings .demo .is-list-horizontal .swiper-button-prev {
@@ -17442,6 +17515,10 @@ body.wp-admin {
 }
 .admin-settings .demo .info-list-item-date {
   margin-right: 18px;
+}
+.admin-settings .demo .info-list-item-comment {
+  margin-left: -10px;
+  margin-right: 12px;
 }
 .admin-settings .demo .info-list-item-categorys .entry-category {
   padding: 1px 18px;
@@ -18286,7 +18363,7 @@ body.wp-admin {
   flex-direction: row;
   flex-wrap: wrap;
   transition: 0.3s;
-  z-index: 9999;
+  z-index: 980;
 }
 .admin-settings .demo .admin-panel a {
   color: var(--cocoon-white-color);
@@ -18347,8 +18424,6 @@ body.wp-admin {
   padding: 0;
 }
 .admin-settings .demo .entry-card .admin-pv .admin-pv-by {
-  background-color: transparent;
-  bottom: 0;
   display: none;
 }
 .admin-settings .demo .slick-slider {
@@ -18846,6 +18921,18 @@ body.wp-admin {
 .admin-settings .demo .grecaptcha-badge {
   bottom: 60px !important;
 }
+.admin-settings .demo html.lity-active,
+.admin-settings .demo body.baguetteBox-open {
+  overflow-y: hidden;
+}
+.admin-settings .demo .body .is-position-sticky {
+  top: calc(var(--wp-admin--admin-bar--position-offset, 0px) + var(--cocoon--header-container--position-offset, 0px));
+}
+@media screen and (max-width: 600px) {
+  .admin-settings .demo .body .mobile-header-menu-buttons {
+    top: 0;
+  }
+}
 .admin-settings .demo .video-click {
   cursor: pointer;
 }
@@ -19027,7 +19114,7 @@ body.wp-admin {
     align-items: stretch;
   }
   .admin-settings .demo .mobile-header-menu-buttons {
-    top: 0;
+    top: var(--wp-admin--admin-bar--height, 0px);
     bottom: auto;
     justify-content: space-between;
     min-width: 46px;
@@ -20050,9 +20137,6 @@ body.wp-admin {
 .admin-settings .demo.toc .entry-footer {
   display: none;
 }
-.admin-settings .demo.header-demo {
-  overflow: visible;
-}
 .admin-settings .demo .go-to-top {
   position: relative;
   display: inline-block;
@@ -20067,6 +20151,7 @@ body.wp-admin {
 }
 .admin-settings .demo.iframe-standard-demo {
   height: 400px;
+  overflow: hidden;
 }
 .admin-settings .demo.mobile-demo {
   height: 640px;
@@ -20124,7 +20209,7 @@ pre {
   box-sizing: border-box;
   color: #777;
   text-align: center;
-  padding: 0.4em 0;
+  margin: 0.4em 0;
 }
 
 /*記事一覧のサムネイル幅*/
@@ -21194,32 +21279,33 @@ select option.fa:before {
 .components-popover__content .common-icon-box.has-background {
   padding: 20px 20px 20px 72px;
 }
-.components-popover__content .body blockquote :last-child,
-.components-popover__content .body .wp-block-media-text__content :last-child,
-.components-popover__content .body .wp-block-columns :last-child,
-.components-popover__content .body .column-left :last-child,
-.components-popover__content .body .column-center :last-child,
-.components-popover__content .body .column-right :last-child,
-.components-popover__content .body .timeline-box :last-child,
-.components-popover__content .body .wp-block-cover :last-child,
-.components-popover__content .body .blogcard-type :last-child,
-.components-popover__content .body .btn-wrap :last-child,
-.components-popover__content .body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between, .is-layout-flex) :last-child,
-.components-popover__content .body .wp-block-gallery :last-child,
-.components-popover__content .body .block-box :last-child,
-.components-popover__content .body .blank-box :last-child,
-.components-popover__content .body .common-icon-box :last-child,
-.components-popover__content .body .info-box :last-child,
-.components-popover__content .body .primary-box :last-child,
-.components-popover__content .body .success-box :last-child,
-.components-popover__content .body .warning-box :last-child,
-.components-popover__content .body .danger-box :last-child,
-.components-popover__content .body .secondary-box :last-child,
-.components-popover__content .body .light-box :last-child,
-.components-popover__content .body .dark-box :last-child,
-.components-popover__content .body .tab-content :last-child,
-.components-popover__content .body .toc :last-child,
-.components-popover__content .body .wp-block-social-links :last-child {
+.components-popover__content .body blockquote > :last-child,
+.components-popover__content .body .wp-block-media-text__content > :last-child,
+.components-popover__content .body .wp-block-column > :last-child,
+.components-popover__content .body .column-left > :last-child,
+.components-popover__content .body .column-center > :last-child,
+.components-popover__content .body .column-right > :last-child,
+.components-popover__content .body .timeline-item-snippet > :last-child,
+.components-popover__content .body .wp-block-cover__inner-container > :last-child,
+.components-popover__content .body .wp-block-group:not(.is-content-justification-left, .is-content-justification-center, .is-content-justification-right, .is-content-justification-space-between, .is-layout-flex) > :last-child,
+.components-popover__content .body .block-box > :last-child,
+.components-popover__content .body .blank-box > :last-child,
+.components-popover__content .body .toggle-content > :last-child,
+.components-popover__content .body .tab-content > :last-child,
+.components-popover__content .body .faq-item-content > :last-child,
+.components-popover__content .body .block-box-content > :last-child,
+.components-popover__content .body .common-icon-box > :last-child,
+.components-popover__content .body .info-box > :last-child,
+.components-popover__content .body .primary-box > :last-child,
+.components-popover__content .body .success-box > :last-child,
+.components-popover__content .body .warning-box > :last-child,
+.components-popover__content .body .danger-box > :last-child,
+.components-popover__content .body .secondary-box > :last-child,
+.components-popover__content .body .light-box > :last-child,
+.components-popover__content .body .dark-boxs > :last-child {
+  margin-bottom: 0;
+}
+.components-popover__content .body .btn-wrap.button-block > * {
   margin-bottom: 0;
 }
 .components-popover__content .body div.scrollable-table table,
@@ -24070,4 +24156,50 @@ select option.fa:before {
 .classicpress .iris-picker .iris-slider-offset {
   top: 6px;
   bottom: 6px;
+}
+
+.cocoon-section-divider {
+  margin: 26px 0;
+  border: 0;
+  border-top: 1px solid #ddd;
+}
+
+.cocoon-section-title {
+  display: block;
+  font-size: 1.2em;
+  margin-bottom: 6px;
+}
+
+.tablenav-pages {
+  text-align: center;
+  margin: 0 1em !important;
+}
+.tablenav-pages .page-numbers {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 0 4px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  text-decoration: none;
+  border-radius: 3px;
+  font-weight: bold;
+  color: #555;
+  font-size: 14px;
+  line-height: 1;
+}
+.tablenav-pages .page-numbers:hover {
+  background-color: #eee;
+  border-color: #999;
+  color: #333;
+}
+.tablenav-pages .page-numbers.current {
+  background-color: #eee;
+  border-color: #999;
+  color: #333;
+  pointer-events: none;
+}
+.tablenav-pages .page-numbers.dots {
+  border: none;
+  background: none;
+  pointer-events: none;
 }

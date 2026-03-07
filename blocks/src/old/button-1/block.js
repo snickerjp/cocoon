@@ -15,7 +15,13 @@ import classnames from 'classnames';
 
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { RichText, InspectorControls, PanelColorSettings, ContrastChecker } from '@wordpress/block-editor';
+import {
+  RichText,
+  InspectorControls,
+  PanelColorSettings,
+  ContrastChecker,
+  useBlockProps,
+} from '@wordpress/block-editor';
 const { PanelBody, SelectControl, BaseControl, TextControl, ToggleControl } =
   wp.components;
 import { Fragment } from '@wordpress/element';
@@ -26,13 +32,14 @@ function getClasses( color, size, isCircle, isShine ) {
     btn: true,
     [ `btn-${ colorValueToSlug( color ) }` ]: !! colorValueToSlug( color ),
     [ size ]: size,
-    [ 'btn-circle' ]: !! isCircle,
-    [ 'btn-shine' ]: !! isShine,
+    'btn-circle': !! isCircle,
+    'btn-shine': !! isShine,
   } );
   return classes;
 }
 
 registerBlockType( 'cocoon-blocks/button-1', {
+  apiVersion: 3,
   title: __( 'ボタン', THEME_NAME ),
   icon: 'dismiss',
   category: THEME_NAME + '-old',
@@ -69,7 +76,7 @@ registerBlockType( 'cocoon-blocks/button-1', {
       default: false,
     },
   },
-  supports: {
+  supports: { html: false,
     align: [ 'left', 'center', 'right' ],
     customClassName: true,
   },
@@ -82,6 +89,8 @@ registerBlockType( 'cocoon-blocks/button-1', {
         <InspectorControls>
           <PanelBody title={ __( 'ボタン設定', THEME_NAME ) }>
             <TextControl
+              __nextHasNoMarginBottom={ true }
+              __next40pxDefaultSize={ true }
               label={ __( 'URL', THEME_NAME ) }
               value={ url }
               onChange={ ( value ) => setAttributes( { url: value } ) }
@@ -102,7 +111,7 @@ registerBlockType( 'cocoon-blocks/button-1', {
                 },
               ] }
               __nextHasNoMarginBottom={ true }
-              __next40pxDefaultSize={ true }  // 新しいデフォルトサイズに対応
+              __next40pxDefaultSize={ true } // 新しいデフォルトサイズに対応
             />
 
             <SelectControl
@@ -124,16 +133,18 @@ registerBlockType( 'cocoon-blocks/button-1', {
                 },
               ] }
               __nextHasNoMarginBottom={ true }
-              __next40pxDefaultSize={ true }  // 新しいデフォルトサイズに対応
+              __next40pxDefaultSize={ true } // 新しいデフォルトサイズに対応
             />
 
             <ToggleControl
+              __nextHasNoMarginBottom={ true }
               label={ __( '円形にする', THEME_NAME ) }
               checked={ isCircle }
               onChange={ ( value ) => setAttributes( { isCircle: value } ) }
             />
 
             <ToggleControl
+              __nextHasNoMarginBottom={ true }
               label={ __( '光らせる', THEME_NAME ) }
               checked={ isShine }
               onChange={ ( value ) => setAttributes( { isShine: value } ) }
@@ -173,8 +184,11 @@ registerBlockType( 'cocoon-blocks/button-1', {
 
   save( { attributes } ) {
     const { content, color, size, url, target, isCircle, isShine } = attributes;
+    const blockProps = useBlockProps.save( {
+      className: BUTTON_BLOCK,
+    } );
     return (
-      <div className={ BUTTON_BLOCK }>
+      <div { ...blockProps }>
         <a
           href={ url }
           className={ getClasses( color, size, isCircle, isShine ) }
@@ -186,3 +200,4 @@ registerBlockType( 'cocoon-blocks/button-1', {
     );
   },
 } );
+

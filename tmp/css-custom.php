@@ -122,20 +122,21 @@ if ($site_key_text_color = get_site_key_text_color()): ?>
 }
 <?php endif ?>
 <?php //サイト文字色
-if($site_text_color = get_site_text_color()): ?>
+
+if(!is_admin() && get_site_text_color()): ?>
 body.public-page{
-  --cocoon-text-color: <?php echo $site_text_color; ?>;
+  --cocoon-text-color: <?php echo get_site_text_color(); ?>;
   color: var(--cocoon-text-color);
 }
 <?php endif; ?>
 <?php //サイト背景色
-if (get_site_background_color()): ?>
+if (!is_admin() && get_site_background_color()): ?>
 body.public-page{
   background-color: <?php echo get_site_background_color(); ?>;
 }
 <?php endif ?>
 <?php //サイトリンク色
-if (get_site_link_color()): ?>
+if (!is_admin() && get_site_link_color()): ?>
 a{
   color: <?php echo get_site_link_color(); ?>;
 }
@@ -443,9 +444,10 @@ if ($color = get_notice_area_text_color()): ?>
 }
 <?php endif ?>
 <?php //アクセスカウント取得用スタイル
-if (!is_admin() && is_singular() && is_access_count_enable()): ?>
+if (!is_admin() && is_singular() && is_access_count_enable()):
+  $timestamp = time(); ?>
 body::after{
-  content: url("<?php echo get_cocoon_template_directory_uri(); ?>/lib/analytics/access.php?post_id=<?php echo get_the_ID(); ?>&post_type=<?php echo get_accesses_post_type(); ?>") !important;
+  content: url("<?php echo get_cocoon_template_directory_uri(); ?>/lib/analytics/access.php?post_id=<?php echo get_the_ID(); ?>&post_type=<?php echo get_accesses_post_type(); ?>&t=<?php echo $timestamp; ?>") !important;
   visibility: hidden;
   position: absolute;
   bottom: 0;
@@ -489,7 +491,8 @@ if (is_singular_page_type_full_wide()):
 }
 <?php endif ?>
 <?php //選択文字色
-if ($selection_color = get_site_selection_color()): ?>
+$selection_color = get_site_selection_color();
+if (!is_admin() && $selection_color): ?>
 *::selection {
   color: <?php echo $selection_color; ?>;
 }
@@ -497,8 +500,9 @@ if ($selection_color = get_site_selection_color()): ?>
   color: <?php echo $selection_color; ?>;
 }
 <?php endif ?>
-<?php //選択背景色
-if ($selection_background_color = get_site_selection_background_color()): ?>
+<?php //選択文字背景色
+$selection_background_color = get_site_selection_background_color();
+if (!is_admin() && $selection_background_color): ?>
 *::selection {
   background: <?php echo $selection_background_color; ?>;
 }
@@ -754,9 +758,10 @@ if (!$entry_content_margin_hight) {
   margin-bottom: <?php echo $entry_content_margin_hight; ?>em;
 }
 
-.is-root-container > * {
-  margin-bottom: <?php echo $entry_content_margin_hight; ?>em !important;
+#wpcontent #wpbody .is-root-container > * {
+  margin-bottom: <?php echo $entry_content_margin_hight; ?>em;
 }
+
 .article h2,
 .article h3,
 .article h4,
@@ -1046,3 +1051,4 @@ if ($image_url && is_header_size_background_image_aspect_ratio() && is_header_la
     }
   <?php endif; ?>
 <?php endif; ?>
+

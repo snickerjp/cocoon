@@ -1,9 +1,10 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "cocoon-blocks/template",
   "category": "cocoon-block",
-  "keywords": ["template"],
-
+  "keywords": [
+    "template"
+  ],
   "attributes": {
     "id": {
       "type": "string",
@@ -17,6 +18,7 @@
   "example": {},
   "supports": {
     "customClassName": true,
-    "anchor": true
+    "anchor": true,
+    "html": false
   }
 }

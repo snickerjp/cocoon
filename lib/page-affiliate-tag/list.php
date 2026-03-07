@@ -8,10 +8,27 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 //var_dump($_POST);
-$keyword = !empty($_POST['s']) ? $_POST['s'] : null;
-$order_by = isset($_POST['order']) ? $_POST['order'] : 'date DESC';
+// 検索キーワードとソート順をサニタイズ
+$keyword = !empty($_POST['s']) ? sanitize_text_field($_POST['s']) : null;
+$order_by = isset($_POST['order']) ? sanitize_text_field($_POST['order']) : 'date DESC';
 //var_dump($order_by);
-$records = get_affiliate_tags($keyword, $order_by);
+// var_dump($order_by);
+
+// 現在のページ番号を取得
+$paged = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+// 1ページあたりの表示件数
+$limit = 20; // 任意の数に変更可能
+// オフセット計算
+$offset = ($paged - 1) * $limit;
+
+// レコード取得（ページネーション対応）
+$records = get_affiliate_tags($keyword, $order_by, $limit, $offset);
+
+// 総レコード数取得
+$total = get_affiliate_tags_count($keyword);
+// 総ページ数計算
+$pages = ceil($total / $limit);
+
 //var_dump($records);
 //並び替えオプション
 generate_sort_options_tag($keyword, $order_by);
@@ -25,11 +42,29 @@ generate_sort_options_tag($keyword, $order_by);
   echo get_help_page_tag('https://wp-cocoon.com/how-to-use-affiliate-tag-manager/'); ?></p>
 <?php endif ?>
 
+<!-- ページネーション -->
+<div class="tablenav top">
+  <div class="tablenav-pages">
+    <?php
+    $pagination_args = array(
+      'base' => add_query_arg('paged', '%#%'),
+      'format' => '',
+      'total' => $pages,
+      'current' => $paged,
+      'prev_text' => __('&laquo;'),
+      'next_text' => __('&raquo;'),
+    );
+    echo paginate_links($pagination_args);
+    ?>
+  </div>
+</div>
+
 <div class="snippet-list">
   <?php foreach ($records as $record):
   //var_dump($record);
-  $edit_url   = add_query_arg(array('action' => 'edit',   'id' => $record->id));
-  $delete_url = add_query_arg(array('action' => 'delete', 'id' => $record->id));
+  // URLをエスケープ
+  $edit_url   = esc_url(add_query_arg(array('action' => 'edit',   'id' => $record->id)));
+  $delete_url = esc_url(add_query_arg(array('action' => 'delete', 'id' => $record->id)));
    ?>
     <div class="snippet-wrap">
       <div class="snippet-title">
@@ -54,4 +89,13 @@ generate_sort_options_tag($keyword, $order_by);
       </div>
     </div>
   <?php endforeach ?>
+</div>
+
+<!-- ページネーション (下部) -->
+<div class="tablenav bottom">
+  <div class="tablenav-pages">
+    <?php
+    echo paginate_links($pagination_args);
+    ?>
+  </div>
 </div>
