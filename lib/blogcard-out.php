@@ -12,9 +12,15 @@ if ( !function_exists( 'url_to_external_blog_card_tag' ) ):
 function url_to_external_blog_card_tag($url){
   $url = strip_tags($url);//URL
 
+  // 無限ループ対策: 自身のURLの場合は外部・内部関わらずいかなるフェーズでも処理しない
+  // (スキーム違いHTTP/HTTPSやクエリ違いなどによるセーフガードすり抜けを防止)
+  if ( is_current_url_same($url) ) {
+    return;
+  }
+
   //サイトの内部リンクは処理しない場合（※wpForoページは外部リンクとして処理する）
   if ( includes_home_url($url) && !includes_wpforo_url($url) ) {
-    $id = url_to_postid( $url );//IDを取得（URLから投稿ID変換
+    $id = cocoon_url_to_postid( $url );//IDを取得（URLから投稿IDへ変換・キャッシュ対応）
     if ( $id && get_post_status($id) ) {//IDを取得できる場合はループを飛ばす
       return;
     }//IDが取得できない場合は外部リンクとして処理する
@@ -80,6 +86,8 @@ if ( is_external_blogcard_enable() ) {//外部リンクブログカードが有�
   //add_filter('widget_classic_text', 'url_to_external_blog_card', 11);
   add_filter('widget_text_mobile_text', 'url_to_external_blog_card', 11);
   add_filter('the_category_tag_content', 'url_to_external_blog_card', 11);
+  add_filter('appeal_area_message', 'url_to_external_blog_card', 11);
+  add_filter('the_author_box_description', 'url_to_external_blog_card', 11);
   //コメント内ブログカード
   if (is_comment_external_blogcard_enable()) {
     add_filter('comment_text', 'url_to_external_blog_card', 11);
@@ -96,6 +104,10 @@ function fetch_card_image($image, $url = null){
   // ファイル名・拡張子をそのまま使用
   $filename = basename($image);
   $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+  // 拡張子がない場合（例: https://example.com/image）はjpgをデフォルトとする
+  if (!$ext) {
+    $ext = 'jpg';
+  }
 
   // キャッシュディレクトリを取得・存在しなければ作成
   $dir = get_theme_blog_card_cache_path();
@@ -106,8 +118,8 @@ function fetch_card_image($image, $url = null){
   // キャッシュ保存先パス
   $new_file = trailingslashit($dir) . md5($image) . '.' . $ext;
 
-  // WordPress関数を用い一時ダウンロード
-  $tmp = download_url($image);
+  // WordPress関数を用い一時ダウンロード（タイムアウトをデフォルトの300秒から5秒に短縮してフリーズを防ぐ）
+  $tmp = download_url($image, 5);
   if ( is_wp_error($tmp) ) {
     return;
   }
@@ -126,8 +138,16 @@ if ( !function_exists( 'url_to_external_ogp_blogcard_tag' ) ):
 function url_to_external_ogp_blogcard_tag($url){
   if ( !$url ) return;
   $url = strip_tags($url);//URL
-  if (preg_match('/.+(\.mp3|\.midi|\.mp4|\.mpeg|\.mpg|\.jpg|\.jpeg|\.png|\.gif|\.svg|\.pdf)$/i', $url, $m)) {
-    return;
+  // URLのパス部分から拡張子を取得し、HTMLページ以外のバイナリファイル（動画・音声・画像等）を除外する
+  // wp_parse_url()を使うことで、クエリ文字列(?...)やフラグメント(#...)付きURLでも正しく判定できる
+  $url_path = wp_parse_url($url, PHP_URL_PATH);
+  if ($url_path) {
+    $ext = strtolower(pathinfo($url_path, PATHINFO_EXTENSION));
+    // 拡張子が数字のみ（例: /release-2.0 や /v1.2 のバージョン表記）の場合は本当のファイル拡張子ではないため除外しない
+    // 拡張子があり、かつHTMLページ系の拡張子でない場合はブログカード化しない
+    if ($ext && !ctype_digit($ext) && !in_array($ext, ['html', 'htm', 'xhtml', 'php', 'php5', 'php7', 'phtml', 'asp', 'aspx', 'jsp', 'cgi', 'shtml', 'do'], true)) {
+      return;
+    }
   }
   $url = ampersand_urldecode($url);
   $params = get_url_params($url);
@@ -141,12 +161,19 @@ function url_to_external_ogp_blogcard_tag($url){
 
   $image = $error_image;
   $snippet = '';
+  $ogp = null;
 
 
 
   require_once abspath(__FILE__).'open-graph.php';
-  //ブログカードキャッシュ更新モード、もしくはログインユーザー以外のときはキャッシュの取得
-  if ( !(is_external_blogcard_refresh_mode() && is_user_administrator()) ) {
+
+  //プラグイン等他環境下での Fatal Error を防ぐために function_exists で安全に判定する
+  $is_refresh_mode = function_exists('is_external_blogcard_refresh_mode') && is_external_blogcard_refresh_mode();
+  $is_user_admin   = function_exists('is_user_administrator') && is_user_administrator();
+  $is_rest_req     = function_exists('is_rest') ? is_rest() : (defined('REST_REQUEST') && REST_REQUEST);
+
+  //ブロックエディタ画面等REST API経由やクラシックエディタ保存時などバックエンド側の場合は、無駄な多重リクエストによるタイムアウト(504)を防ぐため既存キャッシュを優先する
+  if ( !($is_refresh_mode && $is_user_admin && !is_admin() && !$is_rest_req) ) {
     //保存したキャッシュを取得
     $ogp = get_transient( $url_hash );
   }
@@ -156,12 +183,17 @@ function url_to_external_ogp_blogcard_tag($url){
     $ogp_fetched = OpenGraphGetter::fetch($url);
     if ($ogp_fetched == false) {
       $ogp = 'error';
+      // エラー時もネガティブキャッシュを保存する（相手先サーバーダウン時の無限タイムアウトや504エラー対策）
+      // 1時間（HOUR_IN_SECONDS）キャッシュして、復旧までの間の自サイトへの負荷を防ぐ
+      set_transient( $url_hash, 'error', HOUR_IN_SECONDS );
     } else {
       // 必要な値だけコピーして stdClass に格納
       $ogp = new stdClass();
       $ogp->title       = $ogp_fetched->title ?? '';
       $ogp->description = $ogp_fetched->description ?? '';
       $ogp->site_name   = $ogp_fetched->site_name ?? '';
+      // og:url はリダイレクト先等のcanonical URLを示すため、ドメイン名取得やファビコン表示に使用
+      $ogp->url         = isset($ogp_fetched->url) ? $ogp_fetched->url : '';
       if (isset($ogp_fetched->image)) {
         if (apply_filters('is_externa_blogcard_thumbnail_cache', true)) {
           // キャッシュを取得した場合
@@ -195,14 +227,18 @@ function url_to_external_ogp_blogcard_tag($url){
   }
 
   //ドメイン名を取得（OGP情報のURLが正しいかのチェック）
-  $durl = punycode_decode($url);
-  if (isset($ogp->url) && preg_match(URL_REG, $ogp->url)) {
-    $durl = punycode_decode($ogp->url);
+  // punycode_decode() はフルURL対応ラッパー（内部でホスト名のみデコード＆URL再構築）のため、
+  // フルURLに対してはこちらを使用する。$durl はファビコンAPIにも渡される。
+  $durl = function_exists('punycode_decode') ? punycode_decode($url) : $url;
+  // ネガティブキャッシュ('error'文字列)時は $ogp がオブジェクトではないためプロパティアクセスを避ける
+  if ($ogp !== 'error' && isset($ogp->url) && preg_match(URL_REG, $ogp->url)) {
+    $durl = function_exists('punycode_decode') ? punycode_decode($ogp->url) : $ogp->url;
   }
+  // $durl は既にPunycodeデコード済みのため、ドメイン名もデコード後の状態で取得される
   $domain = get_domain_name($durl);
 
   $domain_style = get_external_blogcard_domain_style(); // "domain" or "name"
-  if ($domain_style === 'name' && !empty($ogp->site_name)) {
+  if ($ogp !== 'error' && $domain_style === 'name' && !empty($ogp->site_name)) {
     $domain = $ogp->site_name; // OGPのサイト名を優先
   }
 
@@ -255,6 +291,7 @@ function url_to_external_ogp_blogcard_tag($url){
   $site_logo_tag = '<div class="blogcard-site external-blogcard-site">'.$favicon_tag.$site_logo_tag.'</div>';
 
   //サムネイルを取得できた場合
+  $thumbnail = '';
   $image = apply_filters('get_external_blogcard_thumbnail_url', $image);
   if ( $image ) {
     $thumbnail = get_original_image_tag($image, THUMB160WIDTH, THUMB160HEIGHT, 'blogcard-thumb-image external-blogcard-thumb-image');

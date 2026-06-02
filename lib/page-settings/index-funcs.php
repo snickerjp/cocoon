@@ -80,7 +80,7 @@ endif;
 define('OP_INDEX_CATEGORY_IDS_COMMA_TEXT', 'index_category_ids_comma_text');
 if ( !function_exists( 'get_index_category_ids_comma_text' ) ):
 function get_index_category_ids_comma_text(){
-  return get_theme_option(OP_INDEX_CATEGORY_IDS_COMMA_TEXT);
+  return get_theme_option(OP_INDEX_CATEGORY_IDS_COMMA_TEXT, '');
 }
 endif;
 
@@ -88,7 +88,7 @@ endif;
 define('OP_INDEX_SORT_ORDERBY', 'index_sort_orderby');
 if ( !function_exists( 'get_index_sort_orderby' ) ):
 function get_index_sort_orderby(){
-  return get_theme_option(OP_INDEX_SORT_ORDERBY);
+  return get_theme_option(OP_INDEX_SORT_ORDERBY, '');
 }
 endif;
 //インデックスの並び順は投稿日順か
@@ -362,10 +362,10 @@ function get_category_index_list_entry_card_tag($categories, $count){
       cocoon_template_part('tmp/entry-card');
     } // 繰り返し処理終了
     $count = 0;
+    set_query_var('has_entries', true); // 記事がある場合
   } else { // ここから記事が見つからなかった場合の処理
     cocoon_template_part('tmp/list-not-found-posts');
-    // 記事が見つからなかった場合はカウントを0にする
-    set_query_var('count', 0);
+    set_query_var('has_entries', false); // 記事がない場合
   }
   wp_reset_postdata();
   return ob_get_clean();

@@ -25,8 +25,8 @@ function is_internal_blogcard_url($url){
   if (!includes_home_url($url)) {
     return false;
   }
-  $id = url_to_postid( $url );//IDを取得（URLから投稿ID変換）
-  $cat = get_category_by_path($url, false);
+  $id = cocoon_url_to_postid( $url );//IDを取得（URLから投稿IDへ変換・キャッシュ対応）
+  $cat = url_to_category_object($url);
   $tag = url_to_tag_object($url);
 
   if (($id && get_post_status($id)) || is_home_url($url) || $cat || $tag) {
@@ -47,8 +47,9 @@ endif;
 if ( !function_exists( 'url_to_internal_blogcard_tag' ) ):
 function url_to_internal_blogcard_tag($url){
   if ( !$url ) return;
+
   $url = strip_tags($url);//URL
-  $id = url_to_postid( $url );//IDを取得（URLから投稿ID変換）
+  $id = cocoon_url_to_postid( $url );//IDを取得（URLから投稿IDへ変換・キャッシュ対応）
   //内部ブログカード作成可能なURLかどうか
   if ( !is_internal_blogcard_url($url) ) return;
   //_v($url);
@@ -128,9 +129,9 @@ function url_to_internal_blogcard_tag($url){
     if (!empty($image)) {
       $thumbnail = get_blogcard_thumbnail_image_tag($image);
     }
-  } elseif ($cat = get_category_by_path($url, false)){
+  } elseif ($cat = url_to_category_object($url)){
     //カテゴリーページの場合
-    $cat_id = $cat->cat_ID;
+    $cat_id = $cat->term_id;
 
     $title = get_the_category_title($cat_id);
     $snippet = get_the_category_snippet($cat_id);
@@ -173,8 +174,13 @@ function url_to_internal_blogcard_tag($url){
     get_original_image_tag('https://www.google.com/s2/favicons?domain='.get_home_url(), 16, 16, 'blogcard-favicon-image internal-blogcard-favicon-image').
   '</div>';
 
-  //サイトロゴ
-  $domain = get_domain_name(punycode_decode($url));
+  // ドメイン名を抽出してからPunycodeデコードを適用する
+  // punycode_decode() はフルURL用ラッパーのため、ホスト名だけにはPunycodeクラスを直接使用する
+  $domain = get_domain_name($url);
+  if (class_exists('Punycode') && $domain) {
+    $punycode = new Punycode();
+    $domain = $punycode->decode($domain);
+  }
 
   if (get_internal_blogcard_domain_style() === 'name') {
     $domain = get_bloginfo('name');
@@ -227,7 +233,8 @@ function url_to_internal_blogcard($the_content) {
     }
 
     //カレントページのURLと$urlが同じ場合は、ブログカード化しない
-    if (get_current_page_url() === $url) {
+    //ただしウィジェットなどの the_content 以外からの呼び出し時は無限ループの恐れがないため許可する
+    if (doing_filter('the_content') && is_current_url_same($url)) {
       continue;
     }
 
@@ -252,6 +259,8 @@ if ( is_internal_blogcard_enable() ) {
   //add_filter('widget_classic_text', 'url_to_internal_blogcard', 11);
   add_filter('widget_text_mobile_text', 'url_to_internal_blogcard', 11);
   add_filter('the_category_tag_content', 'url_to_internal_blogcard', 11);
+  add_filter('appeal_area_message', 'url_to_internal_blogcard', 11);
+  add_filter('the_author_box_description', 'url_to_internal_blogcard', 11);
   //コメント内ブログカード
   if (is_comment_internal_blogcard_enable()) {
     add_filter('comment_text', 'url_to_internal_blogcard' ,11);
@@ -301,7 +310,8 @@ function url_shortcode_to_blogcard($the_content) {
     }
 
     //カレントページのURLと$urlが同じ場合は、ブログカード化しない
-    if (get_current_page_url() === $url) {
+    //ただしウィジェットなどの the_content 以外からの呼び出し時は無限ループの恐れがないため許可する
+    if (doing_filter('the_content') && is_current_url_same($url)) {
       continue;
     }
 
@@ -333,6 +343,8 @@ add_filter('widget_text_pc_text', 'url_shortcode_to_blogcard', 11);
 add_filter('widget_text_mobile_text', 'url_shortcode_to_blogcard', 11);
 add_filter('comment_text', 'url_shortcode_to_blogcard', 11);
 add_filter('the_category_tag_content', 'url_shortcode_to_blogcard', 11);
+add_filter('appeal_area_message', 'url_shortcode_to_blogcard', 11);
+add_filter('the_author_box_description', 'url_shortcode_to_blogcard', 11);
 
 //ブログカード置換用テキストにpタグが含まれているかどうか
 if ( !function_exists( 'is_p_tag_appropriate' ) ):
@@ -354,5 +366,109 @@ if ( !function_exists( 'remove_wp_block_embeds' ) ):
 function remove_wp_block_embeds($the_content){
   $the_content = preg_replace('/<figure class="wp-block-embed"><div class="wp-block-embed__wrapper">(.*?'.URL_REG_STR.'.*?)<\/div><\/figure>/is', '$1', $the_content);
   return $the_content;
+}
+endif;
+
+// ブロックエディターでoEmbed非対応URLをブログカードとして表示するブロックを登録
+// ブロック登録は常に行う（設定オフ時に既存ブロックが「非サポート」になるのを防止）
+// JSエンキューやrender_callback側で設定の有効/無効を制御する
+add_action( 'init', 'cocoon_register_embed_blogcard_block' );
+
+// ブログカード埋め込みブロックのレンダリングコールバック
+// URLを受け取り、内部/外部ブログカードのHTMLを生成して返す
+if ( ! function_exists( 'cocoon_embed_blogcard_render' ) ) :
+function cocoon_embed_blogcard_render( $attributes ) {
+  $url = isset( $attributes['url'] ) ? $attributes['url'] : '';
+  if ( ! $url ) {
+    return '';
+  }
+
+  // URLをサニタイズし、http/httpsスキームのみ許可する
+  $url = esc_url_raw( $url, array( 'http', 'https' ) );
+  if ( ! $url ) {
+    return '';
+  }
+
+  // ブログカード機能が完全にオフの場合はURLのみプレーンテキスト表示（フォールバック）
+  if ( ! is_internal_blogcard_enable() && ! is_external_blogcard_enable() ) {
+    return '<p>' . esc_html( $url ) . '</p>';
+  }
+
+  // 無限ループ防止: 自ページのURLと同一の場合はブログカード化しない
+  if ( function_exists( 'is_current_url_same' ) && is_current_url_same( $url ) ) {
+    return '<p>' . esc_html( $url ) . '</p>';
+  }
+
+  // 内部URLの場合（自サイトのURL）
+  if ( function_exists( 'is_internal_blogcard_url' ) && is_internal_blogcard_url( $url ) ) {
+    if ( is_internal_blogcard_enable() ) {
+      $tag = url_to_internal_blogcard_tag( $url );
+      if ( $tag ) {
+        return $tag;
+      }
+    }
+  } else {
+    // 外部URLの場合（他サイトのURL）
+    // ※ url_to_external_ogp_blogcard_tag() 内でキャッシュ優先・ネガティブキャッシュ（1時間）が
+    //    既に実装されているため、REST API経由でも安全にフェッチできる
+    if ( is_external_blogcard_enable() ) {
+      if ( function_exists( 'url_to_external_blog_card_tag' ) ) {
+        $tag = url_to_external_blog_card_tag( $url );
+        if ( $tag ) {
+          return $tag;
+        }
+      }
+    }
+  }
+
+  // どちらでも生成できなかった場合のフォールバック
+  return '<p>' . esc_html( $url ) . '</p>';
+}
+endif;
+
+// ブログカード埋め込みブロックの登録
+if ( ! function_exists( 'cocoon_register_embed_blogcard_block' ) ) :
+function cocoon_register_embed_blogcard_block() {
+  // エディター用JSのファイルパス
+  $js_path = get_cocoon_template_directory() . '/js/blogcard-editor.js';
+
+  // エディター用JSを登録（ファイルが存在しない場合のWarning防止）
+  wp_register_script(
+    'cocoon-blogcard-editor',
+    get_cocoon_template_directory_uri() . '/js/blogcard-editor.js',
+    array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-server-side-render', 'wp-dom-ready', 'wp-data', 'wp-core-data' ),
+    file_exists( $js_path ) ? filemtime( $js_path ) : false
+  );
+
+  // ブログカード設定（内部・外部）が有効かどうかをそれぞれJS側に渡す
+  $blogcard_settings = array(
+    'isInternalActive' => is_internal_blogcard_enable(),
+    'isExternalActive' => is_external_blogcard_enable(),
+  );
+  wp_add_inline_script(
+    'cocoon-blogcard-editor',
+    'var cocoonBlogcardSettings = ' . wp_json_encode( $blogcard_settings ) . ';',
+    'before'
+  );
+
+  // ダイナミックブロックとして登録（PHPのrender_callbackでHTMLを生成）
+  $block_args = array(
+    'api_version'     => 3,
+    'attributes'      => array(
+      'url' => array( 'type' => 'string', 'default' => '' ),
+    ),
+    'render_callback' => 'cocoon_embed_blogcard_render',
+    'script_handles'  => array(),
+  );
+  // エディタースクリプトに翻訳を適用する
+  wp_set_script_translations( 'cocoon-blogcard-editor', 'cocoon', get_cocoon_template_directory() . '/languages' );
+  // ブロック登録自体は常に行い、設定オフ時に既存ブロックが「非サポート」になるのを防止する
+  // WP 6.1+ は editor_script_handles（推奨形式）、WP 6.0以下は editor_script（旧形式）を使用
+  if ( function_exists( 'is_wp_6_1_or_over' ) && is_wp_6_1_or_over() ) {
+    $block_args['editor_script_handles'] = array( 'cocoon-blogcard-editor' );
+  } else {
+    $block_args['editor_script'] = 'cocoon-blogcard-editor';
+  }
+  register_block_type( 'cocoon-blocks/embed-blogcard', $block_args );
 }
 endif;

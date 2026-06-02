@@ -47,9 +47,19 @@ function cocoon_blocks_cgb_block_assets()
 	add_filter('admin_body_class', 'add_site_font_settings_to_admin_body_class');
 	if (!function_exists('add_site_font_settings_to_admin_body_class')) {
 		function add_site_font_settings_to_admin_body_class($classes) {
-			$classes .= ' wp-admin-' . get_site_font_family_class();
-			$classes .= ' wp-admin-' . get_site_font_size_class();
-			$classes .= ' wp-admin-' . get_site_font_weight_class();
+			// 値が空プレフィックスのみ（例: 'ff-'）の場合は除外して、不要なクラス付与を防ぐ
+			$font_family_class = get_site_font_family_class();
+			$font_size_class   = get_site_font_size_class();
+			$font_weight_class = get_site_font_weight_class();
+			if ( $font_family_class && $font_family_class !== 'ff-' ) {
+				$classes .= ' wp-admin-' . $font_family_class;
+			}
+			if ( $font_size_class && $font_size_class !== 'fz-' ) {
+				$classes .= ' wp-admin-' . $font_size_class;
+			}
+			if ( $font_weight_class && $font_weight_class !== 'fw-' ) {
+				$classes .= ' wp-admin-' . $font_weight_class;
+			}
 			return $classes;
 		}
 	}
@@ -276,6 +286,19 @@ function cocoon_blocks_cgb_editor_assets()
 	);
 
 	// Amazon商品リンクブロックの初期値をCocoon設定から渡す
+	$amazon_api_name    = '';
+	$amazon_api_version = '';
+	if ( function_exists( 'is_amazon_creators_api_credentials_available' ) && is_amazon_creators_api_credentials_available() ) {
+		$amazon_api_name = __( 'Creators API', THEME_NAME );
+		if ( function_exists( 'amazon_creators_api_get_version' ) && function_exists( 'get_amazon_creators_api_credential_id' ) ) {
+			$amazon_api_version = 'v' . amazon_creators_api_get_version( get_amazon_creators_api_credential_id() );
+		}
+	} else {
+		if ( function_exists( 'get_amazon_api_access_key_id' ) && get_amazon_api_access_key_id() && function_exists( 'get_amazon_api_secret_key' ) && get_amazon_api_secret_key() ) {
+			$amazon_api_name    = __( 'PA-API', THEME_NAME );
+			$amazon_api_version = 'v5';
+		}
+	}
 	$amazon_block_defaults = array(
 		// 枠線を表示するか（常に有効）
 		'showBorder'        => 1,
@@ -301,6 +324,8 @@ function cocoon_blocks_cgb_editor_assets()
 		'useMoshimoAffiliate' => is_moshimo_affiliate_link_enable() ? 1 : 0,
 		// もしものAmazon/楽天/Yahoo! IDが設定済みかどうか（設定パネルの表示制御用）
 		'hasMoshimoIds' => (get_moshimo_amazon_id() || get_moshimo_rakuten_id() || get_moshimo_yahoo_id()) ? 1 : 0,
+		'apiName'           => $amazon_api_name,
+		'apiVersion'        => $amazon_api_version,
 	);
 	wp_localize_script(
 		'cocoon-blocks-js',
@@ -309,6 +334,16 @@ function cocoon_blocks_cgb_editor_assets()
 	);
 
 	// 楽天商品リンクブロックの初期値をCocoon設定から渡す
+	$rakuten_api_name    = '';
+	$rakuten_api_version = '';
+	if ( function_exists( 'get_rakuten_application_id' ) && get_rakuten_application_id() && function_exists( 'get_rakuten_affiliate_id' ) && get_rakuten_affiliate_id() ) {
+		$rakuten_api_name    = __( '楽天商品検索API', THEME_NAME );
+		if ( function_exists( 'get_rakuten_access_key' ) && trim( get_rakuten_access_key() ) ) {
+			$rakuten_api_version = COCOON_RAKUTEN_API_VERSION;
+		} else {
+			$rakuten_api_version = COCOON_RAKUTEN_API_LEGACY_VERSION;
+		}
+	}
 	$rakuten_block_defaults = array(
 		// 枠線を表示するか（常に有効）
 		'showBorder'        => 1,
@@ -330,7 +365,8 @@ function cocoon_blocks_cgb_editor_assets()
 		'useMoshimoAffiliate' => is_moshimo_affiliate_link_enable() ? 1 : 0,
 		// もしものAmazon/楽天/Yahoo! IDが設定済みかどうか（設定パネルの表示制御用）
 		'hasMoshimoIds' => (get_moshimo_amazon_id() || get_moshimo_rakuten_id() || get_moshimo_yahoo_id()) ? 1 : 0,
-
+		'apiName'           => $rakuten_api_name,
+		'apiVersion'        => $rakuten_api_version,
 	);
 	wp_localize_script(
 		'cocoon-blocks-js',
@@ -483,12 +519,14 @@ require_once abspath(__FILE__) . 'block/profile/index.php';
 require_once abspath(__FILE__) . 'block/new-list/index.php';
 require_once abspath(__FILE__) . 'block/popular-list/index.php';
 require_once abspath(__FILE__) . 'block/info-list/index.php';
-require_once abspath(__FILE__) . 'block/navicard/index.php';
-require_once abspath(__FILE__) . 'block/tab/index.php';
-require_once abspath(__FILE__) . 'block/tab-item/index.php';
 require_once abspath(__FILE__) . 'block/cta/index.php';
 require_once abspath(__FILE__) . 'block/radar/index.php';
 require_once abspath(__FILE__) . 'block/faq/index.php';
+require_once abspath(__FILE__) . 'block/campaign/index.php';
+require_once abspath(__FILE__) . 'block/navicard/index.php';
+require_once abspath(__FILE__) . 'block/tab/index.php';
+require_once abspath(__FILE__) . 'block/tab-item/index.php';
+require_once abspath(__FILE__) . 'block/login-user-only/index.php';
 
 require_once abspath(__FILE__) . 'block-universal/caption-box/index.php';
 require_once abspath(__FILE__) . 'block-universal/tab-caption-box/index.php';

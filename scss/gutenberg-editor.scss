@@ -282,6 +282,9 @@ div.mce-content-body {
 /* full width */
 
 .editor-styles-wrapper {
+  // iframe版エディタ利用時に、親テーマのbody背景色が継承される不具合を修正する
+  background-color: #fff;
+
   .wp-block[data-align=full] {
     max-width: none;
     margin-left: auto;
@@ -825,10 +828,6 @@ ol, ul {
 //   }
 // }
 
-p {
-  margin-top: 0;
-}
-
 .page-type-wide{
   max-width: 96% !important;
 }
@@ -1191,8 +1190,8 @@ div.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper {
   margin-top: 0 !important;
 }
 
-//新着・人気記事ブロックの矢印アイコンフォントの文字化け修正
-.editor-styles-wrapper.font-awesome-5 .card-arrow .a-wrap::after{
+.editor-styles-wrapper.font-awesome-5 .card-arrow .a-wrap::after,
+.editor-styles-wrapper .font-awesome-5 .card-arrow .a-wrap::after {
   font-family: 'Font Awesome 5 Free';
 }
 
@@ -1305,7 +1304,42 @@ div.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper {
       }
     }
 
+    // ステッチ（背景色と外枠shadowをリセット）
+    &.is-style-stitch-box {
+      box-shadow: unset;
+    }
+
+    // 交差線（疑似要素の高さが枠外にはみ出すのを補正）
+    &.is-style-cross-line::before { left: 5px; }
+    &.is-style-cross-line::after  { right: 5px; }
+    &.is-style-cross-line::before,
+    &.is-style-cross-line::after {
+      height: calc(100% + 10px);
+      top: -5px;
+    }
+
+    // クリップ（クリップ疑似要素が枠外にはみ出すのを補正）
+    &.is-style-clip-box::before {
+      height: 35px;
+      top: -5px;
+      width: 15px;
+    }
+
   }
+
+  // ステッチ（背景色を枠に合わせる）
+  .__prevWrap:has(.is-style-stitch-box) {
+    background: #fbfaf5;
+  }
+  // 左吹き出し（左の矢印が枠外にはみ出すのを防ぐ）
+  .__prevWrap:has(.is-style-balloon-left-box)   { padding-left:   10px; }
+  // 右吹き出し（右の矢印が枠外にはみ出すのを防ぐ）
+  .__prevWrap:has(.is-style-balloon-right-box)  { padding-right:  10px; }
+  // 上吹き出し（上の矢印が枠外にはみ出すのを防ぐ）
+  .__prevWrap:has(.is-style-balloon-top-box)    { padding-top:    10px; }
+  // 下吹き出し（下の矢印が枠外にはみ出すのを防ぐ）
+  .__prevWrap:has(.is-style-balloon-bottom-box) { padding-bottom: 10px; }
+
   .__prevTitle {
     display: block;
     font-size: 10px;
@@ -1325,7 +1359,7 @@ div.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper {
 
 .editor-post-title::after {
   color: rgb(51, 51, 51);
-  content: "Count: " attr(data-title-count);
+  content: attr(data-title-prefix) attr(data-title-count);
   display: inline-block;
   font-size: 12px;
   font-weight: normal;
@@ -1339,9 +1373,6 @@ div.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper {
   border: 1px solid var(--cocoon-basic-border-color);
 }
 
-[lang="ja"] .editor-post-title::after {
-  content: "文字数: " attr(data-title-count);
-}
 
 .components-range-control .components-base-control__label{
   margin: 0.2em 0 1em;
@@ -1476,4 +1507,62 @@ body .is-layout-grid {
 
 body.block-editor-page{
   background-color: initial;
+}
+
+// グループブロック全体リンク化のエディター表示
+.editor-cocoon-group-link-active {
+  position: relative;
+  outline: 1px dashed rgba(0, 0, 0, 0.2);
+  outline-offset: -1px;
+}
+.editor-cocoon-group-link-active::after {
+  content: '\f0c1'; /* fa-link */
+  font-family: FontAwesome; /* Font Awesome 4用 */
+  font-weight: 900;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: rgba(0, 0, 0, 0.3);
+  font-size: 16px;
+  pointer-events: none;
+}
+/* Font Awesome 5利用時のアイコンフォント対応 */
+.editor-styles-wrapper.font-awesome-5 .editor-cocoon-group-link-active::after,
+.editor-styles-wrapper .font-awesome-5 .editor-cocoon-group-link-active::after {
+  font-family: 'Font Awesome 5 Free';
+}
+
+// グループブロック ポップオーバー用（リンク設定）
+.cocoon-group-link-popover__content {
+  padding: 16px;
+  min-width: 300px;
+}
+.cocoon-group-link-popover__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* ブロックエディター上でブログカード上のマウスカーソルを通常の矢印（default）にする */
+.blogcard,
+.blogcard a,
+.internal-blogcard,
+.internal-blogcard a,
+.external-blogcard,
+.external-blogcard a,
+.wp-block-cocoon-blocks-embed-blogcard,
+.wp-block-cocoon-blocks-embed-blogcard a,
+.is-cocoon-group-link,
+.is-cocoon-group-link a {
+  cursor: default !important;
+}
+
+/*エディタープレビュー上でServerSideRenderブロック内のリンククリックによるクラッシュ遷移を防止*/
+.cocoon-editor-no-link-click a {
+  pointer-events: none;
+  cursor: default;
+}
+
+.cocoon-editor-no-link-click a:focus {
+  outline: none;
 }

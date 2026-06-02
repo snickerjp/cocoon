@@ -224,14 +224,6 @@ function get_archive_chapter_text(){
 }
 endif;
 
-//'wp-color-picker'の呼び出し順操作（最初の方に読み込む）
-add_action('admin_enqueue_scripts', 'admin_enqueue_scripts_custom');
-if ( !function_exists( 'admin_enqueue_scripts_custom' ) ):
-function admin_enqueue_scripts_custom($hook) {
-  wp_enqueue_script('colorpicker-script', get_cocoon_template_directory_uri() . '/js/color-picker.js', array( 'wp-color-picker' ), false, true);
-}
-endif;
-
 //投稿管理画面のカテゴリーリストの階層を保つ
 add_filter('wp_terms_checklist_args', 'solecolor_wp_terms_checklist_args', 10, 2);
 if ( !function_exists( 'solecolor_wp_terms_checklist_args' ) ):
@@ -442,6 +434,20 @@ endif;
 add_filter('render_block_cocoon-blocks/faq', 'cocoon_blocks_faq', 10, 2);
 
 function cocoon_blocks_faq($content, $block) {
+  // 同一リクエスト内で処理済みのブロックを管理する静的変数
+  static $processed_faq_blocks = [];
+
+  // ブロック属性と内容からハッシュを生成し、重複レンダリングを検出
+  $block_id = md5(serialize($block['attrs']) . $block['innerHTML']);
+
+  // 処理済みの場合はフッターへのデータ登録をスキップしてHTMLのみ返す
+  if (isset($processed_faq_blocks[$block_id])) {
+    return $content;
+  }
+
+  // 未処理としてマーク
+  $processed_faq_blocks[$block_id] = true;
+
   add_filter('cocoon_faq_entity', function ($faq) use ($content, $block) {
     return cocoon_add_faq($content, $block, $faq, 'question');
   });
@@ -665,63 +671,14 @@ function override_bbpress_templates_if_inactive( $template ) {
   return $template;
 }
 
-// 2. サイトエディター（パターンエディター）のiframe内用
-add_action('admin_footer', 'add_site_editor_body_class_script');
-function add_site_editor_body_class_script() {
-  // サイトエディターの場合のみ実行
-  if (use_gutenberg_editor()) {
-    echo "
-      <script>
-        (function() {
-          // DOM読み込み完了後に実行
-          function addBodyClass() {
-            // iframe内のdocumentを取得
-            const iframe = document.querySelector('iframe[name=\"editor-canvas\"]');
-            if (iframe && iframe.contentWindow && iframe.contentWindow.document) {
-              const iframeBody = iframe.contentWindow.document.body;
-              if (iframeBody) {
-                // フォントを追加
-                if (!iframeBody.classList.contains('custom-editor-class')) {
-                  iframeBody.classList.add('wp-admin-".get_site_font_family_class()."');
-                }
-                // フォントサイズを追加
-                if (!iframeBody.classList.contains('custom-editor-class')) {
-                  iframeBody.classList.add('wp-admin-".get_site_font_size_class()."');
-                }
-                // フォントウェイトを追加
-                if (!iframeBody.classList.contains('custom-editor-class')) {
-                  iframeBody.classList.add('wp-admin-".get_site_font_weight_class()."');
-                }
-              }
-            }
-          }
-
-          // 初回実行
-          setTimeout(addBodyClass, 1000);
-
-          // iframe の読み込みを監視
-          const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-              if (mutation.type === 'childList') {
-                const iframe = document.querySelector('iframe[name=\"editor-canvas\"]');
-                if (iframe) {
-                  console.log(iframe);
-                  iframe.addEventListener('load', addBodyClass);
-                  addBodyClass();
-                }
-              }
-            });
-          });
-
-          observer.observe(document.body, {
-            childList: true,
-            subtree: true
-          });
-
-          // 定期的にチェック（フォールバック）
-          setInterval(addBodyClass, 2000);
-        })();
-      </script>
-    ";
-  }
+// ナビゲーションメニューの日本語IDを削除する
+add_filter( 'wp_nav_menu_args', 'cocoon_wp_nav_menu_args_custom' );
+if ( !function_exists( 'cocoon_wp_nav_menu_args_custom' ) ):
+function cocoon_wp_nav_menu_args_custom( $args ) {
+  // フォーラムの提案通り、コンテナとIDを削除してシンプルなリストにする
+  $args['container'] = false;
+  $args['items_wrap'] = '<ul class="%2$s">%3$s</ul>';
+  return $args;
 }
+endif;
+

@@ -146,14 +146,22 @@ $help_text = __( '取得方法', THEME_NAME );
             generate_moshimo_badge_tag(__( 'もしも必須', THEME_NAME ));
             echo '<br>';
             generate_textbox_tag(OP_RAKUTEN_APPLICATION_ID, get_rakuten_application_id(), '');
-            generate_tips_tag(__( '楽天APIを利用するためのアプリケーションIDを入力してください。', THEME_NAME ).get_help_page_tag('https://wp-cocoon.com/rakuten-application-id/', $help_text));
+            generate_tips_tag(__( '楽天APIを利用するためのアプリケーションIDを入力してください。', THEME_NAME ).get_help_page_tag('https://wp-cocoon.com/how-to-get-rakuten-api-keys/', $help_text));
+
 
             generate_label_tag(OP_RAKUTEN_AFFILIATE_ID, __( '楽天アフィリエイトID', THEME_NAME ));
             generate_rakuten_badge_tag(__( '楽天必須', THEME_NAME ));
             generate_moshimo_badge_tag(__( 'もしも必須', THEME_NAME ));
             echo '<br>';
             generate_textbox_tag(OP_RAKUTEN_AFFILIATE_ID, get_rakuten_affiliate_id(), '');
-            generate_tips_tag(__( '楽天アフィリエイト用のIDを入力してください。', THEME_NAME ).get_help_page_tag('https://wp-cocoon.com/rakuten-affiliate-id/', $help_text));
+            generate_tips_tag(__( '楽天アフィリエイト用のIDを入力してください。', THEME_NAME ).get_help_page_tag('https://wp-cocoon.com/how-to-get-rakuten-api-keys/', $help_text));
+
+            generate_label_tag(OP_RAKUTEN_ACCESS_KEY, __( '楽天アクセスキー', THEME_NAME ));
+            generate_rakuten_badge_tag(__('楽天必須', THEME_NAME));
+          generate_moshimo_badge_tag(__('もしも必須', THEME_NAME));
+            echo '<br>';
+            generate_textbox_tag(OP_RAKUTEN_ACCESS_KEY, get_rakuten_access_key(), '');
+            generate_tips_tag(__( '楽天APIの利用に必要なアクセスキーです。アプリを再登録して取得してください。<br>※旧API（app.rakuten.co.jp）は2026年5月に廃止予定です。未入力の場合は廃止まで旧APIが使用されますが、お早めにアクセスキーを設定してください。', THEME_NAME ).get_help_page_tag('https://wp-cocoon.com/how-to-get-rakuten-api-keys/', $help_text));
 
 
             echo '<div'.get_not_allowed_form_class(get_rakuten_affiliate_id()).'>';
@@ -373,10 +381,12 @@ $help_text = __( '取得方法', THEME_NAME );
             // 自動更新がONのときのみ更新間隔を表示
             echo '<div' . get_not_allowed_form_class(is_product_block_auto_update_enable(), true) . '>';
               $interval_options = array(
-                'weekly'            => __( '毎週', THEME_NAME ),
-                'cocoon_biweekly'   => __( '2週間ごと（推奨）', THEME_NAME ),
-                'cocoon_monthly'    => __( '1ヶ月ごと', THEME_NAME ),
-                'cocoon_quarterly'  => __( '3ヶ月ごと', THEME_NAME ),
+                'daily'             => __( '1日ごと', THEME_NAME ),
+                'cocoon_every_2_days'  => __( '2日ごと', THEME_NAME ),
+                'cocoon_every_3_days'  => __( '3日ごと（推奨）', THEME_NAME ),
+                'cocoon_every_5_days'  => __( '5日ごと', THEME_NAME ),
+                'weekly'            => __( '1週間ごと', THEME_NAME ),
+                'cocoon_biweekly'   => __( '2週間ごと', THEME_NAME ),
               );
               generate_radiobox_tag(
                 OP_PRODUCT_BLOCK_AUTO_UPDATE_INTERVAL,
@@ -384,19 +394,15 @@ $help_text = __( '取得方法', THEME_NAME );
                 get_product_block_auto_update_interval(),
                 __( '更新間隔', THEME_NAME )
               );
-              generate_tips_tag(__( '更新間隔が短いほどAPIのリクエスト数が増えます。Amazon Creators APIのリクエスト制限にご注意ください。', THEME_NAME ));
+              generate_tips_tag(__( '更新間隔が短いほどAPIのリクエスト数が増えます。Amazon・楽天それぞれのAPIリクエスト制限にご注意ください。', THEME_NAME ));
 
               // 1回のCronで処理する投稿数
               $batch_size_options = array(
+                '5'   => __( '5投稿', THEME_NAME ),
                 '10'  => __( '10投稿', THEME_NAME ),
                 '20'  => __( '20投稿', THEME_NAME ),
                 '30'  => __( '30投稿', THEME_NAME ),
-                '40'  => __( '40投稿', THEME_NAME ),
                 '50'  => __( '50投稿', THEME_NAME ),
-                '60'  => __( '60投稿', THEME_NAME ),
-                '70'  => __( '70投稿', THEME_NAME ),
-                '80'  => __( '80投稿', THEME_NAME ),
-                '90'  => __( '90投稿', THEME_NAME ),
                 '100' => __( '100投稿', THEME_NAME ),
               );
               generate_selectbox_tag(
@@ -406,6 +412,7 @@ $help_text = __( '取得方法', THEME_NAME );
                 __( '1回あたりの処理投稿数', THEME_NAME )
               );
               generate_tips_tag(__( '1回のCron実行で処理する投稿数です。投稿数が多いサイトでは大きめの値にしてください。ただし、1投稿あたりのブロック数が多いほどAPIリクエストも増えます。', THEME_NAME ));
+              generate_tips_tag(__( '※共有ホスティングをご利用の場合は30以下を推奨します。50以上に設定するとサーバー側のタイムアウト制限により処理が中断される場合があります。', THEME_NAME ));
             echo '</div>';
             ?>
           </td>

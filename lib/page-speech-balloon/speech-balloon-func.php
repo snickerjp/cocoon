@@ -33,7 +33,7 @@ define('SBIS_CIRCLE_NONE', 'cn');
 define('SBIS_CIRCLE_BORDER', 'cb');
 
 //いらすとやさん関係
-define('IRASUTOYA_ CREDIT', '&copy; <a href="http://www.irasutoya.com/" target="_blank" rel="noopener">いらすとや</a>');
+define('IRASUTOYA_ CREDIT', '&copy; <a href="https://www.irasutoya.com/" target="_blank" rel="noopener">いらすとや</a>');
 define('IMAGE_CDN_DIR_URL', 'https://im-cocoon.net/wp-content/uploads');
 
 
@@ -358,7 +358,7 @@ function generate_speech_balloon_tag($record, $voice){
     }
   }
 ?>
-<div class="speech-wrap sb-id-<?php echo esc_html($record->id); ?> sbs-<?php echo esc_html($record->style); ?> sbp-<?php echo esc_html($record->position); ?> sbis-<?php echo esc_html($record->iconstyle); ?> cf"><div class="speech-person"><figure class="speech-icon"><img src="<?php echo esc_html($record->icon); ?>" alt="<?php echo esc_html($record->name); ?>" class="speech-icon-image" width="<?php echo $w; ?>" height="<?php echo $h; ?>"></figure><?php if ($record->name): ?><div class="speech-name"><?php echo esc_html($record->name); ?></div><?php endif ?></div><div class="speech-balloon"><p><?php echo esc_html($voice); ?></p></div></div>
+<div class="speech-wrap sb-id-<?php echo esc_html($record->id); ?> sbs-<?php echo esc_html($record->style); ?> sbp-<?php echo esc_html($record->position); ?> sbis-<?php echo esc_html($record->iconstyle); ?> cf"><div class="speech-person"><figure class="speech-icon"><img src="<?php echo esc_url($record->icon); ?>" alt="<?php echo esc_html($record->name); ?>" class="speech-icon-image" width="<?php echo $w; ?>" height="<?php echo $h; ?>"></figure><?php if ($record->name): ?><div class="speech-name"><?php echo esc_html($record->name); ?></div><?php endif ?></div><div class="speech-balloon"><p><?php echo esc_html($voice); ?></p></div></div>
 <?php
 }
 endif;

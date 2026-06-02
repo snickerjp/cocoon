@@ -2,14 +2,14 @@
 # This file is distributed under the GNU General Public License.
 msgid ""
 msgstr ""
-"Project-Id-Version: Cocoon 2.9.0.3\n"
+"Project-Id-Version: Cocoon 2.9.0.13\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/cocoon\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-02-23T16:55:54+00:00\n"
+"POT-Creation-Date: 2026-04-05T00:33:03+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 
@@ -38,27 +38,33 @@ msgstr ""
 msgid "https://nelog.jp/"
 msgstr ""
 
-#: blocks/src/init.php:343
+#: blocks/src/block/login-user-only/index.php:19
+#: lib/shortcodes.php:320
+#: lib/tinymce/shortcodes.php:234
+msgid "こちらのコンテンツはログインユーザーのみに表示されます。"
+msgstr ""
+
+#: blocks/src/init.php:399
 msgid "Cocoonブロック"
 msgstr ""
 
-#: blocks/src/init.php:348
+#: blocks/src/init.php:404
 msgid "Cocoon汎用ブロック"
 msgstr ""
 
-#: blocks/src/init.php:353
+#: blocks/src/init.php:409
 msgid "Cocoonマイクロコピー"
 msgstr ""
 
-#: blocks/src/init.php:358
+#: blocks/src/init.php:414
 msgid "Cocoonレイアウト"
 msgstr ""
 
-#: blocks/src/init.php:363
+#: blocks/src/init.php:419
 msgid "Cocoonショートコード"
 msgstr ""
 
-#: blocks/src/init.php:368
+#: blocks/src/init.php:424
 msgid "Cocoon旧ブロック（非推奨）"
 msgstr ""
 
@@ -108,7 +114,7 @@ msgstr ""
 
 #: functions.php:551
 #: functions.php:552
-#: lib/admin.php:402
+#: lib/admin.php:407
 msgid "パターン一覧"
 msgstr ""
 
@@ -254,7 +260,6 @@ msgid "青色アンダーラインマーカー"
 msgstr ""
 
 #: lib/admin-tinymce-qtag.php:182
-#: skins/skin-made-in-heaven/lib/panel-visual.php:55
 msgid "フォントサイズ"
 msgstr ""
 
@@ -264,7 +269,7 @@ msgstr ""
 
 #: lib/admin-tinymce-qtag.php:204
 #: lib/admin-tinymce-qtag.php:531
-#: lib/admin.php:163
+#: lib/admin.php:138
 #: lib/block-editor-styles-group.php:42
 #: lib/block-editor-styles-paragraph.php:77
 #: lib/custom-fields/memo-field.php:17
@@ -281,8 +286,8 @@ msgstr ""
 #: lib/page-settings/sns-share-forms-bottom.php:104
 #: lib/page-settings/sns-share-forms-top.php:91
 #: lib/page-settings/_top-page.php:224
-#: lib/_defins.php:404
-#: skins/skin-made-in-heaven/lib/panel-option.php:84
+#: lib/_defins.php:406
+#: skins/skin-made-in-heaven/lib/panel-option.php:81
 #: tmp/mobile-comments-button.php:12
 #: tmp/sns-share-buttons.php:73
 msgid "コメント"
@@ -954,7 +959,7 @@ msgstr ""
 #: lib/widgets/popular-entries.php:21
 #: lib/widgets/popular-entries.php:137
 #: lib/widgets/popular-entries.php:151
-#: skins/skin-made-in-heaven/lib/panel-option.php:75
+#: skins/skin-made-in-heaven/lib/panel-option.php:72
 msgid "人気記事"
 msgstr ""
 
@@ -963,7 +968,7 @@ msgid "あわせて読みたい"
 msgstr ""
 
 #: lib/admin-tinymce-qtag.php:1670
-#: lib/shortcodes.php:1164
+#: lib/shortcodes.php:1171
 #: lib/widgets/cta-box.php:34
 msgid "詳細はこちら"
 msgstr ""
@@ -984,139 +989,140 @@ msgstr ""
 msgid "商品リンクの追加"
 msgstr ""
 
-#: lib/admin.php:143
+#: lib/admin.php:134
 msgid "ID"
 msgstr ""
 
-#: lib/admin.php:148
+#: lib/admin.php:135
 #: lib/custom-fields/seo-field.php:62
-#: lib/custom-fields/seo-field.php:118
-#: lib/custom-fields/seo-field.php:128
+#: lib/custom-fields/seo-field.php:88
+#: lib/custom-fields/seo-field.php:132
+#: lib/custom-fields/seo-field.php:142
 #: skins/skin-made-in-heaven/lib/hook-wp.php:161
 msgid "文字数"
 msgstr ""
 
-#: lib/admin.php:153
+#: lib/admin.php:136
 msgid "PV"
 msgstr ""
 
-#: lib/admin.php:158
+#: lib/admin.php:137
 #: lib/content-category.php:262
 #: lib/content-tag.php:242
 #: lib/page-settings/editor-forms.php:97
 msgid "アイキャッチ"
 msgstr ""
 
-#: lib/admin.php:193
+#: lib/admin.php:172
 msgid "　題："
 msgstr ""
 
-#: lib/admin.php:201
+#: lib/admin.php:180
 msgid "本文："
 msgstr ""
 
-#: lib/admin.php:216
+#: lib/admin.php:195
 msgid "日："
 msgstr ""
 
-#: lib/admin.php:224
+#: lib/admin.php:203
 msgid "週："
 msgstr ""
 
-#: lib/admin.php:232
+#: lib/admin.php:211
 msgid "月："
 msgstr ""
 
-#: lib/admin.php:240
+#: lib/admin.php:219
 msgid "全："
 msgstr ""
 
-#: lib/admin.php:325
+#: lib/admin.php:304
 #: lib/tinymce/shortcodes.php:45
 msgid "ショートコード"
 msgstr ""
 
-#: lib/admin.php:354
+#: lib/admin.php:392
 #: lib/page-settings/admin-forms.php:24
 msgid "管理メニュー"
 msgstr ""
 
-#: lib/admin.php:366
+#: lib/admin.php:398
 #: tmp/admin-panel.php:31
 msgid "ダッシュボード"
 msgstr ""
 
-#: lib/admin.php:373
+#: lib/admin.php:399
 #: lib/shortcodes.php:519
 msgid "投稿一覧"
 msgstr ""
 
-#: lib/admin.php:380
+#: lib/admin.php:400
 msgid "固定ページ一覧"
 msgstr ""
 
-#: lib/admin.php:387
+#: lib/admin.php:401
 msgid "メディア一覧"
 msgstr ""
 
-#: lib/admin.php:394
+#: lib/admin.php:402
 msgid "テーマ"
 msgstr ""
 
-#: lib/admin.php:410
+#: lib/admin.php:412
 msgid "カスタマイズ"
 msgstr ""
 
-#: lib/admin.php:417
+#: lib/admin.php:413
 #: lib/page-settings/_top-page.php:264
 #: skins/skin-made-in-heaven/lib/panel-color.php:68
 msgid "ウィジェット"
 msgstr ""
 
-#: lib/admin.php:424
-#: skins/skin-made-in-heaven/lib/hook-wp.php:656
+#: lib/admin.php:414
+#: skins/skin-made-in-heaven/lib/hook-wp.php:665
 #: skins/skin-made-in-heaven/lib/panel-color.php:75
 #: tmp/mobile-navi-button.php:21
 msgid "メニュー"
 msgstr ""
 
-#: lib/admin.php:431
+#: lib/admin.php:415
 msgid "テーマの編集"
 msgstr ""
 
-#: lib/admin.php:438
+#: lib/admin.php:416
 msgid "プラグイン一覧"
 msgstr ""
 
-#: lib/admin.php:446
+#: lib/admin.php:422
 #: lib/original-menu.php:20
 #: lib/page-settings/_top-page.php:128
 msgid "Cocoon 設定"
 msgstr ""
 
-#: lib/admin.php:453
+#: lib/admin.php:423
 #: lib/original-menu.php:27
 #: lib/page-speech-balloon/_top-page.php:37
 #: lib/tinymce/speech-balloons.php:50
-#: skins/skin-made-in-heaven/lib/hook-wp.php:341
+#: skins/skin-made-in-heaven/lib/hook-wp.php:338
 msgid "吹き出し"
 msgstr ""
 
-#: lib/admin.php:460
+#: lib/admin.php:424
 #: lib/original-menu.php:30
 #: lib/page-func-text/_top-page.php:37
 #: lib/tinymce/function-texts.php:49
 msgid "テンプレート"
 msgstr ""
 
-#: lib/admin.php:467
+#: lib/admin.php:425
 #: lib/original-menu.php:33
 #: lib/page-affiliate-tag/_top-page.php:37
 #: lib/tinymce/affiliate-tags.php:48
 msgid "アフィリエイトタグ"
 msgstr ""
 
-#: lib/admin.php:474
+#: lib/admin.php:426
 #: lib/original-menu.php:36
 #: lib/page-item-ranking/_top-page.php:37
 #: lib/tinymce/item-rankings.php:51
@@ -1125,7 +1131,7 @@ msgstr ""
 msgid "ランキング"
 msgstr ""
 
-#: lib/admin.php:481
+#: lib/admin.php:427
 #: lib/original-menu.php:39
 #: lib/page-access/access-forms.php:14
 #: lib/page-access/access-forms.php:26
@@ -1133,20 +1139,20 @@ msgstr ""
 msgid "アクセス集計"
 msgstr ""
 
-#: lib/admin.php:488
+#: lib/admin.php:428
 #: lib/original-menu.php:42
 #: lib/page-speed-up/_top-page.php:39
 msgid "高速化"
 msgstr ""
 
-#: lib/admin.php:495
+#: lib/admin.php:429
 #: lib/original-menu.php:45
 #: lib/page-backup/backup-forms.php:24
 #: lib/page-backup/_top-page.php:40
 msgid "バックアップ"
 msgstr ""
 
-#: lib/admin.php:502
+#: lib/admin.php:430
 #: lib/original-menu.php:48
 #: lib/page-cache/cache-forms.php:14
 #: lib/page-cache/_top-page.php:65
@@ -1154,27 +1160,32 @@ msgstr ""
 msgid "キャッシュ削除"
 msgstr ""
 
-#: lib/admin.php:607
+#: lib/admin.php:517
 msgid "カテゴリー検索"
 msgstr ""
 
-#: lib/admin.php:667
-#: lib/admin.php:681
+#: lib/admin.php:577
+#: lib/admin.php:591
 msgid "Excerpt"
 msgstr ""
 
 #: lib/block-amazon-product-link-cron.php:19
-msgid "2週間ごと"
+#: lib/page-settings/apis-forms.php:377
+msgid "2日ごと"
 msgstr ""
 
 #: lib/block-amazon-product-link-cron.php:24
-#: lib/page-settings/apis-forms.php:375
-msgid "1ヶ月ごと"
+msgid "3日ごと"
 msgstr ""
 
 #: lib/block-amazon-product-link-cron.php:29
-#: lib/page-settings/apis-forms.php:376
-msgid "3ヶ月ごと"
+#: lib/page-settings/apis-forms.php:379
+msgid "5日ごと"
+msgstr ""
+
+#: lib/block-amazon-product-link-cron.php:34
+#: lib/page-settings/apis-forms.php:381
+msgid "2週間ごと"
 msgstr ""
 
 #: lib/block-amazon-product-link.php:49
@@ -1191,7 +1202,7 @@ msgstr ""
 #: lib/block-amazon-product-link.php:63
 #: lib/block-amazon-product-link.php:183
 #: lib/block-amazon-product-link.php:351
-#: lib/block-rakuten-product-link.php:104
+#: lib/block-rakuten-product-link.php:105
 msgid "APIレスポンスの解析に失敗しました。"
 msgstr ""
 
@@ -1208,16 +1219,16 @@ msgstr ""
 
 #: lib/block-amazon-product-link.php:198
 #: lib/block-amazon-product-link.php:364
-#: lib/block-rakuten-product-link.php:255
-#: lib/shortcodes-rakuten.php:463
+#: lib/block-rakuten-product-link.php:258
+#: lib/shortcodes-rakuten.php:476
 msgid "商品が見つかりませんでした。"
 msgstr ""
 
-#: lib/block-amazon-product-link.php:599
-#: lib/block-amazon-product-link.php:601
-#: lib/block-rakuten-product-link.php:261
-#: lib/block-rakuten-product-link.php:546
-#: lib/block-rakuten-product-link.php:548
+#: lib/block-amazon-product-link.php:600
+#: lib/block-amazon-product-link.php:602
+#: lib/block-rakuten-product-link.php:264
+#: lib/block-rakuten-product-link.php:554
+#: lib/block-rakuten-product-link.php:556
 #: lib/shortcodes-rakuten.php:189
 msgid "Y/m/d H:i"
 msgstr ""
@@ -1228,7 +1239,7 @@ msgid "角型ラベル"
 msgstr ""
 
 #: lib/block-editor-styles-faq.php:18
-#: skins/skin-made-in-heaven/lib/hook-wp.php:366
+#: skins/skin-made-in-heaven/lib/hook-wp.php:363
 msgid "アコーディオン"
 msgstr ""
 
@@ -1372,22 +1383,22 @@ msgstr ""
 msgid "「楽天アプリケーションID」もしくは「楽天アフィリエイトID」が設定されていません。「Cocoon設定」の「API」タブから入力してください。"
 msgstr ""
 
-#: lib/block-rakuten-product-link.php:89
-#: lib/block-rakuten-product-link.php:242
+#: lib/block-rakuten-product-link.php:90
+#: lib/block-rakuten-product-link.php:245
 msgid "楽天APIに接続できませんでした。"
 msgstr ""
 
-#: lib/block-rakuten-product-link.php:98
-#: lib/block-rakuten-product-link.php:250
+#: lib/block-rakuten-product-link.php:99
+#: lib/block-rakuten-product-link.php:253
 msgid "楽天APIからエラーが返されました。"
 msgstr ""
 
-#: lib/block-rakuten-product-link.php:176
-#: lib/block-rakuten-product-link.php:338
+#: lib/block-rakuten-product-link.php:177
+#: lib/block-rakuten-product-link.php:346
 msgid "商品コードを指定してください。"
 msgstr ""
 
-#: lib/block-rakuten-product-link.php:204
+#: lib/block-rakuten-product-link.php:205
 msgid "楽天APIの設定が不足しています。"
 msgstr ""
 
@@ -1467,7 +1478,7 @@ msgstr ""
 
 #: lib/content-category.php:243
 #: lib/content-tag.php:223
-#: lib/custom-fields/seo-field.php:120
+#: lib/custom-fields/seo-field.php:134
 msgid "SEOタイトル"
 msgstr ""
 
@@ -1478,7 +1489,7 @@ msgstr ""
 
 #: lib/content-category.php:249
 #: lib/content-tag.php:229
-#: lib/custom-fields/seo-field.php:122
+#: lib/custom-fields/seo-field.php:136
 msgid "検索エンジンに表示させたいタイトルを入力してください。記事のタイトルより、こちらに入力したテキストが優先的にタイトルタグ(&lt;title&gt;)に挿入されます。"
 msgstr ""
 
@@ -1499,7 +1510,7 @@ msgstr ""
 
 #: lib/content-category.php:271
 #: lib/content-tag.php:251
-#: lib/custom-fields/seo-field.php:130
+#: lib/custom-fields/seo-field.php:144
 #: lib/page-settings/title-forms.php:170
 #: lib/page-settings/title-forms.php:271
 #: skins/skin-made-in-heaven/lib/hook-wp.php:78
@@ -1517,7 +1528,7 @@ msgstr ""
 
 #: lib/content-category.php:281
 #: lib/content-tag.php:261
-#: lib/custom-fields/seo-field.php:136
+#: lib/custom-fields/seo-field.php:150
 #: lib/page-settings/title-forms.php:81
 #: lib/page-settings/title-forms.php:183
 #: lib/page-settings/title-forms.php:284
@@ -1541,13 +1552,13 @@ msgstr ""
 
 #: lib/content-category.php:297
 #: lib/content-tag.php:277
-#: lib/custom-fields/seo-field.php:141
+#: lib/custom-fields/seo-field.php:155
 msgid "インデックスしない（noindex）"
 msgstr ""
 
 #: lib/content-category.php:298
 #: lib/content-tag.php:278
-#: lib/custom-fields/seo-field.php:142
+#: lib/custom-fields/seo-field.php:156
 msgid "このページが検索エンジンにインデックスされないようにメタタグを設定します。"
 msgstr ""
 
@@ -1591,30 +1602,26 @@ msgstr ""
 msgid "※カスタム投稿のカテゴリーなったとしても公開ページはタグとして認識されます。"
 msgstr ""
 
-#: lib/creators-api.php:41
-msgid "Creators APIを利用するにはPHPのcURL拡張が必要です。"
-msgstr ""
-
-#: lib/creators-api.php:57
+#: lib/creators-api.php:95
 msgid "Creators APIの認証バージョンが正しくありません。"
 msgstr ""
 
-#: lib/creators-api.php:92
+#: lib/creators-api.php:146
 msgid "Creators APIのトークン取得に失敗しました。"
 msgstr ""
 
-#: lib/creators-api.php:99
+#: lib/creators-api.php:153
 msgid "Creators APIのトークンレスポンスを解析できませんでした。"
 msgstr ""
 
-#: lib/creators-api.php:112
-#: lib/creators-api.php:507
-#: lib/creators-api.php:718
+#: lib/creators-api.php:166
+#: lib/creators-api.php:560
+#: lib/creators-api.php:793
 msgid "Creators APIのアクセストークンが取得できませんでした。"
 msgstr ""
 
-#: lib/creators-api.php:572
-#: lib/creators-api.php:788
+#: lib/creators-api.php:645
+#: lib/creators-api.php:885
 msgid "Creators APIのレスポンスを解析できませんでした。"
 msgstr ""
 
@@ -1718,7 +1725,7 @@ msgstr ""
 #: lib/page-settings/comment-forms.php:43
 #: lib/page-settings/single-forms.php:319
 #: lib/page-speech-balloon/form.php:90
-#: lib/settings.php:559
+#: lib/settings.php:658
 msgid "デフォルト"
 msgstr ""
 
@@ -1897,51 +1904,51 @@ msgstr ""
 msgid "SEO"
 msgstr ""
 
-#: lib/custom-fields/seo-field.php:121
+#: lib/custom-fields/seo-field.php:135
 msgid "タイトルを入力してください。"
 msgstr ""
 
-#: lib/custom-fields/seo-field.php:122
+#: lib/custom-fields/seo-field.php:136
 msgid "一般的に日本語の場合は、32文字以内が最適とされています。（※ページやインデックスの見出し部分には「記事のタイトル」が利用されます）"
 msgstr ""
 
-#: lib/custom-fields/seo-field.php:132
+#: lib/custom-fields/seo-field.php:146
 msgid "記事の説明文を入力してください。"
 msgstr ""
 
-#: lib/custom-fields/seo-field.php:133
+#: lib/custom-fields/seo-field.php:147
 msgid "記事の説明を入力してください。日本語では、およそ120文字前後の入力をおすすめします。スマートフォンではそのうちの約50文字が表示されます。こちらに入力したメタディスクリプションはブログカードのスニペット（抜粋文部分）にも利用されます。こちらに入力しない場合は、「抜粋」に入力したものがメタディスクリプションとして挿入されます。"
 msgstr ""
 
-#: lib/custom-fields/seo-field.php:137
+#: lib/custom-fields/seo-field.php:151
 msgid "記事の関連キーワードを半角カンマ区切りで入力してください。"
 msgstr ""
 
-#: lib/custom-fields/seo-field.php:138
+#: lib/custom-fields/seo-field.php:152
 msgid "記事に関連するキーワードを,（カンマ）区切りで入力してください。入力しない場合は、カテゴリー名などから自動で設定されます。"
 msgstr ""
 
-#: lib/custom-fields/seo-field.php:145
+#: lib/custom-fields/seo-field.php:159
 msgid "リンクをフォローしない（nofollow）"
 msgstr ""
 
-#: lib/custom-fields/seo-field.php:146
+#: lib/custom-fields/seo-field.php:160
 msgid "検索エンジンがこのページ上のリンクをフォローしないようにメタタグを設定します。"
 msgstr ""
 
-#: lib/custom-fields/seo-field.php:149
+#: lib/custom-fields/seo-field.php:163
 msgid "canonical"
 msgstr ""
 
-#: lib/custom-fields/seo-field.php:150
+#: lib/custom-fields/seo-field.php:164
 msgid "canonical URLの入力"
 msgstr ""
 
-#: lib/custom-fields/seo-field.php:151
+#: lib/custom-fields/seo-field.php:165
 msgid "ページ内容が類似もしくは重複しているURLが複数存在する場合に、検索エンジンからのページ評価が分散されないよう、正規のURLがどれなのかを検索エンジンに示すために用いる記述です。コンテンツが重複している場合は、正規ページのURLを入力してください。"
 msgstr ""
 
-#: lib/custom-fields/seo-field.php:152
+#: lib/custom-fields/seo-field.php:166
 #: lib/html-forms.php:517
 #: lib/html-forms.php:583
 msgid "詳細設定"
@@ -1999,7 +2006,7 @@ msgstr ""
 
 #: lib/custom-fields/update-field.php:102
 #: lib/custom-fields/update-field.php:104
-#: lib/page-settings/apis-forms.php:326
+#: lib/page-settings/apis-forms.php:329
 msgid "日"
 msgstr ""
 
@@ -2325,7 +2332,7 @@ msgid "未入力"
 msgstr ""
 
 #: lib/html-forms.php:611
-#: skins/skin-made-in-heaven/lib/hook-wp.php:835
+#: skins/skin-made-in-heaven/lib/hook-wp.php:844
 msgid "選択"
 msgstr ""
 
@@ -2364,7 +2371,7 @@ msgstr ""
 #: lib/page-settings/sns-follow-forms.php:116
 #: lib/page-settings/sns-share-forms-bottom.php:127
 #: lib/page-settings/sns-share-forms-top.php:114
-#: lib/page-settings/toc-forms.php:69
+#: lib/page-settings/toc-forms.php:78
 #: lib/page-settings/_top-page.php:200
 #: lib/shortcodes.php:508
 #: lib/widgets/display-widgets.php:170
@@ -2456,7 +2463,7 @@ msgid "人気記事は見つかりませんでした。"
 msgstr ""
 
 #: lib/html-forms.php:1349
-#: lib/html-forms.php:1927
+#: lib/html-forms.php:1948
 msgid "記事は見つかりませんでした。"
 msgstr ""
 
@@ -2506,28 +2513,28 @@ msgstr ""
 msgid "管理者用エラーメッセージ"
 msgstr ""
 
-#: lib/html-forms.php:1788
+#: lib/html-forms.php:1809
 msgid "おすすめ"
 msgstr ""
 
-#: lib/html-forms.php:1791
+#: lib/html-forms.php:1812
 msgid "新着"
 msgstr ""
 
-#: lib/html-forms.php:1794
+#: lib/html-forms.php:1815
 msgid "注目"
 msgstr ""
 
-#: lib/html-forms.php:1797
+#: lib/html-forms.php:1818
 msgid "必見"
 msgstr ""
 
-#: lib/html-forms.php:1800
+#: lib/html-forms.php:1821
 msgid "お得"
 msgstr ""
 
-#: lib/html-forms.php:1843
-#: lib/shortcodes.php:1042
+#: lib/html-forms.php:1864
+#: lib/shortcodes.php:1044
 #: lib/widgets/info-list.php:19
 #: lib/widgets/info-list.php:96
 #: lib/widgets/info-list.php:105
@@ -2766,9 +2773,9 @@ msgstr ""
 #: lib/widgets/recommended-cards.php:87
 #: lib/widgets/sns-follow-buttons.php:56
 #: lib/widgets/toc.php:83
-#: skins/skin-made-in-heaven/lib/panel-option.php:73
-#: skins/skin-made-in-heaven/lib/panel-option.php:75
-#: skins/skin-made-in-heaven/lib/panel-option.php:77
+#: skins/skin-made-in-heaven/lib/panel-option.php:70
+#: skins/skin-made-in-heaven/lib/panel-option.php:72
+#: skins/skin-made-in-heaven/lib/panel-option.php:74
 msgid "タイトル"
 msgstr ""
 
@@ -3029,7 +3036,7 @@ msgid "ブログカードキャッシュの削除"
 msgstr ""
 
 #: lib/page-cache/cache-forms.php:69
-msgid "外部ブログカードのOGP情報キャッシュを削除します。"
+msgid "内部ブログカードのURL判定キャッシュと、外部ブログカードのOGP情報キャッシュを削除します。"
 msgstr ""
 
 #: lib/page-cache/cache-forms.php:82
@@ -3184,8 +3191,8 @@ msgstr ""
 #: skins/raku-add-fadein/functions.php:306
 #: skins/skin-made-in-heaven/lib/panel-main.php:82
 #: skins/skin-made-in-heaven/lib/panel-visual.php:40
-#: skins/skin-made-in-heaven/lib/panel-visual.php:88
-#: skins/skin-made-in-heaven/lib/panel-visual.php:103
+#: skins/skin-made-in-heaven/lib/panel-visual.php:91
+#: skins/skin-made-in-heaven/lib/panel-visual.php:106
 msgid "なし"
 msgstr ""
 
@@ -3303,17 +3310,17 @@ msgstr ""
 msgid "アイテムを上に移動"
 msgstr ""
 
-#: lib/page-item-ranking/item-ranking-func.php:360
-#: lib/shortcodes-amazon.php:454
-#: lib/shortcodes-amazon.php:457
-#: lib/shortcodes-amazon.php:460
+#: lib/page-item-ranking/item-ranking-func.php:361
+#: lib/shortcodes-amazon.php:428
+#: lib/shortcodes-amazon.php:431
+#: lib/shortcodes-amazon.php:434
 #: lib/shortcodes-rakuten.php:38
 #: lib/shortcodes-rakuten.php:41
 #: lib/shortcodes-rakuten.php:44
 msgid "詳細ページ"
 msgstr ""
 
-#: lib/page-item-ranking/item-ranking-func.php:371
+#: lib/page-item-ranking/item-ranking-func.php:372
 msgid "公式ページ"
 msgstr ""
 
@@ -3877,7 +3884,7 @@ msgstr ""
 #: lib/page-settings/page-forms.php:56
 #: lib/page-settings/recommended-forms.php:39
 #: lib/page-settings/single-forms.php:429
-#: lib/page-settings/toc-forms.php:167
+#: lib/page-settings/toc-forms.php:176
 msgid "表示しない"
 msgstr ""
 
@@ -4010,7 +4017,7 @@ msgid "SEOチェキを表示する"
 msgstr ""
 
 #: lib/page-settings/admin-forms.php:263
-msgid "<a href=\"http://seocheki.net/\" target=\"_blank\" rel=\"noopener\">SEOチェキ! 無料で使えるSEOツール</a>リンクの表示。"
+msgid "<a href=\"https://seocheki.net/\" target=\"_blank\" rel=\"noopener\">SEOチェキ! 無料で使えるSEOツール</a>リンクの表示。"
 msgstr ""
 
 #: lib/page-settings/admin-forms.php:265
@@ -4420,7 +4427,7 @@ msgid "「PR表記」を非表示にする投稿・固定ページのIDを,（�
 msgstr ""
 
 #: lib/page-settings/ads-forms.php:366
-#: lib/page-settings/index-forms.php:234
+#: lib/page-settings/index-forms.php:242
 #: lib/page-settings/single-forms.php:358
 msgid "除外カテゴリー"
 msgstr ""
@@ -4544,8 +4551,8 @@ msgid "ヒラギノ角ゴ, メイリオ"
 msgstr ""
 
 #: lib/page-settings/all-forms.php:57
-#: lib/page-settings/index-forms.php:50
-#: lib/page-settings/index-forms.php:82
+#: lib/page-settings/index-forms.php:58
+#: lib/page-settings/index-forms.php:90
 #: skins/skin-grayish-topfull/functions.php:245
 #: skins/skin-grayish-topfull/functions.php:273
 #: skins/skin-grayish-topfull/functions.php:741
@@ -5198,7 +5205,7 @@ msgstr ""
 #: lib/page-settings/apis-forms.php:80
 #: lib/page-settings/apis-forms.php:146
 #: lib/page-settings/apis-forms.php:153
-#: lib/page-settings/apis-forms.php:297
+#: lib/page-settings/apis-forms.php:300
 msgid "もしも必須"
 msgstr ""
 
@@ -5288,6 +5295,7 @@ msgid "仕様変更によりPA-APIが利用されている場合は、価格は�
 msgstr ""
 
 #: lib/page-settings/apis-forms.php:107
+#: lib/page-settings/apis-forms.php:173
 msgid "説明文を表示する"
 msgstr ""
 
@@ -5308,7 +5316,7 @@ msgid "レビューページへのリンクを表示します。"
 msgstr ""
 
 #: lib/page-settings/apis-forms.php:116
-#: lib/page-settings/apis-forms.php:173
+#: lib/page-settings/apis-forms.php:176
 msgid "ロゴを表示する"
 msgstr ""
 
@@ -5329,7 +5337,7 @@ msgid "Amazonの検索ボタンに表示するテキストを入力してくだ�
 msgstr ""
 
 #: lib/page-settings/apis-forms.php:125
-#: lib/page-settings/apis-forms.php:182
+#: lib/page-settings/apis-forms.php:185
 msgid "検索ボタンのリンク先を詳細ページにする"
 msgstr ""
 
@@ -5338,7 +5346,7 @@ msgid "Amazon検索ボタンのリンクURLを商品詳細ページにするか�
 msgstr ""
 
 #: lib/page-settings/apis-forms.php:138
-#: lib/page-settings/apis-funcs.php:206
+#: lib/page-settings/apis-funcs.php:215
 msgid "楽天"
 msgstr ""
 
@@ -5392,283 +5400,279 @@ msgid "データー取得時点の楽天市場販売ページでの値段を表�
 msgstr ""
 
 #: lib/page-settings/apis-forms.php:174
-msgid "楽天商品リンクのロゴの表示切り替え。"
-msgstr ""
-
-#: lib/page-settings/apis-forms.php:176
-msgid "楽天検索ボタンを表示する"
+msgid "楽天側に登録されている説明文を表示します（情報がない場合は表示されません）。descオプションが設定されている場合は、オプション値が優先して表示されます。"
 msgstr ""
 
 #: lib/page-settings/apis-forms.php:177
-msgid "楽天のキーワード検索ボタンを表示するか。"
+msgid "楽天商品リンクのロゴの表示切り替え。"
+msgstr ""
+
+#: lib/page-settings/apis-forms.php:179
+msgid "楽天検索ボタンを表示する"
 msgstr ""
 
 #: lib/page-settings/apis-forms.php:180
-msgid "楽天の検索ボタンに表示するテキストを入力してください。"
+msgid "楽天のキーワード検索ボタンを表示するか。"
 msgstr ""
 
 #: lib/page-settings/apis-forms.php:183
+msgid "楽天の検索ボタンに表示するテキストを入力してください。"
+msgstr ""
+
+#: lib/page-settings/apis-forms.php:186
 msgid "楽天検索ボタンのリンク先URLを商品詳細ページにするか。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:194
-#: lib/page-settings/apis-funcs.php:246
+#: lib/page-settings/apis-forms.php:197
+#: lib/page-settings/apis-funcs.php:255
 msgid "Yahoo!ショッピング"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:199
+#: lib/page-settings/apis-forms.php:202
 msgid "バリューコマースsid"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:204
+#: lib/page-settings/apis-forms.php:207
 msgid "バリューコマースpid"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:208
+#: lib/page-settings/apis-forms.php:211
 msgid "バリューコマースからYahoo!ショッピングに登録しsidとpidを取得してください。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:213
+#: lib/page-settings/apis-forms.php:216
 msgid "Yahoo!検索ボタンを表示する"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:214
+#: lib/page-settings/apis-forms.php:217
 msgid "Yahoo!のキーワード検索ボタンを表示するか。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:217
+#: lib/page-settings/apis-forms.php:220
 msgid "Yahoo!ショッピングの検索ボタンに表示するテキストを入力してください。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:229
-#: lib/page-settings/apis-funcs.php:270
+#: lib/page-settings/apis-forms.php:232
+#: lib/page-settings/apis-funcs.php:279
 msgid "メルカリ"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:234
+#: lib/page-settings/apis-forms.php:237
 msgid "メルカリアンバサダーID"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:239
+#: lib/page-settings/apis-forms.php:242
 msgid "メルカリの「アンバサダーID」を取得してください。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:244
+#: lib/page-settings/apis-forms.php:247
 msgid "メルカリ検索ボタンを表示する"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:245
+#: lib/page-settings/apis-forms.php:248
 msgid "メルカリのキーワード検索ボタンを表示するか。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:248
+#: lib/page-settings/apis-forms.php:251
 msgid "メルカリの検索ボタンに表示するテキストを入力してください。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:261
-#: lib/page-settings/apis-funcs.php:296
+#: lib/page-settings/apis-forms.php:264
+#: lib/page-settings/apis-funcs.php:305
 msgid "DMM"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:266
+#: lib/page-settings/apis-forms.php:269
 msgid "DMMアフィリエイトID"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:271
+#: lib/page-settings/apis-forms.php:274
 msgid "DMMアフィリエイトの「アフィリエイトID」をを取得してください。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:276
+#: lib/page-settings/apis-forms.php:279
 msgid "DMM検索ボタンを表示する"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:277
+#: lib/page-settings/apis-forms.php:280
 msgid "DMMのキーワード検索ボタンを表示するか。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:280
+#: lib/page-settings/apis-forms.php:283
 msgid "DMMの検索ボタンに表示するテキストを入力してください。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:292
+#: lib/page-settings/apis-forms.php:295
 msgid "もしもアフィリエイト"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:296
+#: lib/page-settings/apis-forms.php:299
 msgid "リンクをもしもアフィリエイトを経由にする"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:298
+#: lib/page-settings/apis-forms.php:301
 msgid "もしもアフィリエイト経由でAmazonリンクを掲載し報酬を得ます。【重要】2019年1月23日の<a href=\"https://affiliate.amazon.co.jp/help/topic/t52/ref=amb_link_zYXX0aRKMACI_Qkj9rR6Nw_1?pf_rd_p=c08a6c9b-94fe-481e-ad8b-b2c640121b1f\" target=\"_blank\" rel=\"noopener\">PA-APIの仕様変更</a>により、APIが生成するリンクから売上が発生しないとAPIが利用できなくなりました。ですので、<span class=\"red\">もしもアフィリエイト経由の場合は、30日でAPIが利用できなくなる可能性があります</span>。AmazonのAPIを利用したい場合は、この機能は有効にしないことをおすすめします。PA-APIの制限がクリアできない場合は、楽天商品リンクをご利用ください。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:300
+#: lib/page-settings/apis-forms.php:303
 msgid "Amazon a_id"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:303
+#: lib/page-settings/apis-forms.php:306
 msgid "もしもアフィリエイトのAmazon IDを入力してください。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:303
-#: lib/page-settings/apis-forms.php:308
-#: lib/page-settings/apis-forms.php:313
+#: lib/page-settings/apis-forms.php:306
+#: lib/page-settings/apis-forms.php:311
+#: lib/page-settings/apis-forms.php:316
 msgid "未入力の場合はデフォルトのリンクが出力されます。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:305
+#: lib/page-settings/apis-forms.php:308
 msgid "楽天 a_id"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:308
+#: lib/page-settings/apis-forms.php:311
 msgid "もしもアフィリエイトの楽天IDを入力してください。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:310
+#: lib/page-settings/apis-forms.php:313
 msgid "Yahoo!ショッピング a_id"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:313
+#: lib/page-settings/apis-forms.php:316
 msgid "もしもアフィリエイトのYahoo!ショッピングIDを入力してください。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:321
+#: lib/page-settings/apis-forms.php:324
 msgid "楽天キャッシュの保存期間"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:327
+#: lib/page-settings/apis-forms.php:330
 msgid "APIキャッシュのリフレッシュ間隔を設定します。1～3650日の間隔を選べます。間隔が短いほどAPIのリクエスト制限にかかる可能性が高くなりますのでご注意ください。アクセス数の多いサイトは長めに設定しておくことをおすすめします。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:327
+#: lib/page-settings/apis-forms.php:330
 msgid "Amazon APIのキャッシュは利用規約により24時間で更新されます。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:336
+#: lib/page-settings/apis-forms.php:339
 msgid "https://affiliate.amazon.co.jp/help/operating/paapilicenseagreement"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:336
+#: lib/page-settings/apis-forms.php:339
 msgid "Amazon.co.jp Product Advertising API ライセンス契約"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:337
+#: lib/page-settings/apis-forms.php:340
 msgid "https://affiliate.amazon.co.jp/help/topic/t32/"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:337
+#: lib/page-settings/apis-forms.php:340
 msgid "Product Advertising API (PA-API) の利用ガイドライン"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:338
+#: lib/page-settings/apis-forms.php:341
 msgid "https://webservice.rakuten.co.jp/guide/rule"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:338
+#: lib/page-settings/apis-forms.php:341
 msgid "楽天ウェブサービス規約"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:347
+#: lib/page-settings/apis-forms.php:350
 msgid "商品リンクブロックの自動更新"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:350
+#: lib/page-settings/apis-forms.php:353
 msgid "Amazon・楽天商品リンクブロックの商品情報をWP-Cronで定期的に自動更新する設定です。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:357
+#: lib/page-settings/apis-forms.php:360
 msgid "自動更新"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:364
+#: lib/page-settings/apis-forms.php:367
 msgid "商品リンクブロックの情報を自動的に定期更新する"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:366
+#: lib/page-settings/apis-forms.php:369
 msgid "ONにすると、下記の更新間隔で全投稿・固定ページのAmazon・楽天商品リンクブロックを自動更新します。OFFにするとスケジュールが解除されます。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:373
-msgid "毎週"
+#: lib/page-settings/apis-forms.php:376
+msgid "1日ごと"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:374
-msgid "2週間ごと（推奨）"
+#: lib/page-settings/apis-forms.php:378
+msgid "3日ごと（推奨）"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:382
+#: lib/page-settings/apis-forms.php:380
+msgid "1週間ごと"
+msgstr ""
+
+#: lib/page-settings/apis-forms.php:387
 msgid "更新間隔"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:384
-msgid "更新間隔が短いほどAPIのリクエスト数が増えます。Amazon Creators APIのリクエスト制限にご注意ください。"
-msgstr ""
-
-#: lib/page-settings/apis-forms.php:388
-msgid "10投稿"
-msgstr ""
-
 #: lib/page-settings/apis-forms.php:389
-msgid "20投稿"
-msgstr ""
-
-#: lib/page-settings/apis-forms.php:390
-msgid "30投稿"
-msgstr ""
-
-#: lib/page-settings/apis-forms.php:391
-msgid "40投稿"
-msgstr ""
-
-#: lib/page-settings/apis-forms.php:392
-msgid "50投稿"
+msgid "更新間隔が短いほどAPIのリクエスト数が増えます。Amazon・楽天それぞれのAPIリクエスト制限にご注意ください。"
 msgstr ""
 
 #: lib/page-settings/apis-forms.php:393
-msgid "60投稿"
+msgid "5投稿"
 msgstr ""
 
 #: lib/page-settings/apis-forms.php:394
-msgid "70投稿"
+msgid "10投稿"
 msgstr ""
 
 #: lib/page-settings/apis-forms.php:395
-msgid "80投稿"
+msgid "20投稿"
 msgstr ""
 
 #: lib/page-settings/apis-forms.php:396
-msgid "90投稿"
+msgid "30投稿"
 msgstr ""
 
 #: lib/page-settings/apis-forms.php:397
+msgid "50投稿"
+msgstr ""
+
+#: lib/page-settings/apis-forms.php:398
 msgid "100投稿"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:403
+#: lib/page-settings/apis-forms.php:404
 msgid "1回あたりの処理投稿数"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:405
+#: lib/page-settings/apis-forms.php:406
 msgid "1回のCron実行で処理する投稿数です。投稿数が多いサイトでは大きめの値にしてください。ただし、1投稿あたりのブロック数が多いほどAPIリクエストも増えます。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:419
+#: lib/page-settings/apis-forms.php:407
+msgid "※共有ホスティングをご利用の場合は30以下を推奨します。50以上に設定するとサーバー側のタイムアウト制限により処理が中断される場合があります。"
+msgstr ""
+
+#: lib/page-settings/apis-forms.php:421
 msgid "エラー設定"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:422
+#: lib/page-settings/apis-forms.php:424
 msgid "APIに関するエラー通知の設定です。"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:430
+#: lib/page-settings/apis-forms.php:432
 msgid "メール通知"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:435
+#: lib/page-settings/apis-forms.php:437
 msgid "商品リンク切れ情報をメールで送信する"
 msgstr ""
 
-#: lib/page-settings/apis-forms.php:436
+#: lib/page-settings/apis-forms.php:438
 msgid "APIで商品情報を取得できなかった際に、WordPressに登録されているメール宛にエラーメッセージを送信します。※メール送信は数分遅れる可能性もあります。"
 msgstr ""
 
@@ -6106,7 +6110,7 @@ msgid "カルーセルを表示するページを設定します。"
 msgstr ""
 
 #: lib/page-settings/carousel-forms.php:49
-#: lib/page-settings/index-forms.php:212
+#: lib/page-settings/index-forms.php:220
 #: lib/page-settings/single-forms.php:249
 msgid "スマートフォンで表示する（480px以下）"
 msgstr ""
@@ -6196,17 +6200,17 @@ msgid "カルーセルの並び替え"
 msgstr ""
 
 #: lib/page-settings/carousel-forms.php:97
-#: lib/page-settings/index-forms.php:123
+#: lib/page-settings/index-forms.php:131
 msgid "ランダム"
 msgstr ""
 
 #: lib/page-settings/carousel-forms.php:98
-#: lib/page-settings/index-forms.php:121
+#: lib/page-settings/index-forms.php:129
 msgid "投稿日（降順）"
 msgstr ""
 
 #: lib/page-settings/carousel-forms.php:99
-#: lib/page-settings/index-forms.php:122
+#: lib/page-settings/index-forms.php:130
 msgid "更新日（降順）"
 msgstr ""
 
@@ -6223,13 +6227,13 @@ msgid "カルーセルに表示するアイテムの最大表示数を設定し�
 msgstr ""
 
 #: lib/page-settings/carousel-forms.php:125
-#: lib/page-settings/index-forms.php:164
+#: lib/page-settings/index-forms.php:172
 #: lib/page-settings/single-forms.php:214
 msgid "枠線の表示"
 msgstr ""
 
 #: lib/page-settings/carousel-forms.php:129
-#: lib/page-settings/index-forms.php:168
+#: lib/page-settings/index-forms.php:176
 #: lib/page-settings/single-forms.php:218
 msgid "カードの枠線を表示する"
 msgstr ""
@@ -6239,7 +6243,7 @@ msgid "カルーセルのカードの枠となる罫線を表示するか。"
 msgstr ""
 
 #: lib/page-settings/carousel-forms.php:138
-#: skins/skin-made-in-heaven/lib/panel-option.php:38
+#: skins/skin-made-in-heaven/lib/panel-option.php:39
 msgid "オートプレイ"
 msgstr ""
 
@@ -6572,7 +6576,7 @@ msgid "外部リンク設定"
 msgstr ""
 
 #: lib/page-settings/content-forms.php:61
-msgid "外部リンク動作の設定です。外部ブログカードにも適用されます。"
+msgid "外部リンク動作の設定です。"
 msgstr ""
 
 #: lib/page-settings/content-forms.php:69
@@ -6587,7 +6591,7 @@ msgid "変更しない"
 msgstr ""
 
 #: lib/page-settings/content-forms.php:79
-msgid "本文内の外部リンクをどのように開くか。"
+msgid "外部リンクをどのように開くか。"
 msgstr ""
 
 #: lib/page-settings/content-forms.php:87
@@ -6606,7 +6610,7 @@ msgid "フォローする（follow）"
 msgstr ""
 
 #: lib/page-settings/content-forms.php:97
-msgid "本文内の外部リンクのフォロー状態を設定します。"
+msgid "外部リンクのフォロー状態を設定します。"
 msgstr ""
 
 #: lib/page-settings/content-forms.php:105
@@ -6679,7 +6683,7 @@ msgstr ""
 #: lib/page-settings/content-forms.php:149
 #: lib/page-settings/content-forms.php:269
 #: lib/page-settings/pwa-forms.php:85
-#: skins/skin-made-in-heaven/lib/hook-wp.php:711
+#: skins/skin-made-in-heaven/lib/hook-wp.php:720
 msgid "アイコン"
 msgstr ""
 
@@ -6692,7 +6696,7 @@ msgid "内部リンク設定"
 msgstr ""
 
 #: lib/page-settings/content-forms.php:184
-msgid "内部リンク動作の設定です。内部ブログカードにも適用されます。"
+msgid "内部リンク動作の設定です。"
 msgstr ""
 
 #: lib/page-settings/content-forms.php:192
@@ -6700,11 +6704,11 @@ msgid "内部リンクの開き方"
 msgstr ""
 
 #: lib/page-settings/content-forms.php:202
-msgid "本文内の内部リンクをどのように開くか。"
+msgid "内部リンクをどのように開くか。"
 msgstr ""
 
 #: lib/page-settings/content-forms.php:220
-msgid "本文内の内部リンクのフォロー状態を設定します。"
+msgid "内部リンクのフォロー状態を設定します。"
 msgstr ""
 
 #: lib/page-settings/content-forms.php:261
@@ -6760,19 +6764,19 @@ msgid "投稿関連情報"
 msgstr ""
 
 #: lib/page-settings/content-forms.php:353
-#: lib/page-settings/index-forms.php:215
+#: lib/page-settings/index-forms.php:223
 #: lib/page-settings/single-forms.php:252
 msgid "投稿日を表示する"
 msgstr ""
 
 #: lib/page-settings/content-forms.php:355
-#: lib/page-settings/index-forms.php:218
+#: lib/page-settings/index-forms.php:226
 #: lib/page-settings/single-forms.php:255
 msgid "更新日を表示する"
 msgstr ""
 
 #: lib/page-settings/content-forms.php:357
-#: lib/page-settings/index-forms.php:221
+#: lib/page-settings/index-forms.php:229
 #: lib/page-settings/single-forms.php:258
 msgid "投稿者名を表示する"
 msgstr ""
@@ -7612,7 +7616,7 @@ msgstr ""
 #: lib/page-settings/image-forms.php:212
 #: lib/widgets/new-entries.php:19
 #: lib/widgets/new-entries.php:130
-#: skins/skin-made-in-heaven/lib/panel-option.php:73
+#: skins/skin-made-in-heaven/lib/panel-option.php:70
 #: skins/skin-made-in-heaven/tmp/list-category-columns.php:23
 #: skins/skin-made-in-heaven/tmp/list-category-columns.php:29
 #: tmp/list-new-entries.php:16
@@ -7681,274 +7685,274 @@ msgstr ""
 msgid "リスト表示の設定です。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:35
+#: lib/page-settings/index-forms.php:43
 msgid "※タイル表示はうまくプレビューできないかも。今のところ原因不明。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:44
+#: lib/page-settings/index-forms.php:52
 #: skins/skin-made-in-heaven/lib/panel-main.php:45
 msgid "フロントページタイプ"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:48
+#: lib/page-settings/index-forms.php:56
 msgid "表示形式"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:50
+#: lib/page-settings/index-forms.php:58
 #: skins/skin-made-in-heaven/lib/panel-main.php:38
 msgid "一覧"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:51
+#: lib/page-settings/index-forms.php:59
 #: skins/skin-made-in-heaven/lib/panel-main.php:39
 msgid "タブ一覧"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:52
-#: lib/page-settings/index-forms.php:53
-#: lib/page-settings/index-forms.php:54
+#: lib/page-settings/index-forms.php:60
+#: lib/page-settings/index-forms.php:61
+#: lib/page-settings/index-forms.php:62
 #: skins/skin-made-in-heaven/lib/panel-main.php:40
 #: skins/skin-made-in-heaven/lib/panel-main.php:41
 #: skins/skin-made-in-heaven/lib/panel-main.php:42
-#: skins/skin-made-in-heaven/lib/panel-option.php:77
+#: skins/skin-made-in-heaven/lib/panel-option.php:74
 msgid "カテゴリーごと"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:53
+#: lib/page-settings/index-forms.php:61
 #: skins/skin-made-in-heaven/lib/panel-main.php:41
 msgid "（2カラム）"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:54
+#: lib/page-settings/index-forms.php:62
 #: skins/skin-made-in-heaven/lib/panel-main.php:42
 msgid "（3カラム）"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:54
+#: lib/page-settings/index-forms.php:62
 msgid "※サイドバーを表示しないレイアウト向け。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:54
+#: lib/page-settings/index-forms.php:62
 msgid "表示数は3の倍数推奨。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:57
+#: lib/page-settings/index-forms.php:65
 msgid "フロントページの表示形式を選択します。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:60
+#: lib/page-settings/index-forms.php:68
 #: lib/widgets/info-list.php:161
 msgid "表示カテゴリー"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:62
+#: lib/page-settings/index-forms.php:70
 msgid "通常の記事インデックスの他に、カテゴリーの記事をタブ化して表示します。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:62
+#: lib/page-settings/index-forms.php:70
 msgid "「タブ一覧」の際は、3つまで有効。4つ目以降は無視されます。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:67
+#: lib/page-settings/index-forms.php:75
 msgid "カテゴリー順の変更"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:69
+#: lib/page-settings/index-forms.php:77
 msgid "カテゴリーIDのカンマテキストを入力"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:70
+#: lib/page-settings/index-forms.php:78
 msgid "意図通りの順番でカテゴリーを表示する場合は、カテゴリーIDをカンマ区切りで入力してください。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:70
+#: lib/page-settings/index-forms.php:78
 msgid "こちらの入力がある場合は、チェックボックスのものよりこちらの設定が優先されます。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:72
+#: lib/page-settings/index-forms.php:80
 msgid "カテゴリー表示の順番を並び替える場合はこちら"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:79
+#: lib/page-settings/index-forms.php:87
 msgid "1個"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:80
+#: lib/page-settings/index-forms.php:88
 msgid "2個"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:81
+#: lib/page-settings/index-forms.php:89
 msgid "3個"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:82
+#: lib/page-settings/index-forms.php:90
 msgid "4個"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:83
+#: lib/page-settings/index-forms.php:91
 msgid "5個"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:84
+#: lib/page-settings/index-forms.php:92
 msgid "6個"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:85
+#: lib/page-settings/index-forms.php:93
 msgid "7個"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:86
+#: lib/page-settings/index-forms.php:94
 msgid "8個"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:87
+#: lib/page-settings/index-forms.php:95
 msgid "9個"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:88
+#: lib/page-settings/index-forms.php:96
 msgid "10個"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:89
+#: lib/page-settings/index-forms.php:97
 msgid "11個"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:90
+#: lib/page-settings/index-forms.php:98
 msgid "12個"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:97
+#: lib/page-settings/index-forms.php:105
 msgid "新着エントリーカード表示数"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:100
+#: lib/page-settings/index-forms.php:108
 msgid "フロントページタイプを「カテゴリーごと」にした際に表示される新着エントリーカード数を設定します。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:103
+#: lib/page-settings/index-forms.php:111
 msgid "カテゴリーエントリーカード表示数"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:106
+#: lib/page-settings/index-forms.php:114
 msgid "フロントページのインデックスでカテゴリーごとに表示するエントリーカード数を設定します。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:108
+#: lib/page-settings/index-forms.php:116
 msgid "「カテゴリーごと」表示でカード表示数を変更する場合はこちら"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:116
+#: lib/page-settings/index-forms.php:124
 msgid "並び順"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:126
+#: lib/page-settings/index-forms.php:134
 msgid "一覧リストを表示する順番を設定します。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:134
+#: lib/page-settings/index-forms.php:142
 #: skins/skin-made-in-heaven/lib/panel-main.php:60
 msgid "カードタイプ"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:139
+#: lib/page-settings/index-forms.php:147
 #: lib/page-settings/single-forms.php:161
 #: skins/skin-made-in-heaven/lib/panel-main.php:53
 msgid "エントリーカード（デフォルト）"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:140
+#: lib/page-settings/index-forms.php:148
 #: skins/skin-made-in-heaven/lib/panel-main.php:54
 msgid "大きなカード（先頭のみ）"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:141
+#: lib/page-settings/index-forms.php:149
 #: skins/skin-made-in-heaven/lib/panel-main.php:55
 msgid "大きなカード"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:142
+#: lib/page-settings/index-forms.php:150
 #: skins/skin-made-in-heaven/lib/panel-main.php:56
 msgid "縦型カード2列"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:143
+#: lib/page-settings/index-forms.php:151
 #: skins/skin-made-in-heaven/lib/panel-main.php:57
 msgid "縦型カード3列"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:144
+#: lib/page-settings/index-forms.php:152
 msgid "タイルカード2列"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:145
+#: lib/page-settings/index-forms.php:153
 msgid "タイルカード3列"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:148
+#: lib/page-settings/index-forms.php:156
 msgid "一覧リストのカード表示を変更します。カード表示数を変更するには、「設定 → 表示設定 → 1ページに表示する最大投稿数」から変更してください。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:149
+#: lib/page-settings/index-forms.php:157
 msgid "縦型カード・タイルカードに設定した場合はサムネイルの再生成を行ってください。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:153
+#: lib/page-settings/index-forms.php:161
 msgid "スマートフォンで縦型＆タイル型のエントリーカードを1カラムにする"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:154
+#: lib/page-settings/index-forms.php:162
 msgid "スマートフォン（480px以下）で表示した際に、カードタイプを「縦型カード」「タイルカード」にしている場合は、1カラムで表示します。※デフォルトは2カラム"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:169
+#: lib/page-settings/index-forms.php:177
 #: lib/page-settings/single-forms.php:219
 msgid "投稿エントリーカードの枠となる罫線を表示するか。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:177
+#: lib/page-settings/index-forms.php:185
 msgid "自動生成抜粋文字数"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:182
+#: lib/page-settings/index-forms.php:190
 msgid "「エントリーカード」で、「本文から自動生成される抜粋文」を表示する場合の最大文字数を設定します。※投稿編集画面の抜粋文ではありません。（最小：1、最大：500）"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:190
+#: lib/page-settings/index-forms.php:198
 msgid "省略文字列"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:194
+#: lib/page-settings/index-forms.php:202
 #: lib/page-settings/index-funcs.php:208
 msgid "..."
 msgstr ""
 
-#: lib/page-settings/index-forms.php:195
+#: lib/page-settings/index-forms.php:203
 msgid "「自動生成抜粋文字数」を自動抜粋文が超えたときに表示する省略を表す文字を入力してください。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:204
+#: lib/page-settings/index-forms.php:212
 #: lib/page-settings/single-forms.php:241
 msgid "投稿関連情報の表示"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:208
+#: lib/page-settings/index-forms.php:216
 #: lib/page-settings/single-forms.php:245
 msgid "スニペット（抜粋）を表示する"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:224
+#: lib/page-settings/index-forms.php:232
 msgid "コメント数を表示する"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:224
+#: lib/page-settings/index-forms.php:232
 msgid "（※投稿・固定ページでコメントが表示されている場合）"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:226
+#: lib/page-settings/index-forms.php:234
 msgid "インデックスページのエントリーカードに投稿関連情報を表示するかどうか。"
 msgstr ""
 
-#: lib/page-settings/index-forms.php:239
+#: lib/page-settings/index-forms.php:247
 msgid "アーカイブ（インデックスリスト・新着関連記事ウィジェット等）に表示させたくないカテゴリーを選択してください。"
 msgstr ""
 
@@ -7970,12 +7974,12 @@ msgid "ボタンを表示しない（ミドルメニューのみ）"
 msgstr ""
 
 #: lib/page-settings/mobile-buttons-forms.php:34
-#: lib/settings.php:307
+#: lib/settings.php:406
 msgid "ヘッダーモバイルボタン"
 msgstr ""
 
 #: lib/page-settings/mobile-buttons-forms.php:35
-#: lib/settings.php:309
+#: lib/settings.php:408
 msgid "フッターモバイルボタン"
 msgstr ""
 
@@ -8283,66 +8287,6 @@ msgstr ""
 msgid "日本語スラッグを投稿の場合は「post-XXXX」、固定ページの場合は「page-XXXX」のような短縮文字列に変更します。"
 msgstr ""
 
-#: lib/page-settings/others-forms.php:82
-msgid "JavaScriptライブラリ設定"
-msgstr ""
-
-#: lib/page-settings/others-forms.php:85
-msgid "JavaScriptライブラリのバージョンを設定できます。"
-msgstr ""
-
-#: lib/page-settings/others-forms.php:94
-msgid "jQuery"
-msgstr ""
-
-#: lib/page-settings/others-forms.php:100
-msgid "jQuery Core 3.6.1"
-msgstr ""
-
-#: lib/page-settings/others-forms.php:101
-msgid "jQuery Core 2.2.4"
-msgstr ""
-
-#: lib/page-settings/others-forms.php:102
-msgid "jQuery Core 1.12.4"
-msgstr ""
-
-#: lib/page-settings/others-forms.php:105
-msgid "jQueryのバージョン違いで動作しないプログラムがある場合は変更してください。"
-msgstr ""
-
-#: lib/page-settings/others-forms.php:105
-msgid "jQuery 1、jQuery 2は古いバージョンなので脆弱性があります。できる限りjQuery 3をご利用ください。"
-msgstr ""
-
-#: lib/page-settings/others-forms.php:105
-msgid "このjQuery選択機能は2022年12月末日をもって廃止いたします。"
-msgstr ""
-
-#: lib/page-settings/others-forms.php:114
-msgid "jQuery Migrate"
-msgstr ""
-
-#: lib/page-settings/others-forms.php:120
-msgid "jQuery Migrate 3.3.2"
-msgstr ""
-
-#: lib/page-settings/others-forms.php:121
-msgid "jQuery Migrate 1.4.1"
-msgstr ""
-
-#: lib/page-settings/others-forms.php:124
-msgid "jQuery Migrateのバージョン違いで動作しないプログラムがある場合は変更してください。"
-msgstr ""
-
-#: lib/page-settings/others-forms.php:124
-msgid "できる限りjQuery Migrate 3をご利用ください。"
-msgstr ""
-
-#: lib/page-settings/others-forms.php:124
-msgid "このjQuery Migrate選択機能は2022年12月末日をもって廃止いたします。"
-msgstr ""
-
 #: lib/page-settings/page-forms.php:16
 msgid "固定ページのコメント表示設定です。"
 msgstr ""
@@ -8468,9 +8412,9 @@ msgid "13文字以降は自動的に削除されます。"
 msgstr ""
 
 #: lib/page-settings/pwa-forms.php:72
-#: skins/skin-made-in-heaven/lib/panel-option.php:74
-#: skins/skin-made-in-heaven/lib/panel-option.php:76
-#: skins/skin-made-in-heaven/lib/panel-option.php:78
+#: skins/skin-made-in-heaven/lib/panel-option.php:71
+#: skins/skin-made-in-heaven/lib/panel-option.php:73
+#: skins/skin-made-in-heaven/lib/panel-option.php:75
 msgid "説明文"
 msgstr ""
 
@@ -8925,7 +8869,7 @@ msgid "関連記事見出し"
 msgstr ""
 
 #: lib/page-settings/single-forms.php:145
-#: lib/shortcodes.php:1160
+#: lib/shortcodes.php:1167
 #: lib/widgets/cta-box.php:108
 msgid "見出し"
 msgstr ""
@@ -9364,7 +9308,7 @@ msgstr ""
 #: lib/page-settings/sns-follow-forms.php:104
 #: lib/page-settings/sns-share-forms-bottom.php:115
 #: lib/page-settings/sns-share-forms-top.php:102
-#: lib/page-settings/toc-forms.php:63
+#: lib/page-settings/toc-forms.php:72
 msgid "表示ページ"
 msgstr ""
 
@@ -9421,7 +9365,7 @@ msgstr ""
 #: lib/page-settings/sns-follow-forms.php:164
 #: lib/page-settings/sns-share-forms-bottom.php:149
 #: lib/page-settings/sns-share-forms-top.php:136
-#: skins/skin-made-in-heaven/lib/panel-visual.php:107
+#: skins/skin-made-in-heaven/lib/panel-visual.php:110
 msgid "モノクロ"
 msgstr ""
 
@@ -10028,218 +9972,218 @@ msgstr ""
 msgid "プラグインのTable of contentsに似た目次設定です。"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:35
+#: lib/page-settings/toc-forms.php:44
 msgid "デモの記事はランダムです。H2見出しがない本文には目次は表示されません。"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:43
+#: lib/page-settings/toc-forms.php:52
 msgid "目次の表示"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:47
+#: lib/page-settings/toc-forms.php:56
 msgid "目次を表示する"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:48
+#: lib/page-settings/toc-forms.php:57
 msgid "投稿・固定ページの内容から目次を自動付加します。※[toc]ショートコードで目次を表示させている場合は一貫して表示されます。"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:53
+#: lib/page-settings/toc-forms.php:62
 msgid "本文全ての目次を表示する"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:54
+#: lib/page-settings/toc-forms.php:63
 msgid "分割ページの内容も含め、本文全文から目次を作成し表示します。"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:67
+#: lib/page-settings/toc-forms.php:76
 msgid "投稿ページ"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:71
+#: lib/page-settings/toc-forms.php:80
 msgid "カテゴリーページ"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:73
+#: lib/page-settings/toc-forms.php:82
 msgid "タグページ"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:75
+#: lib/page-settings/toc-forms.php:84
 msgid "上記のページの目次表示を切り替えることができます。※[toc]ショートコードで目次を表示させている場合は一貫して表示されます。"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:83
+#: lib/page-settings/toc-forms.php:92
 msgid "目次タイトル"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:87
+#: lib/page-settings/toc-forms.php:96
 #: lib/page-settings/toc-funcs.php:62
 #: lib/page-settings/_top-page.php:206
 #: lib/toc.php:98
 #: lib/widgets/toc.php:19
-#: skins/skin-made-in-heaven/lib/hook-cocoon.php:403
+#: skins/skin-made-in-heaven/lib/hook-cocoon.php:359
 #: skins/skin-made-in-heaven/lib/panel-main.php:69
 msgid "目次"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:88
+#: lib/page-settings/toc-forms.php:97
 msgid "目次の上にラベル表示されるタイトルを入力してください。"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:96
+#: lib/page-settings/toc-forms.php:105
 msgid "目次切り替え"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:100
+#: lib/page-settings/toc-forms.php:109
 msgid "目次の表示切替機能を有効にする"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:101
+#: lib/page-settings/toc-forms.php:110
 msgid "目次内容の表示を切り替えるスイッチング機能を有効にするか。"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:105
+#: lib/page-settings/toc-forms.php:114
 msgid "開："
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:106
+#: lib/page-settings/toc-forms.php:115
 #: lib/page-settings/toc-funcs.php:78
 msgid "開く"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:109
+#: lib/page-settings/toc-forms.php:118
 msgid "閉："
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:110
+#: lib/page-settings/toc-forms.php:119
 #: lib/page-settings/toc-funcs.php:86
 #: skins/skin-grayish-topfull/tmp-grayish/cstm-mobile-search-button.php:23
 msgid "閉じる"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:111
+#: lib/page-settings/toc-forms.php:120
 msgid "目次を「開く」「閉じる」のキャプションを変更します。"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:114
+#: lib/page-settings/toc-forms.php:123
 msgid "最初から目次内容を表示する"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:115
+#: lib/page-settings/toc-forms.php:124
 msgid "ページ読み込み時に内容を表示した状態にするか。"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:124
+#: lib/page-settings/toc-forms.php:133
 msgid "表示条件"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:133
+#: lib/page-settings/toc-forms.php:142
 msgid "つ以上見出しがあるとき"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:134
+#: lib/page-settings/toc-forms.php:143
 msgid "設定した数以上の見出し数がある時のみ表示されます。"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:142
+#: lib/page-settings/toc-forms.php:151
 #: lib/widgets/toc.php:90
 msgid "目次表示の深さ"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:147
+#: lib/page-settings/toc-forms.php:156
 #: lib/widgets/toc.php:93
 msgid "H2見出しまで"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:148
+#: lib/page-settings/toc-forms.php:157
 #: lib/widgets/toc.php:94
 msgid "H3見出しまで"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:149
+#: lib/page-settings/toc-forms.php:158
 #: lib/widgets/toc.php:95
 msgid "H4見出しまで"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:150
+#: lib/page-settings/toc-forms.php:159
 #: lib/widgets/toc.php:96
 msgid "H5見出しまで"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:151
+#: lib/page-settings/toc-forms.php:160
 #: lib/widgets/toc.php:97
 msgid "H6見出しまで（デフォルト）"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:154
+#: lib/page-settings/toc-forms.php:163
 msgid "どの見出しの深さまで表示するかを設定します。"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:154
+#: lib/page-settings/toc-forms.php:163
 msgid "こちらで表示設定がされていないと、ショートコードで深さを指定していたとしても表示されません。"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:162
+#: lib/page-settings/toc-forms.php:171
 msgid "目次ナンバーの表示"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:168
+#: lib/page-settings/toc-forms.php:177
 msgid "数字（デフォルト）"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:169
+#: lib/page-settings/toc-forms.php:178
 msgid "数字詳細（ex: 1.1.1）"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:170
+#: lib/page-settings/toc-forms.php:179
 msgid "ドット（黒丸）"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:171
+#: lib/page-settings/toc-forms.php:180
 msgid "ドット（白丸）"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:172
+#: lib/page-settings/toc-forms.php:181
 msgid "黒四角"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:175
+#: lib/page-settings/toc-forms.php:184
 msgid "設定項目手前の数字の表示形式を設定します。"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:183
+#: lib/page-settings/toc-forms.php:192
 msgid "目次の中央表示"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:187
+#: lib/page-settings/toc-forms.php:196
 msgid "目次をメインカラムの中央に表示する"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:188
+#: lib/page-settings/toc-forms.php:197
 msgid "目次の表示位置です。無効にすると左側に表示されます。"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:196
+#: lib/page-settings/toc-forms.php:205
 msgid "目次の表示順"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:200
+#: lib/page-settings/toc-forms.php:209
 msgid "広告の手前に目次を表示する"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:201
+#: lib/page-settings/toc-forms.php:210
 msgid "広告やウィジェットの手前に目次を表示します。※最初のH2見出し手前に表示されているとき"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:209
+#: lib/page-settings/toc-forms.php:218
 msgid "見出し内タグ"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:213
+#: lib/page-settings/toc-forms.php:222
 msgid "H見出し内のタグを有効にする"
 msgstr ""
 
-#: lib/page-settings/toc-forms.php:214
+#: lib/page-settings/toc-forms.php:223
 msgid "h2-h6見出し内のHTMLタグをそのまま出力します。"
 msgstr ""
 
@@ -10326,12 +10270,12 @@ msgid "SNSフォロー"
 msgstr ""
 
 #: lib/page-settings/_top-page.php:215
-#: skins/skin-made-in-heaven/lib/panel-option.php:90
-#: skins/skin-made-in-heaven/lib/panel-option.php:92
+#: skins/skin-made-in-heaven/lib/panel-option.php:87
+#: skins/skin-made-in-heaven/lib/panel-option.php:89
 #: skins/skin-made-in-heaven/lib/panel-visual.php:28
 #: skins/skin-made-in-heaven/lib/panel-visual.php:42
-#: skins/skin-made-in-heaven/lib/panel-visual.php:64
-#: skins/skin-made-in-heaven/lib/panel-visual.php:66
+#: skins/skin-made-in-heaven/lib/panel-visual.php:67
+#: skins/skin-made-in-heaven/lib/panel-visual.php:69
 msgid "画像"
 msgstr ""
 
@@ -10394,7 +10338,7 @@ msgid "ここに入力したテキストが表示されます。"
 msgstr ""
 
 #: lib/page-speech-balloon/demo.php:26
-msgid "このアイコンは「いらすとや」さんの許可の下、当テーマのCDNサーバで配信中のデモです。アクセスが増えると、表示されなくなる可能性もあるので、自前で画像を用意するか、「<a href=\"http://www.irasutoya.com/\" target=\"_blank\" rel=\"noopener\">いらすとや</a>」さんの豊富なイラストの中から好みのアイコンを探すなどして、自サーバーにアップして利用することをおすすめします。アクセス集中によりCDN上の画像が表示されなくなっても保証はできませんのでご了承ください。"
+msgid "このアイコンは「いらすとや」さんの許可の下、当テーマのCDNサーバで配信中のデモです。アクセスが増えると、表示されなくなる可能性もあるので、自前で画像を用意するか、「<a href=\"https://www.irasutoya.com/\" target=\"_blank\" rel=\"noopener\">いらすとや</a>」さんの豊富なイラストの中から好みのアイコンを探すなどして、自サーバーにアップして利用することをおすすめします。アクセス集中によりCDN上の画像が表示されなくなっても保証はできませんのでご了承ください。"
 msgstr ""
 
 #: lib/page-speech-balloon/form.php:10
@@ -10885,75 +10829,75 @@ msgstr ""
 msgid "検索結果ページです。"
 msgstr ""
 
-#: lib/settings.php:305
+#: lib/settings.php:404
 msgid "ヘッダーメニュー"
 msgstr ""
 
-#: lib/settings.php:306
+#: lib/settings.php:405
 msgid "ヘッダーモバイルメニュー"
 msgstr ""
 
-#: lib/settings.php:308
+#: lib/settings.php:407
 msgid "フッターメニュー"
 msgstr ""
 
-#: lib/settings.php:310
+#: lib/settings.php:409
 msgid "モバイルスライドインメニュー"
 msgstr ""
 
-#: lib/settings.php:558
+#: lib/settings.php:657
 msgid "通常のカード表示"
 msgstr ""
 
-#: lib/settings.php:561
+#: lib/settings.php:660
 msgid "カードの上下に破線の区切り線が表示されます。"
 msgstr ""
 
-#: lib/settings.php:562
+#: lib/settings.php:661
 msgid "カードの上下に区切り線を入れる"
 msgstr ""
 
-#: lib/settings.php:562
+#: lib/settings.php:661
 msgid "（縦並び表示のみ）"
 msgstr ""
 
-#: lib/settings.php:564
+#: lib/settings.php:663
 msgid "カード自体を罫線で囲みます。"
 msgstr ""
 
-#: lib/settings.php:565
+#: lib/settings.php:664
 msgid "カードに枠線を表示する"
 msgstr ""
 
-#: lib/settings.php:567
+#: lib/settings.php:666
 msgid "大きなサムネイル画像の下にタイトルを表示します。"
 msgstr ""
 
-#: lib/settings.php:568
+#: lib/settings.php:667
 msgid "大きなサムネイル表示にする"
 msgstr ""
 
-#: lib/settings.php:570
+#: lib/settings.php:669
 msgid "大きなサムネイル画像の下段にタイトルを重ねます。"
 msgstr ""
 
-#: lib/settings.php:571
+#: lib/settings.php:670
 msgid "大きなサムネイルにタイトルを重ねて表示する"
 msgstr ""
 
-#: lib/settings.php:580
+#: lib/settings.php:679
 msgid "画像のみ"
 msgstr ""
 
-#: lib/settings.php:581
+#: lib/settings.php:680
 msgid "画像中央に白文字タイトル"
 msgstr ""
 
-#: lib/settings.php:582
+#: lib/settings.php:681
 msgid "画像中央にラベルでタイトル"
 msgstr ""
 
-#: lib/settings.php:583
+#: lib/settings.php:682
 msgid "画像下段を黒背景にしタイトルを重ねる"
 msgstr ""
 
@@ -10965,60 +10909,81 @@ msgstr ""
 msgid "webservices.amazon.co.jp"
 msgstr ""
 
-#: lib/shortcodes-amazon.php:506
+#: lib/shortcodes-amazon.php:480
 msgid "Creators APIの「認証情報ID」もしくは「シークレット」もしくは「トラッキングID」が入力されていません。「Cocoon設定」の「API」タブから入力してください。"
 msgstr ""
 
-#: lib/shortcodes-amazon.php:512
+#: lib/shortcodes-amazon.php:486
 msgid "Amazon APIの「アクセスキーID」もしくは「シークレットキー」もしくは「トラッキングID」が設定されていません。「Cocoon設定」の「API」タブから入力してください。"
 msgstr ""
 
-#: lib/shortcodes-amazon.php:521
+#: lib/shortcodes-amazon.php:495
 msgid "Amazon商品リンクショートコード内にASINが入力されていません。"
 msgstr ""
 
-#: lib/shortcodes-amazon.php:565
+#: lib/shortcodes-amazon.php:539
 msgid "503エラー。このエラーは、PA-APIのアクセス制限を超えた場合や、メンテナンス中などにより、リクエストに応答できない場合に出力されるエラーコードです。サーバーの「php.ini設定」の「allow_url_fopen」項目が「ON」になっているかを確認してください。"
 msgstr ""
 
-#: lib/shortcodes-amazon.php:589
+#: lib/shortcodes-amazon.php:563
 msgid "アイテムを取得できませんでした。"
 msgstr ""
 
-#: lib/shortcodes-amazon.php:591
+#: lib/shortcodes-amazon.php:565
 msgid "このエラーメッセージは\"サイト管理者のみ\"に表示されています。"
 msgstr ""
 
-#: lib/shortcodes-amazon.php:1094
+#: lib/shortcodes-amazon.php:1069
 msgid "Amazon商品取得エラー"
 msgstr ""
 
-#: lib/shortcodes-amazon.php:1096
+#: lib/shortcodes-amazon.php:1071
 msgid "Amazon商品リンクが取得できませんでした。"
 msgstr ""
 
-#: lib/shortcodes-amazon.php:1112
+#: lib/shortcodes-amazon.php:1087
 msgid "Amazonで商品の詳細を見る"
 msgstr ""
 
-#: lib/shortcodes-amazon.php:1116
+#: lib/shortcodes-amazon.php:1091
 #, php-format
 msgid "Amazonで「%s」に関する詳細を見る"
 msgstr ""
 
-#: lib/shortcodes-product-func.php:386
-msgid "（"
+#: lib/shortcodes-amazon.php:1125
+msgid "商品を取得できませんでした。Creators APIは正常に応答しましたが、商品情報が含まれていません。"
 msgstr ""
 
-#: lib/shortcodes-product-func.php:386
-msgid "時点"
+#: lib/shortcodes-amazon.php:1126
+msgid "考えられる原因："
 msgstr ""
 
-#: lib/shortcodes-product-func.php:386
-msgid "）"
+#: lib/shortcodes-amazon.php:1128
+msgid "存在しないASINを指定している"
 msgstr ""
 
-#: lib/shortcodes-product-func.php:455
+#: lib/shortcodes-amazon.php:1129
+msgid "ASINが正しくない（半角英数字10文字）"
+msgstr ""
+
+#: lib/shortcodes-amazon.php:1130
+msgid "商品が販売終了・取り下げされている"
+msgstr ""
+
+#: lib/shortcodes-amazon.php:1131
+msgid "トラッキングIDが正しくない"
+msgstr ""
+
+#: lib/shortcodes-amazon.php:1132
+msgid "Creators APIの認証情報が正しくない"
+msgstr ""
+
+#: lib/shortcodes-product-func.php:387
+#, php-format
+msgid "（%s時点）"
+msgstr ""
+
+#: lib/shortcodes-product-func.php:456
 msgid "楽天で詳細を見る"
 msgstr ""
 
@@ -11026,33 +10991,28 @@ msgstr ""
 msgid "id, no, searchオプションのいずれかが入力されていません。"
 msgstr ""
 
-#: lib/shortcodes-rakuten.php:395
+#: lib/shortcodes-rakuten.php:406
 msgid "料率："
 msgstr ""
 
-#: lib/shortcodes-rakuten.php:478
+#: lib/shortcodes-rakuten.php:492
 msgid "ショートコードの値が正しく記入されていない可能性があります。"
 msgstr ""
 
-#: lib/shortcodes-rakuten.php:488
+#: lib/shortcodes-rakuten.php:502
 msgid "Bad Requestが返されました。リクエスト制限を受けた可能性があります。しばらく時間を置いた後、リロードすると商品リンクが表示される可能性があります。"
 msgstr ""
 
-#: lib/shortcodes-rakuten.php:495
+#: lib/shortcodes-rakuten.php:509
 msgid "JSONを取得できませんでした。接続環境に問題がある可能性があります。"
 msgstr ""
 
-#: lib/shortcodes-rakuten.php:521
+#: lib/shortcodes-rakuten.php:535
 msgid "楽天商品取得エラー"
 msgstr ""
 
-#: lib/shortcodes-rakuten.php:523
+#: lib/shortcodes-rakuten.php:537
 msgid "楽天商品リンクが取得できませんでした。"
-msgstr ""
-
-#: lib/shortcodes.php:320
-#: lib/tinymce/shortcodes.php:234
-msgid "こちらのコンテンツはログインユーザーのみに表示されます。"
 msgstr ""
 
 #: lib/shortcodes.php:426
@@ -11063,27 +11023,27 @@ msgstr ""
 msgid "月別アーカイブ"
 msgstr ""
 
-#: lib/shortcodes.php:908
+#: lib/shortcodes.php:910
 msgid "RSSフィードを取得できません"
 msgstr ""
 
-#: lib/shortcodes.php:1015
+#: lib/shortcodes.php:1017
 msgid "updatedショートコードは投稿・固定ページ以外では利用できません。"
 msgstr ""
 
-#: lib/shortcodes.php:1132
+#: lib/shortcodes.php:1139
 msgid "保存エラー"
 msgstr ""
 
-#: lib/shortcodes.php:1150
+#: lib/shortcodes.php:1157
 msgid "エラー："
 msgstr ""
 
-#: lib/shortcodes.php:1223
+#: lib/shortcodes.php:1230
 msgid "A,B,C,D,E"
 msgstr ""
 
-#: lib/shortcodes.php:1335
+#: lib/shortcodes.php:1342
 msgid "総計"
 msgstr ""
 
@@ -11219,9 +11179,9 @@ msgid "2カラム（3:1, ｜□□□｜□｜）"
 msgstr ""
 
 #: lib/tinymce/html-tags.php:109
-#: skins/skin-made-in-heaven/lib/hook-wp.php:382
-#: skins/skin-made-in-heaven/lib/hook-wp.php:398
-#: skins/skin-made-in-heaven/lib/hook-wp.php:414
+#: skins/skin-made-in-heaven/lib/hook-wp.php:379
+#: skins/skin-made-in-heaven/lib/hook-wp.php:395
+#: skins/skin-made-in-heaven/lib/hook-wp.php:411
 msgid "3カラム"
 msgstr ""
 
@@ -11377,59 +11337,59 @@ msgstr ""
 msgid "キャンペーン期間中のみ表示"
 msgstr ""
 
-#: lib/utils.php:959
+#: lib/utils.php:868
 msgid "スクロールできます"
 msgstr ""
 
-#: lib/utils.php:1017
+#: lib/utils.php:926
 msgid "公開"
 msgstr ""
 
-#: lib/utils.php:1018
+#: lib/utils.php:927
 msgid "記事を公開してもよろしいですか？"
 msgstr ""
 
-#: lib/utils.php:2704
+#: lib/utils.php:2613
 #, php-format
 msgid "%s min"
 msgid_plural "%s mins"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/utils.php:2712
+#: lib/utils.php:2621
 #, php-format
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/utils.php:2720
+#: lib/utils.php:2629
 #, php-format
 msgid "%s day"
 msgid_plural "%s days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/utils.php:2728
+#: lib/utils.php:2637
 #, php-format
 msgid "%s週間"
 msgid_plural "%s週間"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/utils.php:2736
+#: lib/utils.php:2645
 #, php-format
 msgid "%sヶ月"
 msgid_plural "%sヶ月"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/utils.php:2747
+#: lib/utils.php:2656
 #, php-format
 msgid "%s年"
 msgstr ""
 
-#: lib/utils.php:2749
+#: lib/utils.php:2658
 #, php-format
 msgid "%s年%sヶ月"
 msgstr ""
@@ -11993,8 +11953,8 @@ msgstr ""
 
 #: lib/widgets/mobile-text.php:80
 #: lib/widgets/pc-text.php:79
-#: skins/skin-made-in-heaven/lib/hook-wp.php:357
-#: skins/skin-made-in-heaven/lib/panel-option.php:65
+#: skins/skin-made-in-heaven/lib/hook-wp.php:354
+#: skins/skin-made-in-heaven/lib/panel-option.php:62
 msgid "テキスト"
 msgstr ""
 
@@ -12193,117 +12153,117 @@ msgstr ""
 msgid "例：Cocoon設定で「h2見出しまで」と設定されている場合、このウィジェットで「h3見出し」以降を表示することはできません。"
 msgstr ""
 
-#: lib/_defins.php:334
+#: lib/_defins.php:336
 msgid "設定"
 msgstr ""
 
-#: lib/_defins.php:337
+#: lib/_defins.php:339
 msgid "PR"
 msgstr ""
 
-#: lib/_defins.php:338
+#: lib/_defins.php:340
 msgid "記事内に広告が含まれています。"
 msgstr ""
 
-#: lib/_defins.php:343
-#: lib/_defins.php:358
-#: lib/_defins.php:368
-#: lib/_defins.php:381
+#: lib/_defins.php:345
+#: lib/_defins.php:360
+#: lib/_defins.php:370
+#: lib/_defins.php:383
 msgid "オート（AdSenseにおまかせ）"
 msgstr ""
 
-#: lib/_defins.php:344
-#: lib/_defins.php:359
-#: lib/_defins.php:369
-#: lib/_defins.php:382
-msgid "バナー"
-msgstr ""
-
-#: lib/_defins.php:345
-#: lib/_defins.php:370
-#: lib/_defins.php:383
-msgid "レスポンシブレクタングル"
-msgstr ""
-
 #: lib/_defins.php:346
+#: lib/_defins.php:361
 #: lib/_defins.php:371
 #: lib/_defins.php:384
-msgid "シングルレクタングル"
+msgid "バナー"
 msgstr ""
 
 #: lib/_defins.php:347
 #: lib/_defins.php:372
-msgid "ダブルレクタングル"
+#: lib/_defins.php:385
+msgid "レスポンシブレクタングル"
 msgstr ""
 
 #: lib/_defins.php:348
+#: lib/_defins.php:373
+#: lib/_defins.php:386
+msgid "シングルレクタングル"
+msgstr ""
+
+#: lib/_defins.php:349
 #: lib/_defins.php:374
+msgid "ダブルレクタングル"
+msgstr ""
+
+#: lib/_defins.php:350
+#: lib/_defins.php:376
 msgid "記事内広告"
 msgstr ""
 
-#: lib/_defins.php:360
+#: lib/_defins.php:362
 msgid "レクタングル"
 msgstr ""
 
-#: lib/_defins.php:361
-#: lib/_defins.php:373
+#: lib/_defins.php:363
+#: lib/_defins.php:375
 msgid "ラージスカイスクレイパー"
 msgstr ""
 
-#: lib/_defins.php:367
-#: lib/_defins.php:380
+#: lib/_defins.php:369
+#: lib/_defins.php:382
 msgid "広告コードをそのまま表示"
 msgstr ""
 
-#: lib/_defins.php:388
+#: lib/_defins.php:390
 msgid "www.amazon.co.jp"
 msgstr ""
 
-#: lib/_defins.php:390
+#: lib/_defins.php:392
 msgid "本当に削除してもいいですか？"
 msgstr ""
 
-#: lib/_defins.php:392
+#: lib/_defins.php:394
 msgid "無限ループを避けるため[toc]ショートコードはパターンでは使用できません。"
 msgstr ""
 
-#: lib/_defins.php:392
+#: lib/_defins.php:394
 msgid "ショートコードを削除してください。"
 msgstr ""
 
-#: lib/_defins.php:392
+#: lib/_defins.php:394
 msgid "ショートコードが使用されている場合でも表示時に取り消されます。"
 msgstr ""
 
-#: lib/_defins.php:394
+#: lib/_defins.php:396
 msgid "商品を取得できませんでした。存在しないASINを指定している可能性があります。"
 msgstr ""
 
-#: lib/_defins.php:397
+#: lib/_defins.php:399
 msgid "日付未入力"
 msgstr ""
 
-#: lib/_defins.php:399
+#: lib/_defins.php:401
 msgid "404 NOT FOUND"
 msgstr ""
 
-#: lib/_defins.php:400
+#: lib/_defins.php:402
 msgid "お探しのページは見つかりませんでした。"
 msgstr ""
 
-#: lib/_defins.php:402
+#: lib/_defins.php:404
 msgid "Y.m.d"
 msgstr ""
 
-#: lib/_defins.php:405
+#: lib/_defins.php:407
 msgid "コメントをどうぞ"
 msgstr ""
 
-#: lib/_defins.php:406
+#: lib/_defins.php:408
 msgid "コメントを送信"
 msgstr ""
 
-#: lib/_defins.php:409
+#: lib/_defins.php:411
 msgid "匿名"
 msgstr ""
 
@@ -13198,7 +13158,7 @@ msgid "カラーラベル"
 msgstr ""
 
 #: skins/skin-grayish-topfull/functions.php:2359
-#: skins/skin-made-in-heaven/lib/hook-wp.php:311
+#: skins/skin-made-in-heaven/lib/hook-wp.php:308
 msgid "ライン"
 msgstr ""
 
@@ -13385,25 +13345,25 @@ msgid "%s件ヒット"
 msgstr ""
 
 #: skins/skin-made-in-heaven/lib/hook-cocoon.php:41
-#: skins/skin-made-in-heaven/lib/panel-option.php:67
+#: skins/skin-made-in-heaven/lib/panel-option.php:64
 #: skins/skin-made-in-heaven/tmp/js-custom.php:8
 #: skins/skin-made-in-heaven/tmp/list-category-columns.php:41
-#: skins/skin-made-in-heaven/tmp/list-category-columns.php:70
+#: skins/skin-made-in-heaven/tmp/list-category-columns.php:71
 #: tmp/list-category-columns.php:88
 #: tmp/list-category.php:50
 #: tmp/list-new-entries.php:26
-#: tmp/list-tab-index.php:101
+#: tmp/list-tab-index.php:100
 msgid "もっと見る"
 msgstr ""
 
 #: skins/skin-made-in-heaven/lib/hook-cocoon.php:47
-#: skins/skin-made-in-heaven/lib/panel-option.php:68
+#: skins/skin-made-in-heaven/lib/panel-option.php:65
 #: tmp/pagination.php:38
 msgid "次のページ"
 msgstr ""
 
 #: skins/skin-made-in-heaven/lib/hook-cocoon.php:59
-#: skins/skin-made-in-heaven/lib/panel-option.php:69
+#: skins/skin-made-in-heaven/lib/panel-option.php:66
 #: tmp/breadcrumbs-page.php:13
 #: tmp/breadcrumbs.php:69
 #: tmp/mobile-home-button.php:19
@@ -13413,26 +13373,6 @@ msgstr ""
 #: skins/skin-made-in-heaven/lib/hook-cocoon.php:116
 #, php-format
 msgid "%s開設から%s日目です。"
-msgstr ""
-
-#: skins/skin-made-in-heaven/lib/hook-cocoon.php:367
-msgid "並び替え"
-msgstr ""
-
-#: skins/skin-made-in-heaven/lib/hook-cocoon.php:384
-msgid "新着順"
-msgstr ""
-
-#: skins/skin-made-in-heaven/lib/hook-cocoon.php:385
-msgid "更新順"
-msgstr ""
-
-#: skins/skin-made-in-heaven/lib/hook-cocoon.php:386
-msgid "人気順"
-msgstr ""
-
-#: skins/skin-made-in-heaven/lib/hook-cocoon.php:387
-msgid "コメント数順"
 msgstr ""
 
 #: skins/skin-made-in-heaven/lib/hook-wp.php:12
@@ -13448,43 +13388,43 @@ msgstr ""
 msgid "Slug"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/hook-wp.php:304
+#: skins/skin-made-in-heaven/lib/hook-wp.php:301
 msgid "ミニ"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/hook-wp.php:318
+#: skins/skin-made-in-heaven/lib/hook-wp.php:315
 msgid "ステップ"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/hook-wp.php:325
+#: skins/skin-made-in-heaven/lib/hook-wp.php:322
 msgid "ビッグ"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/hook-wp.php:332
+#: skins/skin-made-in-heaven/lib/hook-wp.php:329
 #: skins/skin-made-in-heaven/lib/panel-main.php:74
 msgid "ボックス"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/hook-wp.php:348
+#: skins/skin-made-in-heaven/lib/hook-wp.php:345
 msgid "下線"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/hook-wp.php:375
-#: skins/skin-made-in-heaven/lib/hook-wp.php:391
-#: skins/skin-made-in-heaven/lib/hook-wp.php:407
+#: skins/skin-made-in-heaven/lib/hook-wp.php:372
+#: skins/skin-made-in-heaven/lib/hook-wp.php:388
+#: skins/skin-made-in-heaven/lib/hook-wp.php:404
 msgid "2カラム"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/hook-wp.php:434
+#: skins/skin-made-in-heaven/lib/hook-wp.php:431
 msgid "メイド・イン・ヘブン"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/hook-wp.php:730
+#: skins/skin-made-in-heaven/lib/hook-wp.php:739
 msgid "カスタムフィールド"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/hook-wp.php:736
-#: skins/skin-made-in-heaven/lib/hook-wp.php:759
+#: skins/skin-made-in-heaven/lib/hook-wp.php:745
+#: skins/skin-made-in-heaven/lib/hook-wp.php:768
 msgid "アイコン番号"
 msgstr ""
 
@@ -13660,7 +13600,7 @@ msgid "拡張タイプ"
 msgstr ""
 
 #: skins/skin-made-in-heaven/lib/panel-main.php:47
-msgid "「新着記事」タブ表示"
+msgid "「新着記事」表示"
 msgstr ""
 
 #: skins/skin-made-in-heaven/lib/panel-main.php:48
@@ -13737,79 +13677,80 @@ msgid "オプション"
 msgstr ""
 
 #: skins/skin-made-in-heaven/lib/panel-option.php:35
-msgid "NEWマーク(0～5日、0はオフ)"
-msgstr ""
-
-#: skins/skin-made-in-heaven/lib/panel-option.php:36
-msgid "いいねボタン"
+#, php-format
+msgid "NEWマーク（%d～%d日、0はオフ）"
 msgstr ""
 
 #: skins/skin-made-in-heaven/lib/panel-option.php:37
+msgid "いいねボタン"
+msgstr ""
+
+#: skins/skin-made-in-heaven/lib/panel-option.php:38
 msgid "縦アイキャッチ背景ぼかし"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:39
+#: skins/skin-made-in-heaven/lib/panel-option.php:40
 msgid "アコーディオン化"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:40
+#: skins/skin-made-in-heaven/lib/panel-option.php:41
 msgid "通知エリア固定"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:41
+#: skins/skin-made-in-heaven/lib/panel-option.php:42
 msgid "通知メッセージ横スクロール"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:42
+#: skins/skin-made-in-heaven/lib/panel-option.php:43
 msgid "評価・ランキングハート"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:46
+#: skins/skin-made-in-heaven/lib/panel-option.php:47
 msgid "約5:8"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:48
+#: skins/skin-made-in-heaven/lib/panel-option.php:49
 msgid "約5:7"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:53
+#: skins/skin-made-in-heaven/lib/panel-option.php:54
 #, php-format
 msgid "サムネイル画像の比率（%s）に従う"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:58
-msgid "並び替え選択"
+#: skins/skin-made-in-heaven/lib/panel-option.php:56
+msgid "ダークモード"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:67
+#: skins/skin-made-in-heaven/lib/panel-option.php:64
 msgid "「もっと見る」テキスト"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:68
+#: skins/skin-made-in-heaven/lib/panel-option.php:65
 msgid "「次のページ」テキスト"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:69
+#: skins/skin-made-in-heaven/lib/panel-option.php:66
 msgid "パンくずリストテキスト"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:72
+#: skins/skin-made-in-heaven/lib/panel-option.php:69
 msgid "フロントページタイトル変更"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:74
+#: skins/skin-made-in-heaven/lib/panel-option.php:71
 msgid "新着・更新された記事です"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:76
+#: skins/skin-made-in-heaven/lib/panel-option.php:73
 msgid "本日読まれている記事です"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:78
+#: skins/skin-made-in-heaven/lib/panel-option.php:75
 msgid "カテゴリーから記事を探す"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-option.php:86
+#: skins/skin-made-in-heaven/lib/panel-option.php:83
 msgid "コメントアイコン選択・表示"
 msgstr ""
 
@@ -13827,7 +13768,7 @@ msgid "ヘッダー表示"
 msgstr ""
 
 #: skins/skin-made-in-heaven/lib/panel-visual.php:41
-#: skins/skin-made-in-heaven/lib/panel-visual.php:59
+#: skins/skin-made-in-heaven/lib/panel-visual.php:62
 msgid "動画"
 msgstr ""
 
@@ -13836,83 +13777,93 @@ msgid "タイトルテキスト"
 msgstr ""
 
 #: skins/skin-made-in-heaven/lib/panel-visual.php:56
-msgid "テキスト縦書き"
-msgstr ""
-
-#: skins/skin-made-in-heaven/lib/panel-visual.php:57
-msgid "Scrollボタン"
+#, php-format
+msgid "フォントサイズ（%d～%dpx）"
 msgstr ""
 
 #: skins/skin-made-in-heaven/lib/panel-visual.php:58
+msgid "テキスト縦書き"
+msgstr ""
+
+#: skins/skin-made-in-heaven/lib/panel-visual.php:59
+msgid "Scrollボタン"
+msgstr ""
+
+#: skins/skin-made-in-heaven/lib/panel-visual.php:60
+msgid "Scrollボタンカラー"
+msgstr ""
+
+#: skins/skin-made-in-heaven/lib/panel-visual.php:61
 msgid "波線"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:73
+#: skins/skin-made-in-heaven/lib/panel-visual.php:76
 msgid "スライドオプション"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:77
+#: skins/skin-made-in-heaven/lib/panel-visual.php:80
 msgid "フェード"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:78
+#: skins/skin-made-in-heaven/lib/panel-visual.php:81
 msgid "横"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:79
+#: skins/skin-made-in-heaven/lib/panel-visual.php:82
 msgid "縦"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:80
+#: skins/skin-made-in-heaven/lib/panel-visual.php:83
 msgid "横分割"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:81
+#: skins/skin-made-in-heaven/lib/panel-visual.php:84
 msgid "縦分割"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:84
+#: skins/skin-made-in-heaven/lib/panel-visual.php:87
 msgid "スライド切り替え"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:89
+#: skins/skin-made-in-heaven/lib/panel-visual.php:92
 msgid "イン"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:90
+#: skins/skin-made-in-heaven/lib/panel-visual.php:93
 msgid "アウト"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:93
+#: skins/skin-made-in-heaven/lib/panel-visual.php:96
 msgid "スライド中のズーム"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:99
+#: skins/skin-made-in-heaven/lib/panel-visual.php:102
 msgid "フィルター"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:104
+#: skins/skin-made-in-heaven/lib/panel-visual.php:107
 msgid "ドット黒"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:105
+#: skins/skin-made-in-heaven/lib/panel-visual.php:108
 msgid "ドット白"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:106
+#: skins/skin-made-in-heaven/lib/panel-visual.php:109
 msgid "走査線横"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:116
+#: skins/skin-made-in-heaven/lib/panel-visual.php:119
 msgid "オーバーレイ"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:118
+#: skins/skin-made-in-heaven/lib/panel-visual.php:121
 msgid "メインビジュアルに被せるカラーレイヤー"
 msgstr ""
 
-#: skins/skin-made-in-heaven/lib/panel-visual.php:128
-msgid "不透明度(opacity値0～50%)"
+#: skins/skin-made-in-heaven/lib/panel-visual.php:132
+#, php-format
+msgid "不透明度（opacity値%d～%d%%）"
 msgstr ""
 
 #: skins/skin-made-in-heaven/tmp/list-category-columns.php:30
@@ -14116,6 +14067,19 @@ msgid "Facebookでシェア"
 msgstr ""
 
 #: tmp/sns-share-buttons.php:37
+msgid "Threadsでシェア"
+msgstr ""
+
+#: tmp/sns-share-buttons.php:37
+msgid "Threads"
+msgstr ""
+
+#: tmp/sns-follow-buttons.php:53
+msgid "Threadsをフォロー"
+msgstr ""
+
+
+#: tmp/sns-share-buttons.php:37
 msgid "はてブでブックマーク"
 msgstr ""
 
@@ -14250,6 +14214,21 @@ msgctxt "block keyword"
 msgid "btn"
 msgstr ""
 
+#: blocks/src/block/campaign/block.json
+msgctxt "block keyword"
+msgid "campaign"
+msgstr ""
+
+#: blocks/src/block/campaign/block.json
+msgctxt "block keyword"
+msgid "キャンペーン"
+msgstr ""
+
+#: blocks/src/block/campaign/block.json
+msgctxt "block keyword"
+msgid "期間"
+msgstr ""
+
 #: blocks/src/block/comparison-box/block.json
 msgctxt "block keyword"
 msgid "comparison"
@@ -14283,6 +14262,41 @@ msgstr ""
 #: blocks/src/block/info-list/block.json
 msgctxt "block keyword"
 msgid "info"
+msgstr ""
+
+#: blocks/src/block/login-user-only/block.json
+msgctxt "block title"
+msgid "ログインユーザー限定"
+msgstr ""
+
+#: blocks/src/block/login-user-only/block.json
+msgctxt "block description"
+msgid "ログインしているユーザーにのみコンテンツを表示します"
+msgstr ""
+
+#: blocks/src/block/login-user-only/block.json
+msgctxt "block keyword"
+msgid "login"
+msgstr ""
+
+#: blocks/src/block/login-user-only/block.json
+msgctxt "block keyword"
+msgid "user"
+msgstr ""
+
+#: blocks/src/block/login-user-only/block.json
+msgctxt "block keyword"
+msgid "only"
+msgstr ""
+
+#: blocks/src/block/login-user-only/block.json
+msgctxt "block keyword"
+msgid "member"
+msgstr ""
+
+#: blocks/src/block/login-user-only/block.json
+msgctxt "block keyword"
+msgid "会員"
 msgstr ""
 
 #: blocks/src/block/navicard/block.json
@@ -14385,4 +14399,33 @@ msgstr ""
 #: blocks/src/micro/micro-text/block.json
 msgctxt "block keyword"
 msgid "text"
+msgstr ""
+
+#: lib/page-settings/single-forms.php:457
+msgid "カテゴリーの取得設定"
+msgstr ""
+
+#: lib/page-settings/single-forms.php:462
+msgid "従来通り（最初のカテゴリーを基準：デフォルト）"
+msgstr ""
+
+#: lib/page-settings/single-forms.php:463
+msgid "最も深く階層を持つ子カテゴリーを優先"
+msgstr ""
+
+#: lib/page-settings/single-forms.php:466
+msgid "階層化された複数のカテゴリーにチェックが入っている場合に、起点となるカテゴリーの設定をします。なお、投稿のメインカテゴリーが指定されている場合は、そちらの設定が優先されます。"
+msgstr ""
+
+
+#: lib/utils.php
+msgid "Cocoon："
+msgstr ""
+
+#: lib/utils.php
+msgid "「ホームページの表示」が「固定ページ」になっていますが、表示するページが選択されていません。このままでは設定が正常に反映されない場合があります。"
+msgstr ""
+
+#: lib/utils.php
+msgid "表示設定を開く"
 msgstr ""

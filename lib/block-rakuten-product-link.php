@@ -50,9 +50,10 @@ function cocoon_rakuten_block_search($request){
     return new WP_Error('missing_keyword', __('キーワードを入力してください。', THEME_NAME), array('status' => 400));
   }
 
-  // 楽天アプリケーションID・アフィリエイトIDの取得
+  // 楽天アプリケーションID・アフィリエイトID・アクセスキーの取得
   $rakuten_application_id = trim(get_rakuten_application_id());
   $rakuten_affiliate_id   = trim(get_rakuten_affiliate_id());
+  $rakuten_access_key     = trim(get_rakuten_access_key());
 
   // IDが未設定の場合はエラー
   if (empty($rakuten_application_id) || empty($rakuten_affiliate_id)) {
@@ -60,7 +61,8 @@ function cocoon_rakuten_block_search($request){
   }
 
   // ソート順をCocoon設定から取得
-  $sort = str_replace('+', '%2B', '&sort='.get_rakuten_api_sort());
+  // sortは「+itemPrice」等の+を含むため、rawurlencodeでスペース%20・+は%2Bにエンコード
+  $sort = '&sort=' . rawurlencode(get_rakuten_api_sort());
 
   // 購入タイプパラメータの構築
   $purchase_type_query = '';
@@ -68,10 +70,12 @@ function cocoon_rakuten_block_search($request){
     $purchase_type_query = '&purchaseType='.$purchase_type;
   }
 
-  // 楽天APIリクエストURLの構築
-  $request_url = 'https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601'
-    .'?applicationId='.$rakuten_application_id
-    .'&affiliateId='.$rakuten_affiliate_id
+  // 楽天APIリクエストURLの構築（共通ヘルパーでエンドポイントを決定）
+  $endpoint = cocoon_rakuten_api_build_endpoint($rakuten_application_id, $rakuten_access_key);
+
+  $request_url = $endpoint['base']
+    .$endpoint['auth_query']
+    .'&affiliateId='.urlencode($rakuten_affiliate_id)
     .'&imageFlag=1'
     .$sort
     .'&hits=30'
@@ -79,9 +83,8 @@ function cocoon_rakuten_block_search($request){
     .'&keyword='.urlencode($keyword)
     .$purchase_type_query;
 
-  // APIリクエストの実行
-  $args = array( 'sslverify' => true );
-  $args = apply_filters('wp_remote_get_rakuten_args', $args);
+  // APIリクエストの実行（共通ヘルパーでReferer/Originヘッダーを付与）
+  $args = cocoon_rakuten_api_get_request_args();
   $response = wp_remote_get( $request_url, $args );
 
   // リクエスト失敗のチェック
@@ -90,10 +93,9 @@ function cocoon_rakuten_block_search($request){
   }
   // HTTPステータスコードを(int)キャストして型の不一致による誤判定を防ぐ
   if ((int)$response['response']['code'] !== 200) {
-    // 楽天APIのレスポンスボディのエラー情報を取得 (bodyKeyがない場合も考慮)
-    $ebody = isset($response['body']) ? json_decode($response['body']) : null;
-    $error_desc = isset($ebody->error_description) ? $ebody->error_description : '';
-    // 楽天APIのHTTPステータスコードをそのまま伝損（429 Too Many・503 Unavailableなどを正確に伝える）
+    // 楽天APIのレスポンスボディのエラー情報を取得（共通ヘルパーで新旧形式を吸収）
+    $error_desc = cocoon_rakuten_api_extract_error($response);
+    // 楽天APIのHTTPステータスコードをそのまま伝搬（429 Too Many・503 Unavailableなどを正確に伝える）
     $rakuten_status = (int)$response['response']['code'];
     return new WP_Error('api_error', $error_desc ?: __('楽天APIからエラーが返されました。', THEME_NAME), array('status' => $rakuten_status));
   }
@@ -199,18 +201,21 @@ if ( !function_exists( 'cocoon_rakuten_block_fetch_item' ) ):
 function cocoon_rakuten_block_fetch_item($itemCode){
   $rakuten_application_id = trim(get_rakuten_application_id());
   $rakuten_affiliate_id   = trim(get_rakuten_affiliate_id());
+  $rakuten_access_key     = trim(get_rakuten_access_key());
 
   if (empty($rakuten_application_id) || empty($rakuten_affiliate_id)) {
     return new WP_Error('missing_config', __('楽天APIの設定が不足しています。', THEME_NAME), array('status' => 400));
   }
 
-  // 楽天APIリクエストURLの構築（商品コードで検索）
-  $request_url = 'https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601'
-    .'?applicationId='.$rakuten_application_id
-    .'&affiliateId='.$rakuten_affiliate_id
+  // 楽天APIリクエストURLの構築（共通ヘルパーでエンドポイントを決定、商品コードで検索）
+  $endpoint = cocoon_rakuten_api_build_endpoint($rakuten_application_id, $rakuten_access_key);
+
+  $request_url = $endpoint['base']
+    .$endpoint['auth_query']
+    .'&affiliateId='.urlencode($rakuten_affiliate_id)
     .'&imageFlag=1'
     .'&hits=1'
-  // 商品コードには「shopCode:itemCode」形式でコロンを含む場傐があるため urlencode() でエンコードする
+  // 商品コードには「shopCode:itemCode」形式でコロンを含む場合があるため urlencode() でエンコードする
     .'&itemCode='.urlencode($itemCode);
 
   // キャッシュの取得
@@ -221,8 +226,8 @@ function cocoon_rakuten_block_fetch_item($itemCode){
   if ($json_cache && DEBUG_CACHE_ENABLE) {
     $response = $json_cache;
   } else {
-    $args = array( 'sslverify' => true );
-    $args = apply_filters('wp_remote_get_rakuten_args', $args);
+    // APIリクエストの実行（共通ヘルパーでReferer/Originヘッダーを付与）
+    $args = cocoon_rakuten_api_get_request_args();
     $response = wp_remote_get( $request_url, $args );
   }
 
@@ -230,11 +235,13 @@ function cocoon_rakuten_block_fetch_item($itemCode){
   $is_request_success = !is_wp_error( $response ) && isset($response['response']['code']) && (int)$response['response']['code'] === 200;
 
   // JSON取得に失敗した場合はバックアップキャッシュを取得
+  $used_bk_cache = false;
   if (!$is_request_success) {
     $json_bk_cache = get_transient( $transient_bk_id );
     if ($json_bk_cache && DEBUG_CACHE_ENABLE) {
       $response = $json_bk_cache;
       $is_request_success = true;
+      $used_bk_cache = true;
     }
   }
 
@@ -242,9 +249,8 @@ function cocoon_rakuten_block_fetch_item($itemCode){
     return new WP_Error('api_error', __('楽天APIに接続できませんでした。', THEME_NAME), array('status' => 500));
   }
   if (!isset($response['response']['code']) || (int)$response['response']['code'] !== 200) {
-    // 楽天APIのレスポンスボディのエラー情報を取得 (bodyキーがない場合も考慮)
-    $ebody = isset($response['body']) ? json_decode($response['body']) : null;
-    $error_desc = isset($ebody->error_description) ? $ebody->error_description : '';
+    // 楽天APIのレスポンスボディのエラー情報を取得（共通ヘルパーで新旧形式を吸収）
+    $error_desc = cocoon_rakuten_api_extract_error($response);
     // 楽天APIのHTTPコードを伝搬（コード未取得の場合は400として返す）
     $rakuten_status = isset($response['response']['code']) ? (int)$response['response']['code'] : 400;
     return new WP_Error('api_error', $error_desc ?: __('楽天APIからエラーが返されました。', THEME_NAME), array('status' => $rakuten_status));
@@ -255,14 +261,19 @@ function cocoon_rakuten_block_fetch_item($itemCode){
     return new WP_Error('not_found', __('商品が見つかりませんでした。', THEME_NAME), array('status' => 404));
   }
 
-  // リクエストが成功し、キャッシュがなかった場合のみ保存
-  if (!$json_cache && $is_request_success && DEBUG_CACHE_ENABLE) {
+  // リクエストが成功し、キャッシュがなかった場合のみ保存（バックアップキャッシュからの復元時は日付が既に挿入済みのためスキップ）
+  if (!$json_cache && $is_request_success && !$used_bk_cache && DEBUG_CACHE_ENABLE) {
     $cache_expiration = DAY_IN_SECONDS + (rand(0, 60) * 60);
-    $acquired_date = date_i18n(__( 'Y/m/d H:i', THEME_NAME ));
+    $acquired_date = wp_date(__( 'Y/m/d H:i', THEME_NAME ));
     $save_response = $response;
     // wp_remote_get()の直後はbodyは必ず文字列（キャッシュ保存前なのでデコード済みオブジェクトではない）
+    // preg_replaceを避けバックリファレンス展開の問題を回避するためsubstr_replaceを使用
     if (is_string($save_response['body'])) {
-      $save_response['body'] = preg_replace('/{/', '{"date":"'.$acquired_date.'",', $save_response['body'], 1);
+      $pos = strpos($save_response['body'], '{');
+      if ($pos !== false) {
+        $insert = '{"date":"' . $acquired_date . '",';
+        $save_response['body'] = substr_replace($save_response['body'], $insert, $pos, 1);
+      }
     }
     set_transient($transient_id, $save_response, $cache_expiration);
     set_transient($transient_bk_id, $save_response, $cache_expiration * 2);
@@ -496,7 +507,7 @@ function cocoon_rakuten_block_generate_static_html($Item, $itemCode, $settings){
     if (preg_match_all('{\\?pc=(.+?)&m=}i', urldecode($decoded_affiliateUrl), $m)) {
       if (isset($m[1][0]) && $m[1][0]) {
         $rakuten_product_page_url = $m[1][0];
-        $affiliateUrl = 'https://af.moshimo.com/af/c/click?a_id='.$moshimo_rakuten_id.'&p_id=54&pc_id=54&pl_id=616&url='.urlencode($rakuten_product_page_url);
+        $affiliateUrl = 'https://af.moshimo.com/af/c/click?a_id='.urlencode($moshimo_rakuten_id).'&p_id=54&pc_id=54&pl_id=616&url='.urlencode($rakuten_product_page_url);
         // インプレッションタグ
         $moshimo_rakuten_impression_tag = get_moshimo_rakuten_impression_tag();
       }
@@ -523,7 +534,7 @@ function cocoon_rakuten_block_generate_static_html($Item, $itemCode, $settings){
 
   // 画像リンクタグの生成
   $image_link_tag = '<a href="'.esc_url($affiliateUrl).'" class="rakuten-item-thumb-link product-item-thumb-link image-thumb" target="_blank" title="'.$TitleAttr.'" rel="nofollow noopener">'.
-    '<img src="'.esc_url($ImageUrl).'" alt="'.$TitleAttr.'" width="'.esc_attr($ImageWidth).'" height="'.esc_attr($ImageHeight).'" class="rakuten-item-thumb-image product-item-thumb-image">'.
+    '<img src="'.esc_url($ImageUrl).'" alt="" width="'.esc_attr($ImageWidth).'" height="'.esc_attr($ImageHeight).'" class="rakuten-item-thumb-image product-item-thumb-image">'.
     $moshimo_rakuten_impression_tag.
   '</a>';
 
@@ -543,9 +554,9 @@ function cocoon_rakuten_block_generate_static_html($Item, $itemCode, $settings){
   if ($priceFetchedAt) {
     // ISO文字列（UTC）→ UnixタイムスタンプをWordPressのタイムゾーンでフォーマット
     $ts = strtotime($priceFetchedAt);
-    $acquired_date = $ts ? wp_date(__( 'Y/m/d H:i', THEME_NAME ), $ts) : date_i18n(__( 'Y/m/d H:i', THEME_NAME ));
+    $acquired_date = $ts ? wp_date(__( 'Y/m/d H:i', THEME_NAME ), $ts) : wp_date(__( 'Y/m/d H:i', THEME_NAME ));
   } else {
-    $acquired_date = date_i18n(__( 'Y/m/d H:i', THEME_NAME ));
+    $acquired_date = wp_date(__( 'Y/m/d H:i', THEME_NAME ));
   }
   if ($showPrice && $itemPrice) {
     $FormattedPrice = '￥ '.number_format($itemPrice);
@@ -607,7 +618,9 @@ function cocoon_rakuten_block_generate_static_html($Item, $itemCode, $settings){
   $logo_class = $showLogo ? '' : ' no-after';
 
   // 商品リンクタグの生成（既存ショートコードと同じ構造）
-  $tag = '<div class="rakuten-item-box product-item-box no-icon '.$size_class.$border_class.$logo_class.' '.esc_attr($itemCode).' cf">'.
+  // itemCodeは「shopCode:itemCode」形式でコロンを含む場合があり、CSSセレクタで疑似クラスと誤解釈されるためハイフンに置換
+  $item_code_class = esc_attr(str_replace(':', '-', $itemCode));
+  $tag = '<div class="rakuten-item-box product-item-box no-icon '.$size_class.$border_class.$logo_class.' '.$item_code_class.' cf">'.
     $image_figure_tag.
     '<div class="rakuten-item-content product-item-content cf">'.
       '<div class="rakuten-item-title product-item-title">'.

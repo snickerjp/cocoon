@@ -331,3 +331,4 @@
   // スクロール時にも更新（.mobile-header-menu-buttonsのtopが変更される可能性があるため）
   window.addEventListener( 'scroll', updateHeaderOffset );
 } )();
+

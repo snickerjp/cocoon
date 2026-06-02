@@ -6,7 +6,7 @@
  * @license: http://www.gnu.org/licenses/gpl-2.0.html GPL v2 or later
  */ ?>
 <!-- Navigation -->
-<nav id="navi" class="navi cf" itemscope itemtype="https://schema.org/SiteNavigationElement">
+<nav id="navi" class="navi cf" aria-label="<?php echo esc_attr( __( 'ヘッダーメニュー', THEME_NAME ) ); ?>" itemscope itemtype="https://schema.org/SiteNavigationElement">
   <div id="navi-in" class="navi-in wrap cf">
     <?php //ヘッダーナビ
     wp_nav_menu(
@@ -19,8 +19,8 @@
         'container' => false,
         //カスタムメニューを設定しない際に固定ページでメニューを作成しない
         'fallback_cb' => false,
-        //出力されるulに対してidやclassを表示しない
-        //'items_wrap' => '<ul>%3$s</ul>',
+        //メニューの出力されるulに対してidを表示しない
+        'items_wrap' => '<ul class="%2$s">%3$s</ul>',
         //説明出力用
         'walker' => new menu_description_walker()
       )
@@ -36,8 +36,8 @@
         'container' => false,
         //カスタムメニューを設定しない際に固定ページでメニューを作成しない
         'fallback_cb' => false,
-        //出力されるulに対してidやclassを表示しない
-        //'items_wrap' => '<ul>%3$s</ul>',
+        //メニューの出力されるulに対してidを表示しない
+        'items_wrap' => '<ul class="%2$s">%3$s</ul>',
         //説明出力用
         'walker' => new menu_description_walker()
       )

@@ -207,7 +207,6 @@ class DistributionFilesTest extends TestCase
             'common > copy' => ['lib/common/copy.php', 'copy.php'],
             'content-category' => ['lib/content-category.php', 'content-category.php'],
             'content-tag' => ['lib/content-tag.php', 'content-tag.php'],
-            'content' => ['lib/content.php', 'content.php'],
             'creators-api' => ['lib/creators-api.php', 'creators-api.php'],
             'custom-fields > ad-field' => ['lib/custom-fields/ad-field.php', 'ad-field.php'],
             'custom-fields > amp-field' => ['lib/custom-fields/amp-field.php', 'amp-field.php'],
@@ -585,9 +584,11 @@ class DistributionFilesTest extends TestCase
     public static function jsFilesProvider(): array
     {
         return [
-            'admin-javascript.js' => ['js/admin-javascript.js', '管理画面JS'],
-            'gutenberg.js'        => ['js/gutenberg.js', 'GutenbergエディタJS'],
-            'set-event-passive.js'=> ['js/set-event-passive.js', 'パッシブイベントJS'],
+            'admin-javascript.js'            => ['js/admin-javascript.js', '管理画面JS'],
+            'gutenberg-editor-classes.js'     => ['js/gutenberg-editor-classes.js', 'Gutenbergエディタクラス付与JS'],
+            'gutenberg-toolbar.js'            => ['js/gutenberg-toolbar.js', 'Gutenbergツールバー用JS'],
+            'set-event-passive.js'            => ['js/set-event-passive.js', 'パッシブイベントJS'],
+            'group-link.js'                   => ['js/group-link.js', 'グループブロックリンク化JS'],
         ];
     }
 

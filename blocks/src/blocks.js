@@ -50,6 +50,10 @@ import * as tab from './block/tab';
 import * as tabItem from './block/tab-item';
 import * as cta from './block/cta';
 import * as radar from './block/radar';
+// キャンペーンブロック
+import * as campaign from './block/campaign';
+// ログインユーザー限定
+import * as loginUserOnly from './block/login-user-only';
 // Amazon商品リンクブロック
 import * as amazonProductLink from './block/amazon-product-link';
 // 楽天商品リンクブロック
@@ -91,6 +95,8 @@ const cocoonBlocks = [
   tabItem,
   cta,
   radar,
+  campaign,
+  loginUserOnly,
   amazonProductLink,
   rakutenProductLink,
 
@@ -151,6 +157,9 @@ import './block-extension/style-extension/style02.js';
 
 // マージン拡張
 import './block-extension/style-extension/margin.js';
+
+// グループブロック拡張（リンク化）
+import './block-extension/group-link.js';
 
 //レイアウト
 import './layout/column-children/block.js';

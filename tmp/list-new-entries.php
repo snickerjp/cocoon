@@ -20,10 +20,10 @@ $count = get_index_new_entry_card_count();
     <?php echo get_category_index_list_entry_card_tag(null, $count); ?>
   </div><!-- .list -->
   <?php
-  // count が 0 でない場合のみ「もっと見る」ボタンを表示
-  if (get_query_var('count') > 0): ?>
+  // 記事がある場合のみ「もっと見る」ボタンを表示
+  if (get_query_var('has_entries')): ?>
   <div class="list-more-button-wrap">
-      <a href="<?php echo trailingslashit(get_bloginfo('url')) ?>?cat=0" class="list-more-button"><?php echo apply_filters('more_button_caption', __( 'もっと見る', THEME_NAME )); ?></a>
+      <a href="<?php echo esc_url(trailingslashit(home_url()) . '?cat=0'); ?>" class="list-more-button"><?php echo apply_filters('more_button_caption', __( 'もっと見る', THEME_NAME )); ?></a>
   </div>
   <?php
   endif;

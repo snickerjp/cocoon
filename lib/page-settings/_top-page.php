@@ -131,7 +131,7 @@ endif;
 $is_reset_ok = isset($_GET['reset']) && $_GET['reset'];
 if ($is_post_ok || $is_reset_ok):
 ?>
-<div class="updated">
+<div class="notice notice-success is-dismissible">
   <p>
     <strong>
       <?php
@@ -496,7 +496,7 @@ endif;
 
 </div><!-- /#tabs -->
 <input type="hidden" name="<?php echo HIDDEN_FIELD_NAME; ?>" value="<?php echo wp_create_nonce('settings');?>">
-<input type="hidden" id="<?php echo SELECT_INDEX_NAME; ?>" name="<?php echo SELECT_INDEX_NAME; ?>" value="<?php echo ($_POST && $_POST[SELECT_INDEX_NAME] ? $_POST[SELECT_INDEX_NAME] : 0);
+<input type="hidden" id="<?php echo SELECT_INDEX_NAME; ?>" name="<?php echo SELECT_INDEX_NAME; ?>" value="<?php echo ($_POST[SELECT_INDEX_NAME] ?? 0);
 // _v($_POST); ?>">
 
 <?php submit_button(__( '変更をまとめて保存', THEME_NAME ), 'primary', "submit-2"); ?>

@@ -8,6 +8,11 @@
  * "undefined function" エラーが発生しなくなります。
  */
 
+// WordPress コア定数（関数のデフォルト引数で使われるため関数定義より先に宣言が必要）
+if (!defined('OBJECT'))       define('OBJECT',       'OBJECT');
+if (!defined('ARRAY_A'))      define('ARRAY_A',      'ARRAY_A');
+if (!defined('ARRAY_N'))      define('ARRAY_N',      'ARRAY_N');
+
 // WordPress のコア関数スタブ（テーマファイル読み込み時に必要）
 // これらはBrain\Monkeyのセットアップ前に必要な最小限のスタブです。
 // テスト内での動作カスタマイズはBrain\Monkey::functions()->when() を使用してください。
@@ -49,7 +54,12 @@ if (!function_exists('add_action')) {
 }
 
 if (!function_exists('apply_filters')) {
+    // テスト用: グローバル変数 $test_mock_apply_filters_callbacks で戻り値を制御可能
     function apply_filters($tag, $value, ...$args) {
+        global $test_mock_apply_filters_callbacks;
+        if (!empty($test_mock_apply_filters_callbacks[$tag]) && is_callable($test_mock_apply_filters_callbacks[$tag])) {
+            return ($test_mock_apply_filters_callbacks[$tag])($value, ...$args);
+        }
         return $value;
     }
 }
@@ -59,6 +69,8 @@ if (!function_exists('do_action')) {
         // no-op
     }
 }
+
+
 
 if (!function_exists('__')) {
     function __($text, $domain = 'default') {
@@ -80,7 +92,7 @@ if (!function_exists('esc_html')) {
 
 if (!function_exists('esc_attr')) {
     function esc_attr($text) {
-        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+        return htmlspecialchars((string)$text, ENT_QUOTES, 'UTF-8');
     }
 }
 
@@ -90,11 +102,21 @@ if (!function_exists('esc_url')) {
     }
 }
 
-if (!function_exists('wp_kses_post')) {
-    function wp_kses_post($data) {
-        return $data;
+if (!function_exists('esc_url_raw')) {
+    function esc_url_raw($url, $protocols = array('http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'irc6', 'ircs', 'gopher', 'nntp', 'feed', 'telnet')) {
+        $url = trim($url);
+        if (!$url) return '';
+        // スキームチェック: 許可されたプロトコルのみ通す
+        if (preg_match('/^([a-z][a-z0-9+.\-]*):/', $url, $m)) {
+            if (!in_array(strtolower($m[1]), $protocols, true)) {
+                return '';
+            }
+        }
+        return filter_var($url, FILTER_SANITIZE_URL);
     }
 }
+
+// wp_kses_post は各テストで必要に応じてモックするため削除
 
 if (!function_exists('is_ssl')) {
     function is_ssl() {
@@ -104,6 +126,20 @@ if (!function_exists('is_ssl')) {
 
 if (!function_exists('is_admin')) {
     function is_admin() {
+        return false;
+    }
+}
+
+// lib/admin.php 読み込み時に必要（admin_bar_menu 登録をスキップするため）
+if (!function_exists('is_admin_tool_menu_visible')) {
+    function is_admin_tool_menu_visible() {
+        return false;
+    }
+}
+
+// lib/admin.php 読み込み時に必要（register_tag_check_list 登録をスキップするため）
+if (!function_exists('is_editor_tag_check_list_enable')) {
+    function is_editor_tag_check_list_enable() {
         return false;
     }
 }
@@ -132,26 +168,16 @@ if (!function_exists('is_category')) {
     }
 }
 
-if (!function_exists('date_i18n')) {
-    function date_i18n($format, $timestamp = false, $gmt = false) {
-        if ($timestamp === false) {
+if (!function_exists('wp_date')) {
+    function wp_date($format, $timestamp = null, $timezone = null) {
+        if ($timestamp === null) {
             return date($format);
         }
         return date($format, $timestamp);
     }
 }
 
-if (!function_exists('get_transient')) {
-    function get_transient($transient) {
-        return false;
-    }
-}
 
-if (!function_exists('set_transient')) {
-    function set_transient($transient, $value, $expiration = 0) {
-        return true;
-    }
-}
 
 if (!function_exists('is_wp_error')) {
     function is_wp_error($thing) {
@@ -161,15 +187,12 @@ if (!function_exists('is_wp_error')) {
 
 if (!function_exists('get_the_ID')) {
     function get_the_ID() {
-        return 1;
+        global $test_mock_get_the_id;
+        return isset($test_mock_get_the_id) ? $test_mock_get_the_id : 1;
     }
 }
 
-if (!function_exists('get_post_type')) {
-    function get_post_type($post = null) {
-        return 'post';
-    }
-}
+
 
 if (!function_exists('user_trailingslashit')) {
     function user_trailingslashit($string, $type_of_url = '') {
@@ -189,7 +212,8 @@ if (!function_exists('strip_tags')) {
 
 if (!function_exists('is_singular')) {
     function is_singular($post_types = '') {
-        return false;
+        global $test_mock_is_singular;
+        return isset($test_mock_is_singular) ? (bool)$test_mock_is_singular : false;
     }
 }
 
@@ -206,8 +230,10 @@ if (!function_exists('get_queried_object')) {
 }
 
 if (!function_exists('is_front_page')) {
+    // テスト用: グローバル変数 $test_mock_is_front_page で戻り値を制御可能
     function is_front_page() {
-        return false;
+        global $test_mock_is_front_page;
+        return isset($test_mock_is_front_page) ? (bool)$test_mock_is_front_page : false;
     }
 }
 
@@ -246,26 +272,47 @@ if (!function_exists('is_site_icon_font_font_awesome_4')) {
     }
 }
 
-if (!function_exists('current_user_can')) {
-    function current_user_can($capability) {
-        return false;
-    }
-}
+// current_user_can は各テストで Brain\Monkey を使ってモックするためネイティブ定義を削除
 
 if (!function_exists('wp_remote_get')) {
+    // テスト用: グローバル変数 $test_mock_wp_remote_get_response で戻り値を制御可能
+    // $test_mock_wp_remote_get_args にリクエスト引数をキャプチャ、 $test_mock_wp_remote_get_url にURLをキャプチャ
     function wp_remote_get($url, $args = []) {
+        global $test_mock_wp_remote_get_response;
+        global $test_mock_wp_remote_get_args;
+        global $test_mock_wp_remote_get_url;
+        $test_mock_wp_remote_get_url = $url;
+        $test_mock_wp_remote_get_args = $args;
+        if (isset($test_mock_wp_remote_get_response)) {
+            if (is_callable($test_mock_wp_remote_get_response)) {
+                return call_user_func($test_mock_wp_remote_get_response, $url, $args);
+            }
+            return $test_mock_wp_remote_get_response;
+        }
         return [];
     }
 }
 
 if (!function_exists('wp_remote_post')) {
+    // テスト用: グローバル変数 $test_mock_wp_remote_post_response で戻り値を制御可能
+    // $test_mock_wp_remote_post_args にリクエスト引数をキャプチャ
     function wp_remote_post($url, $args = []) {
+        global $test_mock_wp_remote_post_response;
+        global $test_mock_wp_remote_post_args;
+        $test_mock_wp_remote_post_args = $args;
+        if (isset($test_mock_wp_remote_post_response)) {
+            return $test_mock_wp_remote_post_response;
+        }
         return [];
     }
 }
 
 if (!function_exists('wp_remote_retrieve_body')) {
+    // テスト用: レスポンス配列から body を取得する（wp_remote_post のモックと連携）
     function wp_remote_retrieve_body($response) {
+        if (is_array($response) && isset($response['body'])) {
+            return $response['body'];
+        }
         return '';
     }
 }
@@ -284,6 +331,8 @@ if (!function_exists('get_bloginfo')) {
         switch ($show) {
             case 'name': return 'Test Site';
             case 'url': return 'http://example.com';
+            // テスト環境では WP 6.7 相当として振る舞う（バージョンガード系関数の動作を保証）
+            case 'version': return '6.7';
             default: return '';
         }
     }
@@ -316,17 +365,7 @@ if (!function_exists('is_admin_php_page')) {
     }
 }
 
-if (!function_exists('term_metadata_exists')) {
-    function term_metadata_exists($term_id, $meta_key) {
-        return false;
-    }
-}
-
-if (!function_exists('get_term_meta')) {
-    function get_term_meta($term_id, $key = '', $single = false) {
-        return '';
-    }
-}
+// term_metadata_exists と get_term_meta は各テストで必要に応じてモックするため削除
 
 if (!function_exists('get_query_var')) {
     function get_query_var($var, $default = '') {
@@ -352,6 +391,14 @@ if (!function_exists('is_archive')) {
     }
 }
 
+if (!function_exists('is_paged')) {
+    // テスト用: グローバル変数 $test_mock_is_paged で戻り値を制御可能
+    function is_paged() {
+        global $test_mock_is_paged;
+        return isset($test_mock_is_paged) ? (bool)$test_mock_is_paged : false;
+    }
+}
+
 if (!function_exists('wp_get_nav_menu_items')) {
     function wp_get_nav_menu_items($menu, $args = array()) {
         return array();
@@ -373,15 +420,15 @@ if (!function_exists('is_toc_shortcode_includes')) {
 // blogcard-in.php 依存
 if (!function_exists('is_internal_blogcard_enable')) {
     function is_internal_blogcard_enable() {
+        global $test_mock_is_internal_blogcard_enable;
+        if (isset($test_mock_is_internal_blogcard_enable)) {
+            return $test_mock_is_internal_blogcard_enable;
+        }
         return false;
     }
 }
 
-if (!function_exists('url_to_postid')) {
-    function url_to_postid($url) {
-        return 0;
-    }
-}
+
 
 if (!function_exists('get_post_status')) {
     function get_post_status($id = null) {
@@ -390,7 +437,13 @@ if (!function_exists('get_post_status')) {
 }
 
 if (!function_exists('get_permalink')) {
+    // テスト用: $test_mock_get_permalink_map[$post_id] に URL をセットすると
+    // その ID の get_permalink() がそのURLを返す
     function get_permalink($post = 0) {
+        global $test_mock_get_permalink_map;
+        if (is_array($test_mock_get_permalink_map) && isset($test_mock_get_permalink_map[$post])) {
+            return $test_mock_get_permalink_map[$post];
+        }
         return 'http://example.com/';
     }
 }
@@ -407,15 +460,13 @@ if (!function_exists('has_post_thumbnail')) {
     }
 }
 
-if (!function_exists('get_post_thumbnail_id')) {
-    function get_post_thumbnail_id($post = null) {
-        return 0;
-    }
-}
+
 
 if (!function_exists('get_post')) {
+    // テスト用: $test_mock_get_post にオブジェクトをセットすると get_post() がそれを返す
     function get_post($post = null, $output = OBJECT, $filter = 'raw') {
-        return null;
+        global $test_mock_get_post;
+        return isset($test_mock_get_post) ? $test_mock_get_post : null;
     }
 }
 
@@ -551,6 +602,10 @@ if (!function_exists('get_function_text')) {
 
 if (!function_exists('is_user_logged_in')) {
     function is_user_logged_in() {
+        global $test_mock_is_user_logged_in;
+        if (isset($test_mock_is_user_logged_in)) {
+            return $test_mock_is_user_logged_in;
+        }
         return false;
     }
 }
@@ -575,6 +630,10 @@ if (!function_exists('_n')) {
 
 if (!function_exists('url_to_internal_blogcard_tag')) {
     function url_to_internal_blogcard_tag($url) {
+        global $test_mock_url_to_internal_blogcard_tag_return;
+        if (isset($test_mock_url_to_internal_blogcard_tag_return)) {
+            return $test_mock_url_to_internal_blogcard_tag_return;
+        }
         return null;
     }
 }
@@ -587,6 +646,10 @@ if (!function_exists('is_ad_shortcode_enable')) {
 
 if (!function_exists('is_external_blogcard_enable')) {
     function is_external_blogcard_enable() {
+        global $test_mock_is_external_blogcard_enable;
+        if (isset($test_mock_is_external_blogcard_enable)) {
+            return $test_mock_is_external_blogcard_enable;
+        }
         return false;
     }
 }
@@ -594,6 +657,26 @@ if (!function_exists('is_external_blogcard_enable')) {
 if (!function_exists('wp_rand')) {
     function wp_rand($min = 0, $max = 0) {
         return rand($min, $max);
+    }
+}
+
+if (!function_exists('is_internal_blogcard_url')) {
+    function is_internal_blogcard_url($url) {
+        global $test_mock_is_internal_blogcard_url;
+        if (isset($test_mock_is_internal_blogcard_url)) {
+            return $test_mock_is_internal_blogcard_url;
+        }
+        return false; // デフォルト
+    }
+}
+
+if (!function_exists('url_to_external_blog_card_tag')) {
+    function url_to_external_blog_card_tag($url) {
+        global $test_mock_url_to_external_blog_card_tag_return;
+        if (isset($test_mock_url_to_external_blog_card_tag_return)) {
+            return $test_mock_url_to_external_blog_card_tag_return;
+        }
+        return null;
     }
 }
 
@@ -805,7 +888,7 @@ if (!function_exists('get_the_tags')) {
 // === リンク関連 ===
 if (!function_exists('includes_string')) {
     function includes_string($haystack, $needle) {
-        return strpos($haystack, $needle) !== false;
+        return strpos((string)$haystack, (string)$needle) !== false;
     }
 }
 
@@ -819,4 +902,241 @@ if (!function_exists('is_comment_external_blogcard_enable')) {
     function is_comment_external_blogcard_enable() {
         return false;
     }
+}
+
+if (!function_exists('get_image_sized_url')) { function get_image_sized_url($url, $w = 0, $h = 0) { return $url; } }
+if (!function_exists('url_to_local')) { function url_to_local($url) { return false; } }
+
+// lib/admin.php の get_admin_bar_menu_array が使用
+if (!function_exists('admin_url')) {
+    function admin_url($path = '', $scheme = 'admin') {
+        return 'http://example.com/wp-admin/' . $path;
+    }
+}
+
+// WordPress コア関数: URL の末尾スラッシュ操作
+if (!function_exists('untrailingslashit')) {
+    function untrailingslashit($value) {
+        return rtrim($value, '/\\');
+    }
+}
+if (!function_exists('trailingslashit')) {
+    function trailingslashit($value) {
+        return untrailingslashit($value) . '/';
+    }
+}
+
+// WordPress コア関数: クエリ引数の追加（簡易実装）
+if (!function_exists('add_query_arg')) {
+    function add_query_arg($args, $url = '') {
+        // テスト用: 空配列の場合はURLをそのまま返す
+        if (is_array($args) && empty($args)) {
+            return $url;
+        }
+        return $url . '?' . http_build_query($args);
+    }
+}
+
+// WP_HTML_Tag_Processor のテスト用モッククラス（WP 6.2+ 相当の簡易実装）
+// add_editor_no_link_click_class 等のテストで使用する。
+if (!class_exists('WP_HTML_Tag_Processor')) {
+    class WP_HTML_Tag_Processor {
+        private $html;
+        private $tags = [];
+        private $cursor = -1;
+        private $attr_changes = [];
+        private $class_additions = [];
+
+        public function __construct( $html ) {
+            $this->html = $html;
+            $this->parse_tags();
+        }
+
+        // 開始タグの位置・名前・属性文字列をパースする簡易実装。
+        private function parse_tags() {
+            $len = strlen( $this->html );
+            $i = 0;
+            while ( $i < $len ) {
+                // コメントをスキップ。
+                if ( substr( $this->html, $i, 4 ) === '<!--' ) {
+                    $end = strpos( $this->html, '-->', $i + 4 );
+                    $i = $end === false ? $len : $end + 3;
+                    continue;
+                }
+                // <script> ブロックをスキップ。
+                if ( preg_match( '/\G<script\b[^>]*>/i', $this->html, $m, 0, $i ) ) {
+                    $close = stripos( $this->html, '</script', $i + strlen( $m[0] ) );
+                    $i = $close === false ? $len : $close + 9;
+                    continue;
+                }
+                // <style> ブロックをスキップ。
+                if ( preg_match( '/\G<style\b[^>]*>/i', $this->html, $m, 0, $i ) ) {
+                    $close = stripos( $this->html, '</style', $i + strlen( $m[0] ) );
+                    $i = $close === false ? $len : $close + 8;
+                    continue;
+                }
+                // 開始タグを検出。
+                if ( preg_match( '/\G<([a-zA-Z][a-zA-Z0-9:-]*)((?:\s+(?:[^>"\'=\s]+(?:\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]*))?))*)(\s*\/?)>/s', $this->html, $m, 0, $i ) ) {
+                    $this->tags[] = [
+                        'offset' => $i,
+                        'length' => strlen( $m[0] ),
+                        'name'   => strtolower( $m[1] ),
+                        'attrs'  => $m[2],
+                    ];
+                    $i += strlen( $m[0] );
+                    continue;
+                }
+                $i++;
+            }
+        }
+
+        public function next_tag( $query = null ) {
+            $target = is_string( $query ) ? strtolower( $query ) : null;
+            while ( ++$this->cursor < count( $this->tags ) ) {
+                if ( $target === null || $this->tags[ $this->cursor ]['name'] === $target ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public function get_tag() {
+            if ( $this->cursor < 0 || $this->cursor >= count( $this->tags ) ) {
+                return null;
+            }
+            return strtoupper( $this->tags[ $this->cursor ]['name'] );
+        }
+
+        public function get_attribute( $name ) {
+            if ( $this->cursor < 0 || $this->cursor >= count( $this->tags ) ) {
+                return null;
+            }
+            $idx = $this->cursor;
+            // 変更済みの属性を優先する。
+            if ( isset( $this->attr_changes[ $idx ][ $name ] ) ) {
+                return $this->attr_changes[ $idx ][ $name ];
+            }
+            $attrs = $this->tags[ $idx ]['attrs'];
+            // 引用符付き属性値。
+            if ( preg_match( '/(?:^|\s)' . preg_quote( $name, '/' ) . '\s*=\s*(["\'])(.*?)\1/is', $attrs, $m ) ) {
+                return $m[2];
+            }
+            // 引用符なし属性値。
+            if ( preg_match( '/(?:^|\s)' . preg_quote( $name, '/' ) . '\s*=\s*([^\s>"\']+)/i', $attrs, $m ) ) {
+                return $m[1];
+            }
+            // 値なし（boolean）属性。
+            if ( preg_match( '/(?:^|\s)' . preg_quote( $name, '/' ) . '(?:\s|$)/i', $attrs ) ) {
+                return true;
+            }
+            return null;
+        }
+
+        public function set_attribute( $name, $value ) {
+            if ( $this->cursor < 0 || $this->cursor >= count( $this->tags ) ) {
+                return;
+            }
+            $this->attr_changes[ $this->cursor ][ $name ] = $value;
+        }
+
+        public function add_class( $class ) {
+            if ( $this->cursor < 0 || $this->cursor >= count( $this->tags ) ) {
+                return;
+            }
+            $this->class_additions[ $this->cursor ][] = $class;
+        }
+
+        public function get_updated_html() {
+            $result = $this->html;
+            // オフセットがずれないよう逆順で適用する。
+            for ( $i = count( $this->tags ) - 1; $i >= 0; $i-- ) {
+                $tag = $this->tags[ $i ];
+                $name = $tag['name'];
+                $attrs = $tag['attrs'];
+                $suffix = '';
+
+                // 属性の追加・上書き。
+                if ( isset( $this->attr_changes[ $i ] ) ) {
+                    foreach ( $this->attr_changes[ $i ] as $attr_name => $attr_value ) {
+                        $pattern = '/(\s)' . preg_quote( $attr_name, '/' ) . '\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]*)/i';
+                        if ( preg_match( $pattern, $attrs ) ) {
+                            $attrs = preg_replace( $pattern, '$1' . $attr_name . '="' . $attr_value . '"', $attrs, 1 );
+                        } else {
+                            $suffix .= ' ' . $attr_name . '="' . $attr_value . '"';
+                        }
+                    }
+                }
+
+                // クラスの追加。
+                if ( isset( $this->class_additions[ $i ] ) ) {
+                    $new_classes = $this->class_additions[ $i ];
+                    if ( preg_match( '/(\s)class\s*=\s*(["\'])(.*?)\2/is', $attrs, $m ) ) {
+                        $existing = trim( $m[3] );
+                        $all = $existing ? $existing . ' ' . implode( ' ', $new_classes ) : implode( ' ', $new_classes );
+                        $attrs = preg_replace(
+                            '/(\s)class\s*=\s*(["\'])(.*?)\2/is',
+                            '$1class=$2' . $all . '$2',
+                            $attrs,
+                            1
+                        );
+                    } else {
+                        $suffix .= ' class="' . implode( ' ', $new_classes ) . '"';
+                    }
+                }
+
+                $new_tag = '<' . $name . $attrs . $suffix . '>';
+                $result = substr_replace( $result, $new_tag, $tag['offset'], $tag['length'] );
+            }
+            return $result;
+        }
+    }
+}
+
+// EntryCardTest 用: get_entry_card_type() のスタブ
+if (!function_exists('get_entry_card_type')) {
+    // テスト用: グローバル変数 $test_mock_entry_card_type で戻り値を制御可能
+    function get_entry_card_type() {
+        global $test_mock_entry_card_type;
+        return isset($test_mock_entry_card_type) ? $test_mock_entry_card_type : 'default';
+    }
+}
+
+// GutenbergStylesheetsTest 用: settings.php のファイルレベルで呼ばれる WP 関数スタブ
+if (!function_exists('add_theme_support')) {
+    function add_theme_support() {}
+}
+if (!function_exists('add_image_size')) {
+    function add_image_size() {}
+}
+if (!function_exists('remove_filter')) {
+    function remove_filter() { return true; }
+}
+
+// GutenbergStylesheetsTest 用: settings.php のファイルレベルで呼ばれるテーマ関数スタブ
+if (!function_exists('get_square_thumbnail_width')) {
+    function get_square_thumbnail_width($width) { return (int) $width; }
+}
+if (!function_exists('get_square_thumbnail_height')) {
+    function get_square_thumbnail_height($width) { return (int) $width; }
+}
+if (!function_exists('get_thumbnail_width')) {
+    function get_thumbnail_width($width) { return (int) $width; }
+}
+if (!function_exists('get_thumbnail_height')) {
+    function get_thumbnail_height($width) { return (int) round($width * 9 / 16); }
+}
+if (!function_exists('is_entry_card_type_vertical_card_2')) {
+    function is_entry_card_type_vertical_card_2() { return false; }
+}
+if (!function_exists('is_entry_card_type_vertical_card_3')) {
+    function is_entry_card_type_vertical_card_3() { return false; }
+}
+if (!function_exists('is_entry_card_type_tile_card_2')) {
+    function is_entry_card_type_tile_card_2() { return false; }
+}
+if (!function_exists('is_entry_card_type_tile_card_3')) {
+    function is_entry_card_type_tile_card_3() { return false; }
+}
+if (!function_exists('get_site_wrap_width')) {
+    function get_site_wrap_width() { return 1100; }
 }

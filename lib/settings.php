@@ -117,7 +117,10 @@ function visual_editor_stylesheets_custom($stylesheets) {
       );
     }
 
-    //ブロックエディターを利用しているとき
+    // アイコンフォントURL: ブロックエディター経由の呼び出し時（gutenberg_editor_settings()）
+    // では use_gutenberg_editor() が常に true を返すためスキップされる。
+    // ブロックエディターではアイコンフォントは gutenberg_stylesheets_custom() 内の
+    // wp_enqueue_style_icomoon() で別途読み込まれるため、二重読み込み防止として正しい動作。
     if (!use_gutenberg_editor()) {
       array_push($stylesheets,
         add_file_ver_to_css_js(get_site_icon_font_url())
@@ -177,8 +180,66 @@ if ( !function_exists( 'gutenberg_stylesheets_custom' ) ):
 function gutenberg_stylesheets_custom() {
   if ( is_visual_editor_style_enable() && is_admin() ) {
 
-    // Gutenberg用のCSSとJSのみ読み込み
-    wp_enqueue_script( THEME_NAME . '-gutenberg-js', get_cocoon_template_directory_uri() . '/js/gutenberg.js', array( 'jquery' ), false, true );
+    // --- WP 7.0 iframe 対応: エディター内クラス付与スクリプト ---
+    // jQuery に依存しない vanilla JS として enqueue_block_assets 経由で読み込む。
+    // WP 6.3+ では iframe 内でも実行される。WP < 6.3 では外側で実行される。
+    // スクリプトファイルのパスを変数に保持する（filemtime でバージョン管理するため）
+    $editor_classes_js = '/js/gutenberg-editor-classes.js';
+    $editor_classes_js_path = get_cocoon_template_directory() . $editor_classes_js;
+    wp_enqueue_script(
+      THEME_NAME . '-gutenberg-editor-classes',
+      get_cocoon_template_directory_uri() . $editor_classes_js,
+      array(),  // jQuery 不要
+      // ファイルが存在しない場合は false（WP バージョン）にフォールバックして Warning を防ぐ
+      file_exists( $editor_classes_js_path ) ? filemtime( $editor_classes_js_path ) : false,
+      true
+    );
+
+    // エディタールート要素に付与するクラスを構築する
+    $editor_add_classes = array( 'cocoon-block-wrap', 'body', 'article', 'admin-page' );
+    $site_icon_font = get_site_icon_font_class();
+    if ( $site_icon_font ) {
+      $editor_add_classes[] = str_replace( ' ', '', $site_icon_font );
+    }
+    $page_type_class = get_editor_page_type_class();
+    if ( $page_type_class ) {
+      $editor_add_classes[] = str_replace( ' ', '', $page_type_class );
+    }
+
+    // iframe body に付与するフォント関連クラスを構築する
+    // （iframe 内で body に直接付与することで、CSS の親子セレクタが同一 document 内で機能する）
+    // 値が空プレフィックスのみ（例: 'ff-'）の場合は除外して、不要なクラス付与を防ぐ
+    $editor_font_classes = array();
+    $font_family_class = get_site_font_family_class();
+    $font_size_class   = get_site_font_size_class();
+    $font_weight_class = get_site_font_weight_class();
+    if ( $font_family_class && $font_family_class !== 'ff-' ) {
+      $editor_font_classes[] = 'wp-admin-' . $font_family_class;
+    }
+    if ( $font_size_class && $font_size_class !== 'fz-' ) {
+      $editor_font_classes[] = 'wp-admin-' . $font_size_class;
+    }
+    if ( $font_weight_class && $font_weight_class !== 'fw-' ) {
+      $editor_font_classes[] = 'wp-admin-' . $font_weight_class;
+    }
+
+    // wp_localize_script は iframe 内で動作しない場合があるため、
+    // wp_add_inline_script でスクリプト実行前にグローバル変数として注入する
+    wp_add_inline_script(
+      THEME_NAME . '-gutenberg-editor-classes',
+      sprintf(
+        'window.cocoonEditorClassConfig = %s;',
+        // JSON_HEX_TAG で <> をエスケープし、<script> タグ内への出力時の XSS を防御
+        wp_json_encode( array(
+          'addClasses'  => $editor_add_classes,
+          'fontClasses' => $editor_font_classes,
+        ), JSON_HEX_TAG )
+      ),
+      'before'
+    );
+
+    // Gutenberg エディター用 CSS を読み込む
+    // （silk スキンの wp_add_inline_style が cocoon-gutenberg ハンドルを参照しているため変更しない）
     wp_enqueue_style( THEME_NAME . '-gutenberg', get_cocoon_template_directory_uri() . '/css/gutenberg-editor.css' );
 
     // IcoMoonを読み込む
@@ -187,17 +248,25 @@ function gutenberg_stylesheets_custom() {
     //WordPressバージョンが5.8以上の時
     if (is_wp_5_8_or_over()) {
 
-      //カラーパレットスタイル
-      $css = get_block_editor_color_palette_css();
-      $file = get_block_color_palette_css_cache_file();
-      wp_filesystem_put_contents($file, $css, 0);
-      wp_enqueue_style( THEME_NAME . '-color-palette-style', get_block_color_palette_css_cache_url() );
-      // var_dump(get_block_color_palette_css_cache_url());
-
-      //Font Awesome5が有効な場合
+      //Font Awesome5が有効な場合（外部 CDN のため常に wp_enqueue_style で読み込む）
       if (is_site_icon_font_font_awesome_5()) {
         wp_enqueue_style( THEME_NAME . '-font-awesome-5-style', FONT_AWESOME_5_UPDATE_URL );
       }
+
+      // カラーパレットCSSキャッシュファイルを常に最新状態に保つ
+      // （ブロックエディタ/クラシックエディタ問わず生成しておく）
+      $css = get_block_editor_color_palette_css();
+      $file = get_block_color_palette_css_cache_file();
+      wp_filesystem_put_contents($file, $css, 0);
+
+      // ブロックエディタ画面でも管理画面 DOM 側（iframe 外）に <link> タグで CSS を
+      // 読み込む。これは右サイドバーのブロックスタイルプレビュー領域が iframe 外
+      // で描画されるため、$editor_settings['styles'] 注入だけでは届かないため必要。
+      // エディタ本体 iframe には gutenberg_editor_settings() が同じ CSS を注入する
+      // ため二重適用となるが、CSS は冪等のため視覚的な不具合は発生しない。
+
+      //カラーパレットスタイル
+      wp_enqueue_style( THEME_NAME . '-color-palette-style', get_block_color_palette_css_cache_url() );
 
       //スキンが設定されている場合
       if (get_skin_url() &&
@@ -233,7 +302,30 @@ function gutenberg_stylesheets_custom() {
       'background' => true,
       'title'      => false,
     ) );
-    wp_localize_script( THEME_NAME . '-gutenberg-js', $name, $value );
+    // フックを維持しつつ、新しい JS ハンドルに付け替える
+    // （外部スキン・プラグインが cocoon_gutenberg_param_name/value フィルターを利用している可能性がある）
+    wp_localize_script( THEME_NAME . '-gutenberg-editor-classes', $name, $value );
+  }
+}
+endif;
+
+// ツールバーボタンスタイリング用スクリプト
+// enqueue_block_editor_assets で登録することで、常に iframe の外側で実行される。
+add_action( 'enqueue_block_editor_assets', 'cocoon_enqueue_toolbar_script' );
+if ( ! function_exists( 'cocoon_enqueue_toolbar_script' ) ):
+function cocoon_enqueue_toolbar_script() {
+  if ( is_visual_editor_style_enable() && is_admin() ) {
+    // スクリプトファイルのパスを変数に保持する（filemtime でバージョン管理するため）
+    $toolbar_js = '/js/gutenberg-toolbar.js';
+    $toolbar_js_path = get_cocoon_template_directory() . $toolbar_js;
+    wp_enqueue_script(
+      THEME_NAME . '-gutenberg-toolbar',
+      get_cocoon_template_directory_uri() . $toolbar_js,
+      array(),  // jQuery 不要
+      // ファイルが存在しない場合は false（WP バージョン）にフォールバックして Warning を防ぐ
+      file_exists( $toolbar_js_path ) ? filemtime( $toolbar_js_path ) : false,
+      true
+    );
   }
 }
 endif;
@@ -273,19 +365,26 @@ function gutenberg_editor_settings( $editor_settings, $post ) {
         $response = wp_remote_get( $item );
         if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
           $styles[] = array(
-            'css' => wp_remote_retrieve_body( $response ),
+            'css'     => wp_remote_retrieve_body( $response ),
+            // リモートCSSでもローカル同様に baseURL を設定し、相対URLを正しく解決させる
+            'baseURL' => $item,
           );
         }
       } else {
         if ( file_exists( $path ) ) {
           $styles[] = array(
             'css'     => wp_filesystem_get_contents( $path ),
-            // 'baseURL' => $item,
+            // CSS 内の相対 URL（url(images/bg.png) 等）をこの URL を基準に解決させる
+            'baseURL' => $item,
           );
         }
       }
     }
-    $editor_settings['styles'] = $styles;
+    // 他のプラグインが設定した既存スタイルを保持しつつ、Cocoon のスタイルを追加する
+    $editor_settings['styles'] = array_merge(
+      $editor_settings['styles'] ?? array(),
+      $styles
+    );
   }
 
   return $editor_settings;
@@ -418,8 +517,6 @@ add_filter('pre_option_link_manager_enabled','__return_true');
 // WordPress 6.9で変更されたブロックスタイルの個別読み込みを無効化（CSS縮小時などに不具合が出るため）
 add_filter( 'should_load_separate_core_block_assets', '__return_false' );
 
-//はてな oEmbed対応
-wp_oembed_add_provider('https://*', 'https://hatenablog.com/oembed');
 //oembed無効
 add_filter( 'embed_oembed_discover', '__return_false' );
 //Embeds
@@ -497,7 +594,7 @@ function add_file_ver_to_css_js( $src ) {
     $stylesheet_file = url_to_local( $removed_src );
     if (file_exists($stylesheet_file)) {
       //ファイルの編集時間バージョンを追加
-      $src = add_query_arg( 'fver', date_i18n('Ymdhis', filemtime($stylesheet_file)), $src );
+      $src = add_query_arg( 'fver', wp_date('Ymdhis', filemtime($stylesheet_file)), $src );
     }
 
   }

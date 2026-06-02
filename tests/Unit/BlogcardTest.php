@@ -12,6 +12,18 @@ use Cocoon\Tests\TestCase;
 
 class BlogcardTest extends TestCase
 {
+    protected function tearDown(): void
+    {
+        unset(
+            $GLOBALS['test_mock_is_internal_blogcard_enable'],
+            $GLOBALS['test_mock_is_external_blogcard_enable'],
+            $GLOBALS['test_mock_is_internal_blogcard_url'],
+            $GLOBALS['test_mock_url_to_internal_blogcard_tag_return'],
+            $GLOBALS['test_mock_url_to_external_blog_card_tag_return']
+        );
+        parent::tearDown();
+    }
+
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
@@ -309,6 +321,58 @@ class BlogcardTest extends TestCase
         $this->assertSame('https://example.com/path', $result);
     }
 
+    public function test_cancel_blog_card_deactivation_エクスクラメーションとURLの間にスペースがあるpタグ内無効化を解除する(): void
+    {
+        $content = '<p>! https://example.com/path</p>';
+        $result = cancel_blog_card_deactivation($content, true);
+        $this->assertSame('<p>https://example.com/path</p>', $result);
+    }
+
+    public function test_cancel_blog_card_deactivation_エクスクラメーション付きaタグURLのpタグ内無効化を解除する(): void
+    {
+        // Gutenbergがリンクに変換した場合（<a>タグ内テキストに先頭スペースあり）
+        $content = '<p>!<a href="https://example.com/path"> https://example.com/path</a></p>';
+        $result = cancel_blog_card_deactivation($content, true);
+        $this->assertSame('<p><a href="https://example.com/path"> https://example.com/path</a></p>', $result);
+    }
+
+    public function test_cancel_blog_card_deactivation_エクスクラメーション付きaタグURLのpタグなし無効化を解除する(): void
+    {
+        $content = '!<a href="https://example.com/path"> https://example.com/path</a>';
+        $result = cancel_blog_card_deactivation($content, false);
+        $this->assertSame('<a href="https://example.com/path"> https://example.com/path</a>', $result);
+    }
+
+    public function test_cancel_blog_card_deactivation_make_clickable変換後のaタグURLの無効化を解除する(): void
+    {
+        // make_clickable が「! URL」を「! <a ...>URL</a>」に変換した後の状態
+        $content = '<p>! <a href="https://www.yahoo.co.jp/" rel="nofollow">https://www.yahoo.co.jp/</a></p>';
+        $result = cancel_blog_card_deactivation($content, true);
+        $this->assertSame('<p><a href="https://www.yahoo.co.jp/" rel="nofollow">https://www.yahoo.co.jp/</a></p>', $result);
+    }
+
+    public function test_cancel_blog_card_deactivation_スペースなしaタグURLの無効化を解除する(): void
+    {
+        // !<a>形式（スペースなし、aタグ内テキストにスペースなし）
+        $content = '<p>!<a href="https://www.yahoo.co.jp/">https://www.yahoo.co.jp/</a></p>';
+        $result = cancel_blog_card_deactivation($content, true);
+        $this->assertSame('<p><a href="https://www.yahoo.co.jp/">https://www.yahoo.co.jp/</a></p>', $result);
+    }
+
+    public function test_cancel_blog_card_deactivation_pタグ属性付きURLの無効化を解除する(): void
+    {
+        $content = '<p class="wp-block-paragraph">! https://example.com/path</p>';
+        $result = cancel_blog_card_deactivation($content, true);
+        $this->assertSame('<p>https://example.com/path</p>', $result);
+    }
+
+    public function test_cancel_blog_card_deactivation_行頭インデント付きURLの無効化を解除する(): void
+    {
+        $content = "    ! https://example.com/path";
+        $result = cancel_blog_card_deactivation($content, false);
+        $this->assertSame('https://example.com/path', $result);
+    }
+
     // ========================================================================
     // get_human_years_ago() - 年齢計算
     // ========================================================================
@@ -327,6 +391,140 @@ class BlogcardTest extends TestCase
         $from = strtotime('2000-01-01');
         $result = get_human_years_ago($from, '歳');
         $this->assertStringEndsWith('歳', $result);
+    }
+
+    // ========================================================================
+    // cocoon_embed_blogcard_render() - ブログカード埋め込みブロックレンダリング
+    // ========================================================================
+
+    public function test_cocoon_embed_blogcard_render_urlがない場合は空文字を返す(): void
+    {
+        $attributes = [];
+        $this->assertSame('', cocoon_embed_blogcard_render($attributes));
+    }
+
+    public function test_cocoon_embed_blogcard_render_生成できなかった場合はフォールバックとしてpタグで囲んで返す(): void
+    {
+        // WordPressコアのesc_url_rawや外部取得がモックで無効化されている環境下では、
+        // 最終的なフォールバックのpタグ囲みURLになって返ることを確認する。
+        $attributes = ['url' => 'https://example.test/page'];
+        $this->assertSame('<p>https://example.test/page</p>', cocoon_embed_blogcard_render($attributes));
+    }
+
+    public function test_cocoon_embed_blogcard_render_内部URLで内部設定オンの場合に内部用タグが返る(): void
+    {
+        global $test_mock_is_internal_blogcard_enable;
+        global $test_mock_is_internal_blogcard_url;
+        global $test_mock_url_to_internal_blogcard_tag_return;
+
+        $test_mock_is_internal_blogcard_enable = true;
+        $test_mock_is_internal_blogcard_url = true;
+        $test_mock_url_to_internal_blogcard_tag_return = '<div class="internal-blogcard">internal</div>';
+
+        $attributes = ['url' => 'https://example.test/internal'];
+        $result = cocoon_embed_blogcard_render($attributes);
+
+        $this->assertStringContainsString('internal-blogcard', $result);
+    }
+
+    public function test_cocoon_embed_blogcard_render_内部URLで内部設定オフの場合はフォールバックする(): void
+    {
+        global $test_mock_is_internal_blogcard_enable;
+        global $test_mock_is_external_blogcard_enable;
+        global $test_mock_is_internal_blogcard_url;
+
+        $test_mock_is_internal_blogcard_enable = false;
+        $test_mock_is_external_blogcard_enable = true; // 両方オフの早期returnを回避
+        $test_mock_is_internal_blogcard_url = true;
+
+        $attributes = ['url' => 'https://example.test/internal'];
+        $result = cocoon_embed_blogcard_render($attributes);
+
+        $this->assertSame('<p>https://example.test/internal</p>', $result);
+    }
+
+    public function test_cocoon_embed_blogcard_render_外部URLで外部設定オンの場合に外部用タグが返る(): void
+    {
+        global $test_mock_is_external_blogcard_enable;
+        global $test_mock_is_internal_blogcard_url;
+        global $test_mock_url_to_external_blog_card_tag_return;
+
+        $test_mock_is_external_blogcard_enable = true;
+        $test_mock_is_internal_blogcard_url = false;
+        $test_mock_url_to_external_blog_card_tag_return = '<div class="external-blogcard">external</div>';
+
+        $attributes = ['url' => 'https://example.test/external'];
+        $result = cocoon_embed_blogcard_render($attributes);
+
+        $this->assertStringContainsString('external-blogcard', $result);
+    }
+
+    public function test_cocoon_embed_blogcard_render_外部URLで外部設定オフの場合はフォールバックする(): void
+    {
+        global $test_mock_is_internal_blogcard_enable;
+        global $test_mock_is_external_blogcard_enable;
+        global $test_mock_is_internal_blogcard_url;
+
+        $test_mock_is_internal_blogcard_enable = true; // 両方オフの早期returnを回避
+        $test_mock_is_external_blogcard_enable = false;
+        $test_mock_is_internal_blogcard_url = false;
+
+        $attributes = ['url' => 'https://example.test/external'];
+        $result = cocoon_embed_blogcard_render($attributes);
+
+        $this->assertSame('<p>https://example.test/external</p>', $result);
+    }
+
+    public function test_cocoon_embed_blogcard_render_不正スキームのURLは空文字を返す(): void
+    {
+        $attributes = ['url' => 'javascript:alert(1)'];
+        $this->assertSame('', cocoon_embed_blogcard_render($attributes));
+    }
+
+    public function test_cocoon_embed_blogcard_render_両方オフの場合はプレーンテキストで返す(): void
+    {
+        global $test_mock_is_internal_blogcard_enable;
+        global $test_mock_is_external_blogcard_enable;
+
+        $test_mock_is_internal_blogcard_enable = false;
+        $test_mock_is_external_blogcard_enable = false;
+
+        $attributes = ['url' => 'https://example.test/both-off'];
+        $result = cocoon_embed_blogcard_render($attributes);
+
+        $this->assertSame('<p>https://example.test/both-off</p>', $result);
+    }
+
+    public function test_cocoon_embed_blogcard_render_内部URLで内部設定オンだがタグ生成失敗の場合はフォールバックする(): void
+    {
+        global $test_mock_is_internal_blogcard_enable;
+        global $test_mock_is_internal_blogcard_url;
+        global $test_mock_url_to_internal_blogcard_tag_return;
+
+        $test_mock_is_internal_blogcard_enable = true;
+        $test_mock_is_internal_blogcard_url = true;
+        $test_mock_url_to_internal_blogcard_tag_return = null; // タグ生成失敗
+
+        $attributes = ['url' => 'https://example.test/internal-fail'];
+        $result = cocoon_embed_blogcard_render($attributes);
+
+        $this->assertSame('<p>https://example.test/internal-fail</p>', $result);
+    }
+
+    public function test_cocoon_embed_blogcard_render_外部URLで外部設定オンだがタグ生成失敗の場合はフォールバックする(): void
+    {
+        global $test_mock_is_external_blogcard_enable;
+        global $test_mock_is_internal_blogcard_url;
+        global $test_mock_url_to_external_blog_card_tag_return;
+
+        $test_mock_is_external_blogcard_enable = true;
+        $test_mock_is_internal_blogcard_url = false;
+        $test_mock_url_to_external_blog_card_tag_return = null; // タグ生成失敗
+
+        $attributes = ['url' => 'https://example.test/external-fail'];
+        $result = cocoon_embed_blogcard_render($attributes);
+
+        $this->assertSame('<p>https://example.test/external-fail</p>', $result);
     }
 
 }

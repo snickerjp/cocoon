@@ -310,53 +310,27 @@ function get_amazon_itemlookup_json($asin, $tracking_id = null){
   $awsv4->addHeader ('host', $host);
   $awsv4->addHeader ('x-amz-target', 'com.amazon.paapi5.v1.ProductAdvertisingAPIv1.GetItems');
   $headers = $awsv4->getHeaders ();
-  $headerString = "";
+  // ヘッダーを連想配列形式で整形する（wp_remote_post向け）
+  $wp_headers = array();
   foreach ( $headers as $key => $value ) {
-		$curl_headers[] = $key . ': ' . $value;
-    $headerString .= $key . ': ' . $value . "\r\n";
+    $wp_headers[$key] = $value;
   }
 
-  //cURLがインストールされていれば利用する
-  if ( ini_get('allow_url_fopen') == '1' ) {
-    $params = array (
-      'http' => array (
-        'header' => $headerString,
-        'method' => 'POST',
-        'content' => $payload,
-        'ignore_errors' => true,
-      )
-    );
-    $stream = stream_context_create( $params );
+  // WordPress標準のHTTP APIでリクエストを送信する
+  $wp_response = wp_remote_post('https://'.$host.$uriPath, array(
+    'headers' => $wp_headers,
+    'body'    => $payload,
+    'timeout' => 10,
+  ));
 
-    $fp = @fopen ( 'https://'.$host.$uriPath, 'rb', false, $stream );
+  // リクエスト自体が失敗した場合（ネットワークエラーなど）
+  if (is_wp_error($wp_response)) {
+    return false;
+  }
 
-    if (!$fp) {
-      //throw new Exception ( "Exception Occured" );
-      return false;
-    }
-    $res = @stream_get_contents( $fp );
-    if ($res === false) {
-      //throw new Exception ( "Exception Occured" );
-      return false;
-    }
-  } elseif (function_exists( 'curl_version' )) {
-    $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL, 'https://' . $host.$uriPath );
-    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST' );
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $payload );
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $curl_headers );
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true );
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true );
-    curl_setopt($curl, CURLOPT_HEADER, true );
-    curl_setopt($curl, CURLOPT_TIMEOUT, 10 );
-    $response	= curl_exec( $curl );
-    $info		= curl_getinfo( $curl );
-    $error_no	= curl_errno( $curl );
-
-    $status_code = $info[ 'http_code' ];
-    $header_size = curl_getinfo( $curl, CURLINFO_HEADER_SIZE );
-    $res = substr( $response, $header_size );
-  } else {
+  // レスポンスのボディを取得する
+  $res = wp_remote_retrieve_body($wp_response);
+  if (empty($res)) {
     return false;
   }
 
@@ -399,7 +373,7 @@ function get_amazon_itemlookup_json($asin, $tracking_id = null){
     if (DEBUG_CACHE_ENABLE) {
       //一応、XML取得時のタイムスタンプを保存しておく
       $count = 1;
-      $res = str_replace(',"BrowseNodeInfo":{', ',"date":"'.date_i18n( 'Y/m/d H:i').'","BrowseNodeInfo":{', $res, $count);
+      $res = str_replace(',"BrowseNodeInfo":{', ',"date":"'.wp_date( 'Y/m/d H:i').'","BrowseNodeInfo":{', $res, $count);
       //_v($res);
       //キャッシュ更新間隔（randで次回の同時読み込みを防ぐ）
       $expiration = DAY_IN_SECONDS * $days + (rand(0, 60) * 60);
@@ -468,7 +442,7 @@ function amazon_product_link_shortcode($atts){
     $asin = sanitize_shortcode_value($id);
   }
   //キーワード
-  $keyword = sanitize_shortcode_value($kw);
+  $keyword = (string) sanitize_shortcode_value($kw);
 
   //説明文
   $description = $desc;
@@ -635,7 +609,7 @@ function amazon_product_link_shortcode($atts){
       ///////////////////////////////////////
       // アマゾンURL
       ///////////////////////////////////////
-      $moshimo_amazon_base_url = 'https://af.moshimo.com/af/c/click?a_id='.$moshimo_amazon_id.'&p_id=170&pc_id=185&pl_id=4062&url=';
+      $moshimo_amazon_base_url = 'https://af.moshimo.com/af/c/click?a_id='.urlencode($moshimo_amazon_id).'&p_id=170&pc_id=185&pl_id=4062&url=';
       $DetailPageURL = isset($item->DetailPageURL) ? esc_url($item->DetailPageURL) : null;
       if ($DetailPageURL) {
         $associate_url = $DetailPageURL;
@@ -861,7 +835,7 @@ function amazon_product_link_shortcode($atts){
       ///////////////////////////////////////////
       $item_price_tag = null;
       //JSONから時間情報を取得（無い場合は現時間）
-      $acquired_date = isset($item->{'date'}) ? $item->{'date'} : date_i18n( 'Y/m/d H:i');
+      $acquired_date = isset($item->{'date'}) ? $item->{'date'} : wp_date( 'Y/m/d H:i');
       if ((is_amazon_item_price_visible() || $price === '1')
             && $FormattedPrice
             && $price !== '0'
@@ -967,6 +941,7 @@ function amazon_product_link_shortcode($atts){
           $Variants = array();
         }
         $variants_count = count($Variants);
+        // 最後の要素はプライマリ画像と重複するため除外
         for ($i=0; $i < $variants_count-1; $i++) {
           $display_none_class = null;
           if (($size != 'l') && ($i >= 3)) {
@@ -1012,7 +987,7 @@ function amazon_product_link_shortcode($atts){
         $image_only_class = ' amazon-item-image-only product-item-image-only no-icon';
       }
       $image_link_tag = '<a href="'.esc_url($associate_url).'" class="amazon-item-thumb-link product-item-thumb-link image-thumb'.esc_attr($image_only_class).'" target="_blank" title="'.esc_attr($TitleAttr).'" rel="nofollow noopener">'.
-              '<img src="'.esc_url($ImageUrl).'" alt="'.esc_attr($TitleAttr).'" width="'.esc_attr($ImageWidth).'" height="'.esc_attr($ImageHeight).'" class="amazon-item-thumb-image product-item-thumb-image">'.
+              '<img src="'.esc_url($ImageUrl).'" alt="'.($image_only ? esc_attr($TitleAttr) : '').'" width="'.esc_attr($ImageWidth).'" height="'.esc_attr($ImageHeight).'" class="amazon-item-thumb-image product-item-thumb-image">'.
               $moshimo_amazon_impression_tag.
               $image_l_tag.
             '</a>'.
@@ -1082,7 +1057,7 @@ endif;
 if ( !function_exists( 'error_log_to_amazon_product' ) ):
 function error_log_to_amazon_product($asin, $message = ''){
   //エラーログに出力
-  $date = date_i18n("Y-m-d H:i:s");
+  $date = wp_date("Y-m-d H:i:s");
   $msg = $date.','.
          $asin.','.
          get_the_permalink().

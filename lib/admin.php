@@ -112,58 +112,37 @@ if ( !function_exists( 'customize_admin_manage_posts_columns' ) ):
 function customize_admin_manage_posts_columns($columns) {
   // 現在の画面オブジェクトを取得
   $current_screen = get_current_screen();
+  $is_block_screen = ($current_screen && $current_screen->id === 'edit-wp_block');
 
-  //作成者表示
-  if (!is_admin_list_author_visible()) {
-    unset($columns['author']);
+  // WordPress標準カラムを削除
+  $remove_columns = [
+    'author'     => !is_admin_list_author_visible(),
+    'categories' => !is_admin_list_categories_visible(),
+    'tags'       => !is_admin_list_tags_visible(),
+    'comments'   => !is_admin_list_comments_visible(),
+    'date'       => !is_admin_list_date_visible(),
+  ];
+
+  foreach ($remove_columns as $key => $condition) {
+    if ($condition && isset($columns[$key])) {
+      unset($columns[$key]);
+    }
   }
 
-  //カテゴリー表示
-  if (!is_admin_list_categories_visible()) {
-    unset($columns['categories']);
-  }
+  // 独自カラムを追加
+  $add_columns = [
+    'post-id'    => ['label' => __( 'ID', THEME_NAME ),           'condition' => is_admin_list_post_id_visible()],
+    'word-count' => ['label' => __( '文字数', THEME_NAME ),       'condition' => is_admin_list_word_count_visible()],
+    'pv'         => ['label' => __( 'PV', THEME_NAME ),           'condition' => is_admin_list_pv_visible() && !$is_block_screen],
+    'thumbnail'  => ['label' => __( 'アイキャッチ', THEME_NAME ), 'condition' => is_admin_list_eyecatch_visible() && !$is_block_screen],
+    'memo'       => ['label' => __( 'メモ', THEME_NAME ),         'condition' => is_admin_list_memo_visible() && !$is_block_screen],
+  ];
 
-  //タグ表示
-  if (!is_admin_list_tags_visible()) {
-    unset($columns['tags']);
+  foreach ($add_columns as $key => $data) {
+    if (!empty($data['condition'])) {
+      $columns[$key] = $data['label'];
+    }
   }
-
-  //コメント表示
-  if (!is_admin_list_comments_visible()) {
-    unset($columns['comments']);
-  }
-
-  //日付表示
-  if (!is_admin_list_date_visible()) {
-    unset($columns['date']);
-  }
-
-  //投稿ID表示
-  if (is_admin_list_post_id_visible()) {
-    $columns['post-id'] = __( 'ID', THEME_NAME );
-  }
-
-  //文字数表示
-  if (is_admin_list_word_count_visible()) {
-    $columns['word-count'] = __( '文字数', THEME_NAME );
-  }
-
-  //PV表示
-  if (is_admin_list_pv_visible() && (!$current_screen || $current_screen->id !== 'edit-wp_block')) {
-    $columns['pv'] = __( 'PV', THEME_NAME );
-  }
-
-  //アイキャッチ表示
-  if (is_admin_list_eyecatch_visible() && (!$current_screen || $current_screen->id !== 'edit-wp_block')) {
-    $columns['thumbnail'] = __( 'アイキャッチ', THEME_NAME );
-  }
-
-  //メモ表示
-  if (is_admin_list_memo_visible() && (!$current_screen || $current_screen->id !== 'edit-wp_block')) {
-    $columns['memo'] = __( 'メモ', THEME_NAME );
-  }
-
-  //unset($columns['comments']);
 
   return $columns;
 }
@@ -342,167 +321,115 @@ function add_wp_block_custom_fields($column_name, $term_id){
 }
 endif;
 
+/**
+ * パターン管理画面のカテゴリーカラムをソート可能にする
+ */
+add_filter( 'manage_edit-wp_block_sortable_columns', 'customize_wp_block_sortable_columns' );
+if ( !function_exists( 'customize_wp_block_sortable_columns' ) ):
+function customize_wp_block_sortable_columns( $columns ) {
+  $columns['taxonomy-wp_pattern_category'] = 'pattern_category';
+  return $columns;
+}
+endif;
+
+/**
+ * パターン管理画面のカテゴリーソート処理
+ */
+add_action( 'pre_get_posts', 'customize_wp_block_category_sort' );
+if ( !function_exists( 'customize_wp_block_category_sort' ) ):
+function customize_wp_block_category_sort( $query ) {
+  if ( !is_admin() || !$query->is_main_query() ) {
+    return;
+  }
+
+  // 対象のポストタイプとソートキーを確認
+  if ( $query->get( 'post_type' ) === 'wp_block' && $query->get( 'orderby' ) === 'pattern_category' ) {
+    add_filter( 'posts_clauses', 'customize_wp_block_category_sort_clauses', 10, 2 );
+  }
+}
+endif;
+
+/**
+ * カテゴリー名でソートするためのSQLクエリを構築する
+ */
+if ( !function_exists( 'customize_wp_block_category_sort_clauses' ) ):
+function customize_wp_block_category_sort_clauses( $clauses, $query ) {
+  global $wpdb;
+  // ソート順を取得
+  $order = strtoupper( $query->get( 'order' ) ) === 'ASC' ? 'ASC' : 'DESC';
+  // カテゴリーテーブルをジョイン
+  $clauses['join'] .= " LEFT JOIN {$wpdb->term_relationships} AS tr ON ({$wpdb->posts}.ID = tr.object_id) LEFT JOIN {$wpdb->term_taxonomy} AS tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id AND tt.taxonomy = 'wp_pattern_category') LEFT JOIN {$wpdb->terms} AS t ON (tt.term_id = t.term_id) ";
+  // ソート順序を指定
+  $clauses['orderby'] = "t.name {$order}";
+  // グループ化して重複を避ける
+  $clauses['groupby'] = "{$wpdb->posts}.ID";
+  return $clauses;
+}
+endif;
+
+
 //管理ツールバーにメニュー追加
 if (is_admin_tool_menu_visible() && is_user_administrator()) {
   add_action('admin_bar_menu', 'customize_admin_bar_menu', 9999);
 }
 if ( !function_exists( 'customize_admin_bar_menu' ) ):
 function customize_admin_bar_menu($wp_admin_bar){
-  //バーにメニューを追加
-  $title = sprintf(
-    '<span class="ab-label">%s</span>',
-    __( '管理メニュー', THEME_NAME )//親メニューラベル
-  );
-  $wp_admin_bar->add_menu(array(
-    'id'  => 'dashboard_menu',
-    'meta'  => array(),
-    'title' => $title
-  ));
-  //サブメニューを追加
-  $wp_admin_bar->add_menu(array(
-    'parent' => 'dashboard_menu', // 親メニューID
-    'id'   => 'dashboard_menu-dashboard', // 子メニューID
-    'meta'   => array(),
-    'title'  => __( 'ダッシュボード', THEME_NAME ), // ラベル
-    'href'   => admin_url() // ページURL
-  ));
-  $wp_admin_bar->add_menu(array(
-    'parent' => 'dashboard_menu', // 親メニューID
-    'id'   => 'dashboard_menu-singles', // 子メニューID
-    'meta'   => array(),
-    'title'  => __( '投稿一覧', THEME_NAME ), // ラベル
-    'href'   => admin_url('edit.php') // ページURL
-  ));
-  $wp_admin_bar->add_menu(array(
-    'parent' => 'dashboard_menu', // 親メニューID
-    'id'   => 'dashboard_menu-pages', // 子メニューID
-    'meta'   => array(),
-    'title'  => __( '固定ページ一覧', THEME_NAME ), // ラベル
-    'href'   => admin_url('edit.php?post_type=page') // ページURL
-  ));
-  $wp_admin_bar->add_menu(array(
-    'parent' => 'dashboard_menu', // 親メニューID
-    'id'   => 'dashboard_menu-medias', // 子メニューID
-    'meta'   => array(),
-    'title'  => __( 'メディア一覧', THEME_NAME ), // ラベル
-    'href'   => admin_url('upload.php') // ページURL
-  ));
-  $wp_admin_bar->add_menu(array(
-    'parent' => 'dashboard_menu', // 親メニューID
-    'id'   => 'dashboard_menu-themes', // 子メニューID
-    'meta'   => array(),
-    'title'  => __( 'テーマ', THEME_NAME ), // ラベル
-    'href'   => admin_url('themes.php') // ページURL
-  ));
+  // 管理メニューを取得
+  $menus = get_admin_bar_menu_array($wp_admin_bar);
+
+  // 管理メニューを追加
+  foreach ($menus as $menu) {
+    if ($menu) {
+      $wp_admin_bar->add_menu($menu);
+    }
+  }
+}
+endif;
+
+// 管理メニュー配列
+if ( !function_exists( 'get_admin_bar_menu_array' ) ):
+function get_admin_bar_menu_array($wp_admin_bar = null) {
+  $title = '<span class="ab-label">' . __('管理メニュー', THEME_NAME) . '</span>';
+  $menus = [
+    // 親メニュー
+    ['id' => 'dashboard_menu', 'meta' => [] ,'title' => $title],
+
+    // 子メニュー
+    ['parent' => 'dashboard_menu', 'id' => 'dashboard_menu-dashboard'   , 'meta' => [], 'title' => __('ダッシュボード', THEME_NAME)     , 'href' => admin_url()],
+    ['parent' => 'dashboard_menu', 'id' => 'dashboard_menu-singles'     , 'meta' => [], 'title' => __('投稿一覧', THEME_NAME)             , 'href' => admin_url('edit.php')],
+    ['parent' => 'dashboard_menu', 'id' => 'dashboard_menu-pages'       , 'meta' => [], 'title' => __('固定ページ一覧', THEME_NAME)       , 'href' => admin_url('edit.php?post_type=page')],
+    ['parent' => 'dashboard_menu', 'id' => 'dashboard_menu-medias'      , 'meta' => [], 'title' => __('メディア一覧', THEME_NAME)         , 'href' => admin_url('upload.php')],
+    ['parent' => 'dashboard_menu', 'id' => 'dashboard_menu-themes'      , 'meta' => [], 'title' => __('テーマ', THEME_NAME)               , 'href' => admin_url('themes.php')],
+  ];
+
+  // パターン一覧
   if (!is_classicpress()) {
-    $wp_admin_bar->add_menu(array(
-      'parent' => 'dashboard_menu', // 親メニューID
-      'id'   => 'dashboard_menu-patterns', // 子メニューID
-      'meta'   => array(),
-      'title'  => __( 'パターン一覧', THEME_NAME ), // ラベル
-      'href'   => admin_url('edit.php?post_type=wp_block') // ページURL
-    ));
+    $menus[] = ['parent' => 'dashboard_menu', 'id' => 'dashboard_menu-patterns', 'meta' => [], 'title' => __('パターン一覧', THEME_NAME), 'href' => admin_url('edit.php?post_type=wp_block')];
   }
-  $wp_admin_bar->add_menu(array(
-    'parent' => 'dashboard_menu', // 親メニューID
-    'id'   => 'dashboard_menu-customize', // 子メニューID
-    'meta'   => array(),
-    'title'  => __( 'カスタマイズ', THEME_NAME ), // ラベル
-    'href'   => admin_url('customize.php?return=' . esc_url(admin_url('themes.php'))) // ページURL
-  ));
-  $wp_admin_bar->add_menu(array(
-    'parent' => 'dashboard_menu', // 親メニューID
-    'id'   => 'dashboard_menu-widget', // 子メニューID
-    'meta'   => array(),
-    'title'  => __( 'ウィジェット', THEME_NAME ), // ラベル
-    'href'   => admin_url('widgets.php') // ページURL
-  ));
-  $wp_admin_bar->add_menu(array(
-    'parent' => 'dashboard_menu', // 親メニューID
-    'id'   => 'dashboard_menu-nav-menus', // 子メニューID
-    'meta'   => array(),
-    'title'  => __( 'メニュー', THEME_NAME ), // ラベル
-    'href'   => admin_url('nav-menus.php') // ページURL
-  ));
-  $wp_admin_bar->add_menu(array(
-    'parent' => 'dashboard_menu', // 親メニューID
-    'id'   => 'dashboard_menu-theme-editor', // 子メニューID
-    'meta'   => array(),
-    'title'  => __( 'テーマの編集', THEME_NAME ), // ラベル
-    'href'   => admin_url('theme-editor.php') // ページURL
-  ));
-  $wp_admin_bar->add_menu(array(
-    'parent' => 'dashboard_menu', // 親メニューID
-    'id'   => 'dashboard_menu-plugins', // 子メニューID
-    'meta'   => array(),
-    'title'  => __( 'プラグイン一覧', THEME_NAME ), // ラベル
-    'href'   => admin_url('plugins.php') // ページURL
-  ));
-  if (current_user_can('manage_options')) {//管理者権限がある場合
-    $wp_admin_bar->add_menu(array(
-      'parent' => 'dashboard_menu', // 親メニューID
-      'id'   => 'dashboard_menu-theme-settings', // 子メニューID
-      'meta'   => array(),
-      'title'  => __( 'Cocoon 設定', THEME_NAME ), // ラベル
-      'href'   => admin_url('admin.php?page=theme-settings') // ページURL
-    ));
-    $wp_admin_bar->add_menu(array(
-      'parent' => 'dashboard_menu', // 親メニューID
-      'id'   => 'dashboard_menu-speech-balloon', // 子メニューID
-      'meta'   => array(),
-      'title'  => __( '吹き出し', THEME_NAME ), // ラベル
-      'href'   => admin_url('admin.php?page=speech-balloon') // ページURL
-    ));
-    $wp_admin_bar->add_menu(array(
-      'parent' => 'dashboard_menu', // 親メニューID
-      'id'   => 'dashboard_menu-theme-func-text', // 子メニューID
-      'meta'   => array(),
-      'title'  => __( 'テンプレート', THEME_NAME ), // ラベル
-      'href'   => admin_url('admin.php?page=theme-func-text') // ページURL
-    ));
-    $wp_admin_bar->add_menu(array(
-      'parent' => 'dashboard_menu', // 親メニューID
-      'id'   => 'dashboard_menu-theme-affiliate-tag', // 子メニューID
-      'meta'   => array(),
-      'title'  => __( 'アフィリエイトタグ', THEME_NAME ), // ラベル
-      'href'   => admin_url('admin.php?page=theme-affiliate-tag') // ページURL
-    ));
-    $wp_admin_bar->add_menu(array(
-      'parent' => 'dashboard_menu', // 親メニューID
-      'id'   => 'dashboard_menu-theme-ranking', // 子メニューID
-      'meta'   => array(),
-      'title'  => __( 'ランキング', THEME_NAME ), // ラベル
-      'href'   => admin_url('admin.php?page=theme-ranking') // ページURL
-    ));
-    $wp_admin_bar->add_menu(array(
-      'parent' => 'dashboard_menu', // 親メニューID
-      'id'   => 'dashboard_menu-theme-access', // 子メニューID
-      'meta'   => array(),
-      'title'  => __( 'アクセス集計', THEME_NAME ), // ラベル
-      'href'   => admin_url('admin.php?page=theme-access') // ページURL
-    ));
-    $wp_admin_bar->add_menu(array(
-      'parent' => 'dashboard_menu', // 親メニューID
-      'id'   => 'dashboard_menu-theme-speed-up', // 子メニューID
-      'meta'   => array(),
-      'title'  => __( '高速化', THEME_NAME ), // ラベル
-      'href'   => admin_url('admin.php?page=theme-speed-up') // ページURL
-    ));
-    $wp_admin_bar->add_menu(array(
-      'parent' => 'dashboard_menu', // 親メニューID
-      'id'   => 'dashboard_menu-theme-backup', // 子メニューID
-      'meta'   => array(),
-      'title'  => __( 'バックアップ', THEME_NAME ), // ラベル
-      'href'   => admin_url('admin.php?page=theme-backup') // ページURL
-    ));
-    $wp_admin_bar->add_menu(array(
-      'parent' => 'dashboard_menu', // 親メニューID
-      'id'   => 'dashboard_menu-theme-cache', // 子メニューID
-      'meta'   => array(),
-      'title'  => __( 'キャッシュ削除', THEME_NAME ), // ラベル
-      'href'   => admin_url('admin.php?page=theme-cache') // ページURL
-    ));
+
+  // 残りの子メニュー
+  $menus = array_merge($menus, [
+    ['parent' => 'dashboard_menu', 'id' => 'dashboard_menu-customize'   , 'meta' => [], 'title' => __('カスタマイズ', THEME_NAME)         , 'href' => admin_url('customize.php?return=' . esc_url(admin_url('themes.php')))],
+    ['parent' => 'dashboard_menu', 'id' => 'dashboard_menu-widget'      , 'meta' => [], 'title' => __('ウィジェット', THEME_NAME)         , 'href' => admin_url('widgets.php')],
+    ['parent' => 'dashboard_menu', 'id' => 'dashboard_menu-nav-menus'   , 'meta' => [], 'title' => __('メニュー', THEME_NAME)             , 'href' => admin_url('nav-menus.php')],
+    ['parent' => 'dashboard_menu', 'id' => 'dashboard_menu-theme-editor', 'meta' => [], 'title' => __('テーマの編集', THEME_NAME)         , 'href' => admin_url('theme-editor.php')],
+    ['parent' => 'dashboard_menu', 'id' => 'dashboard_menu-plugins'     , 'meta' => [], 'title' => __('プラグイン一覧', THEME_NAME)       , 'href' => admin_url('plugins.php')],
+  ]);
+
+  // 管理者権限があれば追加
+  if (current_user_can('manage_options')) {
+    $definitions = get_cocoon_original_menu_definitions();
+    foreach ($definitions as $slug => $info) {
+      $menus[] = [
+        'parent' => 'dashboard_menu',
+        'id'     => "dashboard_menu-{$slug}",
+        'title'  => isset($info['title']) ? $info['title'] : '',
+        'href'   => admin_url("admin.php?page={$slug}"),
+      ];
+    }
   }
+
+  return apply_filters('cocoon_admin_bar_menus', $menus, $wp_admin_bar);
 }
 endif;
 
@@ -531,7 +458,8 @@ function custmuize_restrict_manage_posts(){
       wp_dropdown_users(
       array(
         'show_option_all' => 'すべてのユーザー',
-        'name' => 'author'
+        'name' => 'author',
+        'capability'      => 'edit_posts'
       )
     );
   }
@@ -575,25 +503,6 @@ function add_head_post_custum() {
     // var_dump($now);
   }
 ?>
-<style>
-div.editor-block-list__block,
-div.editor-block-list__block p{
-  <?php //フォントサイズ
-  if(get_site_font_size()): ?>
-    font-size: <?php echo get_site_font_size(); ?>;
-  <?php endif; ?>
-
-  <?php //フォントファミリー
-  if(get_site_font_family()): ?>
-    font-family: <?php echo get_site_font_family(); ?>;
-  <?php endif; ?>
-
-  <?php //文字の太さ
-  if(get_site_font_weight()): ?>
-    font-weight: <?php echo get_site_font_weight(); ?>;
-  <?php endif; ?>
-}
-</style>
 <script type="text/javascript">
 jQuery(function($) {
   function zenToHan(text) {
@@ -761,9 +670,28 @@ function get_sanitize_preview_template_part($slug, $name = null){
   restore_global_skin_theme_options();
   // global $_THEME_OPTIONS;
   // _v($_THEME_OPTIONS);
-  ob_start();
-  cocoon_template_part($slug, $name);
-  $tag = ob_get_clean();
+
+  // プレビュー中は外部リクエスト・DB書き込みを発生させるブロックを空出力にする
+  // （core/rss が fetch_feed() → set_site_transient() → add_option() を呼び出し DB エラーになるのを防ぐ）
+  // cocoon-blocks/embed-blogcard も外部 OGP 取得（wp_remote_get）を行うため対象に含める
+  $skip_external_blocks = function( $pre_render, $parsed_block ) {
+    $external_blocks = array( 'core/rss', 'core/embed', 'cocoon-blocks/embed-blogcard' );
+    if ( in_array( $parsed_block['blockName'], $external_blocks, true ) ) {
+      return '';
+    }
+    return $pre_render;
+  };
+  add_filter( 'pre_render_block', $skip_external_blocks, 10, 2 );
+
+  // try/finally で例外・wp_die 発生時もフィルターを確実に除去する
+  try {
+    ob_start();
+    cocoon_template_part($slug, $name);
+    $tag = ob_get_clean();
+  } finally {
+    remove_filter( 'pre_render_block', $skip_external_blocks, 10 );
+  }
+
   $tag = preg_replace('{<form.+?</form>}is', '', $tag);
   $tag = change_fa($tag);
   echo $tag;
@@ -793,9 +721,105 @@ function register_tag_check_list() {
 }
 endif;
 
+//タグ選択をチェックリスト形式にした場合、一覧・編集画面では階層化プロパティを元のfalseに戻すことで、不要な「親ターム」や「色」の出力を防ぐ
+add_action('current_screen', 'disable_post_tag_hierarchical_on_term_screens');
+if ( !function_exists( 'disable_post_tag_hierarchical_on_term_screens' ) ):
+function disable_post_tag_hierarchical_on_term_screens($screen) {
+  if ( function_exists('is_editor_tag_check_list_enable') && is_editor_tag_check_list_enable() ) {
+    if ( isset($screen->taxonomy) && $screen->taxonomy === 'post_tag' && in_array($screen->base, array('edit-tags', 'term')) ) {
+      $tax = get_taxonomy('post_tag');
+      if ($tax) {
+        $tax->hierarchical = false;
+      }
+    }
+  }
+}
+endif;
+
 //管理画面のbodyタグのクラスに挿入
 add_filter('admin_body_class', 'add_custom_admin_body_class');
 function add_custom_admin_body_class($classes) {
   $classes .= ' classicpress';
   return $classes;
 }
+
+// ブロックエディター用フォント設定（iframe 内に注入）
+// WP 6.3+ では enqueue_block_assets が iframe 内で実行されるため、
+// admin_head で div.editor-block-list__block を対象にしていた旧方式を置き換える
+add_action( 'enqueue_block_assets', 'cocoon_enqueue_editor_font_styles' );
+if ( !function_exists( 'cocoon_enqueue_editor_font_styles' ) ):
+function cocoon_enqueue_editor_font_styles() {
+  // 管理画面以外では実行しない
+  if ( !is_admin() ) return;
+
+  // フォントファミリーのキー文字列から CSS の font-family 値への変換マップ
+  // _font.scss のクラス定義と対応させる
+  $font_family_map = array(
+    'meiryo'             => 'Meiryo, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif',
+    'yu_gothic'          => 'YuGothic, "Yu Gothic", Meiryo, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif',
+    'ms_pgothic'         => '"MS PGothic", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif',
+    'noto_sans_jp'       => '"Noto Sans JP", sans-serif',
+    'noto_serif_jp'      => '"Noto Serif JP", sans-serif',
+    'mplus_1p'           => '"M PLUS 1p", sans-serif',
+    'rounded_mplus_1c'   => '"M PLUS Rounded 1c", sans-serif',
+    'kosugi'             => '"Kosugi", sans-serif',
+    'kosugi_maru'        => '"Kosugi Maru", sans-serif',
+    'sawarabi_gothic'    => '"Sawarabi Gothic", sans-serif',
+    'sawarabi_mincho'    => '"Sawarabi Mincho", sans-serif',
+    'noto_sans_korean'   => '"Noto Sans KR", sans-serif',
+    'pretendard'         => '"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif',
+    'microsoft_jhenghei' => '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif',
+    'noto_sans_tc'       => '"Noto Sans TC", sans-serif',
+    // hiragino はブラウザデフォルトと同等なのでマップに含めない（空の扱い）
+  );
+
+  // フォント設定値を配列に集める
+  $rules = array();
+  if ( get_site_font_size() ) {
+    $rules[] = 'font-size: ' . esc_attr( get_site_font_size() ) . ';';
+  }
+  // フォントファミリーはキー値を CSS の font-family 値に変換して出力する
+  $font_family_key = get_site_font_family();
+  if ( $font_family_key && isset( $font_family_map[ $font_family_key ] ) ) {
+    $rules[] = 'font-family: ' . $font_family_map[ $font_family_key ] . ';';
+  }
+  if ( get_site_font_weight() ) {
+    $rules[] = 'font-weight: ' . esc_attr( get_site_font_weight() ) . ';';
+  }
+
+  // フォント設定がなければ何もしない
+  if ( empty( $rules ) ) return;
+
+  // .editor-styles-wrapper はブロックエディター iframe 内のコンテンツ領域のラッパー
+  $css = '.editor-styles-wrapper, .editor-styles-wrapper p { '
+       . implode( ' ', $rules )
+       . ' }';
+
+  // ダミーハンドルにインライン CSS を付加して iframe 内の <style> として出力
+  wp_register_style( 'cocoon-editor-font-inline', false, array(), false );
+  wp_enqueue_style( 'cocoon-editor-font-inline' );
+  wp_add_inline_style( 'cocoon-editor-font-inline', $css );
+}
+endif;
+
+// ブロックエディター内の文字数カウンター非表示（iframe 内に注入）
+// admin_print_styles での外側注入は WP 7.0 の iframe 内に届かないため、
+// enqueue_block_assets で補完する
+add_action( 'enqueue_block_assets', 'cocoon_enqueue_editor_counter_style' );
+if ( !function_exists( 'cocoon_enqueue_editor_counter_style' ) ):
+function cocoon_enqueue_editor_counter_style() {
+  // 管理画面以外では実行しない
+  if ( !is_admin() ) return;
+  // 投稿編集画面以外では実行しない
+  if ( !is_admin_post_page() ) return;
+  // カウンター表示設定がオンなら何もしない
+  if ( is_admin_editor_counter_visible() ) return;
+
+  // 文字数カウンターの疑似要素を非表示にする CSS
+  wp_register_style( 'cocoon-editor-counter-hide', false, array(), false );
+  wp_enqueue_style( 'cocoon-editor-counter-hide' );
+  wp_add_inline_style( 'cocoon-editor-counter-hide',
+    '.editor-post-title::after { display: none !important; }'
+  );
+}
+endif;

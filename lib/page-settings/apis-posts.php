@@ -62,6 +62,9 @@ update_theme_option(OP_RAKUTEN_APPLICATION_ID);
 //楽天アフィリエイトID
 update_theme_option(OP_RAKUTEN_AFFILIATE_ID);
 
+//楽天アクセスキー
+update_theme_option(OP_RAKUTEN_ACCESS_KEY);
+
 //楽天商品検索APIの並び順
 update_theme_option(OP_GET_RAKUTEN_API_SORT);
 
@@ -131,6 +134,14 @@ update_theme_option(OP_MOSHIMO_YAHOO_ID);
 //APIキャッシュの保存期間
 update_theme_option(OP_API_CACHE_RETENTION_PERIOD);
 
-
 //APIエラーメールを送信する
 update_theme_option(OP_API_ERROR_MAIL_ENABLE);
+
+//商品リンクブロック自動更新を有効にする
+update_theme_option(OP_PRODUCT_BLOCK_AUTO_UPDATE_ENABLE);
+
+//商品リンクブロック自動更新間隔
+update_theme_option(OP_PRODUCT_BLOCK_AUTO_UPDATE_INTERVAL);
+
+//商品リンクブロック自動更新のバッチサイズ
+update_theme_option(OP_PRODUCT_BLOCK_AUTO_UPDATE_BATCH_SIZE);

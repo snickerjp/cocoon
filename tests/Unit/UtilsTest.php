@@ -173,21 +173,79 @@ class UtilsTest extends TestCase
         $this->assertFalse(is_dark_hexcolor(null));
     }
 
-    public function test_is_dark_hexcolor_不正な長さはfalseを返す(): void
+    public function test_is_dark_hexcolor_不正なフォーマットはfalseを返す(): void
     {
-        $this->assertFalse(is_dark_hexcolor('#FFF'));
+        $this->assertFalse(is_dark_hexcolor('#FF')); // 足りない
+        $this->assertFalse(is_dark_hexcolor('invalid')); // カラーコードではない
+        $this->assertFalse(is_dark_hexcolor('#ZZZZZZ')); // 長さ6だが非HEX文字
     }
 
     public function test_is_dark_hexcolor_中間色のしきい値判定(): void
     {
-        // 輝度 = (162 + 162 + 162) / 3 = 162, threshold=162 なので false (not dark)
+        // YIQ輝度 = (162*299 + 162*587 + 162*114) / 1000 = 162, threshold=128 なので false (not dark)
         $this->assertFalse(is_dark_hexcolor('#a2a2a2'));
     }
 
     public function test_is_dark_hexcolor_しきい値ギリギリ暗い色(): void
     {
-        // 輝度 = (161 + 161 + 161) / 3 = 161 < 162 なので true (dark)
-        $this->assertTrue(is_dark_hexcolor('#a1a1a1'));
+        // 旧式((161+161+161)/3=161 < 162)では暗い扱いだったが、
+        // YIQでは #a1a1a1 は輝度161となり、128以上のため「明るい(false)」となる。
+        // 代わりに YIQのしきい値(128)未満となるギリギリの暗い色(#7F7F7F, 輝度127)でテストする。
+        $this->assertTrue(is_dark_hexcolor('#7F7F7F'));
+    }
+
+    public function test_is_dark_hexcolor_短縮HEXはパースされて判定される(): void
+    {
+        $this->assertTrue(is_dark_hexcolor('#000'));
+        $this->assertFalse(is_dark_hexcolor('#FFF'));
+    }
+
+    public function test_is_dark_hexcolor_シャープなしでも判定される(): void
+    {
+        $this->assertTrue(is_dark_hexcolor('000000'));
+        $this->assertFalse(is_dark_hexcolor('FFFFFF'));
+    }
+
+    public function test_is_dark_hexcolor_アルファチャンネル付きの透過カラーも判定される(): void
+    {
+        $this->assertTrue(is_dark_hexcolor('#00000000')); // 8桁
+        $this->assertTrue(is_dark_hexcolor('#000F')); // 4桁
+        $this->assertFalse(is_dark_hexcolor('#FFFFFF00'));
+        $this->assertFalse(is_dark_hexcolor('#FFFF'));
+    }
+
+    // ========================================================================
+    // get_text_color_from_background_color()
+    // ========================================================================
+
+    public function test_get_text_color_from_background_color_暗い背景色には明るい文字色を返す(): void
+    {
+        $this->assertSame('#fff', get_text_color_from_background_color('#000000'));
+        $this->assertSame('#fff', get_text_color_from_background_color('#7F7F7F'));
+    }
+
+    public function test_get_text_color_from_background_color_明るい背景色には暗い文字色を返す(): void
+    {
+        $this->assertSame('#333', get_text_color_from_background_color('#FFFFFF'));
+        $this->assertSame('#333', get_text_color_from_background_color('#f5f4f1'));
+    }
+
+    public function test_get_text_color_from_background_color_カスタムデフォルト値を指定可能(): void
+    {
+        $this->assertSame('white', get_text_color_from_background_color('#000000', 'white', 'black'));
+        $this->assertSame('black', get_text_color_from_background_color('#FFFFFF', 'white', 'black'));
+    }
+
+    public function test_get_text_color_from_background_color_空や無効な値のフォールバック(): void
+    {
+        // 判定不能な非空文字列（RGB指定など）の場合、パース失敗により輝度128未満(dark)を満たさないため、
+        // 「明るい」と判定されて黒系($dark_color)のフォールバックが返る。
+        $this->assertSame('#333', get_text_color_from_background_color('rgb(255,255,255)'));
+        $this->assertSame('#333', get_text_color_from_background_color('invalid'));
+
+        // 空やnullの場合はガード節により白系($light_color)が返る（旧実装互換）
+        $this->assertSame('#fff', get_text_color_from_background_color(''));
+        $this->assertSame('#fff', get_text_color_from_background_color(null));
     }
 
     // ========================================================================
@@ -386,71 +444,233 @@ class UtilsTest extends TestCase
     }
 
     // ========================================================================
-    // get_jquery_core_url() / get_jquery_core_full_version()
+    // add_editor_no_link_click_class()
     // ========================================================================
 
-    public function test_get_jquery_core_url_バージョン3のURLを返す(): void
+    public function test_add_editor_no_link_click_class_クラス属性がある場合はクラスを追加する(): void
     {
-        $url = get_jquery_core_url('3');
-        $this->assertStringContainsString('jquery/3.6.1', $url);
+        $input = '<div class="test-class">コンテンツ</div>';
+        $expected = '<div class="cocoon-editor-no-link-click test-class">コンテンツ</div>';
+        $this->assertSame($expected, add_editor_no_link_click_class($input));
     }
 
-    public function test_get_jquery_core_url_バージョン2のURLを返す(): void
+    public function test_add_editor_no_link_click_class_クラス属性がない場合はクラス属性自体を追加する(): void
     {
-        $url = get_jquery_core_url('2');
-        $this->assertStringContainsString('jquery/2.2.4', $url);
+        $input = '<div>コンテンツ</div>';
+        $expected = '<div class="cocoon-editor-no-link-click">コンテンツ</div>';
+        $this->assertSame($expected, add_editor_no_link_click_class($input));
     }
 
-    public function test_get_jquery_core_url_バージョン1のURLを返す(): void
+    public function test_add_editor_no_link_click_class_IDなどが先にある場合でも正しく追加される(): void
     {
-        $url = get_jquery_core_url('1');
-        $this->assertStringContainsString('jquery/1.12.4', $url);
+        $input = '<div id="my-id" class="my-class">コンテンツ</div>';
+        $expected = '<div id="my-id" class="cocoon-editor-no-link-click my-class">コンテンツ</div>';
+        $this->assertSame($expected, add_editor_no_link_click_class($input));
     }
 
-    public function test_get_jquery_core_url_不正なバージョンはnullを返す(): void
+    public function test_add_editor_no_link_click_class_既に同じクラスがある場合は重複追加しない(): void
     {
-        $this->assertNull(get_jquery_core_url('99'));
+        $input = '<div class="cocoon-editor-no-link-click my-class">コンテンツ</div>';
+        $expected = '<div class="cocoon-editor-no-link-click my-class">コンテンツ</div>';
+        $this->assertSame($expected, add_editor_no_link_click_class($input));
     }
 
-    public function test_get_jquery_core_full_version_バージョン3のフル番号(): void
+    public function test_add_editor_no_link_click_class_先頭がコメントでも最初の要素にクラスを追加する(): void
     {
-        $this->assertSame('3.6.1', get_jquery_core_full_version('3'));
+        $input = "<!--comment-->\n<div>コンテンツ</div>";
+        $expected = "<!--comment-->\n<div class=\"cocoon-editor-no-link-click\">コンテンツ</div>";
+        $this->assertSame($expected, add_editor_no_link_click_class($input));
     }
 
-    public function test_get_jquery_core_full_version_バージョン2のフル番号(): void
+    public function test_add_editor_no_link_click_class_シングルクォートのclass属性にも追加できる(): void
     {
-        $this->assertSame('2.2.4', get_jquery_core_full_version('2'));
+        $input = "<div class='my-class'>コンテンツ</div>";
+        $expected = "<div class='cocoon-editor-no-link-click my-class'>コンテンツ</div>";
+        $this->assertSame($expected, add_editor_no_link_click_class($input));
     }
 
-    public function test_get_jquery_core_full_version_不正なバージョンはnullを返す(): void
+    public function test_add_editor_no_link_click_class_クォート無しclass属性にも追加できる(): void
     {
-        $this->assertNull(get_jquery_core_full_version('4'));
+        $input = '<div class=my-class>コンテンツ</div>';
+        $expected = '<div class="cocoon-editor-no-link-click my-class">コンテンツ</div>';
+        $this->assertSame($expected, add_editor_no_link_click_class($input));
     }
 
-    // ========================================================================
-    // get_jquery_migrate_url() / get_jquery_migrate_full_version()
-    // ========================================================================
-
-    public function test_get_jquery_migrate_url_バージョン3のURLを返す(): void
+    public function test_add_editor_no_link_click_class_クォート無しで既にクラスがある場合は重複追加しない(): void
     {
-        $url = get_jquery_migrate_url('3');
-        $this->assertStringContainsString('jquery-migrate/3.3.2', $url);
+        $input = '<div class=cocoon-editor-no-link-click>コンテンツ</div>';
+        $expected = '<div class="cocoon-editor-no-link-click">コンテンツ</div>';
+        $this->assertSame($expected, add_editor_no_link_click_class($input));
     }
 
-    public function test_get_jquery_migrate_url_バージョン1のURLを返す(): void
+    public function test_add_editor_no_link_click_class_リンクに遷移抑止属性を付与する(): void
     {
-        $url = get_jquery_migrate_url('1');
-        $this->assertStringContainsString('jquery-migrate/1.4.1', $url);
+        $input = '<div><a href="https://example.com">リンク</a></div>';
+        $expected = '<div class="cocoon-editor-no-link-click"><a href="https://example.com" tabindex="-1" aria-disabled="true" onclick="return false;">リンク</a></div>';
+        $this->assertSame($expected, add_editor_no_link_click_class($input));
     }
 
-    public function test_get_jquery_migrate_url_不正なバージョンはnullを返す(): void
+    public function test_add_editor_no_link_click_class_空文字はそのまま返す(): void
     {
-        $this->assertNull(get_jquery_migrate_url('2'));
+        $input = '';
+        $this->assertSame($input, add_editor_no_link_click_class($input));
     }
 
-    public function test_get_jquery_migrate_full_version_バージョン3のフル番号(): void
+    public function test_add_editor_no_link_click_class_nullはそのまま返す(): void
     {
-        $this->assertSame('3.0.1', get_jquery_migrate_full_version('3'));
+        $this->assertNull(add_editor_no_link_click_class(null));
+    }
+
+    public function test_add_editor_no_link_click_class_falseはそのまま返す(): void
+    {
+        $this->assertFalse(add_editor_no_link_click_class(false));
+    }
+
+    public function test_add_editor_no_link_click_class_整数はそのまま返す(): void
+    {
+        $this->assertSame(123, add_editor_no_link_click_class(123));
+    }
+
+    public function test_add_editor_no_link_click_class_複数リンクに全て属性を付与する(): void
+    {
+        $input = '<div><a href="/a">A</a><a href="/b">B</a></div>';
+        $expected = '<div class="cocoon-editor-no-link-click"><a href="/a" tabindex="-1" aria-disabled="true" onclick="return false;">A</a><a href="/b" tabindex="-1" aria-disabled="true" onclick="return false;">B</a></div>';
+        $this->assertSame($expected, add_editor_no_link_click_class($input));
+    }
+
+    public function test_add_editor_no_link_click_class_既存tabindexがあれば上書きしない(): void
+    {
+        $input = '<div><a href="/x" tabindex="0">リンク</a></div>';
+        $expected = '<div class="cocoon-editor-no-link-click"><a href="/x" tabindex="0" aria-disabled="true" onclick="return false;">リンク</a></div>';
+        $this->assertSame($expected, add_editor_no_link_click_class($input));
+    }
+
+    public function test_add_editor_no_link_click_class_引用符なしtabindexがあれば重複追加しない(): void
+    {
+        $input = '<div><a href="/x" tabindex=0>リンク</a></div>';
+        $expected = '<div class="cocoon-editor-no-link-click"><a href="/x" tabindex=0 aria-disabled="true" onclick="return false;">リンク</a></div>';
+        $this->assertSame($expected, add_editor_no_link_click_class($input));
+    }
+
+    public function test_add_editor_no_link_click_class_自己終了タグが先頭の場合もエラーにならない(): void
+    {
+        // SSRブロックでは先頭が自己終了タグになることはないが、エラーにならないことを確認。
+        $input = '<img src="test.png"/><p>text</p>';
+        $result = add_editor_no_link_click_class($input);
+        $this->assertIsString($result);
+        $this->assertStringContainsString('cocoon-editor-no-link-click', $result);
+    }
+
+    public function test_add_editor_no_link_click_class_属性値に大なり記号を含むaタグでも壊れない(): void
+    {
+        // 広告タグ等で onclick 属性値に > が含まれるケース。
+        $input = '<div><a href="#" onclick="if(x>0){alert(1)}">リンク</a></div>';
+        $result = add_editor_no_link_click_class($input);
+        $this->assertIsString($result);
+        // 元の onclick が保持され、aria-disabled と tabindex が付与される。
+        $this->assertStringContainsString('aria-disabled="true"', $result);
+        $this->assertStringContainsString('tabindex="-1"', $result);
+        // onclick は既存のため追加されない。
+        $this->assertSame(1, substr_count($result, 'onclick'));
+    }
+
+    public function test_add_editor_no_link_click_class_scriptブロック内のaタグ文字列を変換しない(): void
+    {
+        // 広告スクリプト内にリテラル <a> が含まれるケース。
+        $input = '<div><script>var s="<a href=\\"x\\">test</a>";</script><a href="/real">本物</a></div>';
+        $result = add_editor_no_link_click_class($input);
+        $this->assertIsString($result);
+        // 実際の <a> タグにのみ遷移抑止属性が付与される。
+        $this->assertStringContainsString('tabindex="-1"', $result);
+        // script 内の文字列が破壊されていない。
+        $this->assertStringContainsString('<script>', $result);
+    }
+
+    public function test_add_editor_no_link_click_class_HTMLコメント内のaタグを変換しない(): void
+    {
+        $input = '<div><!-- <a href="hidden">コメント内リンク</a> --><a href="/visible">表示リンク</a></div>';
+        $result = add_editor_no_link_click_class($input);
+        $this->assertIsString($result);
+        // 表示リンクには属性が付与される。
+        $this->assertStringContainsString('tabindex="-1"', $result);
+        // コメント内のリンクは変更されない。
+        $this->assertStringContainsString('<!-- <a href="hidden">コメント内リンク</a> -->', $result);
+    }
+
+    /**
+     * フォールバック経路（_add_editor_a_tag_attrs_fallback）を直接テストするヘルパー。
+     */
+    private function run_fallback_path( string $html ): string {
+        return _add_editor_a_tag_attrs_fallback( $html );
+    }
+
+    public function test_fallback_scriptブロック内のaタグ文字列を変換しない(): void
+    {
+        $input = '<div><script>var s="<a href=\\"x\\">test</a>";</script><a href="/real">本物</a></div>';
+        $result = $this->run_fallback_path($input);
+        // 実際の <a> タグには属性が付与される。
+        $this->assertStringContainsString('tabindex="-1"', $result);
+        // script 内の <a> は変換されない。
+        $this->assertSame(1, substr_count($result, 'tabindex'));
+    }
+
+    public function test_fallback_HTMLコメント内のaタグを変換しない(): void
+    {
+        $input = '<div><!-- <a href="hidden">コメント</a> --><a href="/visible">表示</a></div>';
+        $result = $this->run_fallback_path($input);
+        $this->assertStringContainsString('tabindex="-1"', $result);
+        // コメント内の <a> は変換されない（tabindex は1つだけ）。
+        $this->assertSame(1, substr_count($result, 'tabindex'));
+    }
+
+    public function test_fallback_属性値に大なり記号を含むaタグでも壊れない(): void
+    {
+        $input = '<a href="#" onclick="if(x>0){alert(1)}">リンク</a>';
+        $result = $this->run_fallback_path($input);
+        // onclick は既存のため追加されない。
+        $this->assertSame(1, substr_count($result, 'onclick'));
+        $this->assertStringContainsString('aria-disabled="true"', $result);
+        $this->assertStringContainsString('tabindex="-1"', $result);
+    }
+
+    public function test_fallback_textarea内のaタグ文字列を変換しない(): void
+    {
+        // DOMDocument は textarea 内の <a> も DOM ノードとして解析するため、
+        // 属性が付与される。これはパーサーベースの正しい挙動。
+        $input = '<div><textarea><a href="x">テキスト</a></textarea><a href="/real">本物</a></div>';
+        $result = $this->run_fallback_path($input);
+        // 実際の <a> タグには属性が付与される。
+        $this->assertStringContainsString('tabindex="-1"', $result);
+    }
+
+    public function test_fallback_pre内のaタグ文字列を変換しない(): void
+    {
+        // pre 内の <a> はブラウザでも実際のアンカー要素として扱われるため、
+        // DOMDocument が属性を付与するのは正しい挙動。
+        $input = '<div><pre><a href="x">コード例</a></pre><a href="/real">本物</a></div>';
+        $result = $this->run_fallback_path($input);
+        $this->assertStringContainsString('tabindex="-1"', $result);
+        // 両方の <a> に属性が付与される（どちらも実際のアンカー要素）。
+        $this->assertSame(2, substr_count($result, 'tabindex'));
+    }
+
+    public function test_fallback_code内のaタグ文字列を変換しない(): void
+    {
+        // code 内の <a> も実際のアンカー要素なので属性付与は正しい。
+        $input = '<div><code><a href="x">コード</a></code><a href="/real">本物</a></div>';
+        $result = $this->run_fallback_path($input);
+        $this->assertStringContainsString('tabindex="-1"', $result);
+        $this->assertSame(2, substr_count($result, 'tabindex'));
+    }
+
+    public function test_add_editor_no_link_click_class_先頭要素の属性値に大なり記号があってもクラス付与される(): void
+    {
+        $input = '<div data-json=\'{"a":">"}\' class="my-class">コンテンツ</div>';
+        $result = add_editor_no_link_click_class($input);
+        $this->assertIsString($result);
+        $this->assertStringContainsString('cocoon-editor-no-link-click', $result);
+        // 元の data-json 属性が保持されている。
+        $this->assertStringContainsString('data-json', $result);
     }
 
     // ========================================================================
@@ -635,6 +855,111 @@ class UtilsTest extends TestCase
         $info = get_browser_info();
         $this->assertNull($info['browser_name']);
         $this->assertNull($info['platform']);
+    }
+
+    // ========================================================================
+    // cocoon_template_part()
+    // ========================================================================
+
+    public function test_cocoon_template_part_エコーが出力される(): void
+    {
+        \Brain\Monkey\Functions\expect('get_template_part')
+            ->once()
+            ->with('test-slug', 'test-name', ['foo' => 'bar'])
+            ->andReturnUsing(function() {
+                echo 'template_content';
+            });
+
+        ob_start();
+        cocoon_template_part('test-slug', 'test-name', ['foo' => 'bar']);
+        $result = ob_get_clean();
+
+        $this->assertSame('template_content', $result);
+    }
+
+    public function test_cocoon_template_part_引数argsが配列以外なら空配列として渡されるか(): void
+    {
+        \Brain\Monkey\Functions\expect('get_template_part')
+            ->once()
+            ->with('test-slug', 'test-name', [])
+            ->andReturnUsing(function() {
+                echo 'safe_content';
+            });
+
+        ob_start();
+        // 直接配列以外を渡すことでフェイルセーフ機構の動作を確認
+        cocoon_template_part('test-slug', 'test-name', 'invalid_string');
+        $result = ob_get_clean();
+
+        $this->assertSame('safe_content', $result);
+    }
+
+    // ========================================================================
+    // cocoon_url_to_postid()
+    // ========================================================================
+
+    public function test_cocoon_url_to_postid_キャッシュがない場合は取得して保存する(): void
+    {
+        if (!defined('DAY_IN_SECONDS')) define('DAY_IN_SECONDS', 86400);
+
+        $url = 'https://example.com/test';
+        $transient_key = 'cocoon_url_tpi_' . md5($url);
+
+        \Brain\Monkey\Functions\expect('get_transient')
+            ->once()
+            ->with($transient_key)
+            ->andReturn(false);
+
+        \Brain\Monkey\Functions\expect('url_to_postid')
+            ->once()
+            ->with($url)
+            ->andReturn(123);
+
+        \Brain\Monkey\Functions\expect('set_transient')
+            ->once()
+            ->with($transient_key, 123, DAY_IN_SECONDS);
+
+        $this->assertSame(123, cocoon_url_to_postid($url));
+    }
+
+    public function test_cocoon_url_to_postid_見つからない場合は1時間キャッシュする(): void
+    {
+        if (!defined('HOUR_IN_SECONDS')) define('HOUR_IN_SECONDS', 3600);
+
+        $url = 'https://example.com/not-found';
+        $transient_key = 'cocoon_url_tpi_' . md5($url);
+
+        \Brain\Monkey\Functions\expect('get_transient')
+            ->once()
+            ->with($transient_key)
+            ->andReturn(false);
+
+        \Brain\Monkey\Functions\expect('url_to_postid')
+            ->once()
+            ->with($url)
+            ->andReturn(0);
+
+        \Brain\Monkey\Functions\expect('set_transient')
+            ->once()
+            ->with($transient_key, 0, HOUR_IN_SECONDS);
+
+        $this->assertSame(0, cocoon_url_to_postid($url));
+    }
+
+    public function test_cocoon_url_to_postid_キャッシュがある場合は取得処理をスキップする(): void
+    {
+        $url = 'https://example.com/cached';
+        $transient_key = 'cocoon_url_tpi_' . md5($url);
+
+        \Brain\Monkey\Functions\expect('get_transient')
+            ->once()
+            ->with($transient_key)
+            ->andReturn(456);
+
+        \Brain\Monkey\Functions\expect('url_to_postid')->never();
+        \Brain\Monkey\Functions\expect('set_transient')->never();
+
+        $this->assertSame(456, cocoon_url_to_postid($url));
     }
 
 }

@@ -13,29 +13,34 @@ if ( !defined( 'ABSPATH' ) ) exit;
 add_filter('cron_schedules', 'cocoon_amazon_block_cron_schedules');
 if ( !function_exists( 'cocoon_amazon_block_cron_schedules' ) ):
 function cocoon_amazon_block_cron_schedules($schedules){
+  // 2日ごと
+  $schedules['cocoon_every_2_days'] = array(
+    'interval' => 2 * DAY_IN_SECONDS,
+    'display'  => __('2日ごと', THEME_NAME),
+  );
+  // 3日ごと
+  $schedules['cocoon_every_3_days'] = array(
+    'interval' => 3 * DAY_IN_SECONDS,
+    'display'  => __('3日ごと', THEME_NAME),
+  );
+  // 5日ごと
+  $schedules['cocoon_every_5_days'] = array(
+    'interval' => 5 * DAY_IN_SECONDS,
+    'display'  => __('5日ごと', THEME_NAME),
+  );
   // 2週間ごと
   $schedules['cocoon_biweekly'] = array(
     'interval' => 14 * DAY_IN_SECONDS,
     'display'  => __('2週間ごと', THEME_NAME),
-  );
-  // 1ヶ月ごと（30日）
-  $schedules['cocoon_monthly'] = array(
-    'interval' => 30 * DAY_IN_SECONDS,
-    'display'  => __('1ヶ月ごと', THEME_NAME),
-  );
-  // 3ヶ月ごと（90日）
-  $schedules['cocoon_quarterly'] = array(
-    'interval' => 90 * DAY_IN_SECONDS,
-    'display'  => __('3ヶ月ごと', THEME_NAME),
   );
   return $schedules;
 }
 endif;
 
 ///////////////////////////////////////////
-// Cronスケジュールの管理
+// Cronスケジュールの管理（admin_initで毎リクエストのDB照会を回避）
 ///////////////////////////////////////////
-add_action('init', 'cocoon_amazon_block_cron_manage');
+add_action('admin_init', 'cocoon_amazon_block_cron_manage');
 if ( !function_exists( 'cocoon_amazon_block_cron_manage' ) ):
 function cocoon_amazon_block_cron_manage(){
   $event_hook = 'cocoon_amazon_block_update_event';
@@ -47,11 +52,24 @@ function cocoon_amazon_block_cron_manage(){
     }
     return;
   }
-  // 更新間隔の取得（デフォルト: 1ヶ月）
+  // 更新間隔の取得（デフォルト: 3日ごと）
   $interval = get_product_block_auto_update_interval();
-  // まだスケジュールされていない場合は登録
-  if (!wp_next_scheduled($event_hook)) {
-    wp_schedule_event(time(), $interval, $event_hook);
+  $timestamp = wp_next_scheduled($event_hook);
+  if ($timestamp) {
+    // 登録済みのインターバルと設定値が異なる場合は再スケジュール
+    $current_schedule = wp_get_schedule($event_hook);
+    if ($current_schedule !== $interval) {
+      wp_unschedule_event($timestamp, $event_hook);
+      $scheduled = wp_schedule_event(time(), $interval, $event_hook);
+      if ($scheduled === false || is_wp_error($scheduled)) {
+        cocoon_product_block_debug_log('cron: schedule_event failed', 'AmazonCron');
+      }
+    }
+  } else {
+    $scheduled = wp_schedule_event(time(), $interval, $event_hook);
+    if ($scheduled === false || is_wp_error($scheduled)) {
+      cocoon_product_block_debug_log('cron: schedule_event failed', 'AmazonCron');
+    }
   }
 }
 endif;
@@ -67,6 +85,41 @@ function cocoon_amazon_block_batch_update(){
     return;
   }
 
+  // 多重起動防止ロック（トランジェント／永続キャッシュのいずれか一方のみ使用し二重設定を避ける）
+  $lock_key = 'cocoon_amazon_block_cron_running';
+  $use_ext_cache = wp_using_ext_object_cache();
+  if ($use_ext_cache) {
+    if (wp_cache_get($lock_key)) {
+      cocoon_product_block_debug_log('cron: skipped (already running)', 'AmazonCron');
+      return;
+    }
+    $added = wp_cache_add($lock_key, 1, '', HOUR_IN_SECONDS);
+    if (!$added) {
+      cocoon_product_block_debug_log('cron: skipped (already running)', 'AmazonCron');
+      return;
+    }
+  } else {
+    if (get_transient($lock_key)) {
+      cocoon_product_block_debug_log('cron: skipped (already running)', 'AmazonCron');
+      return;
+    }
+    set_transient($lock_key, 1, HOUR_IN_SECONDS);
+  }
+
+  // Fatal Error時にもロックを解放する
+  $lock_released = false;
+  register_shutdown_function(function() use ($lock_key, &$lock_released, $use_ext_cache) {
+    if ($lock_released) return;
+    if ($use_ext_cache) {
+      wp_cache_delete($lock_key);
+    } else {
+      delete_transient($lock_key);
+    }
+  });
+
+  // Cronバックグラウンド処理のためタイムアウトを無制限化
+  @set_time_limit(0);
+
   // 1回あたりの処理件数（共通設定から取得）
   $batch_size = get_product_block_auto_update_batch_size();
   if ($batch_size < 1) $batch_size = PRODUCT_BLOCK_AUTO_UPDATE_BATCH_SIZE_DEFAULT;
@@ -78,7 +131,7 @@ function cocoon_amazon_block_batch_update(){
   global $wpdb;
   $posts = $wpdb->get_results($wpdb->prepare(
     "SELECT ID, post_content, post_modified, post_modified_gmt
-     FROM {$wpdb->posts}
+     FROM `{$wpdb->posts}`
      WHERE post_status = 'publish'
        AND post_type IN ('post', 'page')
        AND post_content LIKE %s
@@ -93,7 +146,13 @@ function cocoon_amazon_block_batch_update(){
   // 結果が空の場合はリスタート
   if (empty($posts)) {
     update_option('cocoon_amazon_block_last_processed_id', 0);
-    amazon_creators_api_debug_log('cron: all posts processed, resetting');
+    cocoon_product_block_debug_log('cron: all posts processed, resetting', 'AmazonCron');
+    if ($use_ext_cache) {
+      wp_cache_delete($lock_key);
+    } else {
+      delete_transient($lock_key);
+    }
+    $lock_released = true;
     return;
   }
 
@@ -110,7 +169,15 @@ function cocoon_amazon_block_batch_update(){
   }
 
   // ループ変数ではなく明示的な変数でログ出力
-  amazon_creators_api_debug_log('cron: batch completed, last_id='.$last_id);
+  cocoon_product_block_debug_log('cron: batch completed, last_id='.$last_id, 'AmazonCron');
+
+  // ロック解放
+  if ($use_ext_cache) {
+    wp_cache_delete($lock_key);
+  } else {
+    delete_transient($lock_key);
+  }
+  $lock_released = true;
 }
 endif;
 
@@ -134,33 +201,27 @@ function cocoon_amazon_block_update_post_blocks($post){
   // 更新後のコンテンツを生成
   $new_content = serialize_blocks($blocks);
 
-  // 更新日時を保存しておく（復元用）
-  $post_modified = $post->post_modified;
-  $post_modified_gmt = $post->post_modified_gmt;
-
-  // 投稿を更新
-  wp_update_post(array(
-    'ID'           => $post->ID,
-    'post_content' => $new_content,
-  ));
-
-  // 更新日時を復元（変更しない）
+  // $wpdb->updateでpost_contentのみ直接更新（リビジョン生成・更新日時変更を防止）
   global $wpdb;
-  $wpdb->update(
+  $result = $wpdb->update(
     $wpdb->posts,
-    array(
-      'post_modified'     => $post_modified,
-      'post_modified_gmt' => $post_modified_gmt,
-    ),
+    array('post_content' => $new_content),
     array('ID' => $post->ID),
-    array('%s', '%s'),
+    array('%s'),
     array('%d')
   );
 
+  // 更新失敗時はログを残して抜ける
+  if ($result === false) {
+    cocoon_product_block_debug_log('cron: post '.$post->ID.' update failed', 'AmazonCron');
+    return;
+  }
+
   // キャッシュをクリア
   clean_post_cache($post->ID);
-
-  amazon_creators_api_debug_log('cron: post '.$post->ID.' updated');
+  // 注意: wp_update_post() を介さないため、save_postやpost_updatedアクションは発火しません。
+  // サードパーティの静的HTMLキャッシュプラグインに更新が通知されず古いキャッシュが見える
+  // 可能性がありますが、Cronのバックグラウンド更新の性質上、許容範囲としています。
 }
 endif;
 
@@ -212,6 +273,10 @@ function cocoon_amazon_block_update_blocks_recursive($blocks, &$updated){
       $attrs['imageLargeHeight'] = $itemData['imageLargeHeight'];
       $attrs['variantImages']   = $itemData['variantImages'];
 
+      // 価格取得時刻を現在のUTC時刻で更新（エディタ再編集時の時刻巻き戻りを防止）
+      $now_utc = gmdate('Y-m-d\TH:i:s.000\Z');
+      $attrs['priceFetchedAt'] = $now_utc;
+
       // 設定を組み立てて静的HTMLを再生成
       $settings = array(
         'size'              => isset($attrs['size']) ? $attrs['size'] : 'm',
@@ -239,6 +304,8 @@ function cocoon_amazon_block_update_blocks_recursive($blocks, &$updated){
         'btn3Text'          => isset($attrs['btn3Text']) ? $attrs['btn3Text'] : '',
         'btn3Tag'           => isset($attrs['btn3Tag']) ? $attrs['btn3Tag'] : '',
         'useMoshimoAffiliate' => isset($attrs['useMoshimoAffiliate']) ? (bool)$attrs['useMoshimoAffiliate'] : false,
+        // Cron更新時の価格取得時刻を設定に渡す
+        'priceFetchedAt'    => $now_utc,
       );
 
       // 静的HTMLを再生成

@@ -26,6 +26,8 @@
  */
 if ( !defined( 'ABSPATH' ) ) exit;
 
+// 念のため、同名クラスの衝突ガード
+if ( ! class_exists( 'OpenGraphGetter' ) ):
 class OpenGraphGetter implements Iterator
 {
   /**
@@ -60,7 +62,6 @@ class OpenGraphGetter implements Iterator
   static public function fetch($URI) {
     // wp_remote_get() の第2引数 args に渡すパラメータを組み立てる
     $args = array(
-      'cocoon' => true,
       'user-agent' => (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '',
       // wp_remote_get() のデフォルトでは HTTP/1.0 でアクセスされるが、さすがに古すぎるので HTTP/1.1 に変更
       'httpversion' => '1.1',
@@ -107,10 +108,15 @@ class OpenGraphGetter implements Iterator
     if (!is_wp_error( $res ) && $response_code === 200) {
       $response = $res['body'];
     } else if (!is_admin()) {
-      $response = wp_filesystem_get_contents($URI, true);
+      // wp_remote_get が WP_Error を返した場合（タイムアウト・DNS解決失敗・接続拒否等）は
+      // フォールバック（file_get_contents等）でリトライしても同じネットワーク障害で失敗する可能性が高く、
+      // タイムアウト時間が加算されて 504 Gateway Timeout を引き起こすため、フォールバックは行わない
+      if ( !is_wp_error( $res ) ) {
+        $response = wp_filesystem_get_contents($URI, true);
 
-      if (!$response) {
-        $response = get_http_content($URI);
+        if (!$response) {
+          $response = get_http_content($URI);
+        }
       }
     }
     if (!empty($response)) {
@@ -201,8 +207,57 @@ class OpenGraphGetter implements Iterator
             $page->_values['description'] = $nonOgDescription;
         }
 
+        // 楽天商品ページの取得時は、汎用ロゴの回避と高画質メイン画像の抽出を行う
+        if (is_rakuten_site_page($URI)) {
+            // 楽天の汎用ロゴやnoimage画像を検知した場合は無効化し、商品画像を探し直す
+            if (isset($page->_values['image']) && preg_match('#(?:r10s\.jp/com/img/.*logo|no_?image)#i', $page->_values['image'])) {
+                unset($page->_values['image']);
+            }
+
+            // 画像URLがまだ見つかっていない場合、XPathを使用してHTML内からメイン商品画像を抽出
+            if (!isset($page->_values['image'])) {
+                $domxpath = new DOMXPath($doc);
+                $queries = array(
+                    "//meta[@itemprop='image']",
+                    "//img[@itemprop='image']",
+                    "//img[contains(@src, 'image.rakuten.co.jp') or contains(@src, 'tshop.r10s.jp') or contains(@src, 'thumbnail.image.rakuten.co.jp')]"
+                );
+                
+                foreach ($queries as $query) {
+                    $elements = $domxpath->query($query);
+                    if ($elements && $elements->length > 0) {
+                        // 対象が複数見つかった場合、有効なもの(ロゴ等でないもの)が見つかるまでループする
+                        foreach ($elements as $element) {
+                            // metaタグ用はcontent属性、imgタグ等はsrc属性から画像URLを取得
+                            if ($element instanceof DOMElement) {
+                                $src = $element->hasAttribute('content') ? $element->getAttribute('content') : ($element->hasAttribute('src') ? $element->getAttribute('src') : null);
+                                // data:image等のLazy Loadダミーを弾くため URL が記述されていることを確認
+                                if (!empty($src) && preg_match('/^(?:https?:)?\/\//i', $src) && !preg_match('#(?:r10s\.jp/com/img/.*logo|no_?image)#i', $src)) {
+                                    // 格納時は生URLを保持
+                                    $page->_values['image']     = $src;
+                                    $page->_values['image_src'] = $src;
+                                    break 2; // 有効な画像が見つかれば外側の $queries ループごと抜ける
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 楽天の画像URLに付与されるサイズ制限パラメータ(?_ex=400x400や?fitin=...など)を除去してオリジナル最高画質化
+            // ※他社CDNの署名付きURL等でのパラメータ破壊を防ぐため、楽天の画像サーバであるかを検証した上で除去
+            if (isset($page->_values['image']) && preg_match('/(?:image\.rakuten\.co\.jp|r10s\.jp|thumbnail\.image\.rakuten\.co\.jp)/i', $page->_values['image'])) {
+                // preg_replace は正規表現エラー時に null を返すため、元のURLが消失しないようにチェックする
+                $clean_src = preg_replace('/[\?#].*$/', '', $page->_values['image']);
+                if ($clean_src !== null) {
+                    $page->_values['image'] = $clean_src;
+                    $page->_values['image_src'] = $clean_src;
+                }
+            }
+        }
+
         //Fallback to use image_src if ogp::image isn't set.
-        if (!isset($page->values['image'])) {
+        if (!isset($page->_values['image'])) {
             $domxpath = new DOMXPath($doc);
             $elements = $domxpath->query("//link[@rel='image_src']");
 
@@ -210,15 +265,104 @@ class OpenGraphGetter implements Iterator
                 $domattr = $elements->item(0)->attributes->getNamedItem('href');
                 if ($domattr) {
                     if (is_amazon_site_page($URI)) {
-                      $domattr->value = preg_replace('/[^\.]+?\.jpg$/', '.jpg', $domattr->value);
+                      // preg_replace は正規表現エラー時に null を返すため、元のURLが消失しないようにチェックする
+                      $clean_src = preg_replace('/[^\.]+?\.jpg$/', '.jpg', $domattr->value);
+                      if ($clean_src !== null) {
+                          $domattr->value = $clean_src;
+                      }
                     }
+                    // ここでのエスケープは外し、生URLを保持
                     $page->_values['image'] = $domattr->value;
                     $page->_values['image_src'] = $domattr->value;
                 }
             }
         }
 
+        // HTMLソースからのAmazon固有の画像抽出 (フォールバック処理)
+        if (is_amazon_site_page($URI)) {
+            // 汎用的なAmazonロゴが取得されている場合は無効化し、商品画像の再探索を許可する
+            $has_valid_image = isset($page->_values['image']) && !preg_match('/(?:amazon_logo|amazon-icon|no-image)/i', $page->_values['image']);
+            
+            if (!$has_valid_image) {
+                // XPathが未初期化の場合は初期化
+                if (!isset($domxpath)) {
+                    $domxpath = new DOMXPath($doc);
+                }
+
+                $amazon_img_src = null;
+
+                // 1. OGPやTwitterカードのメタタグから直接探索 (DOM解析で漏れた場合を考慮)
+                $meta_images = $domxpath->query("//meta[@property='og:image' or @name='twitter:image']");
+                foreach ($meta_images as $meta_img) {
+                    if ($meta_img instanceof DOMElement) {
+                        $content = $meta_img->getAttribute('content');
+                        // 汎用ロゴでないかをチェック
+                        if ($content && !preg_match('/(?:amazon_logo|amazon-icon|no-image)/i', $content)) {
+                            $amazon_img_src = $content;
+                            break;
+                        }
+                    }
+                }
+
+                // 2. ページ内の主な商品画像IDから抽出 (標準商品、書籍、Kindle、デジタルミュージック等のエッジケース対応)
+                if (!$amazon_img_src) {
+                    $img_nodes = $domxpath->query("//img[@id='landingImage' or @id='imgBlkFront' or @id='ebooksImgBlkFront' or @id='main-image'] | //div[@id='dmusicProductImage_feature_div']//img");
+                    if ($img_nodes->length > 0) {
+                        $img = $img_nodes->item(0);
+                        if ($img instanceof DOMElement) {
+                            // 高解像度画像属性を優先確認
+                            $amazon_img_src = $img->getAttribute('data-old-hires');
+                            
+                            // 動的画像プロパティ (JSON) を確認
+                            if (!$amazon_img_src) {
+                                $dynamic_img = $img->getAttribute('data-a-dynamic-image');
+                                if ($dynamic_img) {
+                                    $images = json_decode(htmlspecialchars_decode($dynamic_img, ENT_QUOTES), true);
+                                    if (is_array($images) && !empty($images)) {
+                                        $urls = array_keys($images);
+                                        // 最初のURL（通常はベースとなる高解像度画像）を取得
+                                        $amazon_img_src = $urls[0];
+                                    }
+                                }
+                            }
+                            
+                            // 通常のsrc属性へのフォールバック（遅延ロード用のbase64の場合は除外）
+                            if (!$amazon_img_src) {
+                                $src_attr = $img->getAttribute('src');
+                                if ($src_attr && strpos($src_attr, 'data:image') !== 0) {
+                                    $amazon_img_src = $src_attr;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // 取得したURLを格納（エスケープせず生URLを保持）
+                if ($amazon_img_src) {
+                    $page->_values['image'] = $amazon_img_src;
+                }
+            }
+
+            // 3. Amazon特有の画像サイズ縮小パラメータの除去（OGP画像が先に採用されていた場合でも強制的に高解像度化する）
+            if (!empty($page->_values['image'])) {
+                // 例: https://m.media-amazon.com/images/I/41Pq23x1-AL._AC_SY400_.jpg -> ...AL.jpg
+                // preg_replace は正規表現エラー時に null を返すため、元のURLが消失しないようにチェックする
+                $clean_src = preg_replace('/\._[^.]+\.(jpg|jpeg|png|gif|webp)$/i', '.$1', $page->_values['image']);
+                if ($clean_src !== null) {
+                    $page->_values['image'] = $clean_src;
+                }
+            }
+        }
+
     if (empty($page->_values)) { return false; }
+
+    // 画像URLのエスケープを全経路で一括適用（二重適用を防ぐため、ここで1回だけ実施）
+    if (isset($page->_values['image'])) {
+      $page->_values['image'] = esc_url($page->_values['image']);
+    }
+    if (isset($page->_values['image_src'])) {
+      $page->_values['image_src'] = esc_url($page->_values['image_src']);
+    }
 
     //og:titleが空文字だったとき
     $page_title = null;
@@ -252,7 +396,8 @@ class OpenGraphGetter implements Iterator
       return $this->_values[$key];
     }
 
-    if ($key === 'schema') {
+    // schema プロパティへのアクセス時、og:type が設定されていない場合の E_WARNING を防止
+    if ($key === 'schema' && isset($this->_values['type'])) {
       foreach (self::$TYPES AS $schema => $types) {
         if (array_search($this->_values['type'], $types)) {
           return $schema;
@@ -312,67 +457,4 @@ class OpenGraphGetter implements Iterator
   #[\ReturnTypeWillChange]
   public function valid() { return $this->_position < sizeof($this->_values); }
 }
-
-//curlのバージョンチェック
-if ( !function_exists( 'is_nss_curl' ) ):
-function is_nss_curl() {
-  if (function_exists('curl_version')) {
-    $info = curl_version();
-    return $info['version'] === '7.19.7';
-  }
-}
 endif;
-
-//curl_setoptで暗号化スイートを設定
-//http://blog.tojiru.net/article/437364535.html
-//https://github.com/hirak/prestissimo/pull/69/files
-if ( !function_exists( 'set_ecc_cipher_suites' ) ):
-function set_ecc_cipher_suites($handle, $r) {
-  if (isset($r['cocoon'])) {
-    $cipher_list = array(
-      "rsa_3des_sha",
-      "rsa_des_sha",
-      "rsa_null_md5",
-      "rsa_null_sha",
-      "rsa_rc2_40_md5",
-      "rsa_rc4_128_md5",
-      "rsa_rc4_128_sha",
-      "rsa_rc4_40_md5",
-      "fips_des_sha",
-      "fips_3des_sha",
-      "rsa_des_56_sha",
-      "rsa_rc4_56_sha",
-      "rsa_aes_128_sha",
-      "rsa_aes_256_sha",
-      "rsa_aes_128_gcm_sha_256",
-      "dhe_rsa_aes_128_gcm_sha_256",
-      "ecdh_ecdsa_null_sha",
-      "ecdh_ecdsa_rc4_128_sha",
-      "ecdh_ecdsa_3des_sha",
-      "ecdh_ecdsa_aes_128_sha",
-      "ecdh_ecdsa_aes_256_sha",
-      "ecdhe_ecdsa_null_sha",
-      "ecdhe_ecdsa_rc4_128_sha",
-      "ecdhe_ecdsa_3des_sha",
-      "ecdhe_ecdsa_aes_128_sha",
-      "ecdhe_ecdsa_aes_256_sha",
-      "ecdh_rsa_null_sha",
-      "ecdh_rsa_128_sha",
-      "ecdh_rsa_3des_sha",
-      "ecdh_rsa_aes_128_sha",
-      "ecdh_rsa_aes_256_sha",
-      "echde_rsa_null",
-      "ecdhe_rsa_rc4_128_sha",
-      "ecdhe_rsa_3des_sha",
-      "ecdhe_rsa_aes_128_sha",
-      "ecdhe_rsa_aes_256_sha",
-      "ecdhe_ecdsa_aes_128_gcm_sha_256",
-      "ecdhe_rsa_aes_128_gcm_sha_256",
-    );
-    curl_setopt($handle, CURLOPT_SSL_CIPHER_LIST, implode(',', $cipher_list));
-  }
-}
-endif;
-if (is_nss_curl()) {
-  add_action('http_api_curl', 'set_ecc_cipher_suites', 10, 2);
-}

@@ -528,97 +528,6 @@ function wp_enqueue_style_icomoon(){
 }
 endif;
 
-//jQueryコアURLの取得
-if ( !function_exists( 'get_jquery_core_url' ) ):
-function get_jquery_core_url($ver){
-  $url = null;
-  switch ($ver) {
-    case '3':
-      $url = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js';
-      break;
-    case '2':
-      $url = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js';
-      break;
-    case '1':
-      $url = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js';
-      break;
-  }
-  return $url;
-}
-endif;
-
-//jQueryコアのフルバージョンの取得
-if ( !function_exists( 'get_jquery_core_full_version' ) ):
-function get_jquery_core_full_version($ver){
-  $full_ver = null;
-  switch ($ver) {
-    case '3':
-      $full_ver = '3.6.1';
-      break;
-    case '2':
-      $full_ver = '2.2.4';
-      break;
-    case '1':
-      $full_ver = '1.12.4';
-      break;
-  }
-  return $full_ver;
-}
-endif;
-
-//jQuery MigrateURLの取得
-if ( !function_exists( 'get_jquery_migrate_url' ) ):
-function get_jquery_migrate_url($ver){
-  $url = null;
-  switch ($ver) {
-    case '3':
-      $url = 'https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.3.2/jquery-migrate.min.js';
-      break;
-    case '1':
-      $url = 'https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.4.1/jquery-migrate.min.js';
-      break;
-  }
-  return $url;
-}
-endif;
-
-//jQuery Migrateのフルバージョンの取得
-if ( !function_exists( 'get_jquery_migrate_full_version' ) ):
-function get_jquery_migrate_full_version($ver){
-  $full_ver = null;
-  switch ($ver) {
-    case '3':
-      $full_ver = '3.0.1';
-      break;
-    case '1':
-      $full_ver = '1.4.1';
-      break;
-  }
-  return $full_ver;
-}
-endif;
-
-//jQueryファイルの読み込み
-if ( !function_exists( 'wp_enqueue_script_jquery_js' ) ):
-function wp_enqueue_script_jquery_js(){
-  wp_deregister_script('jquery');
-  wp_deregister_script('jquery-core');
-  wp_deregister_script('jquery-migrate');
-
-  $ver = get_jquery_version();
-  $in_footer = is_footer_javascript_enable() ? true : false;
-
-  wp_register_script('jquery', false, array('jquery-core', 'jquery-migrate'), get_jquery_core_full_version($ver), $in_footer);
-
-  //jQueryの読み込み
-  wp_enqueue_script('jquery-core', get_jquery_core_url($ver), array(), get_jquery_core_full_version($ver), $in_footer);
-
-  //jQuery Migrateの読み込み
-  $ver = get_jquery_migrate_version();
-  wp_enqueue_script('jquery-migrate', get_jquery_migrate_url($ver), array(), get_jquery_migrate_full_version($ver), $in_footer);
-
-}
-endif;
 
 //親テーマのjavascript.jsの読み込み
 if ( !function_exists( 'wp_enqueue_script_theme_js' ) ):
@@ -634,6 +543,12 @@ function wp_enqueue_script_theme_js(){
     'is_google_font_lazy_load_enable' => is_google_font_lazy_load_enable() && !is_admin(),
   ) );
   wp_localize_script( THEME_JS, $name, $value );
+
+  // グループブロックリンク化JS
+  $group_link_js = get_cocoon_template_directory() . '/js/group-link.js';
+  if ( file_exists( $group_link_js ) ) {
+    wp_enqueue_script( 'cocoon-group-link', get_cocoon_template_directory_uri() . '/js/group-link.js', array(), filemtime( $group_link_js ), true );
+  }
 
   // // TODO: ファイル読みこみ位置 もしくは HTML側に直接出力など よい方法を考慮
   // wp_enqueue_script( 'set-event-passive', SET_EVENT_PASSIVE_JS_URL, array( ), false, true );
@@ -1162,7 +1077,7 @@ endif;
 //ターゲットに文字列が含まれているか
 if ( !function_exists( 'includes_string' ) ):
 function includes_string($target, $searchstr){
-  if (strpos($target, $searchstr) === false) {
+  if (strpos((string)$target, (string)$searchstr) === false) {
     return false;
   } else {
     return true;
@@ -2076,7 +1991,7 @@ endif;
 //アクセステーブル用の現在の日時文字列
 if ( !function_exists( 'get_current_db_date' ) ):
 function get_current_db_date(){
-  return date_i18n('Y-m-d');
+  return wp_date('Y-m-d');
 }
 endif;
 
@@ -2094,7 +2009,7 @@ function get_current_db_date_before($days){
   }
 
   // 2日以上は「$days - 1 日前」を開始日とする
-  return date_i18n('Y-m-d', strtotime(current_time('Y-m-d').' -'.($days - 1).' day'));
+  return wp_date('Y-m-d', strtotime('-' . ($days - 1) . ' days'));
 }
 endif;
 
@@ -2578,7 +2493,35 @@ endif;
 //フロントトップページかどうか
 if ( !function_exists( 'is_front_top_page' ) ):
 function is_front_top_page(){
-  return is_front_page() && !is_paged() && !isset($_GET['cat']);
+  $is_front = is_front_page();
+  //「ホームページの表示＝固定ページ」なのにページが未割り当て（ID 0）の矛盾設定では
+  // WordPress は投稿一覧（is_home）を表示するが is_front_page() は false になる。
+  // この場合 Cocoon の各種フロントトップ判定が崩れるため、実質フロントトップとして扱う。
+  if ( ! $is_front
+    && is_home()
+    && get_option( 'show_on_front' ) === 'page'
+    && ! (int) get_option( 'page_on_front' )
+  ) {
+    $is_front = true;
+  }
+  return $is_front && !is_paged() && !isset($_GET['cat']);
+}
+endif;
+
+//「ホームページの表示」が「固定ページ」だが表示ページ未割り当ての矛盾設定を管理画面で警告
+add_action( 'admin_notices', 'cocoon_front_page_misconfig_notice' );
+if ( ! function_exists( 'cocoon_front_page_misconfig_notice' ) ):
+function cocoon_front_page_misconfig_notice() {
+  //権限のないユーザーには表示しない
+  if ( ! current_user_can( 'manage_options' ) ) {
+    return;
+  }
+  if ( get_option( 'show_on_front' ) === 'page' && ! (int) get_option( 'page_on_front' ) ) {
+    echo '<div class="notice notice-warning"><p><strong>' . esc_html__( 'Cocoon：', THEME_NAME ) . '</strong>'
+      . esc_html__( '「ホームページの表示」が「固定ページ」になっていますが、表示するページが選択されていません。このままでは設定が正常に反映されない場合があります。', THEME_NAME )
+      . ' <a href="' . esc_url( admin_url( 'options-reading.php' ) ) . '">'
+      . esc_html__( '表示設定を開く', THEME_NAME ) . '</a></p></div>';
+  }
 }
 endif;
 
@@ -2693,7 +2636,7 @@ endif;
 if ( !function_exists( 'get_human_time_diff_advance' ) ):
 function get_human_time_diff_advance( $from, $to = '' ) {
   if ( empty($to) )
-    $to = date_i18n('U');
+    $to = current_time('timestamp');
   $diff = (int) abs($to - $from);
   // 条件: 3600秒 = 1時間以下なら (元のまま)
   if ($diff <= 3600) {
@@ -2813,23 +2756,23 @@ endif;
 if ( !function_exists( 'cancel_blog_card_deactivation' ) ):
 function cancel_blog_card_deactivation($the_content, $is_p = true){
   //テキストのみ
-  $not_url_reg = '!(https?://[-_.!~*\'()a-zA-Z0-9;/?:\@&=+\$,%#]+)';
+  $not_url_reg = '!\s*(https?://[-_.!~*\'()a-zA-Z0-9;/?:\@&=+\$,%#]+)';
   if ($is_p) {
-    $pattern = '{^<p>'.$not_url_reg.'</p>}im';
+    $pattern = '{^\s*<p[^>]*>\s*'.$not_url_reg.'\s*</p>\s*$}im';
     $append = '<p>$1</p>';
   } else {
-    $pattern = '{^'.$not_url_reg.'}im';
+    $pattern = '{^\s*'.$not_url_reg.'}im';
     $append = '$1';
   }
   $the_content = preg_replace($pattern, $append, $the_content);
 
-  //URLリンク
-  $not_url_reg = '!(<a.+>https?://[-_.!~*\'()a-zA-Z0-9;/?:\@&=+\$,%#]+</a>)';
+  //URLリンク（<a>タグ内テキストの先頭・末尾スペースや!とaタグ間のスペースを許容）
+  $not_url_reg = '!\s*(<a[^>]+>\s*https?://[-_.!~*\'()a-zA-Z0-9;/?:\@&=+\$,%#]+\s*</a>)';
   if ($is_p) {
-    $pattern = '{^<p>'.$not_url_reg.'</p>}im';
+    $pattern = '{^\s*<p[^>]*>\s*'.$not_url_reg.'\s*</p>\s*$}im';
     $append = '<p>$1</p>';
   } else {
-    $pattern = '{^'.$not_url_reg.'}im';
+    $pattern = '{^\s*'.$not_url_reg.'}im';
     $append = '$1';
   }
   $the_content = preg_replace($pattern, $append, $the_content);
@@ -3111,24 +3054,19 @@ endif;
 //httpコンテンツの取得
 if ( !function_exists( 'get_http_content' ) ):
 function get_http_content($url){
-  try {
-    $ch = curl_init();
-    curl_setopt_array($ch, array(
-      CURLOPT_URL => $url,
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_TIMEOUT => 1.5,
-    ));
-    $body = curl_exec($ch);
-    $errno = curl_errno($ch);
-    $error = curl_error($ch);
-    curl_close($ch);
-    if (CURLE_OK !== $errno) {
-      throw new RuntimeException($error, $errno);
-    }
-    return $body;
-  } catch (Exception $e) {
+  // WordPress標準のHTTP APIでコンテンツを取得する
+  $wp_response = wp_remote_get($url, array(
+    'timeout' => 2,
+  ));
+
+  // リクエストが失敗した場合はfalseを返す
+  if (is_wp_error($wp_response)) {
     return false;
   }
+
+  // レスポンスのボディを返す
+  $body = wp_remote_retrieve_body($wp_response);
+  return $body ? $body : false;
 }
 endif;
 
@@ -3147,54 +3085,91 @@ endif;
 //内部URLからカテゴリーオブジェクトを取得する
 if ( !function_exists( 'url_to_category_object' ) ):
 function url_to_category_object($url){
-  //タグのベースURLの正規表現
+  // URLをパスとクエリに分解してパラメータによる誤解析を防ぐ
+  $parsed_url = wp_parse_url($url);
+  if (!$parsed_url) return null;
+
+  $path  = isset($parsed_url['path']) ? $parsed_url['path'] : '';
+  $query = isset($parsed_url['query']) ? $parsed_url['query'] : '';
+
+  // カテゴリーベース名（デフォルトは'category'）をエスケープして取得
   $category_base = get_option('category_base');
-  $category_base = $category_base ? preg_quote($category_base, '/') : 'category';
-  $quoteed_category_base = preg_quote($category_base);
-  $reg = '{/'.$quoteed_category_base.'/([^/]+)|/\?cat\=([^&]+)}';
-  preg_match($reg, $url, $m);
-  $slug = null;
-  if (isset($m[1]) && $m[1]) {
-    $slug = $m[1];
-    //カテゴリーの取得
-    if ($slug) {
-      $category = get_category_by_slug($slug);
-      if ($category) {
+  $category_base = $category_base ? preg_quote(trim($category_base, '/'), '/') : 'category';
+
+  // パスからの取得判定（パーマリンク形式）
+  if ($path) {
+    // 階層構造（親/子カテゴリ）を考慮し、ベース名以降を丸ごと取得
+    $reg = '{/'.$category_base.'/(.+)}';
+    if (preg_match($reg, $path, $m)) {
+      $category_path = trim($m[1], '/');
+      if ($category_path) {
+        $category = get_category_by_path($category_path, false);
+        if ($category && !is_wp_error($category)) {
+          return $category;
+        }
+      }
+    }
+  }
+
+  // クエリからの取得判定（?cat=形式）
+  if ($query) {
+    parse_str($query, $query_params);
+    if (!empty($query_params['cat'])) {
+      $category = get_category($query_params['cat']);
+      if ($category && !is_wp_error($category)) {
         return $category;
       }
     }
-  } elseif (isset($m[2]) && $m[2]) {
-    $cat_id = $m[2];
-    $category = get_category($cat_id);
-    if ($category) {
-      return $category;
-    }
   }
+
+  return null;
 }
 endif;
 
 //内部URLからタグオブジェクトを取得する
 if ( !function_exists( 'url_to_tag_object' ) ):
 function url_to_tag_object($url){
-  //タグのベースURLの正規表現
+  // URLをパスとクエリに分解
+  $parsed_url = wp_parse_url($url);
+  if (!$parsed_url) return null;
+
+  $path  = isset($parsed_url['path']) ? $parsed_url['path'] : '';
+  $query = isset($parsed_url['query']) ? $parsed_url['query'] : '';
+
+  // タグベース名（デフォルトは'tag'）をエスケープして取得
   $tag_base = get_option('tag_base');
-  $tag_base = $tag_base ? preg_quote($tag_base, '/') : 'tag';
-  $quoteed_tag_base = preg_quote($tag_base);
-  $reg = '{/'.$quoteed_tag_base.'/([^/]+)|/\?'.$quoteed_tag_base.'\=([^&]+)}';
-  preg_match($reg, $url, $m);
-  $slug = null;
-  if (isset($m[1]) && $m[1]) {
-    $slug = $m[1];
-  } elseif (isset($m[2]) && $m[2]) {
-    $slug = $m[2];
-  }
-  //タグの取得
-  if ($slug) {
-    $tag = get_term_by('slug', $slug, 'post_tag');
-    if ($tag) {
-      return $tag;
+  $tag_base = $tag_base ? preg_quote(trim($tag_base, '/'), '/') : 'tag';
+
+  // パスからの取得判定（パーマリンク形式）
+  if ($path) {
+    // タグは階層を持たないため、直後のスラッシュまでをスラグとして取得
+    $reg = '{/'.$tag_base.'/([^/]+)}';
+    if (preg_match($reg, $path, $m)) {
+      $slug = trim($m[1], '/');
+      if ($slug) {
+        $tag = get_term_by('slug', $slug, 'post_tag');
+        if ($tag && !is_wp_error($tag)) {
+          return $tag;
+        }
+      }
     }
   }
+
+  // クエリからの取得判定（?tag=形式）
+  if ($query) {
+    parse_str($query, $query_params);
+    // パス判定用の $tag_base は preg_quote 済みのためクエリキーには使えず、元の値を再取得
+    $tag_base_raw = get_option('tag_base') ?: 'tag';
+    if (!empty($query_params[$tag_base_raw])) {
+      $slug = $query_params[$tag_base_raw];
+      $tag = get_term_by('slug', $slug, 'post_tag');
+      if ($tag && !is_wp_error($tag)) {
+        return $tag;
+      }
+    }
+  }
+
+  return null;
 }
 endif;
 
@@ -3228,26 +3203,30 @@ endif;
 
 //get_template_partに関するフック付加
 if ( !function_exists( 'cocoon_template_part' ) ):
-function cocoon_template_part($slug){
+function cocoon_template_part($slug, $name = null, $args = []){
+
+  $args = apply_filters("cocoon_part_args__{$slug}", $args, $name);
+  // 配列以外の値によるエラーを防止
+  if (!is_array($args)) {
+    $args = [];
+  }
+
+  // テンプレート読み込み前に発火させ、フック名「before」と実行順序を一致させる
+  // WP内部で判定されるためhas_filterを省略
+  do_action("cocoon_part_before__{$slug}", $name, $args);
+
   ob_start();
-  get_template_part($slug);
+  get_template_part($slug, $name, $args);
   $content = ob_get_clean();
 
-  // 読み込み前発火
-  if (has_filter("cocoon_part_before__{$slug}")) {
-    do_action("cocoon_part_before__{$slug}");
-  }
+  // WP内部で判定されるためhas_filterを省略
+  $content = apply_filters("cocoon_part__{$slug}", $content, $name, $args);
 
-  // 書き換え
-  if (has_filter("cocoon_part__{$slug}")) {
-    $content = apply_filters("cocoon_part__{$slug}" ,$content);
-  }
-  echo $content;
+  // 配列等による表示崩れを防止
+  echo (string) $content;
 
-  // 読み込み後発火
-  if (has_filter("cocoon_part_after__{$slug}")) {
-    do_action("cocoon_part_after__{$slug}");
-  }
+  // WP内部で判定されるためhas_filterを省略
+  do_action("cocoon_part_after__{$slug}", $name, $args);
 }
 endif;
 
@@ -3636,12 +3615,14 @@ endif;
 //カテゴリーIDからカテゴリー名を取得
 if ( !function_exists( 'get_category_name_by_id' ) ):
 function get_category_name_by_id($id){
+  $category_name = '';
   //カテゴリIDからカテゴリ情報取得
   $category = get_category($id);
   if (isset($category->cat_name)) {
     //カテゴリー名表示
-    return $category->cat_name;
+    $category_name = $category->cat_name;
   }
+  return apply_filters('get_category_name_by_id', $category_name, $id);
 }
 endif;
 
@@ -3657,7 +3638,8 @@ endif;
 //存在するカテゴリIDかどうか
 if ( !function_exists( 'is_category_exist' ) ):
 function is_category_exist($cat_id){
-  return is_numeric($cat_id) && get_category($cat_id);
+  $is_exist = is_numeric($cat_id) && get_category($cat_id);
+  return apply_filters('is_category_exist', $is_exist, $cat_id);
 }
 endif;
 
@@ -3680,6 +3662,7 @@ endif;
 //URLがAmazonかどうか
 if ( !function_exists( 'is_amazon_site_page' ) ):
 function is_amazon_site_page($URI){
+  if (empty($URI) || !is_string($URI)) return false;
   return includes_string($URI, '//amzn.to/') || includes_string($URI, '//www.amazon.co');
 }
 endif;
@@ -3687,6 +3670,7 @@ endif;
 //URLが楽天かどうか
 if ( !function_exists( 'is_rakuten_site_page' ) ):
 function is_rakuten_site_page($URI){
+  if (empty($URI) || !is_string($URI)) return false;
   return includes_string($URI, '//a.r10.to/') || preg_match('{//.+\.rakuten\.co\.jp/}', $URI);
 }
 endif;
@@ -3731,28 +3715,35 @@ endif;
 //WordPressバージョンが5.5以上かどうか
 if ( !function_exists( 'is_wp_5_5_or_over' ) ):
 function is_wp_5_5_or_over(){
-  return get_bloginfo('version') >= '5.5';
+  return version_compare( get_bloginfo('version'), '5.5', '>=' );
 }
 endif;
 
 //WordPressバージョンが5.8以上かどうか
 if ( !function_exists( 'is_wp_5_8_or_over' ) ):
 function is_wp_5_8_or_over(){
-  return get_bloginfo('version') >= '5.8';
+  return version_compare( get_bloginfo('version'), '5.8', '>=' );
 }
 endif;
 
 //WordPressバージョンが6.1以上かどうか
 if ( !function_exists( 'is_wp_6_1_or_over' ) ):
 function is_wp_6_1_or_over(){
-  return get_bloginfo('version') >= '6.1';
+  return version_compare( get_bloginfo('version'), '6.1', '>=' );
+}
+endif;
+
+//WordPressバージョンが6.2以上かどうか
+if ( !function_exists( 'is_wp_6_2_or_over' ) ):
+function is_wp_6_2_or_over(){
+  return version_compare( get_bloginfo('version'), '6.2', '>=' );
 }
 endif;
 
 //WordPressバージョンが6.5以上かどうか
 if ( !function_exists( 'is_wp_6_5_or_over' ) ):
 function is_wp_6_5_or_over(){
-  return get_bloginfo('version') >= '6.5';
+  return version_compare( get_bloginfo('version'), '6.5', '>=' );
 }
 endif;
 
@@ -3848,7 +3839,197 @@ function is_rest() {
 }
 endif;
 
-//HTML内のAタグをSPANタグに変換
+//HTML要素の最外部にエディター用のリンク無効化クラスを付与
+if ( !function_exists( 'add_editor_no_link_click_class' ) ):
+function add_editor_no_link_click_class( $html ) {
+  // 想定外入力は無変換で返し、呼び出し側での表示崩れを防ぐ。
+  if ( !is_string( $html ) || $html === '' ) {
+    return $html;
+  }
+
+  // 先頭タグ前にHTMLコメントがあっても最初の開始タグを対象にする。
+  // 属性値内の > で切れないよう、属性値を "..."/\'...\'/空白なし文字列 として個別にマッチさせる。
+  $pattern = '/^(\s*(?:<!--[\s\S]*?-->\s*)*)<([a-zA-Z][a-zA-Z0-9:-]*)((?:\s+(?:[^>"\'=\s]+(?:\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]*))?|\s))*)>/s';
+  // preg_replace_callback は PCRE エラー時に null を返すため、失敗時は元の HTML を維持する。
+  $result = preg_replace_callback(
+    $pattern,
+    function( $matches ) {
+      $prefix = $matches[1];
+      $tag_name = $matches[2];
+      $attrs = $matches[3];
+
+      // class 属性がある場合は既存クラスを温存したまま先頭に追加する。
+      // クォート付き（class="foo"）とクォート無し（class=foo）の両方に対応する。
+      if ( preg_match( '/\bclass\s*=\s*([\'\"])(.*?)\1/is', $attrs, $class_matches ) ) {
+        // クォート付き class 属性。
+        $class_value = trim( $class_matches[2] );
+        $classes = preg_split( '/\s+/', $class_value, -1, PREG_SPLIT_NO_EMPTY );
+        if ( !in_array( 'cocoon-editor-no-link-click', $classes, true ) ) {
+          array_unshift( $classes, 'cocoon-editor-no-link-click' );
+        }
+        $new_class = implode( ' ', $classes );
+        $attrs = preg_replace_callback(
+          '/\bclass\s*=\s*([\'\"])(.*?)\1/is',
+          function( $class_attr_matches ) use ( $new_class ) {
+            return 'class=' . $class_attr_matches[1] . $new_class . $class_attr_matches[1];
+          },
+          $attrs,
+          1
+        );
+      } elseif ( preg_match( '/\bclass\s*=\s*([^\s>"\']+)/i', $attrs, $class_matches ) ) {
+        // クォート無し class 属性（class=foo）。値は単一トークンのみ。
+        $class_value = $class_matches[1];
+        if ( $class_value !== 'cocoon-editor-no-link-click' ) {
+          $new_class = 'cocoon-editor-no-link-click ' . $class_value;
+        } else {
+          $new_class = $class_value;
+        }
+        // クォート付きに正規化して置換する。
+        $attrs = preg_replace(
+          '/\bclass\s*=\s*[^\s>"\']+/i',
+          'class="' . $new_class . '"',
+          $attrs,
+          1
+        );
+      } else {
+        // class 属性がない要素には新規で付与する。
+        $attrs .= ' class="cocoon-editor-no-link-click"';
+      }
+
+      return $prefix . '<' . $tag_name . $attrs . '>';
+    },
+    $html,
+    1
+  );
+  if ( $result !== null ) {
+    $html = $result;
+  }
+
+  // エディタープレビューではリンク遷移を防ぐために操作用属性を補助付与。
+  // WP_HTML_Tag_Processor は属性値内の > やスクリプト・コメント内のタグを正しく扱える。
+  if ( class_exists( 'WP_HTML_Tag_Processor' ) ) {
+    $processor = new WP_HTML_Tag_Processor( $html );
+    while ( $processor->next_tag( 'a' ) ) {
+      if ( null === $processor->get_attribute( 'tabindex' ) ) {
+        $processor->set_attribute( 'tabindex', '-1' );
+      }
+      if ( null === $processor->get_attribute( 'aria-disabled' ) ) {
+        $processor->set_attribute( 'aria-disabled', 'true' );
+      }
+      if ( null === $processor->get_attribute( 'onclick' ) ) {
+        $processor->set_attribute( 'onclick', 'return false;' );
+      }
+    }
+    $html = $processor->get_updated_html();
+  } else {
+    // WP 6.2 未満のフォールバック: DOMDocument が使えれば正確にパースし、
+    // 使えなければ正規表現で処理する（退避つき）。
+    $html = _add_editor_a_tag_attrs_fallback( $html );
+  }
+
+  return $html;
+}
+endif;
+
+// フォールバック用: a タグに遷移抑止属性を付与する内部関数。
+// DOMDocument が利用可能ならパーサーベースで安全に処理し、
+// 利用不可なら退避つき正規表現で処理する。
+if ( !function_exists( '_add_editor_a_tag_attrs_fallback' ) ):
+function _add_editor_a_tag_attrs_fallback( $html ) {
+  // DOMDocument が利用可能ならパーサーベースで処理する。
+  if ( class_exists( 'DOMDocument' ) ) {
+    return _add_editor_a_tag_attrs_dom( $html );
+  }
+
+  // DOMDocument も WP_HTML_Tag_Processor もない環境: 退避つき正規表現で処理する。
+  $placeholders = [];
+  $counter = 0;
+
+  // テキストコンテンツを持ちうる要素とコメントを退避して誤変換を防ぐ。
+  $safe_html = preg_replace_callback(
+    '/<!--.*?-->|<(script|style|textarea|pre|code|xmp|noscript)\b[^>]*>.*?<\/\1\s*>/is',
+    function( $m ) use ( &$placeholders, &$counter ) {
+      $key = "\x00PLACEHOLDER_" . $counter++ . "\x00";
+      $placeholders[ $key ] = $m[0];
+      return $key;
+    },
+    $html
+  );
+  if ( $safe_html === null ) {
+    $safe_html = $html;
+  }
+
+  $a_tag_pattern = '/<a(\s+(?:[^>"\'=\s]+(?:\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]*))?|\s)*)>/is';
+  $result = preg_replace_callback(
+    $a_tag_pattern,
+    function( $matches ) {
+      $attrs = $matches[1];
+      if ( !preg_match( '/(?:^|\s)tabindex\s*=/i', $attrs ) ) {
+        $attrs .= ' tabindex="-1"';
+      }
+      if ( !preg_match( '/(?:^|\s)aria-disabled\s*=/i', $attrs ) ) {
+        $attrs .= ' aria-disabled="true"';
+      }
+      if ( !preg_match( '/(?:^|\s)onclick\s*=/i', $attrs ) ) {
+        $attrs .= ' onclick="return false;"';
+      }
+      return '<a' . $attrs . '>';
+    },
+    $safe_html
+  );
+  if ( $result !== null ) {
+    $safe_html = $result;
+  }
+
+  return str_replace( array_keys( $placeholders ), array_values( $placeholders ), $safe_html );
+}
+endif;
+
+// DOMDocument を使って a タグに遷移抑止属性を安全に付与する。
+// HTML の構造を正確にパースするため、script/comment/pre 等の中身を誤変換しない。
+if ( !function_exists( '_add_editor_a_tag_attrs_dom' ) ):
+function _add_editor_a_tag_attrs_dom( $html ) {
+  $doc = new DOMDocument();
+  // HTMLフラグメントを扱うためラッパーで囲む。
+  $wrapped = '<div id="cocoon-dom-root">' . $html . '</div>';
+  // マルチバイト文字化け防止のためエンコーディングを明示する。
+  $prev_errors = libxml_use_internal_errors( true );
+  $doc->loadHTML(
+    '<?xml encoding="UTF-8">' . $wrapped,
+    LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+  );
+  libxml_clear_errors();
+  libxml_use_internal_errors( $prev_errors );
+
+  $anchors = $doc->getElementsByTagName( 'a' );
+  foreach ( $anchors as $a ) {
+    if ( !$a->hasAttribute( 'tabindex' ) ) {
+      $a->setAttribute( 'tabindex', '-1' );
+    }
+    if ( !$a->hasAttribute( 'aria-disabled' ) ) {
+      $a->setAttribute( 'aria-disabled', 'true' );
+    }
+    if ( !$a->hasAttribute( 'onclick' ) ) {
+      $a->setAttribute( 'onclick', 'return false;' );
+    }
+  }
+
+  // ラッパーの中身のみ取り出す。
+  $root = $doc->getElementById( 'cocoon-dom-root' );
+  if ( !$root ) {
+    return $html;
+  }
+
+  $inner = '';
+  foreach ( $root->childNodes as $child ) {
+    $inner .= $doc->saveHTML( $child );
+  }
+
+  return $inner;
+}
+endif;
+
+//HTML内のAタグをSPANタグに変換（後方互換性用）
 if ( !function_exists( 'replace_a_tags_to_span_tags' ) ):
 function replace_a_tags_to_span_tags( $html ) {
   $html = str_replace('<a ', '<span ', $html);
@@ -3876,29 +4057,46 @@ function is_classic_editor() {
 }
 endif;
 
-//HTMLで使用するヘックスカラーが暗い色かどうか（）
+//色コードが暗い色かどうか（YIQ計算）
 if ( !function_exists( 'is_dark_hexcolor' ) ):
 function is_dark_hexcolor($hexcolor) {
-  if (!$hexcolor || (strlen($hexcolor) !== 7)) {
+  if (empty($hexcolor) || !is_string($hexcolor)) {
     return false;
   }
-  // カラーコードから"#"を削除
-  $hexcolor = ltrim($hexcolor, '#');
+  // カラーコードから"#"を削除しトリム
+  $hex = ltrim(trim($hexcolor), '#');
 
-  // 16進数のカラーコードを10進数のRGB値に変換
-  $r = hexdec(substr($hexcolor, 0, 2));
-  $g = hexdec(substr($hexcolor, 2, 2));
-  $b = hexdec(substr($hexcolor, 4, 2));
+  // 半透明を含む場合(RGBA等)はアルファチャンネル部を無視する
+  if (strlen($hex) === 8) {
+    $hex = substr($hex, 0, 6);
+  } elseif (strlen($hex) === 4) {
+    $hex = substr($hex, 0, 3);
+  }
 
-  // 平均輝度を計算
-  $luminance = ($r + $g + $b) / 3;
+  // 16進数文字列として有効かチェック（PHP 7.4+ で hexdec の Deprecated 警告を防止）
+  // PHP 8.1未満では ctype_xdigit('') が true を返すため、空文字チェックを前に追加
+  if ($hex === '' || !ctype_xdigit($hex)) {
+    return false;
+  }
 
-  // しきい値（この値は調整可能、0から255の範囲）
-  // $threshold = 128; //半分
-  $threshold = 162;
+  if (strlen($hex) == 3) {
+    $r = hexdec(substr($hex, 0, 1).substr($hex, 0, 1));
+    $g = hexdec(substr($hex, 1, 1).substr($hex, 1, 1));
+    $b = hexdec(substr($hex, 2, 1).substr($hex, 2, 1));
+  } elseif (strlen($hex) == 6) {
+    $r = hexdec(substr($hex, 0, 2));
+    $g = hexdec(substr($hex, 2, 2));
+    $b = hexdec(substr($hex, 4, 2));
+  } else {
+    // 判定できない場合（カラーネーム等）はfalseを返す
+    return false;
+  }
 
-  // 輝度がしきい値より低いかどうかを返す
-  return $luminance < $threshold;
+  // W3CガイドラインによるYIQ輝度計算
+  $yiq = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+
+  // 輝度が128未満なら暗いと判定
+  return $yiq < 128;
 }
 endif;
 
@@ -3944,7 +4142,88 @@ if ( !function_exists( 'get_current_page_url' ) ):
 function get_current_page_url() {
   global $wp;
 
+  // CLI/Cronなど $wp が未初期化の場合はホームURLを返す（Fatal回避）
+  if (!is_object($wp) || !isset($wp->request)) {
+    return home_url('');
+  }
+
   return home_url(add_query_arg(array(), $wp->request));
+}
+endif;
+
+//URLがカレントページと同じかどうか判定する（無限ループ防止用など）
+if ( !function_exists( 'is_current_url_same' ) ):
+function is_current_url_same($url) {
+  if (empty($url) || !is_string($url)) return false;
+
+  // 現在のページURL（フロント）を比較対象とする
+  $urls_to_check = array(get_current_page_url());
+  // アーカイブページ等では get_the_ID() がループ先頭の投稿IDを返し誤判定になるため
+  // is_singular() のとき（個別の投稿・固定ページ）のみ投稿IDによるチェックを行う
+  if ( is_singular() ) {
+    $post_id = get_the_ID();
+    if ($post_id) {
+      $urls_to_check[] = get_permalink($post_id);
+    }
+  } elseif ( defined('REST_REQUEST') && REST_REQUEST ) {
+    // REST API経由の描画時（Gutenbergブロックプレビュー等）は
+    // is_singular() が false になるため get_post() から現在投稿を補完する
+    $current_post = get_post();
+    if ($current_post && $current_post->ID) {
+      $urls_to_check[] = get_permalink($current_post->ID);
+    }
+  }
+
+  $target = trim($url);
+  $parsed_t = wp_parse_url($target);
+  if (empty($parsed_t)) return false;
+
+  $host_t = preg_replace('/^www\./i', '', strtolower(isset($parsed_t['host']) ? $parsed_t['host'] : ''));
+  // ホスト名単体に対してPunycodeデコードを適用する
+  // punycode_decode() はフルURL用ラッパーのため、ホスト名だけにはPunycodeクラスを直接使用する
+  if (class_exists('Punycode') && $host_t) {
+    $punycode = new Punycode();
+    $host_t = $punycode->decode($host_t);
+  }
+  if (empty($host_t)) return false; // ホスト名が取得できない場合は別サイト（または相対パス等）とみなす
+
+  $path_t = rawurldecode(isset($parsed_t['path']) ? $parsed_t['path'] : '');
+  $path_t = untrailingslashit(preg_replace('#/+#', '/', ltrim($path_t, '/')));
+  $query_t = isset($parsed_t['query']) ? $parsed_t['query'] : '';
+  parse_str($query_t, $arr_t);
+
+  foreach ($urls_to_check as $current) {
+    if (empty($current) || !is_string($current)) continue;
+
+    $parsed_c = wp_parse_url($current);
+    if (empty($parsed_c)) continue;
+
+    // ホスト名の比較
+    $host_c = preg_replace('/^www\./i', '', strtolower(isset($parsed_c['host']) ? $parsed_c['host'] : ''));
+    // ホスト名単体に対してPunycodeデコードを適用する
+    if (class_exists('Punycode') && $host_c) {
+      $punycode = new Punycode();
+      $host_c = $punycode->decode($host_c);
+    }
+    if (empty($host_c) || $host_c !== $host_t) continue;
+
+    // パスの比較
+    $path_c = rawurldecode(isset($parsed_c['path']) ? $parsed_c['path'] : '');
+    $path_c = untrailingslashit(preg_replace('#/+#', '/', ltrim($path_c, '/')));
+    if ($path_c !== $path_t) continue;
+
+    // クエリストリングの比較
+    $query_c = isset($parsed_c['query']) ? $parsed_c['query'] : '';
+    if ($query_c || $query_t) {
+      parse_str($query_c, $arr_c);
+      if ($arr_c != $arr_t) continue;
+    }
+
+    // 全て一致した（自己参照と判定）
+    return true;
+  }
+
+  return false;
 }
 endif;
 
@@ -4059,5 +4338,41 @@ function get_post_content_word_count($content) {
 
   // 文字数を取得
   return mb_strlen($text);
+}
+endif;
+// URLから投稿IDへ変換しキャッシュ処理を行う
+if ( !function_exists( 'cocoon_url_to_postid' ) ):
+function cocoon_url_to_postid($url) {
+  if (empty($url) || !is_string($url)) {
+    return 0;
+  }
+
+  // キャッシュから検索結果を取得する
+  $transient_key = 'cocoon_url_tpi_' . md5($url);
+  $id = get_transient($transient_key);
+
+  // キャッシュがない場合のみ、取得処理を実行して保存する
+  if ($id === false) {
+    $id = url_to_postid($url);
+
+    // 記事が見つかった場合は1日間、見つからなかった場合(0)は1時間だけキャッシュする
+    $cache_time = ($id > 0) ? DAY_IN_SECONDS : HOUR_IN_SECONDS;
+    set_transient($transient_key, (int)$id, $cache_time);
+  }
+
+  return (int)$id;
+}
+endif;
+
+// 背景色から見やすい文字色（白か黒系）を自動判定して返す
+if ( !function_exists( 'get_text_color_from_background_color' ) ):
+function get_text_color_from_background_color($bg_color, $light_color = '#fff', $dark_color = '#333'){
+  if (empty($bg_color) || !is_string($bg_color)) {
+    return $light_color;
+  }
+
+  // 背景色が暗ければ明るい文字色を返し、明るければ暗い文字色を返す
+  // カラーコードのバリデーションはis_dark_hexcolor側で一元的に行う
+  return is_dark_hexcolor($bg_color) ? $light_color : $dark_color;
 }
 endif;

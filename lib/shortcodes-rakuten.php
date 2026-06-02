@@ -53,7 +53,7 @@ function rakuten_product_link_shortcode($atts){
   $search = sanitize_shortcode_value($search);
 
   //キーワード
-  $keyword = sanitize_shortcode_value($kw);
+  $keyword = (string) sanitize_shortcode_value($kw);
   //全角スペースを半角に置換
   $keyword = str_replace('　', ' ', $keyword);
   //連続した半角スペースを1つに置換
@@ -73,6 +73,8 @@ function rakuten_product_link_shortcode($atts){
   $rakuten_application_id = trim(get_rakuten_application_id());
   //楽天アフィリエイトID
   $rakuten_affiliate_id = trim(get_rakuten_affiliate_id());
+  //楽天アクセスキー
+  $rakuten_access_key = trim(get_rakuten_access_key());
   //アソシエイトタグ
   $associate_tracking_id = trim(get_amazon_associate_tracking_id());
   //Yahoo!バリューコマースSID
@@ -135,36 +137,39 @@ function rakuten_product_link_shortcode($atts){
     // _v('api');
     $itemCode = null;
     if ($id) {
-      $itemCode = '&itemCode='.$id;
+      $itemCode = '&itemCode=' . urlencode($id);
     }
 
     $purchaseTypeCode = null;
     if ($purchase_type) {
-      $purchaseTypeCode = '&purchaseType='.$purchase_type;
+      $purchaseTypeCode = '&purchaseType=' . urlencode($purchase_type);
     }
 
-    $sortQuery = '&sort='.get_rakuten_api_sort();
+    // sortは「+itemPrice」等の+を含むため、rawurlencodeでスペース%20・+は%2Bにエンコード（urlencode+str_replaceの代替）
+    $sortQuery = '&sort=' . rawurlencode(get_rakuten_api_sort());
     if ($sort && !$id) {
-      $sortQuery = '&sort='.$sort;
+      $sortQuery = '&sort=' . rawurlencode($sort);
     }
-    $sortQuery = str_replace('+', '%2B', $sortQuery);
 
     $shopCode = null;
     if ($shop && !$id) {
-      $shopCode = '&shopCode='.$shop;
+      $shopCode = '&shopCode=' . urlencode($shop);
     }
     $searchkw = null;
     if ($search && !$id) {
-      $searchkw = '&keyword='.$search;
+      $searchkw = '&keyword=' . urlencode($search);
     }
-    $request_url = 'https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?applicationId='.$rakuten_application_id.'&affiliateId='.$rakuten_affiliate_id.'&imageFlag=1'.$sortQuery.$shopCode.'&hits=1'.$searchkw.$itemCode.$purchaseTypeCode;
+    // 楽天APIエンドポイントの構築（共通ヘルパーで新旧APIを自動切替）
+    $endpoint = cocoon_rakuten_api_build_endpoint($rakuten_application_id, $rakuten_access_key);
+
+    $request_url = $endpoint['base'] . $endpoint['auth_query'] . '&affiliateId=' . urlencode($rakuten_affiliate_id) . '&imageFlag=1' . $sortQuery . $shopCode . '&hits=1' . $searchkw . $itemCode . $purchaseTypeCode;
     //_v($request_url);
-    $args = array( 'sslverify' => true );
-    $args = apply_filters('wp_remote_get_rakuten_args', $args);
+    // APIリクエストの実行（共通ヘルパーでReferer/Originヘッダーを付与）
+    $args = cocoon_rakuten_api_get_request_args();
     $json = wp_remote_get( $request_url, $args );
 
-    //ジェイソンのリクエスト結果チェック
-    $is_request_success = !is_wp_error( $json ) && $json['response']['code'] === 200;
+    //ジェイソンのリクエスト結果チェック（HTTPコードを(int)キャストして型不一致を防止）
+    $is_request_success = !is_wp_error( $json ) && (int)$json['response']['code'] === 200;
     //JSON取得に失敗した場合はバックアップキャッシュを取得
     if (!$is_request_success) {
       $json_cache = get_transient( $transient_bk_id );
@@ -178,15 +183,15 @@ function rakuten_product_link_shortcode($atts){
 
 
   if ($json) {
-    //ジェイソンのリクエスト結果チェック
-    $is_request_success = !is_wp_error( $json ) && $json['response']['code'] === 200;
+    //ジェイソンのリクエスト結果チェック（HTTPコードを(int)キャストして型不一致を防止）
+    $is_request_success = !is_wp_error( $json ) && (int)$json['response']['code'] === 200;
     ///////////////////////////////////////////
     // キャッシュ削除リンク
     ///////////////////////////////////////////
     $cache_delete_tag = get_cache_delete_tag('rakuten', $cache_id);
     //リクエストが成功した時タグを作成する
     if ($is_request_success) {
-      $acquired_date = date_i18n(__( 'Y/m/d H:i', THEME_NAME ));
+      $acquired_date = wp_date(__( 'Y/m/d H:i', THEME_NAME ));
 
       //キャッシュの保存
       if (!$json_cache) {
@@ -206,9 +211,12 @@ function rakuten_product_link_shortcode($atts){
       //ジェイソンの配列化
       $body = json_decode( $body );
       //IDの商品が見つからなかった場合
-      if (intval($body->{'count'}) > 0) {
+      if (isset($body->{'count'}) && intval($body->{'count'}) > 0 && isset($body->{'Items'}[0])) {
 
-        $Item = $body->{'Items'}['0']->{'Item'};
+        // 最新のAPIレスポンスの構造変化に対応できる形にItemを抽出
+        $rawItem = $body->{'Items'}[0];
+        $Item = isset($rawItem->{'Item'}) ? $rawItem->{'Item'} : $rawItem;
+
         if ($Item) {
 
           $itemName = $Item->{'itemName'};
@@ -225,29 +233,37 @@ function rakuten_product_link_shortcode($atts){
 
 
           //小さな画像
-          $smallImageUrls = $Item->{'smallImageUrls'};
-          $smallImageUrl = $smallImageUrls['0']->{'imageUrl'};
+          $smallImageUrls = isset($Item->{'smallImageUrls'}) ? $Item->{'smallImageUrls'} : array();
+          $smallImageUrl = isset($smallImageUrls[0]->{'imageUrl'}) ? $smallImageUrls[0]->{'imageUrl'} : null;
           //画像サイズの取得
-          $sizes = get_rakuten_image_size($smallImageUrl);
-          if ($sizes) {
-            $smallImageWidth = $sizes['width'];
-            $smallImageHeight = $sizes['height'];
+          if ($smallImageUrl) {
+            $sizes = get_rakuten_image_size($smallImageUrl);
+            if ($sizes) {
+              $smallImageWidth = $sizes['width'];
+              $smallImageHeight = $sizes['height'];
+            } else {
+              $smallImageWidth = null;
+              $smallImageHeight = null;
+            }
           } else {
-            $smallImageUrl = null;
             $smallImageWidth = null;
             $smallImageHeight = null;
           }
 
           //標準画像
-          $mediumImageUrls = $Item->{'mediumImageUrls'};
-          $mediumImageUrl = $mediumImageUrls['0']->{'imageUrl'};
+          $mediumImageUrls = isset($Item->{'mediumImageUrls'}) ? $Item->{'mediumImageUrls'} : array();
+          $mediumImageUrl = isset($mediumImageUrls[0]->{'imageUrl'}) ? $mediumImageUrls[0]->{'imageUrl'} : null;
           //画像サイズの取得
-          $sizes = get_rakuten_image_size($mediumImageUrl);
-          if ($sizes) {
-            $mediumImageWidth = $sizes['width'];
-            $mediumImageHeight = $sizes['height'];
+          if ($mediumImageUrl) {
+            $sizes = get_rakuten_image_size($mediumImageUrl);
+            if ($sizes) {
+              $mediumImageWidth = $sizes['width'];
+              $mediumImageHeight = $sizes['height'];
+            } else {
+              $mediumImageWidth = null;
+              $mediumImageHeight = null;
+            }
           } else {
-            $mediumImageUrl = null;
             $mediumImageWidth = null;
             $mediumImageHeight = null;
           }
@@ -328,7 +344,7 @@ function rakuten_product_link_shortcode($atts){
             if (preg_match_all('{\?pc=(.+?)&m=}i', urldecode($decoded_affiliateUrl), $m)) {
               if ($m[1][0]) {
                 $rakuten_product_page_url = $m[1][0];
-                $moshimo_rakuten_url = 'https://af.moshimo.com/af/c/click?a_id='.$moshimo_rakuten_id.'&p_id=54&pc_id=54&pl_id=616&url='.urlencode($rakuten_product_page_url);
+                $moshimo_rakuten_url = 'https://af.moshimo.com/af/c/click?a_id='.urlencode($moshimo_rakuten_id).'&p_id=54&pc_id=54&pl_id=616&url='.urlencode($rakuten_product_page_url);
                 $affiliateUrl = $moshimo_rakuten_url;
                 //インプレッションタグ
                 $moshimo_rakuten_impression_tag = get_moshimo_rakuten_impression_tag();
@@ -408,7 +424,7 @@ function rakuten_product_link_shortcode($atts){
             $image_only_class = ' rakuten-item-image-only product-item-image-only no-icon';
           }
           $image_link_tag = '<a href="'.esc_url($affiliateUrl).'" class="rakuten-item-thumb-link product-item-thumb-link'.esc_attr($image_only_class).'" target="_blank" title="'.esc_attr($TitleAttr).'" rel="nofollow noopener">'.
-                  '<img src="'.esc_url($ImageUrl).'" alt="'.esc_attr($TitleAttr).'" width="'.esc_attr($ImageWidth).'" height="'.esc_attr($ImageHeight).'" class="rakuten-item-thumb-image product-item-thumb-image">'.
+                  '<img src="'.esc_url($ImageUrl).'" alt="'.($image_only ? esc_attr($TitleAttr) : '').'" width="'.esc_attr($ImageWidth).'" height="'.esc_attr($ImageHeight).'" class="rakuten-item-thumb-image product-item-thumb-image">'.
                   $moshimo_rakuten_impression_tag.
                 '</a>';
           //画像のみ出力する場合
@@ -435,8 +451,10 @@ function rakuten_product_link_shortcode($atts){
           ///////////////////////////////////////////
           // 商品リンクタグの生成
           ///////////////////////////////////////////
+          // itemCodeは「shopCode:itemCode」形式でコロンを含む場合があり、CSSセレクタで疑似クラスと誤解釈されるためハイフンに置換
+          $id_class = $id ? esc_attr(str_replace(':', '-', $id)) : '';
           $tag =
-            '<div class="rakuten-item-box product-item-box no-icon '.$size_class.$border_class.$logo_class.' '.$id.' cf">'.
+            '<div class="rakuten-item-box product-item-box no-icon '.$size_class.$border_class.$logo_class.' '.$id_class.' cf">'.
               '<figure class="rakuten-item-thumb product-item-thumb">'.
               $image_link_tag.
               '</figure>'.
@@ -471,8 +489,17 @@ function rakuten_product_link_shortcode($atts){
     } else {
       if (is_array($json) && isset($json['body'])) {
         $ebody = json_decode( $json['body'] );
-        $error = $ebody->{'error'};
-        $error_description = $ebody->{'error_description'};
+        // 新旧APIのエラーレスポンス形式を両方チェック
+        // 旧API形式: {"error": "wrong_parameter", "error_description": "..."}
+        // 新API（認証エラー）形式: {"errors": {"errorCode": 403, "errorMessage": "..."}}
+        $error = isset($ebody->{'error'}) ? $ebody->{'error'} : '';
+        // デコード済みの $ebody から直接エラーメッセージを抽出（json_decode の二重実行を回避）
+        $error_description = '';
+        if (isset($ebody->errors->errorMessage)) {
+          $error_description = $ebody->errors->errorMessage;
+        } elseif (isset($ebody->error_description)) {
+          $error_description = $ebody->error_description;
+        }
         switch ($error) {
           case 'wrong_parameter':
           $error_message = $error_description.':'.__( 'ショートコードの値が正しく記入されていない可能性があります。', THEME_NAME );
@@ -485,7 +512,9 @@ function rakuten_product_link_shortcode($atts){
           return get_rakuten_error_message_tag($default_rakuten_link_tag, $error_message, $cache_delete_tag);
             break;
           default:
-          $error_message = $error_description.':'.__( 'Bad Requestが返されました。リクエスト制限を受けた可能性があります。しばらく時間を置いた後、リロードすると商品リンクが表示される可能性があります。', THEME_NAME );
+          // エラーメッセージが空の場合はコロンだけにならないよう制御
+          $error_prefix = $error_description ? $error_description.':' : '';
+          $error_message = $error_prefix.__( 'Bad Requestが返されました。リクエスト制限を受けた可能性があります。しばらく時間を置いた後、リロードすると商品リンクが表示される可能性があります。', THEME_NAME );
             break;
         }
         return get_rakuten_error_message_tag($default_rakuten_link_tag, $error_message);
@@ -503,7 +532,7 @@ endif;
 if ( !function_exists( 'error_log_to_rakuten_product' ) ):
   function error_log_to_rakuten_product($id, $no, $message = '', $keyword = ''){
     //エラーログに出力
-    $msg = date_i18n("Y-m-d H:i:s").','.
+    $msg = wp_date("Y-m-d H:i:s").','.
            $id.','.
            $no.','.
            get_the_permalink().

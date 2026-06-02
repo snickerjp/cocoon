@@ -149,6 +149,7 @@ function popular_entries_shortcode($atts) {
     'horizontal' => 0,
     'action' => null,
     'comment' => 0,
+    'offset' => 0,
   ), $atts, 'popular_list'));
 
   //countオプションに異常値が入っていた場合
@@ -192,6 +193,7 @@ function popular_entries_shortcode($atts) {
     'horizontal' => $horizontal,
     'action' => $action,
     'comment' => $comment,
+    'offset' => $offset,
   );
   ob_start();
   generate_popular_entries_tag($atts);
@@ -315,15 +317,19 @@ if (!shortcode_exists('login_user_only')) {
   add_shortcode('login_user_only', 'login_user_only_shortcode');
 }
 if ( !function_exists( 'login_user_only_shortcode' ) ):
-function login_user_only_shortcode( $atts, $content = null ) {
+function login_user_only_shortcode( $atts, $content = '' ) {
+  $content = (string)$content;
   extract( shortcode_atts( array(
       'msg' => __( 'こちらのコンテンツはログインユーザーのみに表示されます。', THEME_NAME ),
   ), $atts, 'login_user_only' ) );
+  // sanitize_shortcode_value内でesc_html済みのためそのまま出力する
+  // ※ 以前はhtmlspecialchars_decodeで戻していたが、
+  //    esc_htmlによるサニタイズが無効化されてしまうため削除した
   $msg = sanitize_shortcode_value($msg);
   if (is_user_logged_in()) {
     return do_shortcode($content);
   } else {
-    return '<div class="login-user-only">'.htmlspecialchars_decode($msg).'</div>';
+    return '<div class="login-user-only">'.$msg.'</div>';
   }
 }
 endif;
@@ -333,12 +339,13 @@ if (!shortcode_exists('timeline')) {
   add_shortcode('timeline', 'timeline_shortcode');
 }
 if ( !function_exists( 'timeline_shortcode' ) ):
-function timeline_shortcode( $atts, $content = null ){
+function timeline_shortcode( $atts, $content = '' ){
+  $content = (string)$content;
   extract( shortcode_atts( array(
     'title' => null,
   ), $atts, 'timeline' ) );
   $content = remove_wrap_shortcode_wpautop('ti', $content);
-  $content = do_shortcode( shortcode_unautop( $content ) );
+  $content = do_shortcode( shortcode_unautop( (string)$content ) );
   $title = sanitize_shortcode_value($title);
   $title_tag = null;
   if ($title) {
@@ -359,13 +366,14 @@ if ( !function_exists( 'remove_wrap_shortcode_wpautop' ) ):
 function remove_wrap_shortcode_wpautop($shortcode, $content){
   //tiショートコードのみを抽出
   $pattern = '/\['.$shortcode.'.*?\].*?\[\/'.$shortcode.'\]/is';
-  if (preg_match_all($pattern, $content, $m)) {
+  if (preg_match_all($pattern, (string)$content, $m)) {
     $all = null;
     foreach ($m[0] as $code) {
       $all .= $code;
     }
     return $all;
   }
+  return '';
 }
 endif;
 
@@ -374,7 +382,8 @@ if (!shortcode_exists('ti')) {
   add_shortcode('ti', 'timeline_item_shortcode');
 }
 if ( !function_exists( 'timeline_item_shortcode' ) ):
-function timeline_item_shortcode( $atts, $content = null ){
+function timeline_item_shortcode( $atts, $content = '' ){
+  $content = (string)$content;
   extract( shortcode_atts( array(
     'title' => null,
     'label' => null,
@@ -462,7 +471,7 @@ if (!shortcode_exists('star')) {
   add_shortcode('star', 'rating_star_shortcode');
 }
 if ( !function_exists( 'rating_star_shortcode' ) ):
-function rating_star_shortcode( $atts, $content = null ) {
+function rating_star_shortcode( $atts, $content = '' ) {
   extract( shortcode_atts( array(
       'rate' => 5,
       'max' => 5,
@@ -478,7 +487,7 @@ if (!shortcode_exists('toc')) {
   add_shortcode('toc', 'toc_shortcode');
 }
 if ( !function_exists( 'toc_shortcode' ) ):
-function toc_shortcode( $atts, $content = null ) {
+function toc_shortcode( $atts, $content = '' ) {
   extract(shortcode_atts(array(
     'depth' => 0,
   ), $atts, 'toc'));
@@ -495,7 +504,7 @@ endif;
 //サイトマップショートコード
 add_shortcode('sitemap', 'sitemap_shortcode');
 if ( !function_exists( 'sitemap_shortcode' ) ):
-function sitemap_shortcode( $atts, $content = null ) {
+function sitemap_shortcode( $atts, $content = '' ) {
   extract( shortcode_atts( array(
     'page' => 1,
     'single' => 1,
@@ -544,7 +553,7 @@ if (!shortcode_exists('blogcard')) {
   add_shortcode('blogcard', 'blogcard_shortcode');
 }
 if ( !function_exists( 'blogcard_shortcode' ) ):
-function blogcard_shortcode( $atts, $content = null ) {
+function blogcard_shortcode( $atts, $content = '' ) {
   extract( shortcode_atts( array(
     'url' => null,
   ), $atts, 'blogcard' ) );
@@ -561,7 +570,7 @@ endif;
 //カウントダウンタイマーの取得
 if ( !function_exists( 'get_countdown_days' ) ):
 function get_countdown_days( $to ) {
-  $now = date_i18n('U');
+  $now = current_time('timestamp');
   $diff = (int) ($to - $now);
   $days = ceil($diff / 86400);
   if ($days <= 0) {
@@ -719,6 +728,8 @@ function get_recommend_cards_tag($atts){
           'name' => $name,
           'type' => ET_LARGE_THUMB_ON,
         );
+        //おすすめカードのパラメータ変更用フック
+        $atts = apply_filters('recommend_cards_navi_list_atts', $atts);
         echo get_navi_card_list_tag($atts);
         ?>
       </div><!-- /.recommended-in -->
@@ -745,6 +756,7 @@ function get_box_menu_tag($atts){
   }
 
   $tag = null;
+  $has_image_icon = false;
   $menu_items = wp_get_nav_menu_items($name); // name: カスタムメニューの名前
   if (!$menu_items) {
     return;
@@ -769,7 +781,8 @@ function get_box_menu_tag($atts){
     //画像URLの場合
     if (preg_match('/(https?)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)\.(jpg|jpeg|gif|png|webp|avif)/', $attr_title)) {
       $img_url = $attr_title;
-      $icon_tag = '<img src="'.esc_url($img_url).'" alt="'.esc_attr($title).'" />';
+      $has_image_icon = true;
+      $icon_tag = '<img src="'.esc_url($img_url).'" alt="" />';
     } //アイコンフォントの場合
     elseif (preg_match('/fa.? fa-[a-z\-]+/', $classes)) {
       $icon_tag = '<div class="'.esc_attr($classes).'" aria-hidden="true"></div>';
@@ -788,7 +801,8 @@ function get_box_menu_tag($atts){
     $add_class = ' '.$class;
   }
   //ラッパーで囲む
-  $tag = '<div class="box-menus'.$add_class.' no-icon">'.$tag.'</div>';
+  $no_icon_class = $has_image_icon ? '' : ' no-icon';
+  $tag = '<div class="box-menus'.$add_class.$no_icon_class.'">'.$tag.'</div>';
 
   return apply_filters('get_box_menu_tag', $tag);
 }
@@ -936,16 +950,33 @@ function campaign_shortcode( $atts, $content = null ) {
 
   //内容がない場合は何も表示しない
   if (!$content) return null;
-  //現在の日時を取得
-  $now = date_i18n('U');
+  //WordPressのタイムゾーン設定に基づく現在日時を取得
+  // ※ current_time('timestamp') + strtotime() の組み合わせだと、
+  //    gmt_offsetのみ設定された環境でタイムゾーンのズレが生じるため、
+  //    wp_timezone() + DateTimeImmutable で統一して比較する
+  $tz     = wp_timezone();
+  $now    = current_datetime();
+  $now_ts = $now->getTimestamp();
 
   //いつから（開始日時）
   $from = sanitize_shortcode_value($from);
-  $from_time = !empty($from) ? strtotime($from) : strtotime('-1 day');
+  try {
+    $from_time = !empty($from)
+      ? ( new DateTimeImmutable( $from, $tz ) )->getTimestamp()
+      : $now_ts - DAY_IN_SECONDS;
+  } catch ( \Exception $e ) {
+    $from_time = $now_ts - DAY_IN_SECONDS;
+  }
 
   //いつまで（終了日時）
   $to = sanitize_shortcode_value($to);
-  $to_time = !empty($to) ? strtotime($to) : strtotime('+1 day');
+  try {
+    $to_time = !empty($to)
+      ? ( new DateTimeImmutable( $to, $tz ) )->getTimestamp()
+      : $now_ts + DAY_IN_SECONDS;
+  } catch ( \Exception $e ) {
+    $to_time = $now_ts + DAY_IN_SECONDS;
+  }
 
   //拡張クラス
   if ($class) {
@@ -954,7 +985,8 @@ function campaign_shortcode( $atts, $content = null ) {
 
   $tag = null;
   $content = apply_filters('campaign_shortcode_content', $content);
-  if (($from_time < $now) && ($to_time > $now)) {
+  // ※ 開始・終了時刻ちょうども期間内として扱うため <= を使用
+  if (($from_time <= $now_ts) && ($now_ts <= $to_time)) {
     $tag = '<div class="campaign'.esc_attr($class).'">'.
       $content.
     '</div>';
@@ -992,7 +1024,7 @@ function date_shortcode( $atts ) {
     'format' => 'Y/m/d',
   ), $atts, 'date' ) );
 
-  return date_i18n($format);
+  return wp_date($format);
 }
 endif;
 
@@ -1108,6 +1140,8 @@ function get_block_pattern_shortcode($atts) {
   }
   if (!is_classicpress()) {
     $content = do_blocks($content);
+    // core/shortcodeの整形で付く不要なpタグを除去
+    $content = shortcode_unautop($content);
   }
   return do_shortcode($content);
 }
@@ -1122,21 +1156,26 @@ function pattern_editor_save_post($post_id) {
     return;
   }
 
+  // リビジョン保存時は処理をスキップする
+  if (wp_is_post_revision($post_id)) {
+    return;
+  }
+
   $content = get_post_field('post_content', $post_id);
   // tocショートコードが含まれている場合、もしくは投稿タイプが wp_block の場合に処理
   if (is_toc_shortcode_includes($content) && (get_post_type($post_id) === 'wp_block')) {
-    if (!is_classic_editor()) {
-      // ブロックエディターのケース
+    // ブロックエディター（REST API経由の保存）のケース
+    if (is_rest()) {
 
-      // 保存処理をキャンセル
+      // 保存処理をキャンセル（wp_die() は内部で exit するため以降の処理は実行されない）
       wp_die(TOC_SHORTCODE_ERROR_MESSAGE, __('保存エラー' , THEME_NAME), array('response' => 400));
-      return false;
     } else {
-      // クラシックエディターのケース
+      // クラシックエディター（通常のPOST送信）のケース
       add_filter('redirect_post_location', function($location) {
         return add_query_arg('toc_error', 1, $location);
       });
-      // 保存をキャンセルするため false を返す
+      // save_post はアクションフックのため戻り値では保存をキャンセルできない
+      // （この時点で投稿は既にDB保存済み）。エラー通知のみ行い処理を終了する
       return false;
     }
   }
@@ -1155,7 +1194,8 @@ endif;
 //CTAショートコード（主にCTAブロック用）
 add_shortcode('cta', 'get_cta_tag');
 if ( !function_exists( 'get_cta_tag' ) ):
-function get_cta_tag($atts, $content = null ){
+function get_cta_tag($atts, $content = '' ){
+  $content = (string)$content;
   extract(shortcode_atts(array(
     'heading' => __( '見出し', THEME_NAME ),
     'image_url' => '',

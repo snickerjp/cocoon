@@ -21,6 +21,7 @@ if (get_skin_url() && !isset($_POST[HIDDEN_FIELD_NAME])) {
 require_once abspath(__FILE__).'html-forms.php'; //HTMLフォーム生成関数
 require_once abspath(__FILE__).'html-tooltips.php'; //HTMLツールチップ生成関数
 require_once abspath(__FILE__).'gutenberg.php';   //ブロックエディター関係の関数
+require_once abspath(__FILE__).'block-editor-group-link.php'; //グループブロックのリンク設定
 require_once abspath(__FILE__).'ad.php';         //広告関係の設定
 require_once abspath(__FILE__).'sns.php';        //SNS関係の設定
 require_once abspath(__FILE__).'sns-share.php';  //SNSシェア関数
@@ -33,7 +34,6 @@ require_once abspath(__FILE__).'content-category.php';   //カテゴリー関係
 require_once abspath(__FILE__).'content-tag.php';   //タグ関係の関数
 require_once abspath(__FILE__).'entry-card.php'; //エントリーカード関数
 require_once abspath(__FILE__).'amp.php';        //AMP関係の関数
-require_once abspath(__FILE__).'content.php';    //本文関係の関数
 require_once abspath(__FILE__).'comments.php';   //コメント関係の関数
 require_once abspath(__FILE__).'related-entries.php';   //関連記事関係の関数
 require_once abspath(__FILE__).'walkers.php';    //Walker_Nav_Menuまとめ
@@ -132,6 +132,7 @@ require_once abspath(__FILE__).'shortcodes-product-func.php'; //商品リンク�
 require_once abspath(__FILE__).'shortcodes-amazon.php'; //Amazon商品リンク関係の処理
 require_once abspath(__FILE__).'block-amazon-product-link.php'; //Amazon商品リンクブロック REST API
 require_once abspath(__FILE__).'block-amazon-product-link-cron.php'; //Amazon商品リンクブロック 定期自動更新
+require_once abspath(__FILE__).'rakuten-api-helpers.php'; //楽天API共通ヘルパー関数
 require_once abspath(__FILE__).'shortcodes-rakuten.php'; //楽天商品リンク関係の処理
 require_once abspath(__FILE__).'block-rakuten-product-link.php'; //楽天商品リンクブロック REST API
 require_once abspath(__FILE__).'block-rakuten-product-link-cron.php'; //楽天商品リンクブロック 定期自動更新
@@ -169,9 +170,7 @@ if (is_admin()) {;
   require_once abspath(__FILE__).'tinymce/shortcodes.php'; //ショートコード追加
   require_once abspath(__FILE__).'admin-tools.php'; //外部ツールを利用したもの
   require_once abspath(__FILE__).'admin-forms.php'; //管理画面で使用するフォームパーツ
-  // if (is_dashboard_message_visible()) {
-  //   require_once abspath(__FILE__).'dashboard-message.php'; //ダッシュボードに表示するメッセージ
-  // }
+  require_once abspath(__FILE__).'dashboard-message.php'; //ダッシュボードに表示するメッセージ
 }
 
 require_once abspath(__FILE__).'settings.php';   //WordPressの設定
